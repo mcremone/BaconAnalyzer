@@ -1,0 +1,135 @@
+//Driver to run Bacon 
+
+#include "../include/GenLoader.hh"
+#include "../include/EvtLoader.hh"
+#include "../include/ElectronLoader.hh"
+#include "../include/MuonLoader.hh"
+#include "../include/PhotonLoader.hh"
+#include "../include/TauLoader.hh"
+#include "../include/JetLoader.hh"
+#include "../include/RunLumiRangeMap.h"
+
+#include "TROOT.h"
+#include "TFile.h"
+#include "TTree.h"
+#include <string>
+#include <iostream>
+
+//Object Processors
+GenLoader       *fGen      = 0; 
+EvtLoader       *fEvt      = 0; 
+MuonLoader      *fMuon     = 0; 
+ElectronLoader  *fElectron = 0; 
+TauLoader       *fTau      = 0; 
+PhotonLoader    *fPhoton   = 0; 
+JetLoader       *fJet      = 0; 
+RunLumiRangeMap *fRangeMap = 0; 
+
+TH1F *fHist                = 0; 
+
+TTree* load(std::string iName) { 
+  TFile *lFile = TFile::Open(iName.c_str());
+  TTree *lTree = (TTree*) lFile->FindObjectAny("Events");
+  fHist        = (TH1F* ) lFile->FindObjectAny("TotalEvents");
+  return lTree;
+}
+bool passEvent(unsigned int iRun,unsigned int iLumi) { 
+  RunLumiRangeMap::RunLumiPairType lRunLumi(iRun,iLumi);
+  return fRangeMap->HasRunLumi(lRunLumi);
+}
+int main( int argc, char **argv ) {
+  gROOT->ProcessLine("#include <vector>");          
+  int maxEvents     = atoi(argv[1]);
+  std::string lName = argv[2];
+  int         lGen  = atoi(argv[3]);
+  std::string lJSON = argv[4];
+  int         lOption  = atoi(argv[5]);
+  double      lXS   = atof(argv[6]);
+  fRangeMap = new RunLumiRangeMap();
+  if(lJSON.size() > 0) fRangeMap->AddJSONFile(lJSON.c_str());
+
+  TTree *lTree = load(lName); 
+  float lWeight = float(lXS)/maxEvents/1000.; if(lGen == 0) lWeight = 1.;
+  if(lTree->GetEntries() < maxEvents || maxEvents == -1) maxEvents = lTree->GetEntries(); 
+  //Declare Readers
+  fEvt      = new EvtLoader     (lTree,lName);
+  fMuon     = new MuonLoader    (lTree);
+  fElectron = new ElectronLoader(lTree);
+  fTau      = new TauLoader     (lTree); 
+  fPhoton   = new PhotonLoader  (lTree); 
+  fJet      = new JetLoader     (lTree);
+  if(lGen == 1) fGen      = new GenLoader     (lTree);
+
+  TFile *lFile = new TFile("Output.root","RECREATE");
+  TTree *lOut  = new TTree("Tree","Tree");
+  //Setup Tree
+  fEvt     ->setupTree      (lOut,lWeight);
+  fJet     ->setupTree      (lOut); 
+  fMuon    ->setupTree      (lOut); 
+  fElectron->setupTree      (lOut); 
+  fTau     ->setupTree      (lOut); 
+  fPhoton  ->setupTree      (lOut); 
+  if(lGen == 1) fGen ->setupTree (lOut);
+  //Add the triggers we want
+  fEvt ->addTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*");
+  fEvt ->addTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*");
+  fEvt ->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*");
+  fEvt ->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*");
+  fEvt ->addTrigger("HLT_PFMET120_NoiseCleaned_BTagCSV07_v*");
+  fEvt ->addTrigger("HLT_PFMET120_NoiseCleaned_BTagCSV0p72_v*");
+  fEvt ->addTrigger("HLT_PFMET170_NoiseCleaned_v*");
+  fEvt ->addTrigger("HLT_PFHT350_PFMET100_NoiseCleaned_v*");
+  fEvt ->addTrigger("HLT_PFHT350_PFMET120_NoiseCleaned_v*");
+  for(int i0 = 0; i0 < maxEvents; i0++) { 
+    if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(maxEvents)) << " -- " << lOption << std::endl;
+    //Load event and require trigger
+    std::vector<TLorentzVector> lVetoes; 
+    //Select Di Muon
+    if(lOption > 0) { 
+      fMuon->load(i0);
+      fMuon->selectMuons(lVetoes);
+      double pMass = fMuon->fillDiMuon();
+      if(lVetoes.size() > 2 || lVetoes.size() == 0) continue;
+      if((pMass < 60 || pMass > 120) && lVetoes.size() == 2) continue;
+    }
+    fEvt     ->load(i0);
+    if(lOption < 0) { 
+      fPhoton->load(i0);
+      if(fPhoton->selectPhotons(fEvt->fRho,lVetoes) == 0) continue;
+      fMuon  ->setDiMuon(lVetoes[0]);
+    }      
+    //Setup
+    fJet->load(i0); 
+    fJet->selectJets(lVetoes);
+    fEvt     ->fillEvent(lVetoes);
+    //if(lDMu == 0) if(!fEvt->passSkim()) continue;
+
+    ///Normal processing afterwards
+    if(lGen == 0 && !passEvent(fEvt->fRun,fEvt->fLumi)) continue;
+    if(lOption  < 1) {
+      fMuon    ->load(i0);    
+      fMuon    ->selectMuons(lVetoes);
+    }
+    fElectron->load(i0);
+    fElectron->selectElectrons(fEvt->fRho,lVetoes); //Add a muon veto?
+    fTau     ->load(i0);
+    fTau     ->selectTaus(lVetoes);
+    if(lOption > -1) {
+      fPhoton  ->load(i0);
+      fPhoton  ->selectPhotons(fEvt->fRho,lVetoes);
+    }
+    std::vector<TLorentzVector> lSig;
+    lSig.push_back(lVetoes[0]);
+    if(lOption == 2) lSig.push_back(lVetoes[1]);
+    fEvt->fillModifiedMet(lSig); 
+    if(lGen == 1) {
+      fGen->load(i0);
+      fGen->selectBoson(lOption);
+      fGen->fillGenEvent();
+    }
+    lOut->Fill();
+  }
+  lFile->cd();
+  lOut->Write();
+  lFile->Close();
+}
