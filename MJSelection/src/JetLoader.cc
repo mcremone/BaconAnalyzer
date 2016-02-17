@@ -49,10 +49,10 @@ void JetLoader::setupTree(TTree *iTree) {
   fTree->Branch("nbtags",&fNBTags,"fNBTags/I");
   fTree->Branch("nfwd"  ,&fNFwd  ,"fNFwd/I");
   fTree->Branch("mindphi",&fMinDPhi  ,"fMinDPhi/D");
-  for(int i0 = 0; i0 < fN*(10)+6; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("j" ,iTree,fN,fVars);
-  addOthers  ("j" ,iTree,fN,fVars);  //Mass + b-tag
-  addDijet   ("dj",iTree,1, fVars);
+  for(int i0 = 0; i0 < fN*(10)+6; i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of 47 vars
+  setupNtuple("j" ,iTree,fN,fVars); // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi for j1,j2,j3,j4 (3*4=12)
+  addOthers  ("j" ,iTree,fN,fVars); // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32)
+  addDijet   ("dj",iTree,1, fVars); // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
 }
 void JetLoader::load(int iEvent) { 
   fJets   ->Clear();

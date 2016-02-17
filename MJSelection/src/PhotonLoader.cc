@@ -23,11 +23,11 @@ void PhotonLoader::reset() {
 void PhotonLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("nphotons",&fNPhotons,"fNPhotons/I");
+  fTree->Branch("nphotons",&fNPhotons,"fNPhotons/I"); // photon multiplicity and isolation
   fTree->Branch("nphotonstight",&fNPhotonsTight,"fNPhotonsTight/I");
   fTree->Branch("pho0_iso"     ,&fIso          ,"fIso/D");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("pho",iTree,fN,fVars);
+  setupNtuple("pho",iTree,fN,fVars); // pho0_pt,_eta,_phi (1*3=3)
 }
 void PhotonLoader::load(int iEvent) { 
   fPhotons   ->Clear();

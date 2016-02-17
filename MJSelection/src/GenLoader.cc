@@ -77,7 +77,7 @@ void GenLoader::setupTree(TTree *iTree,float iXSIn) {
   reset();
   fTree = iTree;
   //fTree->Branch("processId", &processId_ , "processId/I");
-  iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F");
+  iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); // gen related variables
   iTree->Branch("xs"         ,&fXS        ,"fXS/F");
   iTree->Branch("xsin"         ,&fXSIn        ,"fXSIn/F"); fXSIn = iXSIn;
   fTree->Branch("Q"          ,&fQ   , "fQ/F");

@@ -63,10 +63,10 @@ void VJetLoader::setupTree(TTree *iTree) {
   fLabels.push_back("genV");
   fTree = iTree;
   fTree->Branch("nvjet",&fNVJets,"fNVJets/I");
-  for(int i0 = 0; i0 < fN*3.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} 
+  for(int i0 = 0; i0 < fN*3.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
   for(int i0 = 0; i0 < fN*(int(fLabels.size())); i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("vjet",iTree,fN,fVars);
-  setupNtuple("vjet",iTree,fN,fVars,fN*3,fLabels);
+  setupNtuple("vjet",iTree,fN,fVars); // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi for vjet1 (3*1=3)
+  setupNtuple("vjet",iTree,fN,fVars,fN*3,fLabels); 
 }
 void VJetLoader::load(int iEvent) { 
   fVJets       ->Clear();

@@ -1,4 +1,19 @@
-//Driver to run Bacon 
+//================================================================================================
+//
+// Driver to run Bacon 
+//
+// Input arguments
+//   argv[1] => maxEvents = max Nevents (-1 = all)
+//   argv[2] => lname = .root filename 
+//   argv[3] => lgen = 0 if not MC, 1 for MC
+//   argv[4] => lJSON = JSON file for run-lumi filtering of data, string size 0 for MC or no filtering
+//   argv[5] => lOption < 0 Photon triggers, Photon?
+//                      == 0 MET triggers
+//                      == 1 Electron triggers, DiElectron vetoes?
+//                      > 1 MET triggers, DiMuon vetoes?
+//                      < 2
+//   argv[6] => lXS = cross section (pb), ignored for data
+//________________________________________________________________________________________________
 
 #include "../include/GenLoader.hh"
 #include "../include/EvtLoader.hh"
@@ -16,7 +31,7 @@
 #include <string>
 #include <iostream>
 
-//Object Processors
+// Object Processors
 GenLoader       *fGen      = 0; 
 EvtLoader       *fEvt      = 0; 
 MuonLoader      *fMuon     = 0; 
@@ -29,19 +44,23 @@ RunLumiRangeMap *fRangeMap = 0;
 
 TH1F *fHist                = 0; 
 
+// Load tree and return infile
 TTree* load(std::string iName) { 
   TFile *lFile = TFile::Open(iName.c_str());
   TTree *lTree = (TTree*) lFile->FindObjectAny("Events");
   fHist        = (TH1F* ) lFile->FindObjectAny("TotalEvents");
   return lTree;
 }
+
+// For Json 
 bool passEvent(unsigned int iRun,unsigned int iLumi) { 
   RunLumiRangeMap::RunLumiPairType lRunLumi(iRun,iLumi);
   return fRangeMap->HasRunLumi(lRunLumi);
 }
+
 int main( int argc, char **argv ) {
   gROOT->ProcessLine("#include <vector>");          
-  float maxEvents     = atof(argv[1]);
+  float maxEvents     = atof(argv[1]); 
   std::string lName = argv[2];
   int         lGen  = atoi(argv[3]);
   std::string lJSON = argv[4];
@@ -51,25 +70,26 @@ int main( int argc, char **argv ) {
   if(lJSON.size() > 0) fRangeMap->AddJSONFile(lJSON.c_str());
 
   TTree *lTree = load(lName); 
-  float lWeight = float(lXS)/maxEvents/1000.; if(lGen == 0) lWeight = 1.;
+  float lWeight = float(lXS)/maxEvents/1000.; if(lGen == 0) lWeight = 1.; //      xsWgt = 1000.*xsec*gen->weight/weight;
   if(lTree->GetEntriesFast() < maxEvents || abs(maxEvents) == 1) maxEvents = float(lTree->GetEntriesFast()); 
   
-  //Declare Readers
-  fEvt      = new EvtLoader     (lTree,lName);
-  fMuon     = new MuonLoader    (lTree);
-  fElectron = new ElectronLoader(lTree);
-  fTau      = new TauLoader     (lTree); 
-  fPhoton   = new PhotonLoader  (lTree); 
-  fJet      = new JetLoader     (lTree);
-  fVJet     = new VJetLoader    (lTree);
-  if(lGen == 1) fGen      = new GenLoader     (lTree);
+  // Declare Readers 
+  fEvt      = new EvtLoader     (lTree,lName); // fEvt, fEvtBr, fVertices, fVertexBr
+  fMuon     = new MuonLoader    (lTree); // fMuon and fMuonBr, fN = 2 - muonArr and muonBr
+  fElectron = new ElectronLoader(lTree); // fElectrons and fElectronBr, fN = 2
+  fTau      = new TauLoader     (lTree); // fTaus and fTaurBr, fN = 1
+  fPhoton   = new PhotonLoader  (lTree); // fPhotons and fPhotonBr, fN = 1
+  fJet      = new JetLoader     (lTree); // fJets and fJetBr => AK4CHS, fN = 4 - includes jet corrections in a vector (corrParams) and then in a FactorizedJetCorrector: fJetCorr, fN = 4
+  fVJet     = new VJetLoader    (lTree); // fVJets, fVJetBr =>CA8PUPPI, fVAddJet, fVAddJetBr =>AddCA8Puppi, fFatJets, fFatJetBr => CA15PUPPI, fN =1
+  if(lGen == 1) fGen      = new GenLoader     (lTree); // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Tree","Tree");
-  int fCut = 0; 
+  int fCut = 0; // fCut - not used 
   lOut->Branch("cut",&fCut,"fCut/I");
-  //Setup Tree
-  fEvt     ->setupTree      (lOut,lWeight);
+
+  // Setup Tree - Set branch address depends on object processor, see src/*Loader.cc
+  fEvt     ->setupTree      (lOut,lWeight); 
   fJet     ->setupTree      (lOut); 
   fVJet    ->setupTree      (lOut); 
   fMuon    ->setupTree      (lOut); 
@@ -77,7 +97,8 @@ int main( int argc, char **argv ) {
   fTau     ->setupTree      (lOut); 
   fPhoton  ->setupTree      (lOut); 
   if(lGen == 1) fGen ->setupTree (lOut,float(lXS));
-  //Add the triggers we want
+
+  // Add the triggers we want to a vector of strings i.e. void EvtLoader::addTrigger(std::string iName)
   if(lOption == 0 || lOption > 1) { 
     fEvt ->addTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*");
     fEvt ->addTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*");
@@ -106,19 +127,28 @@ int main( int argc, char **argv ) {
     fEvt ->addTrigger("HLT_Ele27_WPLoose_Gsf_v*");
     fEvt ->addTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*");
     fEvt ->addTrigger("HLT_Ele22_eta2p1_WPLoose_Gsf_v*");
-    // fEvt ->addTrigger("HLT_Ele22_eta2p1_WP75_Gsf_v*");
+    //fEvt ->addTrigger("HLT_Ele22_eta2p1_WP75_Gsf_v*");
     //fEvt ->addTrigger("HLT_Ele22_eta2p1_WPLoose_Gsf_v*");
   }
+
+  // Trigger efficiency missing?
+
+  //
+  // Loop over events i0 = iEvent
+  //
   for(int i0 = 0; i0 < int(maxEvents); i0++) { 
     if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(maxEvents)) << " -- " << lOption << std::endl;
     fCut = 0;
-    //Load event and require trigger
+
+    // Load event and require trigger
+    // *->load(i0) clear readers and getEntry
     std::vector<TLorentzVector> lVetoes; 
-    //Select Di Muon
+
+    // Select Di Muon
     if(lOption > 1) { 
-      fMuon->load(i0);
+      fMuon->load(i0); 
       fMuon->selectMuons(lVetoes);
-      double pMass = fMuon->fillDiMuon();
+      double pMass = fMuon->fillDiMuon(); // diMuon mass
       if(lVetoes.size() == 0) continue;
       if((pMass < 60 || pMass > 120) && lVetoes.size() > 1) continue;
     }
@@ -127,7 +157,7 @@ int main( int argc, char **argv ) {
     if(lOption == 1) { 
       fElectron->load(i0);
       fElectron->selectElectrons(fEvt->fRho,lVetoes);
-      double pMass = fElectron->fillDiElectron();
+      double pMass = fElectron->fillDiElectron(); // diElectron mass
       if(lVetoes.size() == 0) continue;
       if((pMass < 60 || pMass > 120) && lVetoes.size() > 1) continue;
     }
@@ -137,6 +167,7 @@ int main( int argc, char **argv ) {
       if(fPhoton->fSelPhotons.size() == 0) continue;
       if(lVetoes.size() > 0) fMuon  ->setDiMuon(lVetoes[0]);
     }
+
     ///Normal processing afterwards
     if(lGen == 0 && !passEvent(fEvt->fRun,fEvt->fLumi)) continue;
     if(lOption  < 2) {
@@ -157,6 +188,7 @@ int main( int argc, char **argv ) {
       //if(fPhoton  ->selectPhotons(fEvt->fRho,lVetoes) > 0) fCut += 1000.;
       if(fPhoton  ->selectPhotons(fEvt->fRho,lVetoes) > 0) continue;
     }
+
     //Setup
     std::vector<TLorentzVector> lSig;
     if(lOption <  0 && fPhoton->fNPhotonsTight > 0) lSig.push_back(lVetoes[0]);

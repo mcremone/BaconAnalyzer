@@ -33,8 +33,8 @@ void ElectronLoader::setupTree(TTree *iTree) {
   fTree->Branch("e1_iso",&fIso2,"fIso2/D");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("e",iTree,fN,fVars);
-  addDiElectron("de",iTree,1, fVars,fN*3);
+  setupNtuple("e",iTree,fN,fVars); // 2 electrons e*_pt,e*_eta,e*_phi (2*3=6)
+  addDiElectron("de",iTree,1, fVars,fN*3); // dielectron de0_pt, _mass, _phi, _y (1*4 =4)
 }
 void ElectronLoader::load(int iEvent) { 
   fElectrons   ->Clear();

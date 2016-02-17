@@ -9,13 +9,13 @@ EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::st
   fEvt      = new TEventInfo();
   iTree->SetBranchAddress("Info",       &fEvt);
   fEvtBr    = iTree->GetBranch("Info");
-  fTrigger  = new TTrigger(iHLTFile);
+  fTrigger  = new TTrigger(iHLTFile); // iHLTFile with list of triggers 
   
   fVertices = new TClonesArray("baconhep::TVertex");
   iTree->SetBranchAddress("PV",       &fVertices);
   fVertexBr     = iTree->GetBranch("PV");
   
-  TFile *lFile = new TFile(iPUWeight.c_str());
+  TFile *lFile = new TFile(iPUWeight.c_str()); // puWgt
   fPUWeightHist =  (TH1F*) lFile->Get("puWeights");
   fPUWeightHist->SetDirectory(0);
   lFile->Close();
@@ -73,7 +73,7 @@ void EvtLoader::reset() {
   fMVAMt     = 0;
   fPuppEtMt  = 0;
 }
-void EvtLoader::setupTree(TTree *iTree,float iWeight,bool iCondense) { 
+void EvtLoader::setupTree(TTree *iTree,float iWeight,bool iCondense) {  //iCondense is True if not stated otherwise
   reset();
   fTree = iTree;
   if(iCondense) fTree->Branch("sample"        ,fSample         ,"fSample/C",1024);
