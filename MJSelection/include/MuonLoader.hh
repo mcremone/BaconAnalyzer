@@ -22,6 +22,7 @@ public:
   void addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase);
   std::vector<TMuon*> fSelMuons;
   int           fNMuons;
+  const double MUON_MASS = 0.105658369;
 
 protected: 
   TClonesArray *fMuons;

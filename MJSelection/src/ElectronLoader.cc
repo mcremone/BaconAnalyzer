@@ -27,8 +27,8 @@ void ElectronLoader::reset() {
 void ElectronLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("nelectrons",&fNElectrons,"fNElectrons/I");
-  fTree->Branch("nelectronstight",&fNElectrons,"fNElectronsTight/I");
+  fTree->Branch("nele",&fNElectrons,"fNElectrons/I");
+  fTree->Branch("neleTight",&fNElectrons,"fNElectronsTight/I");
   fTree->Branch("e0_iso",&fIso1,"fIso1/D");
   fTree->Branch("e1_iso",&fIso2,"fIso2/D");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
@@ -41,20 +41,20 @@ void ElectronLoader::load(int iEvent) {
   fElectronBr ->GetEntry(iEvent);
 }
 bool ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes) {
-  reset(); 
+  reset();
   int lCount = 0,lTCount=0; 
   for  (int i0 = 0; i0 < fElectrons->GetEntriesFast(); i0++) if(passEleTightSel((TElectron*)fElectrons->At(i0),iRho)) lTCount++;
   fNElectronsTight = lTCount;
   std::vector<TElectron*> lVeto;  
   for  (int i0 = 0; i0 < fElectrons->GetEntriesFast(); i0++) { 
     TElectron *pElectron = (TElectron*)((*fElectrons)[i0]);
-    if(pElectron->pt        <  10)           continue;
-    if(fabs(pElectron->eta) >  2.5)          continue;
-    //if(passVeto(pElectron->eta,pElectron->phi,iVetoes)) continue;
+    if(pElectron->pt        <=  10)                                            continue;
+    if(fabs(pElectron->eta) >=  2.5)                                           continue;
+    if(fabs(pElectron->eta) > 1.4442 && fabs(pElectron->eta) < 1.566)          continue;
     if(!passEleSel(pElectron, iRho))         continue;
     lCount++;
-    //if(passEleSel(pElectron, iRho))          lCount++;
-    if(!passEleSel(pElectron,iRho) || lTCount == 0)   continue;
+
+    if(!passEleSel(pElectron,iRho) || lTCount == 0)   continue; //?
     lVeto.push_back(pElectron);
     addElectron(pElectron,fSelElectrons);
   }

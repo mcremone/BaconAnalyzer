@@ -189,7 +189,7 @@ bool passEleTightSel(const baconhep::TElectron *electron, const double rho)
 }
 
 //-------------------------------------------------------------------------------------------------
-bool passMuonSel(const baconhep::TMuon *muon)
+bool passMuonLooseSel(const baconhep::TMuon *muon)
 {
   if(!(muon->pogIDBits & baconhep::kPOGLooseMuon)) return false;
 
@@ -199,6 +199,7 @@ bool passMuonSel(const baconhep::TMuon *muon)
 
   return true;
 }
+
 //-------------------------------------------------------------------------------------------------
 bool passMuonTightSel(const baconhep::TMuon *muon)
 {

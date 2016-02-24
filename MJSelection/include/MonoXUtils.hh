@@ -29,7 +29,7 @@ double eleEffArea  (const double eta);
 double phoEffArea  (const double eta, const int type);
 bool   passEleSel       (const baconhep::TElectron *electron, const double rho);
 bool   passEleTightSel  (const baconhep::TElectron *electron, const double rho);
-bool   passMuonSel      (const baconhep::TMuon *muon);
+bool   passMuonLooseSel (const baconhep::TMuon *muon);
 bool   passMuonTightSel (const baconhep::TMuon *muon);
 bool   passTauSel       (const baconhep::TTau *tau);
 bool   passPhoSel       (const baconhep::TPhoton *photon, const double rho);

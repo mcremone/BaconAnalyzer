@@ -24,8 +24,8 @@ void MuonLoader::reset() {
 void MuonLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("nmuons",&fNMuons,"fNMuons/I"); // muons multiplicity
-  fTree->Branch("nmuonstight",&fNMuonsTight,"fNMuonsTight/I");
+  fTree->Branch("nmu",&fNMuons,"fNMuons/I"); 
+  fTree->Branch("nmuTight",&fNMuonsTight,"fNMuonsTight/I");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   setupNtuple("mu",iTree,fN,fVars); // 2 Muons pt,eta,phi (2*3=6)
@@ -35,25 +35,7 @@ void MuonLoader::load(int iEvent) {
   fMuons   ->Clear();
   fMuonBr ->GetEntry(iEvent);
 }
-bool MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
-  // passMuonSel and passMuonTightSel in src/MonoXUtils.cc
-  // float lepSF=1;
-  // if(dstype!=kData) {
-  //   genParArr->Clear();
-  //   genParBr->GetEntry(ientry);
-  //   for(int j=0; j<genParArr->GetEntriesFast(); j++) {
-  //     const baconhep::TGenParticle *genp = (baconhep::TGenParticle*)genParArr->At(j);
-  //     if(abs(genp->pdgId) == 13) {
-  // 	TLorentzVector vGenp; vGenp.SetPtEtaPhiM(genp->pt, genp->eta, genp->phi, genp->mass);
-  // 	if(vMuo.DeltaR(vGenp)<0.3){
-  // 	  lepSF = getVal2D(hMuTight,fabs(vMuo.Eta()),vMuo.Pt());
-  // 	}
-  //     }
-  //   }
-  // }
-  //vFakePUPPET = vPUPPET + vMuo;
-  //vFakePFMET = vPFMET + vMuo;
-
+bool MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes, TLorentzVector &ivMuo, TLorentzVector &ivMuo1, TLorentzVector &ivMuo2) {
   reset(); 
   int lCount = 0,lTCount =0; 
   for  (int i0 = 0; i0 < fMuons->GetEntriesFast(); i0++) if(passMuonTightSel((TMuon*)fMuons->At(i0))) lTCount++; 
@@ -63,17 +45,18 @@ bool MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
     TMuon *pMuon = (TMuon*)((*fMuons)[i0]);
     if(pMuon->pt        <=  10)                  continue;
     if(fabs(pMuon->eta) >=  2.4)                 continue;
-    if(passVeto(pMuon->eta,pMuon->phi,iVetoes)) continue; //match - iVetoes?
-    if(!passMuonSel(pMuon))                     continue;
+    if(passVeto(pMuon->eta,pMuon->phi,iVetoes))  continue; //to match with the good muon ?
+    if(!passMuonLooseSel(pMuon))                 continue;
     lCount++;
-    //if(passMuonSel(pMuon))     lCount++;
-    if(!passMuonSel(pMuon) || lTCount == 0)     continue;
     lVeto.push_back(pMuon);
-    addMuon(pMuon,fSelMuons);
+    addMuon(pMuon,fSelMuons); // addObject to fSelMuons
   }
-  // veto muons vMuo
-  for(unsigned int i0 = 0; i0 < lVeto.size(); i0++) addVMuon(lVeto[i0],iVetoes,0.105); // iVetoes.push_back( lVec.SetPtEtaPhiM(lVeto[i0]->pt,lVeto[i0]->eta,lVeto[i0]->phi,0.105=>muon mass))
-  fNMuons = lCount; // muons multiplicity
+  if(lCount <= 1 && lVeto.size()==1 && passMuonTightSel(lVeto[0]) && lVeto[0]->pt > 20) ivMuo.SetPtEtaPhiM(lVeto[0]->pt, lVeto[0]->eta, lVeto[0]->phi, MUON_MASS);
+  if(lCount <= 2 && lVeto.size()==2){ //?
+    fillDiMuon(ivMuo1,ivMuo2);
+  }
+  for(unsigned int i0 = 0; i0 < lVeto.size(); i0++) addVMuon(lVeto[i0],iVetoes,MUON_MASS); // push_back lorentzVector to iVetoes
+  fNMuons = lCount; // loose muons multiplicity 
   if(fVars.size() > 0) fillMuon(fN,fSelMuons,fVars); // fillobject, fSelMuons->pt,eta,phi from fVars values
   if(lCount == 0) return false; // no muons selected
   return true;
@@ -91,31 +74,30 @@ void MuonLoader::addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<d
    iTree->Branch(pSY    .str().c_str(),&iVals[iBase+3],(pSY    .str()+"/D").c_str());
  }
 }
-double MuonLoader::fillDiMuon() { 
-  //Select Di-jet
+void MuonLoader::fillDiMuon(TLorentzVector &ivMuo1, TLorentzVector &ivMuo2) {
   double lTargetMass = 91.;
   double lMass = -1;
-  //TMuon *pMu0=0,*pMu1=0;
   TLorentzVector lVec; lVec.SetPtEtaPhiM(0,0,0,0);
-  for(unsigned int i0 = 0; i0 < fSelMuons.size(); i0++) { 
-    TLorentzVector pVec0; pVec0.SetPtEtaPhiM(fSelMuons[i0]->pt,fSelMuons[i0]->eta,fSelMuons[i0]->phi,0.105);
-    for(unsigned int i1 = 0; i1 < i0; i1++) { 
-      TLorentzVector pVec1; pVec1.SetPtEtaPhiM(fSelMuons[i1]->pt,fSelMuons[i1]->eta,fSelMuons[i1]->phi,0.105);
-      //if((fSelMuons[i1]->q) * (fSelMuons[i0]->q) > 0) continue;
-      if((fSelMuons[i1]->pt < 20)  &&  (fSelMuons[i0]->pt < 20)) continue;
-      double pMass = (pVec0+pVec1).M();
-      if(fabs(pMass-lTargetMass) < fabs(lMass-lTargetMass) || lMass < 0) { 
-	lMass = pMass;
-	lVec = pVec0+pVec1;
-      } 
+  if((fSelMuons[1]->q) * (fSelMuons[0]->q) > 0) continue;  //?  opposite charge dimuons
+  if((passMuonTightSel(fSelMuons[0]) && fSelMuons[0]->pt > 20) || (passMuonTightSel(fSelMuons[1]) && fSelMuons[1]->pt > 20)) // at least one muon must pass tight selection
+    if(fSelMuons[0]->pt > fSelMuons[1]->pt){ //lep1 is the leading lepton 
+      ivMuo1.SetPtEtaPhiM(fSelMuons[0]->pt,fSelMuons[0]->eta,fSelMuons[0]->phi,MUON_MASS);
+      ivMuo2.SetPtEtaPhiM(fSelMuons[1]->pt,fSelMuons[1]->eta,fSelMuons[1]->phi,MUON_MASS); 
     }
-  }
+    else{
+      ivMuo2.SetPtEtaPhiM(fSelMuons[0]->pt,fSelMuons[0]->eta,fSelMuons[0]->phi,MUON_MASS);
+      ivMuo1.SetPtEtaPhiM(fSelMuons[1]->pt,fSelMuons[1]->eta,fSelMuons[1]->phi,MUON_MASS);
+    }
+  double pMass = (ivMuo1+ivMuo2).M();
+  if(fabs(pMass-lTargetMass) < fabs(lMass-lTargetMass) || lMass < 0) { //?
+    lMass = pMass;
+    lVec = pVec0+pVec1;
+  } 
   int lBase = 3.*fN; 
   fVars[lBase+0] = lVec.Pt();
   fVars[lBase+1] = lMass;
   fVars[lBase+2] = lVec.Phi();
   fVars[lBase+3] = lVec.Rapidity();
-  return lMass;
 }
 void MuonLoader::setDiMuon(TLorentzVector &iVec) { 
   int lBase = 3.*fN; 

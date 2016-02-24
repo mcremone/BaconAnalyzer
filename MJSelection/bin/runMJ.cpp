@@ -168,45 +168,34 @@ int main( int argc, char **argv ) {
     fCut = 0;
 
     // Selection cuts?
-    const double CSVL = 0.605;
-    const double CSVM = 0.89;
-    const double CSVT = 0.97;
-    const double BST_JET_PT_CUT  = 200;
-    const double BST_JET_ETA_CUT = 2.4;
-    const unsigned int RES_NJETS_CUT   = 1;
-    const double       RES_JET_PT_CUT  = 30;
-    const double       RES_JET_ETA_CUT = 4.5;
-    const double ZMASSLOW  = 60;
-    const double ZMASSHIGH = 120;
-    const double MUON_MASS = 0.105658369;
-    const double ELECTRON_MASS =  0.000510998910;
-    const int W_PDGID = 24;  // W                                                                                                                               
-    const int TOP_PDGID    = 6;  // top 
 
-    // Load event and require trigger
     // *->load(i0) clear readers and getEntry
     std::vector<TLorentzVector> lVetoes; 
 
-    // primary vertex requirement
-    //if(!(info->hasGoodPV)) continue;
+    // Load event and require trigger
+    fEvt->load(i0);
+    fEvt->fillEvent();
 
-    // Select Di Muon
-    if(lOption > 1) { 
-      fMuon->load(i0); 
-      fMuon->selectMuons(lVetoes);
-      double pMass = fMuon->fillDiMuon(); // diMuon mass
-      if(lVetoes.size() == 0) continue;
-      if((pMass < 60 || pMass > 120) && lVetoes.size() > 1) continue;
-    }
-    fEvt     ->load(i0);
-    fEvt     ->fillEvent();
-    if(lOption == 1) { 
-      fElectron->load(i0);
-      fElectron->selectElectrons(fEvt->fRho,lVetoes);
-      double pMass = fElectron->fillDiElectron(); // diElectron mass
-      if(lVetoes.size() == 0) continue;
-      if((pMass < 60 || pMass > 120) && lVetoes.size() > 1) continue;
-    }
+    // MET and fakeMET?
+
+    // Lepton and Photon vetoes
+    // put condition e.g. lOption > 1
+    TLorentzVector vMuo,vMuo1,vMuo2;
+    fMuon->load(i0);
+    fMuon->selectMuons(lVetoes,vMuo,vMuo1,vMuo2);
+
+    // vFakePUPPET and vFakePFMET according to the Muons...
+    // lepSF
+    // lep1SFtight, lep2SFtight
+    // lep1SFloose, lep2SFloose
+
+    fElectron->load(i0);
+    fElectron->selectElectrons(fEvt->fRho,lVetoes);
+
+    //  double pMass = fElectron->fillDiElectron(); // diElectron mass
+    //  if(lVetoes.size() == 0) continue;
+    //  if((pMass < 60 || pMass > 120) && lVetoes.size() > 1) continue;
+    //}
     if(lOption < 0) { 
       fPhoton->load(i0);
       if(fPhoton->selectPhotons(fEvt->fRho,lVetoes) == 0) continue;

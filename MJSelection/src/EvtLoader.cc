@@ -160,6 +160,8 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight,bool iCondense) {  //iConde
   fTree->Branch("lumiSec"       ,&fLumi          ,"fLumi/i");
   fTree->Branch("evtNum"        ,&fEvtV          ,"fEvtV/i");
   fTree->Branch("triggerBits"   ,&fITrigger      ,"fITrigger/i");
+  //METFilters?
+  //fTree->Branch("metfilter"     ,&fMetFilter     ,"fMetFilter/i");
   //selectBits?
   //fTree->Branch("selectBits"   ,&fSelTrigger    ,"fSelTrigger/i");
   fTree->Branch("triggerEff"    ,&fEffTrigger    ,"triggerEff/F");
@@ -276,6 +278,12 @@ bool EvtLoader::passSkim() {
 
 void EvtLoader::fillEvent() { 
   reset();
+
+  //
+  // Primary vertex requirement
+  //
+  //if(!(fEvt->hasGoodPV)) continue;
+ 
   float pEff = 1;
   //fSample     = iSample;
   fNPU        = fEvt->nPUmean;

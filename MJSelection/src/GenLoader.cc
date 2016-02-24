@@ -303,6 +303,28 @@ bool GenLoader::isNeutrino(TGenParticle *iPart) {
   if(fabs(iPart->pdgId) == 16) return true; 
   return false;
 }
+void GenLoader::matchParticle(int iId, TLorentzVector &lGen) {
+  for(int i0=0; i0<fGens->GetEntriesFast(); i0++) {
+    TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
+    if(abs(pGen->pdgId) == iId) {
+      lGen.SetPtEtaPhiM(pGen->pt, pGen->eta, pGen->phi, pGen->mass);
+    }
+  }
+}
+void GenLoader::matchParticle(int iId, TLorentzVector &lGen0, TLorentzVector &lGen1) {
+  for(int i0=0; i0<fGens->GetEntriesFast(); i0++) {
+    TGenParticle *pGen0 = (TGenParticle*)((*fGens)[i0]);
+    if(abs(pGen0->pdgId) == iId) {
+      lGen0.SetPtEtaPhiM(pGen0->pt, pGen0->eta, pGen0->phi, pGen0->mass);
+      for(int i1=i0+1; i1<fGens->GetEntriesFast(); i1++) {
+	TGenParticle *pGen1 = (TGenParticle*)((*fGens)[i1]);
+	if(abs(pGen1->pdgId) == iId) {
+	  lGen1.SetPtEtaPhiM(pGen1->pt, pGen1->eta, pGen1->phi, pGen1->mass);
+	}
+      }
+    }
+  }
+}
 int GenLoader::getId(int iId,int iPId,bool iIsNeut) { 
   int lId   = iId;
   TGenParticle *lGen = 0; 
