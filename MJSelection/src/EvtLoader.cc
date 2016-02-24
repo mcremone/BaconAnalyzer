@@ -3,9 +3,15 @@
 #include "../include/EvtLoader.hh"
 #include <iostream>
 
+// B-tag calibration and SF headers 
+#include "CondFormats/BTauObjects/interface/BTagEntry.h"
+#include "CondFormats/BTauObjects/interface/BTagCalibration.h"
+#include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
+#include "BaconSkim/Utils/bin/BTagCalibrationStandalone.h"
+
 using namespace baconhep;
 
-EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::string iPUWeight) { 
+EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::string iPUWeight,std::string ikFactorsFilename,std::string ieleScaleFactorFilename,std::string imuScaleFactorFilename,std::string btagScaleFactorFilename) { 
   fEvt      = new TEventInfo();
   iTree->SetBranchAddress("Info",       &fEvt);
   fEvtBr    = iTree->GetBranch("Info");
@@ -20,6 +26,78 @@ EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::st
   fPUWeightHist->SetDirectory(0);
   lFile->Close();
   fSample = (char*) (iName.c_str());
+
+  TFile *kFactorFile = new TFile(ikFactorsFilename.c_str()); // kFactors
+  gH0 =  (TH1F*) kFactorFile->Get("anlo1/anlo1_nominal");
+  gH0->SetDirectory(0);
+  gH1 =  (TH1F*) kFactorFile->Get("alo/alo_nominal");
+  gH1->SetDirectory(0);
+  gH2 =  (TH1F*) kFactorFile->Get("a_ewkcorr/a_ewkcorr");
+  gH2->SetDirectory(0);
+  zH0 =  (TH1F*) kFactorFile->Get("znlo012/znlo012_nominal");
+  zH0->SetDirectory(0);
+  zH1 =  (TH1F*) kFactorFile->Get("zlo/zlo_nominal");
+  zH1->SetDirectory(0);
+  zH2 =  (TH1F*) kFactorFile->Get("z_ewkcorr/z_ewkcorr");
+  zH2->SetDirectory(0);
+  wH0 =  (TH1F*) kFactorFile->Get("wnlo012/wnlo012_nominal");
+  wH0->SetDirectory(0);
+  wH1 =  (TH1F*) kFactorFile->Get("wlo/wlo_nominal");
+  wH1->SetDirectory(0);
+  wH2 =  (TH1F*) kFactorFile->Get("w_ewkcorr/w_ewkcorr");
+  wH2->SetDirectory(0);
+
+  kFactorFile->Close();
+
+  TFile *EleSFFile = new TFile(ieleScaleFactorFilename.c_str()); // EleSF 
+  hEleVeto =  (TH2D*) EleSFFile->Get("factorized_scalefactors_Veto_ele");
+  hEleVeto->SetDirectory(0);
+  //hEleLoose =  (TH2D*) EleSFFile->Get("unfactorized_scalefactors_Loose_ele");
+  //hEleLoose->SetDirectory(0);
+  //hEleMedium =  (TH2D*) EleSFFile->Get("unfactorized_scalefactors_Medium_ele");
+  //hEleMedium->SetDirectory(0);
+  hEleTight =  (TH2D*) EleSFFile->Get("factorized_scalefactors_Tight_ele");
+  hEleTight->SetDirectory(0);
+  EleSFFile->Close();
+
+  TFile *MuSFFile = new TFile(imuScaleFactorFilename.c_str()); // MuSF
+  hMuLoose =  (TH2D*) MuSFFile->Get("unfactorized_scalefactors_Loose_mu");
+  hMuLoose->SetDirectory(0);
+  //hMuMedium =  (TH2D*) MuSFFile->Get("unfactorized_scalefactors_Medium_mu");
+  //hMuMedium->SetDirectory(0);
+  hMuTight =  (TH2D*) MuSFFile->Get("unfactorized_scalefactors_Tight_mu");
+  hMuTight->SetDirectory(0);
+  MuSFFile->Close();
+
+  gH0->Divide(gH1);
+  zH0->Divide(zH1);
+  wH0->Divide(wH1);
+  //wH2->Multiply(wH0);
+  //zH2->Multiply(zH0);                                                                                                                                                   
+  //gH2->Multiply(gH0);
+
+  BTagCalibration calib("csvv2",btagScaleFactorFilename);  // btagScaleFactorFilename is the local SF file
+  BTagCalibrationReader HFreaderM(&calib, BTagEntry::OP_MEDIUM, "mujets", "central");   // systematics type
+  BTagCalibrationReader HFreader_upM(&calib, BTagEntry::OP_MEDIUM, "mujets", "up");     // sys up
+  BTagCalibrationReader HFreader_downM(&calib, BTagEntry::OP_MEDIUM, "mujets", "down"); // sys down
+  BTagCalibrationReader LFreaderM(&calib, BTagEntry::OP_MEDIUM, "comb", "central");   // systematics type 
+  BTagCalibrationReader LFreader_upM(&calib, BTagEntry::OP_MEDIUM, "comb", "up");     // sys up                                                                                                                         
+  BTagCalibrationReader LFreader_downM(&calib, BTagEntry::OP_MEDIUM, "comb", "down"); // sys down
+
+  BTagCalibrationReader HFreaderL(&calib, BTagEntry::OP_LOOSE, "mujets", "central");   // systematics type
+  BTagCalibrationReader HFreader_upL(&calib, BTagEntry::OP_LOOSE, "mujets", "up");     // sys up
+  BTagCalibrationReader HFreader_downL(&calib, BTagEntry::OP_LOOSE, "mujets", "down"); // sys down
+  BTagCalibrationReader LFreaderL(&calib, BTagEntry::OP_LOOSE, "comb", "central");   // systematics type
+  BTagCalibrationReader LFreader_upL(&calib, BTagEntry::OP_LOOSE, "comb", "up");     // sys up
+  BTagCalibrationReader LFreader_downL(&calib, BTagEntry::OP_LOOSE, "comb", "down"); // sys down
+
+  BTagCalibrationReader HFreaderT(&calib, BTagEntry::OP_TIGHT, "mujets", "central");   // systematics type
+  BTagCalibrationReader HFreader_upT(&calib, BTagEntry::OP_TIGHT, "mujets", "up");     // sys up 
+  BTagCalibrationReader HFreader_downT(&calib, BTagEntry::OP_TIGHT, "mujets", "down"); // sys down
+  BTagCalibrationReader LFreaderT(&calib, BTagEntry::OP_TIGHT, "comb", "central");   // systematics type 
+  BTagCalibrationReader LFreader_upT(&calib, BTagEntry::OP_TIGHT, "comb", "up");     // sys up
+  BTagCalibrationReader LFreader_downT(&calib, BTagEntry::OP_TIGHT, "comb", "down"); // sys down
+
 }
 EvtLoader::~EvtLoader() { 
   delete  fEvt;
@@ -33,6 +111,7 @@ void EvtLoader::reset() {
   fLumi      = 0; 
   fRho       = 0; 
   fITrigger  = 0; 
+  fEffTrigger= 0;
   fHLTMatch  = 0; 
   fNVtx      = 0; 
   fNPU       = 0;
@@ -77,12 +156,21 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight,bool iCondense) {  //iConde
   reset();
   fTree = iTree;
   if(iCondense) fTree->Branch("sample"        ,fSample         ,"fSample/C",1024);
-  fTree->Branch("run"           ,&fRun           ,"fRun/i");
-  fTree->Branch("lumi"          ,&fLumi          ,"fLumi/i");
-  fTree->Branch("event"         ,&fEvtV          ,"fEvtV/i");
-  fTree->Branch("trigger"       ,&fITrigger      ,"fITrigger/i");
-  fTree->Branch("hltmatch"      ,&fHLTMatch      ,"fHLTMatch/i");
-  fTree->Branch("puweight"      ,&fPUWeight      ,"fPUWeight/F");
+  fTree->Branch("runNum"        ,&fRun           ,"fRun/i");
+  fTree->Branch("lumiSec"       ,&fLumi          ,"fLumi/i");
+  fTree->Branch("evtNum"        ,&fEvtV          ,"fEvtV/i");
+  fTree->Branch("triggerBits"   ,&fITrigger      ,"fITrigger/i");
+  //selectBits?
+  //fTree->Branch("selectBits"   ,&fSelTrigger    ,"fSelTrigger/i");
+  fTree->Branch("triggerEff"    ,&fEffTrigger    ,"triggerEff/F");
+  fTree->Branch("hltmatch"      ,&fHLTMatch      ,"fHLTMatch/i"); //selectBits?
+
+  //fTree->Branch("nloKfactor_CENT",  &nloKfactor_CENT,  "nloKfactor_CENT/F");
+  //fTree->Branch("ewkCorr_CENT",  &ewkCorr_CENT,  "ewkCorr_CENT/F");
+  //fTree->Branch("lepWeight",  &lepWeight,  "lepWeight/F");
+  //fTree->Branch("topSize",&topSize,"topSize/F");
+
+  fTree->Branch("puWeight"      ,&fPUWeight      ,"fPUWeight/F");
   fTree->Branch("npu"           ,&fNPU           ,"fNPU/i");
   fTree->Branch("npuPlusOne"    ,&fNPUP          ,"fNPUP/i");
   fTree->Branch("npuMinusOne"   ,&fNPUM          ,"fNPUM/i");
@@ -141,12 +229,29 @@ bool EvtLoader::passTrigger() {
 bool EvtLoader::passTrigger(std::string iTrigger) { 
   return fTrigger->pass(iTrigger,fEvt->triggerBits);
 }
-unsigned int EvtLoader::triggerBit() {
+unsigned int EvtLoader::triggerBit(float &pEff) {
   unsigned int lBit = 0;
   unsigned int lId = 0; 
+  //unsigned int trigbits=1;
   for(unsigned int i0 = 0; i0 < fTrigString.size(); i0++) { 
     if(fTrigger->pass(fTrigString[i0],fEvt->triggerBits))  lBit |= 1 << lId;
+    //if(lOption == 0 || lOption > 1) trigbits= trigbits | 2;
+    //if(lOption == 1)      trigbits= trigbits | 4;
+    //if(lOption < 0)    trigbits= trigbits | 8;
     //std::cout << "Trig" << fTrigger->pass(fTrigString[i0],fEvt->triggerBits) << std::endl;
+
+    //if(trigbits==1) continue;                                                                                                                                                        
+ 
+    //pEff = ((0.975+(info->pfMETC-200)*0.025*0.025)*(info->pfMETC<240)+1*(info->pfMETC>=240));
+    //Electrons
+    // if(trigbits & 4) pEff = 0.98*(fabs(vEle.Eta())<1.4442)+0.91*(fabs(vEle.Eta())>1.566);
+    // if(!(trigbits & 4) && (trigbits & 8)) pEff = 1;
+    // DiEle
+    //if(trigbits & 4) pEff = 0.98*(fabs(vEle1.Eta())<1.4442)+0.91*(fabs(vEle1.Eta())>1.566);
+    //if(!(trigbits & 4) && (trigbits & 8)) pEff = 1.;
+    // Photon
+    //if(trigbits & 8) pEff = 1.;
+
     lId++;
     if(i0 == 0) lId--;
   }
@@ -157,14 +262,28 @@ bool EvtLoader::passSkim() {
   bool lFilter = fMetFilters % 2 == 0; 
   return (lMet && lFilter); 
 }
+
+// trigger efficiency
+//float pEff = ((0.975+(fRMet-200)*0.025*0.025)*(fRMet<240)+1*(fRMet>=240)); 
+//                                                                                                                                                                                                                            
+// MET and fake MET                                                                                                                                                                                                           
+//                                                                                                                                                                                                                            
+//TLorentzVector vPFMET, vFakePFMET, vPUPPET, vFakePUPPET, vMuo, vMuo1, vMuo2, vEle, vEle1, vEle2;
+//vPUPPET.SetPtEtaPhiM(info->puppETC,0,info->puppETCphi,0);
+//vPFMET.SetPtEtaPhiM(info->pfMETC,0,info->pfMETCphi,0);
+//vFakePUPPET.SetPtEtaPhiM(0,0,0,0);
+//vFakePFMET.SetPtEtaPhiM(0,0,0,0);
+
 void EvtLoader::fillEvent() { 
   reset();
+  float pEff = 1;
   //fSample     = iSample;
   fNPU        = fEvt->nPUmean;
   fNPUM       = fEvt->nPUmeanm;
   fNPUP       = fEvt->nPUmeanp;
   fNVtx       = nVtx();
-  fITrigger   = triggerBit();
+  fITrigger   = triggerBit(pEff);
+  fEffTrigger = pEff;
   fPUWeight   = puWeight(float(fNVtx)); 
   fMetFilters = metFilter(fEvt->metFilterFailBits);
   fRun        = fEvt->runNum;
@@ -275,6 +394,7 @@ unsigned int EvtLoader::nVtx() {
   return lNVertex;
 }
 float EvtLoader::puWeight(float iNPU) { 
+  //double puWgt = hPUWeights->GetBinContent(hPUWeights->FindBin(info->nPUmean))
   float lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(iNPU)));
   if(iNPU > 30) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(30)));
   if(iNPU <  1) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(0)));

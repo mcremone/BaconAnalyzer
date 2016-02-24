@@ -11,13 +11,24 @@
 #include <string>
 #include <vector>
 
+// B-tag calibration and SF headers 
+#include "CondFormats/BTauObjects/interface/BTagEntry.h"
+#include "CondFormats/BTauObjects/interface/BTagCalibration.h"
+#include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
+#include "BaconSkim/Utils/bin/BTagCalibrationStandalone.h"
+
 using namespace baconhep;
 
 class EvtLoader { 
 public:
   EvtLoader(TTree *iTree,std::string iName,
-	    std::string iHLTFile="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAna/DataFormats/data/HLTFile_25ns",
-	    std::string iPUWeight="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAnalyzer/MJSelection/Json/puWeights_13TeV_25ns.root");
+	    //std::string iHLTFile="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAna/DataFormats/data/HLTFile_25ns",
+            std::string iHLTFile="/src/BaconAna/DataFormats/data/HLTFile_25ns_new",
+	    std::string iPUWeight="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAnalyzer/MJSelection/Json/puWeights_13TeV_25ns.root",
+            std::string ikFactorsFilename ="/src/BaconSkim/Utils/data/scalefactors_v4.root", 
+            std::string ieleScaleFactorFilename ="/src/BaconSkim/Utils/data/scalefactors_ele-2.root",
+            std::string imuScaleFactorFilename ="/src/BaconSkim/Utils/data/scalefactors_mu-2.root",
+            std::string btagScaleFactorFilename ="/src/BaconSkim/Utils/data/CSVv2.csv");
   ~EvtLoader(); 
   void reset();
   void setupTree  (TTree *iTree,float iWeight,bool iCondense=true);

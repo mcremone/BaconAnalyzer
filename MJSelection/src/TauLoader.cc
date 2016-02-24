@@ -37,8 +37,8 @@ bool TauLoader::selectTaus(std::vector<TLorentzVector> &iVetoes) {
   int lCount = 0; 
   for  (int i0 = 0; i0 < fTaus->GetEntriesFast(); i0++) { 
     TTau *pTau = (TTau*)((*fTaus)[i0]);
-    if(pTau->pt        <  18)           continue;
-    if(fabs(pTau->eta) >  2.3)          continue;
+    if(pTau->pt        <=  18)           continue;
+    if(fabs(pTau->eta) >=  2.3)          continue;
     if(!passTauSel(pTau))             continue;
     if(passVeto(pTau->eta,pTau->phi,iVetoes)) continue;
     addVTau(pTau,iVetoes,pTau->m);

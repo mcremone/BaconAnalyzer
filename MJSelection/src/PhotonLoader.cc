@@ -33,20 +33,23 @@ void PhotonLoader::load(int iEvent) {
   fPhotons   ->Clear();
   fPhotonBr ->GetEntry(iEvent);
 }
-bool PhotonLoader::selectPhotons(float iRho,std::vector<TLorentzVector> &iVetoes) {
+//bool PhotonLoader::selectPhotons(float iRho,std::vector<TLorentzVector> &iVetoes) {
+bool PhotonLoader::selectPhotons(float iRho,std::vector<TLorentzVector> &iVetoes, int lOption) {
   reset(); 
   int lCount = 0,lTCount =0; 
   std::vector<TPhoton*> lVeto;    
   for  (int i0 = 0; i0 < fPhotons->GetEntriesFast(); i0++) { 
     TPhoton *pPhoton = (TPhoton*)((*fPhotons)[i0]);
-    if(pPhoton->pt        <  15)           continue;
-    if(fabs(pPhoton->eta) >  2.5)          continue;
-    //std::cout << "==> " << passPhoSel(pPhoton,iRho) << " -- " << passPhoMedSel(pPhoton,iRho) << " -- " << pPhoton->pt << " -- " << pPhoton->eta << std::endl;
-    //if(passVeto(pPhoton->eta,pPhoton->phi,iVetoes)) continue;
+    //lOption kIsEB and kIsEE
+    if(!(pho->fiducialBits & lOption==5) && !(pho->fiducialBits & lOption==5)) continue;  // exclude EB-EE transition region 
+    if(pPhoton->pt        <=  15)           continue;
+    if(fabs(pPhoton->eta) >=  2.5)          continue;
     if(!passPhoSel(pPhoton,iRho)) continue;
     if(passPhoSel(pPhoton,iRho))           lCount++;
     lVeto.push_back(pPhoton);
-    if(!passPhoMedSel(pPhoton,iRho))       continue;
+    //if(!passPhoMedSel(pPhoton,iRho))       continue;
+    if(!passPhoLooseSel(pPhoton,iRho))       continue;
+
     lTCount++;
     addPhoton(pPhoton,fSelPhotons);
   }

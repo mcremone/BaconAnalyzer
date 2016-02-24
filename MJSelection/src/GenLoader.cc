@@ -135,6 +135,23 @@ void GenLoader::load(int iEvent) {
   fGens     ->Clear();
   fGenBr    ->GetEntry(iEvent);
   fGenInfoBr->GetEntry(iEvent);
+
+  // bool isb=isB(fGens);
+  // bool isc=isC(fGens);
+  // if(dstype==kMCWplusHF && !isb && !isc) continue;
+  // if(dstype==kMCZplusHF && !isb && !isc) continue;
+  // if(dstype==kMCDYplusHF && !isb && !isc) continue;
+  // if(dstype==kMCGplusHF && !isb && !isc) continue;
+  // if(dstype==kMCWplusLF && (isb || isc)) continue;
+  // if(dstype==kMCZplusLF && (isb || isc)) continue;
+  // if(dstype==kMCDYplusLF && (isb || isc)) continue;
+  // if(dstype==kMCGplusLF && (isb || isc)) continue;
+  // int nlep = ttbarType(genParArr);
+  // if(dstype==kMCTT2L  && nlep!=2) continue;
+  // if(dstype==kMCTT1L  && nlep!=1) continue;
+  // if(dstype==kMCTTHAD && nlep!=0) continue;
+  // if(dstype==kMCTTBST && nlep!=2 && nlep!=1 && nlep!=0) continue;
+  // if(dstype==kMCTTCOM && nlep!=2 && nlep!=1 && nlep!=0) continue;
 }
 void GenLoader::fillGenEvent() { 
   fQ    = fGenInfo->scalePDF; 

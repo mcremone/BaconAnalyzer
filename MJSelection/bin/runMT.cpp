@@ -12,26 +12,11 @@
 //                      == 1 Electron triggers, DiElectron vetoes?
 //                      > 1 MET triggers, DiMuon vetoes?
 //                      < 2
-// Options that I should implement 
-// kMC Done => lgen =1
-// kMCWJets W+jets
-// kMCWplusHF
-// kMCWplusLF
-// kMCZJets Znunu+jets
-// kMCZplusHF
-// kMCZplusLF
-// kMCDYJets Zll+jets
-// kMCDYplusHF
-// kMCDYplusLF
-// kMCGJets gamma+jets
-// kMCGplusHF
-// kMCGplusLF
-// kMCTTBST top processes with all the top decay products matched to the fat jet
-// kMCTTCOM top processes that fail the previous requirement
-// kMCTT1L  l + j ttbar 
-// kMCTT2L  dilepton ttbar
-// kMCTTHAD all had ttbar
-// kData Done => lgen =0
+//   Implement lOption for kMC signal, MC Zbb , MC Zcc , MC Wcs ,   MC Vlf, 
+//   MC W + jets, MC Znunu + jets, MC Zll + jets, MC gamma + jets (normal, HF, LF) 
+//   top processes with all the top decay products matched to the fat jet 
+//   top processes that fail the previous requirement
+//   l + j ttbar, dilepton, all had, and DATA
 //   argv[6] => lXS = cross section (pb), ignored for data
 //________________________________________________________________________________________________
 
@@ -50,12 +35,6 @@
 #include "TTree.h"
 #include <string>
 #include <iostream>
-
-// B-tag calibration and SF headers 
-#include "CondFormats/BTauObjects/interface/BTagEntry.h"
-#include "CondFormats/BTauObjects/interface/BTagCalibration.h"
-#include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
-#include "BaconSkim/Utils/bin/BTagCalibrationStandalone.h"
 
 // Object Processors
 GenLoader       *fGen      = 0; 
@@ -124,8 +103,7 @@ int main( int argc, char **argv ) {
   fPhoton  ->setupTree      (lOut); 
   if(lGen == 1) fGen ->setupTree (lOut,float(lXS));
 
-  // Add the triggers we want to a vector of strings TrigString i.e. void EvtLoader::addTrigger(std::string iName)
-  // TrigString.push_back(iName);
+  // Add the triggers we want to a vector of strings i.e. void EvtLoader::addTrigger(std::string iName)
   if(lOption == 0 || lOption > 1) { 
     fEvt ->addTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*");
     fEvt ->addTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*");
@@ -133,17 +111,17 @@ int main( int argc, char **argv ) {
     fEvt ->addTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*");
     fEvt ->addTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*");
     fEvt ->addTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*");
-    //fEvt->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*");
-    //fEvt->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*");
-    //fEvt->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*");
-    //fEvt->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*");
+    fEvt->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*");
+    fEvt->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*");
+    fEvt->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*");
+    fEvt->addTrigger("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*");
     //fEvt->addTrigger("HLT_PFMET120_NoiseCleaned_BTagCSV07_v*");
     //fEvt->addTrigger("HLT_PFMET120_NoiseCleaned_BTagCSV0p72_v*");
     //fEvt->addTrigger("HLT_PFMET120_JetIdCleaned_BTagCSV0p72_v*");
-    //fEvt->addTrigger("HLT_PFMET170_NoiseCleaned_v*");
-    //fEvt->addTrigger("HLT_PFMET170_JetIdCleaned_v*");
-    //fEvt->addTrigger("HLT_PFMET170_HBHECleaned_v*");
-    //fEvt->addTrigger("HLT_PFMET170_v*");
+    fEvt->addTrigger("HLT_PFMET170_NoiseCleaned_v*");
+    fEvt->addTrigger("HLT_PFMET170_JetIdCleaned_v*");
+    fEvt->addTrigger("HLT_PFMET170_HBHECleaned_v*");
+    fEvt->addTrigger("HLT_PFMET170_v*");
   }
   if(lOption < 0) { 
     fEvt ->addTrigger("HLT_Photon175_v*");
@@ -153,12 +131,12 @@ int main( int argc, char **argv ) {
     fEvt ->addTrigger("HLT_Ele27_WP85_Gsf_v*");
     fEvt ->addTrigger("HLT_Ele27_WPLoose_Gsf_v*");
     fEvt ->addTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*");
-    //if(lname.find("Electron")==69){
-    //  fEvt ->addTrigger("HLT_Ele22_eta2p1_WPLoose_Gsf_v*");
-    //}
+    fEvt ->addTrigger("HLT_Ele22_eta2p1_WPLoose_Gsf_v*");
     //fEvt ->addTrigger("HLT_Ele22_eta2p1_WP75_Gsf_v*");
     //fEvt ->addTrigger("HLT_Ele22_eta2p1_WPLoose_Gsf_v*");
   }
+
+  // Trigger efficiency missing?
 
   //
   // Loop over events i0 = iEvent
@@ -167,28 +145,9 @@ int main( int argc, char **argv ) {
     if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(maxEvents)) << " -- " << lOption << std::endl;
     fCut = 0;
 
-    // Selection cuts?
-    const double CSVL = 0.605;
-    const double CSVM = 0.89;
-    const double CSVT = 0.97;
-    const double BST_JET_PT_CUT  = 200;
-    const double BST_JET_ETA_CUT = 2.4;
-    const unsigned int RES_NJETS_CUT   = 1;
-    const double       RES_JET_PT_CUT  = 30;
-    const double       RES_JET_ETA_CUT = 4.5;
-    const double ZMASSLOW  = 60;
-    const double ZMASSHIGH = 120;
-    const double MUON_MASS = 0.105658369;
-    const double ELECTRON_MASS =  0.000510998910;
-    const int W_PDGID = 24;  // W                                                                                                                               
-    const int TOP_PDGID    = 6;  // top 
-
     // Load event and require trigger
     // *->load(i0) clear readers and getEntry
     std::vector<TLorentzVector> lVetoes; 
-
-    // primary vertex requirement
-    //if(!(info->hasGoodPV)) continue;
 
     // Select Di Muon
     if(lOption > 1) { 
@@ -218,17 +177,21 @@ int main( int argc, char **argv ) {
     if(lGen == 0 && !passEvent(fEvt->fRun,fEvt->fLumi)) continue;
     if(lOption  < 2) {
       fMuon    ->load(i0);    
+      //if(fMuon    ->selectMuons(lVetoes) > 0) fCut  += 1.;
       if(fMuon    ->selectMuons(lVetoes) > 0) continue;
     }
     if(lOption != 1) { 
       fElectron->load(i0);
+      //if(fElectron->selectElectrons(fEvt->fRho,lVetoes) > 0) fCut = 10.;
       if(fElectron->selectElectrons(fEvt->fRho,lVetoes) > 0) continue;
     }  
     fTau     ->load(i0);
+    //if(fTau     ->selectTaus(lVetoes) > 0) fCut += 100.;
     if(fTau     ->selectTaus(lVetoes) > 0) continue;
     if(lOption > -1) {
       fPhoton  ->load(i0);
-      if(fPhoton  ->selectPhotons(fEvt->fRho,lVetoes,lOption) > 0) continue;
+      //if(fPhoton  ->selectPhotons(fEvt->fRho,lVetoes) > 0) fCut += 1000.;
+      if(fPhoton  ->selectPhotons(fEvt->fRho,lVetoes) > 0) continue;
     }
 
     //Setup
@@ -239,7 +202,7 @@ int main( int argc, char **argv ) {
     if(lOption == 1 && fElectron->fNElectrons  > 1 ) lSig.push_back(lVetoes[1]);
     if(lOption != 0) fEvt->fillModifiedMet(lSig); 
     if(fEvt->fMet < 100.) continue;
-
+    //if(fEvt->fMet < 100.) fCut += 10000.;
     fVJet->load(i0);
     fVJet->selectVJets(lVetoes);
     fJet->load(i0); 

@@ -37,6 +37,23 @@ void MuonLoader::load(int iEvent) {
 }
 bool MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
   // passMuonSel and passMuonTightSel in src/MonoXUtils.cc
+  // float lepSF=1;
+  // if(dstype!=kData) {
+  //   genParArr->Clear();
+  //   genParBr->GetEntry(ientry);
+  //   for(int j=0; j<genParArr->GetEntriesFast(); j++) {
+  //     const baconhep::TGenParticle *genp = (baconhep::TGenParticle*)genParArr->At(j);
+  //     if(abs(genp->pdgId) == 13) {
+  // 	TLorentzVector vGenp; vGenp.SetPtEtaPhiM(genp->pt, genp->eta, genp->phi, genp->mass);
+  // 	if(vMuo.DeltaR(vGenp)<0.3){
+  // 	  lepSF = getVal2D(hMuTight,fabs(vMuo.Eta()),vMuo.Pt());
+  // 	}
+  //     }
+  //   }
+  // }
+  //vFakePUPPET = vPUPPET + vMuo;
+  //vFakePFMET = vPFMET + vMuo;
+
   reset(); 
   int lCount = 0,lTCount =0; 
   for  (int i0 = 0; i0 < fMuons->GetEntriesFast(); i0++) if(passMuonTightSel((TMuon*)fMuons->At(i0))) lTCount++; 
@@ -44,8 +61,8 @@ bool MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
   std::vector<TMuon*> lVeto;  
   for  (int i0 = 0; i0 < fMuons->GetEntriesFast(); i0++) { 
     TMuon *pMuon = (TMuon*)((*fMuons)[i0]);
-    if(pMuon->pt        <  10)                  continue;
-    if(fabs(pMuon->eta) >  2.4)                 continue;
+    if(pMuon->pt        <=  10)                  continue;
+    if(fabs(pMuon->eta) >=  2.4)                 continue;
     if(passVeto(pMuon->eta,pMuon->phi,iVetoes)) continue; //match - iVetoes?
     if(!passMuonSel(pMuon))                     continue;
     lCount++;
