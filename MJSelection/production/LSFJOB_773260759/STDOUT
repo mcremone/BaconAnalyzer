@@ -1,0 +1,19 @@
+@(#)CERN job starter $Date: 2010/06/23 14:22:16 $
+Working directory is </pool/lsf/mcremone/773260759> on <b6ca1d958c.cern.ch>
+
+/pool/lsf/mcremone/773260759
+ ===== Cuts ===== 
+ -- MET > 200
+ -- Boosted Jet:   pT > 200, |eta| < 2.4
+ -- Resolved Jet:  pT > 30, |eta| < 4.5
+ -- LOOSE  b-tag def: CSV > 0.605
+ -- MEDIUM b-tag def: CSV > 0.89
+ -- TIGHT  b-tag def: CSV > 0.97
+
+Processing root://eoscms//eos/cms/store/cmst3/group/monojet/production/07/Spring15_a25ns_TT_powheg_herwig_MINIAOD/TT_TuneEE5C_13TeV-powheg-herwigpp/CRAB3/160124_132041/0000/Output_360.root...
+
+Job finished at Thu Feb 25 03:04:34 CET 2016 on node 
+ under linux version Scientific Linux CERN SLC release 6.7 (Carbon)
+
+CERN statistics: This process used approximately : 0:00:57 KSI2K hours (57 KSI2K seconds)
+                 This process corresponds to     : 0:03:43 HS06  hours (223 HS06  seconds)
