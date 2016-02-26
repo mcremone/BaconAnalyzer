@@ -11,27 +11,16 @@
 #include <string>
 #include <vector>
 
-// B-tag calibration and SF headers 
-#include "CondFormats/BTauObjects/interface/BTagEntry.h"
-#include "CondFormats/BTauObjects/interface/BTagCalibration.h"
-#include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
-#include "BaconSkim/Utils/bin/BTagCalibrationStandalone.h"
-
 using namespace baconhep;
 
 class EvtLoader { 
 public:
   EvtLoader(TTree *iTree,std::string iName,
-	    //std::string iHLTFile="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAna/DataFormats/data/HLTFile_25ns",
             std::string iHLTFile="/src/BaconAna/DataFormats/data/HLTFile_25ns_new",
-	    std::string iPUWeight="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAnalyzer/MJSelection/Json/puWeights_13TeV_25ns.root",
-            std::string ikFactorsFilename ="/src/BaconSkim/Utils/data/scalefactors_v4.root", 
-            std::string ieleScaleFactorFilename ="/src/BaconSkim/Utils/data/scalefactors_ele-2.root",
-            std::string imuScaleFactorFilename ="/src/BaconSkim/Utils/data/scalefactors_mu-2.root",
-            std::string btagScaleFactorFilename ="/src/BaconSkim/Utils/data/CSVv2.csv");
+	    std::string iPUWeight="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAnalyzer/MJSelection/Json/puWeights_13TeV_25ns.root");//,
   ~EvtLoader(); 
   void reset();
-  void setupTree  (TTree *iTree,float iWeight,bool iCondense=true);
+  void setupTree  (TTree *iTree,float iWeight);
   void load (int iEvent);
   //Fillers
   void fillEvent();
@@ -43,9 +32,11 @@ public:
   bool passTrigger();
   bool passTrigger(std::string iTrigger);
   unsigned int triggerBit();
+  float pEff();
   //PU relates stuff
   float        puWeight(float iPU);
   unsigned int nVtx();
+  bool         PV();
   void  correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr);
   //Met Stuff
   void         fillModifiedMet(std::vector<TLorentzVector> &iVecCorr);
@@ -56,6 +47,14 @@ public:
   float fRho;
   float fMetPhi;
   float fMet;
+  float fPuppEtPhi;
+  float fPuppEt;
+
+  float fFMetPhi;
+  float fFMet;
+  float fFPuppEtPhi;
+  float fFPuppEt;
+
   unsigned int fRun;
   unsigned int fEvtV;
   unsigned int fLumi;
@@ -74,7 +73,6 @@ protected:
   std::vector<std::string>   fTrigString;
   char*  fSample;
   unsigned int fITrigger;
-  unsigned int fHLTMatch;
   unsigned int fMetFilters;
   unsigned int fNVtx;
   unsigned int fNPU;
@@ -83,32 +81,12 @@ protected:
   float        fPUWeight;
   float        fScale;
 
-  float fRawSumEt;
-  float fMetRaw;
-  float fMetRawPhi;
-  float fTKMet;
-  float fTKMetPhi;
-  float fMVAMet;
-  float fMVAMetPhi;
-  float fPuppEt;
-  float fPuppEtPhi;
-
-  float fRMetRaw;
-  float fRMetRawPhi;
-  float fRMet;
-  float fRMetPhi;
-  float fRTKMet;
-  float fRTKMetPhi;
-  float fRMVAMet;
-  float fRMVAMetPhi;
-  float fRPuppEt;
-  float fRPuppEtPhi;
-
   float fMt;
-  float fRawMt;
-  float fTKMt;
-  float fMVAMt;
   float fPuppEtMt;
   float fMetSig;
-  float fMVAMetSig;
+
+  float fEffTrigger;
+  float fKfactor_CENT;
+  float fEwkCorr_CENT;
+  float fLepWeight;
 };

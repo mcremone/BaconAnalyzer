@@ -41,8 +41,20 @@ bool passJet04Sel(const baconhep::TJet *jet)
 
   return true;
 }
-
 //--------------------------------------------------------------------------------------------------
+bool passJetLooseSel(const baconhep::TJet *jet)
+{
+  // Loose PFJet ID
+  if(jet->neuHadFrac >= 0.99) return false;
+  if(jet->neuEmFrac  >= 0.99) return false;
+  if(jet->nParticles <= 1)    return false;
+  if(fabs(jet->eta)<2.4) {
+    if(jet->chHadFrac == 0)    return false;
+    if(jet->nCharged  == 0)    return false;
+    if(jet->chEmFrac  >= 0.99) return false;
+  }
+  return true;
+}
 //--------------------------------------------------------------------------------------------------
 extern double eleEffArea(const double eta)
 {
@@ -222,7 +234,7 @@ bool passTauSel(const baconhep::TTau *tau)
 }
 
 //--------------------------------------------------------------------------------------------------
-bool passPhoSel(const baconhep::TPhoton *photon, const double rho)
+bool passPhoLooseSel(const baconhep::TPhoton *photon, const double rho)
 {
   // Loose photon ID (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#PHYS14_selections_PU20_bunch_cro)
   if(!(photon->passElectronVeto)) return false;  // conversion safe electron veto
@@ -248,7 +260,7 @@ bool passPhoSel(const baconhep::TPhoton *photon, const double rho)
   return true;
 }
 
-bool passPhoMedSel(const baconhep::TPhoton *photon, const double rho)
+bool passPhoMediumSel(const baconhep::TPhoton *photon, const double rho)
 {
   // Loose photon ID (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#PHYS14_selections_PU20_bunch_cro)
   if(!(photon->passElectronVeto)) return false;  // conversion safe electron veto
@@ -279,89 +291,15 @@ bool passPhoMedSel(const baconhep::TPhoton *photon, const double rho)
 
   return true;
 }
-
-bool passPhoLooseSel(const baconhep::TPhoton *photon, const double rho)
-{
-  // Loose photon ID (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#PHYS14_selections_PU20_bunch_cro) 
-  //if(!(photon->passElectronVeto)) return false;  // conversion safe electron veto                                                                                                
- 
-  double chHadIso  = TMath::Max(photon->chHadIso  - rho*phoEffArea(photon->scEta, 0), (double)0.);
-  double neuHadIso = TMath::Max(photon->neuHadIso - rho*phoEffArea(photon->scEta, 1), (double)0.);
-  double phoIso    = TMath::Max(photon->gammaIso  - rho*phoEffArea(photon->scEta, 2), (double)0.);
-
-  if(fabs(photon->scEta) <= 1.479) {
-    if(photon->sthovere > 0.05)                                        return false;
-    if(photon->sieie    > 0.0103)                                      return false;
-    if(chHadIso         > 2.44)                                        return false;
-    if(neuHadIso        > 2.57 + TMath::Exp(0.0044*photon->pt+0.5809)) return false;
-    if(phoIso           > 1.92 + 0.0043*photon->pt)                    return false;
-  } else {
-    if(photon->sthovere > 0.05)                                        return false;
-    if(photon->sieie    > 0.0277)                                      return false;
-    if(chHadIso         > 1.84)                                        return false;
-    if(neuHadIso        > 4.00 + TMath::Exp(0.0040*photon->pt+0.9402)) return false;
-    if(phoIso           > 2.15 + 0.0041*photon->pt)                    return false;
-  }
-
-  return true;
-}
-
-bool isB(const TClonesArray* genParArr)
-{
-  bool isb = false;
-  for(int j=0; j<genParArr->GetEntriesFast(); j++) {
-    const baconhep::TGenParticle *genp = (baconhep::TGenParticle*)genParArr->At(j);
-    if(abs(genp->pdgId)==5){
-      isb =true;
-      break;
-    }
-  }
-  return isb;
-}
-
-bool isC(const TClonesArray* genParArr)
-{
-  bool isc = false;
-  for(int j=0; j<genParArr->GetEntriesFast(); j++) {
-    const baconhep::TGenParticle *genp = (baconhep::TGenParticle*)genParArr->At(j);
-    if(abs(genp->pdgId)==4){
-      isc =true;
-      break;
-    }
-  }
-  return isc;
-}
-
-int ttbarType(const TClonesArray* genParArr)
-{
-  assert(genParArr);
-
-  int nlep=0;
-  for(int j=0; j<genParArr->GetEntriesFast(); j++) {
-    const baconhep::TGenParticle *genp = (baconhep::TGenParticle*)genParArr->At(j);
-    if(genp->pdgId==11 || genp->pdgId==13 || genp->pdgId==15) {
-      if(genp->parent<0) continue;
-      const baconhep::TGenParticle *parent = (baconhep::TGenParticle*)genParArr->At(genp->parent);
-      if(parent->pdgId==-24) nlep++;
-    }
-    if(genp->pdgId==-11 || genp->pdgId==-13 || genp->pdgId==-15) {
-      if(genp->parent<0) continue;
-      const baconhep::TGenParticle *parent = (baconhep::TGenParticle*)genParArr->At(genp->parent);
-      if(parent->pdgId==24) nlep++;
-    }
-  }
-  assert(nlep<3);
-  return nlep;
-}
-
 ///tools
-bool passVeto(double iEta,double iPhi,std::vector<TLorentzVector> &iVetoes) { 
+bool passVeto(double iEta,double iPhi,double idR, std::vector<TLorentzVector> &iVetoes) { 
   bool pMatch = false;
   for(unsigned int i1 = 0; i1 < iVetoes.size(); i1++) { 
     double pDEta = iEta - iVetoes[i1].Eta();
     double pDPhi = iPhi - iVetoes[i1].Phi();
     if(fabs(pDPhi) > 2.*TMath::Pi()-fabs(pDPhi)) pDPhi =  2.*TMath::Pi()-fabs(pDPhi);
-    if(sqrt(pDPhi*pDPhi+pDEta*pDEta) > 0.4) continue;
+    if(sqrt(pDPhi*pDPhi+pDEta*pDEta) > idR) continue;
+    if(iVetoes[i1].Pt() < 0) continue;
     pMatch = true;
   }
   return pMatch;

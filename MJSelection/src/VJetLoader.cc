@@ -4,21 +4,15 @@
 
 using namespace baconhep;
 
-VJetLoader::VJetLoader(TTree *iTree,std::string iHLTFile) { 
-  fVJets     = new TClonesArray("baconhep::TJet");
-  fFatJets   = new TClonesArray("baconhep::TJet");
-  fVAddJets  = new TClonesArray("baconhep::TAddJet");
-  iTree->SetBranchAddress("CA8Puppi",       &fVJets);
-  iTree->SetBranchAddress("AddCA8Puppi",    &fVAddJets);
-  fVJetBr     = iTree->GetBranch("CA8Puppi");
-  fVAddJetBr  = iTree->GetBranch("AddCA8Puppi");
-  
-  iTree->SetBranchAddress("CA15Puppi",      &fFatJets);
-  fFatJetBr   = iTree->GetBranch("CA15Puppi");
-  
-  fTrigger = new TTrigger(iHLTFile);
-  fTrigString.push_back("HLT_AK8PFJet360_TrimMass30_v*");
-  fTrigString.push_back("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*");
+VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet) { 
+  fVJets         = new TClonesArray("baconhep::TJet");
+  fVAddJets      = new TClonesArray("baconhep::TAddJet");
+
+  iTree->SetBranchAddress(iJet.c_str(),       &fVJets);
+  iTree->SetBranchAddress(iAddJet.c_str(),    &fVAddJets);
+  fVJetBr        = iTree->GetBranch(iJet.c_str());
+  fVAddJetBr     = iTree->GetBranch(iAddJet.c_str());
+
   fN = 1;
 }
 VJetLoader::~VJetLoader() { 
@@ -26,10 +20,6 @@ VJetLoader::~VJetLoader() {
   delete fVJetBr;
   delete fVAddJets;
   delete fVAddJetBr;
-  //delete fVPupJets;
-  //delete fVPupJetBr;
-  //delete fVPupAddJets;
-  //delete fVPupAddJetBr;
 }
 void VJetLoader::reset() { 
   fNVJets = 0; 
@@ -42,13 +32,19 @@ void VJetLoader::setupTree(TTree *iTree) {
   fLabels.push_back("mass");
   fLabels.push_back("csv");
   fLabels.push_back("flavor");
-  fLabels.push_back("t1");
-  fLabels.push_back("t2");
-  fLabels.push_back("t3");
+  fLabels.push_back("CHF");
+  fLabels.push_back("NHF");
+  fLabels.push_back("NEFM");
+  fLabels.push_back("tau21");
+  fLabels.push_back("tau32");
   fLabels.push_back("msd");
+  fLabels.push_back("rho");
+  fLabels.push_back("phil");
   fLabels.push_back("mprune");
   fLabels.push_back("mtrim");
   fLabels.push_back("pullAngle");
+  fLabels.push_back("minsubcsv");
+  fLabels.push_back("maxsubcsv");
   fLabels.push_back("sj1_csv");
   fLabels.push_back("sj2_csv");
   fLabels.push_back("sj1_qgid");
@@ -61,6 +57,8 @@ void VJetLoader::setupTree(TTree *iTree) {
   fLabels.push_back("trig");
   fLabels.push_back("genm");
   fLabels.push_back("genV");
+  fLabels.push_back("dPhi");
+  fLabels.push_back("dFPhi");
   fTree = iTree;
   fTree->Branch("nvjet",&fNVJets,"fNVJets/I");
   for(int i0 = 0; i0 < fN*3.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
@@ -73,58 +71,74 @@ void VJetLoader::load(int iEvent) {
   fVJetBr      ->GetEntry(iEvent);
   fVAddJets    ->Clear();
   fVAddJetBr   ->GetEntry(iEvent);
-  fFatJets       ->Clear();
-  fFatJetBr      ->GetEntry(iEvent);
 }
-bool VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,bool iVeto) {
+bool VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,double dR,double iMetPhi,double iRho) {
   reset(); 
   int lCount = 0; 
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
     TJet *pVJet = (TJet*)((*fVJets)[i0]);
-    if(pVJet->pt        <  200)         continue;
-    if(fabs(pVJet->eta) >  2.3)         continue;
-    if(pVJet->mass < 40)                continue; //First Pass
-    if(passVeto(pVJet->eta,pVJet->phi,iVetoes)) continue;
-    if(iVeto) addVJet(pVJet,iVetoes,pVJet->mass);
+    if(pVJet->pt        <=  200)                    continue;
+    if(fabs(pVJet->eta) >=  2.4)                    continue;
+    if(passVeto(pVJet->eta,pVJet->phi,dR,iVetoes))  continue;
+    if(!passJetLooseSel(pVJet))                     continue;
+    addVJet(pVJet,iVetoes,pVJet->mass);
     addJet(pVJet,fSelVJets);
     lCount++;
   }
   fNVJets = lCount;
   fillJet( fN,fSelVJets,fVars);
-  fillVJet(fN,fSelVJets,fVars);
+  fillVJet(fN,fSelVJets,fVars,iMetPhi,iRho);
   if(fSelVJets.size() == 0) return false;
   return true;
 }
-void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals) { 
+void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,double iMetPhi,double iRho) { 
   int lBase = 3.*fN;
   int lMin = iObjects.size();
   int lNLabel = int(fLabels.size());
   if(iN < lMin) lMin = iN;
+  double fMinDPhi = 1000; double fFMinDPhi = 1000;
   for(int i0 = 0; i0 < lMin; i0++) { 
     TAddJet *pAddJet = getAddJet(iObjects[i0]);
     iVals[lBase+i0*lNLabel+0]  = iObjects[i0]->mass;
     iVals[lBase+i0*lNLabel+1]  = iObjects[i0]->csv;
     iVals[lBase+i0*lNLabel+2]  = iObjects[i0]->partonFlavor;
-    iVals[lBase+i0*lNLabel+3]  = pAddJet     ->tau1;
-    iVals[lBase+i0*lNLabel+4]  = pAddJet     ->tau2;
-    iVals[lBase+i0*lNLabel+5]  = pAddJet     ->tau3;
-    iVals[lBase+i0*lNLabel+6]  = pAddJet     ->mass_sd0;
-    iVals[lBase+i0*lNLabel+7]  = pAddJet     ->mass_prun;
-    iVals[lBase+i0*lNLabel+8]  = pAddJet     ->mass_trim;
-    iVals[lBase+i0*lNLabel+9]  = pAddJet     ->pullAngle;
-    iVals[lBase+i0*lNLabel+10] = pAddJet     ->sj1_csv;
-    iVals[lBase+i0*lNLabel+11] = pAddJet     ->sj2_csv;
-    iVals[lBase+i0*lNLabel+12] = pAddJet     ->sj1_qgid;
-    iVals[lBase+i0*lNLabel+13] = pAddJet     ->sj2_qgid;
-    iVals[lBase+i0*lNLabel+14] = pAddJet     ->sj1_q;
-    iVals[lBase+i0*lNLabel+15] = pAddJet     ->sj2_q;
-    iVals[lBase+i0*lNLabel+16] = pAddJet     ->sj1_pt/iObjects[i0]->pt;
-    iVals[lBase+i0*lNLabel+17] = pAddJet     ->sj2_pt/iObjects[i0]->pt;
+    iVals[lBase+i0*lNLabel+3]  = iObjects[i0]->chHadFrac;
+    iVals[lBase+i0*lNLabel+4]  = iObjects[i0]->neuHadFrac;
+    iVals[lBase+i0*lNLabel+5]  = iObjects[i0]->neuEmFrac;
+    iVals[lBase+i0*lNLabel+6]  = (pAddJet->tau2/pAddJet->tau1);
+    iVals[lBase+i0*lNLabel+7]  = (pAddJet->tau3/pAddJet->tau2);
+    iVals[lBase+i0*lNLabel+9]  = pAddJet     ->mass_sd0;
+    iVals[lBase+i0*lNLabel+10] = log((pAddJet->mass_sd0*pAddJet->mass_sd0)/iObjects[i0]->pt);
+    iVals[lBase+i0*lNLabel+11] = pAddJet->mass_sd0/log(iObjects[i0]->pt);
+    iVals[lBase+i0*lNLabel+12] = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
+    iVals[lBase+i0*lNLabel+13] = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
+    iVals[lBase+i0*lNLabel+15] = pAddJet     ->mass_trim;
+    iVals[lBase+i0*lNLabel+16] = pAddJet     ->pullAngle;
+    iVals[lBase+i0*lNLabel+17] = pAddJet     ->sj1_csv;
+    iVals[lBase+i0*lNLabel+18] = pAddJet     ->sj2_csv;
+    iVals[lBase+i0*lNLabel+19] = pAddJet     ->sj1_qgid;
+    iVals[lBase+i0*lNLabel+20] = pAddJet     ->sj2_qgid;
+    iVals[lBase+i0*lNLabel+21] = pAddJet     ->sj1_q;
+    iVals[lBase+i0*lNLabel+22] = pAddJet     ->sj2_q;
+    iVals[lBase+i0*lNLabel+23] = pAddJet     ->sj1_pt/iObjects[i0]->pt;
+    iVals[lBase+i0*lNLabel+24] = pAddJet     ->sj2_pt/iObjects[i0]->pt;
     TJet *pLargeJet = getLargeJet(iObjects[i0]);
-    if(pLargeJet != 0) iVals[lBase+i0*lNLabel+18] = pLargeJet->pt - iObjects[i0]->pt;
-    if(pLargeJet != 0) iVals[lBase+i0*lNLabel+19] = pullDot(pLargeJet->pullY,iObjects[i0]->pullY,pLargeJet->pullPhi,iObjects[i0]->pullPhi);
-    iVals[lBase+i0*lNLabel+20] = iObjects[i0]->genm;
-    iVals[lBase+i0*lNLabel+21] = trigger(iObjects[i0]);
+    if(pLargeJet != 0) iVals[lBase+i0*lNLabel+25] = pLargeJet->pt - iObjects[i0]->pt;
+    if(pLargeJet != 0) iVals[lBase+i0*lNLabel+26] = pullDot(pLargeJet->pullY,iObjects[i0]->pullY,pLargeJet->pullPhi,iObjects[i0]->pullPhi);
+    iVals[lBase+i0*lNLabel+27] = iObjects[i0]->genm;
+    iVals[lBase+i0*lNLabel+28] = trigger(iObjects[i0]);
+    double pDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
+    if(pDPhi < fMinDPhi){
+      iVals[lBase+i0*lNLabel+29]  = pDPhi;
+      fMinDPhi = pDPhi;
+    }
+    else iVals[lBase+i0*lNLabel+29]  = fMinDPhi;
+    double pFDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
+    if(pDPhi < fFMinDPhi){
+      iVals[lBase+i0*lNLabel+30]  = pFDPhi;
+      fFMinDPhi = pFDPhi;
+    }
+    else iVals[lBase+i0*lNLabel+30]  = fFMinDPhi;
   }
 }
 void VJetLoader::addBoson(TGenParticle *iBoson) { 

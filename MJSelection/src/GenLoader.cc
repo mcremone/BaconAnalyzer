@@ -135,23 +135,6 @@ void GenLoader::load(int iEvent) {
   fGens     ->Clear();
   fGenBr    ->GetEntry(iEvent);
   fGenInfoBr->GetEntry(iEvent);
-
-  // bool isb=isB(fGens);
-  // bool isc=isC(fGens);
-  // if(dstype==kMCWplusHF && !isb && !isc) continue;
-  // if(dstype==kMCZplusHF && !isb && !isc) continue;
-  // if(dstype==kMCDYplusHF && !isb && !isc) continue;
-  // if(dstype==kMCGplusHF && !isb && !isc) continue;
-  // if(dstype==kMCWplusLF && (isb || isc)) continue;
-  // if(dstype==kMCZplusLF && (isb || isc)) continue;
-  // if(dstype==kMCDYplusLF && (isb || isc)) continue;
-  // if(dstype==kMCGplusLF && (isb || isc)) continue;
-  // int nlep = ttbarType(genParArr);
-  // if(dstype==kMCTT2L  && nlep!=2) continue;
-  // if(dstype==kMCTT1L  && nlep!=1) continue;
-  // if(dstype==kMCTTHAD && nlep!=0) continue;
-  // if(dstype==kMCTTBST && nlep!=2 && nlep!=1 && nlep!=0) continue;
-  // if(dstype==kMCTTCOM && nlep!=2 && nlep!=1 && nlep!=0) continue;
 }
 void GenLoader::fillGenEvent() { 
   fQ    = fGenInfo->scalePDF; 
@@ -303,6 +286,30 @@ bool GenLoader::isNeutrino(TGenParticle *iPart) {
   if(fabs(iPart->pdgId) == 16) return true; 
   return false;
 }
+bool GenLoader::isGenParticle(int iId) {
+  for(int i0=0; i0<fGens->GetEntriesFast(); i0++) {
+    TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
+    if(fabs(pGen->pdgId)==iId) return true;
+  }
+  return true;
+}
+int GenLoader::isttbarType() {
+  int nlep=0;
+  for(int i0=0; i0<fGens->GetEntriesFast(); i0++) {
+    TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
+    if(pGen->pdgId==11 || pGen->pdgId==13 || pGen->pdgId==15) {
+      if(pGen->parent<0) continue;
+      TGenParticle *lparent = (TGenParticle*)((*fGens)[pGen->parent]);
+      if(lparent->pdgId==-24) nlep++;
+    }
+    if(pGen->pdgId==-11 || pGen->pdgId==-13 || pGen->pdgId==-15) {
+      if(pGen->parent<0) continue;
+      TGenParticle *lparent = (TGenParticle*)((*fGens)[pGen->parent]);
+      if(lparent->pdgId==24) nlep++;
+    }
+  }
+  return nlep;
+}
 void GenLoader::matchParticle(int iId, TLorentzVector &lGen) {
   for(int i0=0; i0<fGens->GetEntriesFast(); i0++) {
     TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
@@ -361,4 +368,25 @@ float GenLoader::frixione(TGenParticle *iPart) {
     std::cout << "F===> " << pDR << " -- " << i0 << " -- " << iPart->parent << " -- " << pGen->pt << " -- " << pGen->pdgId << " -- " << " -- " << pMax << std::endl;
   }
   return lMax;
+}
+float GenLoader::computeTTbarCorr() {
+  //                                                                                                                                                                                                                              
+  // compute ttbar MC pT correction                                                                                                                                                                                               
+  // Note: are cap at pT(top) = 400 GeV and the factor of 1.001 the standard prescriptions,                                                                                                                                       
+  //       or just for B2G-14-004?                                                                                                                                                                                                
+  //                                                                                                                                                                                                                              
+  const int TOP_PDGID = 6;
+
+  double pt1=0, pt2=0;
+  for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+    TGenParticle *p = (TGenParticle*)((*fGens)[i0]);
+    if(p->pdgId ==  TOP_PDGID) { pt1 = TMath::Min((float)400.,p->pt); }
+    if(p->pdgId == -TOP_PDGID) { pt2 = TMath::Min((float)400.,p->pt); }
+  }
+
+  // Reference: https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting#MC_SFs_Reweighting                                                                                                                                  
+  double w1 = exp(0.156 - 0.00137*pt1);
+  double w2 = exp(0.156 - 0.00137*pt2);
+
+  return 1.001*sqrt(w1*w2);
 }

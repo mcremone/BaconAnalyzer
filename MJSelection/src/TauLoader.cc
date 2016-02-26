@@ -23,7 +23,7 @@ void TauLoader::reset() {
 void TauLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("ntaus",&fNTaus,"fNTaus/I");
+  fTree->Branch("ntau",&fNTaus,"fNTaus/I");
   fTree->Branch("tau0_iso",&fTauIso,"fTauIso/D"); // tau0_isolation
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   setupNtuple("tau",iTree,fN,fVars); // tau0_pt, tau0_eta, tau0_phi (1*3=3)
@@ -40,7 +40,7 @@ bool TauLoader::selectTaus(std::vector<TLorentzVector> &iVetoes) {
     if(pTau->pt        <=  18)           continue;
     if(fabs(pTau->eta) >=  2.3)          continue;
     if(!passTauSel(pTau))             continue;
-    if(passVeto(pTau->eta,pTau->phi,iVetoes)) continue;
+    if(passVeto(pTau->eta,pTau->phi,0.4,iVetoes)) continue; // clean muons and electrons from taus
     addVTau(pTau,iVetoes,pTau->m);
     addTau(pTau,fSelTaus);
     lCount++;

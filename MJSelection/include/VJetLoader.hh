@@ -14,15 +14,14 @@ using namespace baconhep;
 
 class VJetLoader { 
 public:
-  VJetLoader(TTree *iTree,
-	     std::string iHLTFile="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_7/src/BaconAna/DataFormats/data/HLTFile_50ns");
+  VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet);
   ~VJetLoader();
   void reset();
   void setupTree(TTree *iTree);
   void load(int iEvent);
-  bool selectVJets(std::vector<TLorentzVector> &iVetoes,bool iVeto=true);
+  bool selectVJets(std::vector<TLorentzVector> &iVetoes,double dR,double iMetPhi,double iRho);
   std::vector<TJet*> fSelVJets;
-  void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals);
+  void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,double iMetPhi,double iRho);
   void addBoson(TGenParticle *iBoson);
   TAddJet *getAddJet(TJet *iJet);
   int  trigger(TJet *iJet);

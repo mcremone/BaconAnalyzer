@@ -17,12 +17,17 @@ public:
   void fillGenEvent();
   //Fill specific Gen Info
   void selectBoson(int iDMu);
+  void matchParticle(int iId, TLorentzVector &lGen);
+  void matchParticle(int iId, TLorentzVector &lGen1, TLorentzVector &lGen2);
   //Helpters
   TGenParticle* getStatus1(int iId,bool iIsNeut);
   bool isNeutrino(TGenParticle *iPart);
-  int  getId(int iId,int iPId,bool iIsNeut);
+  bool isGenParticle(int iId);
+  int isttbarType();
+  int getId(int iId,int iPId,bool iIsNeut);
   TGenParticle *fBoson;
   float frixione(TGenParticle *iPart);
+  float computeTTbarCorr();
 protected: 
   TClonesArray  *fGens;
   TBranch       *fGenBr;

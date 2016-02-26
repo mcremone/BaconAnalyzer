@@ -64,9 +64,9 @@ bool JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,d
   fMinDPhi   = 1000; 
   for  (int i0 = 0; i0 < fJets->GetEntriesFast(); i0++) { 
     TJet *pJet = (TJet*)((*fJets)[i0]);
-    if(pJet->csv > 0.89 && fabs(pJet->eta) < 2.5 && pJet->pt  > 15 && passJet04Sel(pJet) && !passVeto(pJet->eta,pJet->phi,iVetoes)) lNBTag++;
+    if(pJet->csv > 0.89 && fabs(pJet->eta) < 2.5 && pJet->pt  > 15 && passJet04Sel(pJet) && !passVeto(pJet->eta,pJet->phi,0.4,iVetoes)) lNBTag++;
     if(pJet->pt        <  30)                 continue;
-    if(passVeto(pJet->eta,pJet->phi,iVetoes)) continue;
+    if(passVeto(pJet->eta,pJet->phi,0.4,iVetoes)) continue;
     if(fabs(pJet->eta) > 3.0) lNFwd++; 
     //if(i0 == 0) addVJet(pJet,iVetoes,pJet->mass);
     if(!passJet04Sel(pJet) )  continue;
@@ -118,7 +118,7 @@ void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<doubl
     iVals[lBase+i0*8+0] = iObjects[i0]->mass;
     iVals[lBase+i0*8+1] = iObjects[i0]->csv;
     iVals[lBase+i0*8+2] = iObjects[i0]->qgid;
-    iVals[lBase+i0*8+3] = iObjects[i0]->chHadFrac;//iObjects[i0]->chEmFrac + iObjects[i0]->chHadFrac + iObjects[i0]->muonFrac;
+    iVals[lBase+i0*8+3] = iObjects[i0]->chHadFrac;
     iVals[lBase+i0*8+4] = iObjects[i0]->neuHadFrac;
     iVals[lBase+i0*8+5] = iObjects[i0]->neuEmFrac;
     double pDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));

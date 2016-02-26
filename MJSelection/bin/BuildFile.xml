@@ -3,8 +3,5 @@
 <use name="root"/>
 <flags CXXFLAGS="-g -Wall"/>
 <bin   file="runMJ.cpp" name="runMJ"> </bin>
-<bin   file="runMJ_inc.cpp" name="runMJ_inc"> </bin>
-<bin   file="runDJ.cpp" name="runDJ"> </bin>
-<bin   file="runRBS.cpp" name="runRBS"> </bin>
 
 

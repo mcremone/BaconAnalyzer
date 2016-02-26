@@ -19,7 +19,7 @@ public:
   bool selectPhotons(float iRho,std::vector<TLorentzVector> &iVetoes);
   std::vector<TPhoton*> fSelPhotons;
   int           fNPhotons;
-  int           fNPhotonsTight;
+  int           fNPhotonsMedium;
 
 protected: 
   TClonesArray *fPhotons;

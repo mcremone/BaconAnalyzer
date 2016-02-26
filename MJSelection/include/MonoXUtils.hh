@@ -25,6 +25,7 @@
 
 //--------------------------------------------------------------------------------------------------
 bool   passJet04Sel(const baconhep::TJet *jet);
+bool   passJetLooseSel(const baconhep::TJet *jet);
 double eleEffArea  (const double eta);
 double phoEffArea  (const double eta, const int type);
 bool   passEleSel       (const baconhep::TElectron *electron, const double rho);
@@ -33,15 +34,12 @@ bool   passMuonLooseSel (const baconhep::TMuon *muon);
 bool   passMuonTightSel (const baconhep::TMuon *muon);
 bool   passTauSel       (const baconhep::TTau *tau);
 bool   passPhoSel       (const baconhep::TPhoton *photon, const double rho);
-bool   passPhoMedSel    (const baconhep::TPhoton *photon, const double rho);
-bool   passPhoLooseSel    (const baconhep::TPhoton *photon, const double rho, const int lOption);
+bool   passPhoLooseSel  (const baconhep::TPhoton *photon, const double rho);
+bool   passPhoMediumSel (const baconhep::TPhoton *photon, const double rho);
 double eleIso(const baconhep::TElectron *electron, const double rho);
 double phoEffAreaHighPt(const double eta, const int type);
-int ttbarType(const TClonesArray* genParArr);
-bool isB(const TClonesArray* genParArr);
-bool isC(const TClonesArray* genParArr);
 //Tools
-bool   passVeto    (double iEta,double iPhi,std::vector<TLorentzVector> &iVetoes);
+bool   passVeto    (double iEta,double iPhi,double idR,std::vector<TLorentzVector> &iVetoes);
 void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
 void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead,std::vector<std::string> &iLabels);
 template<class T> void addObject(T *iObject,std::vector<T*> &iObjects) {
