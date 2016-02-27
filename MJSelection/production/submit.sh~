@@ -3,7 +3,7 @@
 sample=$1
 option1=$2
 option2=$3
-eos="/store/cmst3/group/monojet/production/06/"
+eos="/store/cmst3/group/monojet/production/07/"
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then 
     ./sub.sh mc $eos Spring15_a25ns_QCD_HT100to200_MINIAOD                27500000       $option1 $option2
     ./sub.sh mc $eos Spring15_a25ns_QCD_HT200to300_MINIAOD                 1735000       $option1 $option2
@@ -154,7 +154,6 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
     ./sub.sh mc $eos Spring15_a25ns_DMJetsMonotop_S4_Mchi-700_13TeV-madgraph-pythia8     1    $option1 $option2
     ./sub.sh mc $eos Spring15_a25ns_DMJetsMonotop_S4_Mchi-900_13TeV-madgraph-pythia8     1    $option1 $option2
 fi
-eos="/store/cmst3/group/monojet/production/07/"
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
     ./sub.sh data $eos SingleElectron_Run2015D_PrReco_v4_MINIAOD                 1        $option1 $option2   
     ./sub.sh data $eos SingleElectron_Run2015D_PrReco_05Oct_MINIAOD                  1        $option1 $option2
