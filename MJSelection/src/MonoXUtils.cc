@@ -237,15 +237,16 @@ bool passTauSel(const baconhep::TTau *tau)
 bool passPhoLooseSel(const baconhep::TPhoton *photon, const double rho)
 {
   // Loose photon ID (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#PHYS14_selections_PU20_bunch_cro)
-  if(!(photon->passElectronVeto)) return false;  // conversion safe electron veto
+  //if(!(photon->passElectronVeto)) return false;  // conversion safe electron veto
+
   double chHadIso  = TMath::Max(photon->chHadIso  - rho*phoEffArea(photon->scEta, 0), (double)0.);
   double neuHadIso = TMath::Max(photon->neuHadIso - rho*phoEffArea(photon->scEta, 1), (double)0.);
   double phoIso    = TMath::Max(photon->gammaIso  - rho*phoEffArea(photon->scEta, 2), (double)0.);
+
   if(fabs(photon->scEta) <= 1.479) {
     if(photon->sthovere > 0.05)                                        return false;
     if(photon->sieie    > 0.0103)                                      return false;
-    if(chHadIso         > 10.)                                         return false;
-    //if(chHadIso         > 2.44)                                        return false;
+    if(chHadIso         > 2.44)                                        return false;
     if(neuHadIso        > 2.57 + TMath::Exp(0.0044*photon->pt+0.5809)) return false;
     if(phoIso           > 1.92 + 0.0043*photon->pt)                    return false;
 
@@ -262,31 +263,25 @@ bool passPhoLooseSel(const baconhep::TPhoton *photon, const double rho)
 
 bool passPhoMediumSel(const baconhep::TPhoton *photon, const double rho)
 {
-  // Loose photon ID (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#PHYS14_selections_PU20_bunch_cro)
-  if(!(photon->passElectronVeto)) return false;  // conversion safe electron veto
+  // Medium photon ID (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#PHYS14_selections_PU20_bunch_cro)
+  //if(!(photon->passElectronVeto)) return false;  // conversion safe electron veto
+
   double chHadIso  = TMath::Max(photon->chHadIso  - rho*phoEffArea(photon->scEta, 0), (double)0.);
   double neuHadIso = TMath::Max(photon->neuHadIso - rho*phoEffArea(photon->scEta, 1), (double)0.);
   double phoIso    = TMath::Max(photon->gammaIso  - rho*phoEffArea(photon->scEta, 2), (double)0.);
-  //double phoIso    = TMath::Max(photon->gammaIso  - rho*phoEffAreaHighPt(photon->scEta, 2), (double)0.);
-  //std::cout << "---> " << photon->sthovere << "-- " << photon->sieie  << " -- " << chHadIso  << " -- " << neuHadIso  << " -- " << phoIso << std::endl;
+
   if(fabs(photon->scEta) <= 1.479) {
     if(photon->sthovere > 0.05)                                        return false;
     if(photon->sieie    > 0.0100)                                      return false;
     if(chHadIso         > 1.31)                                        return false;
     if(neuHadIso        > 0.60 + TMath::Exp(0.0044*photon->pt+0.5809)) return false;
     if(phoIso           > 1.33 + 0.0043*photon->pt)                    return false;
-    //if(photon->sieie    > 0.0105)                                      return false;
-    //if(photon->chHadIso  > 5.00)                                        return false;
-    //if(phoIso            > 2.75 + 0.0045*photon->pt)                    return false;
   } else {
     if(photon->sthovere > 0.05)                                        return false;
     if(photon->sieie    > 0.0267)                                      return false;
     if(chHadIso         > 1.25)                                        return false;
     if(neuHadIso        > 1.65 + TMath::Exp(0.0040*photon->pt+0.9402)) return false;
     if(phoIso           > 1.02 + 0.0041*photon->pt)                    return false;
-    //if(photon->sieie     > 0.028)                                       return false;
-    //if(photon->chHadIso  > 5.00)                                        return false;
-    //if(phoIso            > 2    + 0.0030*photon->pt)                    return false;
   }
 
   return true;

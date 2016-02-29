@@ -16,7 +16,7 @@ public:
   JetLoader(TTree *iTree);
   ~JetLoader();
   void reset();
-  void setupTree(TTree *iTree);
+  void setupTree(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
   bool selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,double iRho);
   std::vector<TJet*> fSelJets;

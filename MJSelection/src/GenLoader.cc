@@ -295,6 +295,7 @@ bool GenLoader::isGenParticle(int iId) {
 }
 int GenLoader::isttbarType() {
   int nlep=0;
+  assert(fGens);
   for(int i0=0; i0<fGens->GetEntriesFast(); i0++) {
     TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
     if(pGen->pdgId==11 || pGen->pdgId==13 || pGen->pdgId==15) {

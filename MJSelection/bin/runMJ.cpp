@@ -132,120 +132,114 @@ int main( int argc, char **argv ) {
   fTau      = new TauLoader     (lTree);                         // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader  (lTree);                         // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader     (lTree);                         // fJets and fJetBr => AK4CHS, fN = 4 - includes jet corrections in a vector (corrParams) and then in a FactorizedJetCorrector: fJetCorr, fN = 4
-  fVJet     = new VJetLoader    (lTree,"CA15PUPPI","CA15PUPPI"); // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
+  fVJet     = new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi"); // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
   if(lType != kData) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
-  TTree *lOut  = new TTree("Tree","Tree");
+  TTree *lOut  = new TTree("Events","Events");
 
   // Setup Tree - Set branch address depends on object processor, see src/*Loader.cc
-
-
   fEvt     ->setupTree      (lOut,lWeight); 
-  fJet     ->setupTree      (lOut); 
-  fVJet    ->setupTree      (lOut); 
+  fJet     ->setupTree      (lOut,"res_PUPPIjet"); 
+  fVJet    ->setupTree      (lOut,"bst15_PUPPIjet"); 
   fMuon    ->setupTree      (lOut); 
   fElectron->setupTree      (lOut); 
   fTau     ->setupTree      (lOut); 
   fPhoton  ->setupTree      (lOut); 
   if(lType != kData) fGen ->setupTree (lOut,float(lXS));
 
-  // Add the triggers we want to a vector of strings TrigString i.e. void EvtLoader::addTrigger(std::string iName) TrigString.push_back(iName);
-  // 3 diff strings (?)
-  fEvt ->addTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*");
-  fEvt ->addTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*");
-  fEvt ->addTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*");
-  fEvt ->addTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*");
-  fEvt ->addTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*");
-  fEvt ->addTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*");
-
-  fEvt ->addTrigger("HLT_Photon175_v*");
-  fEvt ->addTrigger("HLT_Photon165_HE10_v*");
-
-  fEvt ->addTrigger("HLT_Ele27_WP85_Gsf_v*");
-  fEvt ->addTrigger("HLT_Ele27_WPLoose_Gsf_v*");
-  fEvt ->addTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*");
-
   //
   // Loop over events i0 = iEvent
   //
-  for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) { 
-    if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())) << " -- " << lOption << std::endl;
+  //for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) { 
+  for(int i0 = 0; i0 < int(10000); i0++) {
+    if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // check GenInfo for HF and LF
+    fGen->load(i0);
     std::string str = "hf"; if(lOption.find(str)!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
     str = "lf";             if(lOption.find(str)!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
-    
+
     // check GenInfo for ttbar
-    int nlep = fGen->isttbarType();
-    str = "tt1l";             if(lOption.find(str)!=std::string::npos && nlep!=2) continue;
-    str = "tt2l";             if(lOption.find(str)!=std::string::npos && nlep!=1) continue;
-    str = "tthad";            if(lOption.find(str)!=std::string::npos && nlep!=0) continue;
-    str = "ttbst";            if(lOption.find(str)!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0) continue;
-    str = "ttcom";            if(lOption.find(str)!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0) continue;
+    str = "tt1l";             if(lOption.find(str)!=std::string::npos && fGen->isttbarType()!=2) continue;
+    str = "tt2l";             if(lOption.find(str)!=std::string::npos && fGen->isttbarType()!=1) continue;
+    str = "tthad";            if(lOption.find(str)!=std::string::npos && fGen->isttbarType()!=0) continue;
+    str = "ttbst";            if(lOption.find(str)!=std::string::npos && fGen->isttbarType()!=2 && fGen->isttbarType()!=1 && fGen->isttbarType()!=0) continue;
+    str = "ttcom";            if(lOption.find(str)!=std::string::npos && fGen->isttbarType()!=2 && fGen->isttbarType()!=1 && fGen->isttbarType()!=0) continue;
 
     // *->load(i0) clear readers and getEntry
     std::vector<TLorentzVector> lVetoes; 
-    fEvt->load(i0);
 
     // primary vertex requirement
+    fEvt->load(i0);
     if(!fEvt->PV()) continue;
 
-    // DiMuon
+    // triggerbits
+    unsigned int trigbits=1;    
+    if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
+       fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
+       fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
+       fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
+       fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
+       fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2; 
+    if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
+       fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*") ||
+       fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*"))  trigbits = trigbits | 4;
+    if(fEvt ->passTrigger("HLT_Photon175_v*") ||
+       fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 8;
+    if(trigbits==1) continue;
+    
+    // Muons
     fMuon    ->load(i0);
     fMuon    ->selectMuons(lVetoes);
-    double pMass = fMuon->fillDiMuon();
-    if(lVetoes.size() == 0) continue;
-    if((pMass < 60 || pMass > 120) && lVetoes.size() > 1) continue;
+
+    // SF for muons lepSF,  lep1SFtight, lep2SFtight,  lep1SFloose, lep2SFloose
+    //if(fMuon->fNMuons == 1 && fGen->matchParticle(lVetoes[0],13,0.3)) lepSF = getVal2D(hMuTight,fabs(lVetoes[0].Eta()),lVetoes[0].Pt());
+    //if(fMuon->fNMuons == 2){
+    //  if(fGen->matchParticle(lVetoes[0],13,0.3)) lepSF = getVal2D(hMuTight,fabs(lVetoes[0].Eta()),lVetoes[0].Pt());
+    //}
+
+    fEvt->load(i0);
+    fEvt->fillEvent(trigbits);
+
     // DiElectron
     fElectron->load(i0);
     fElectron->selectElectrons(fEvt->fRho,lVetoes);
-    pMass = fElectron->fillDiElectron();
-    if(lVetoes.size() == 0) continue;
-    if((pMass < 60 || pMass > 120) && lVetoes.size() > 1) continue;
+    
     // Photons
     fPhoton->load(i0);
-    if(fPhoton->selectPhotons(fEvt->fRho,lVetoes) == 0) continue;
-    if(fPhoton->fSelPhotons.size() == 0) continue;
-    if(lVetoes.size() > 0) fMuon  ->setDiMuon(lVetoes[0]);
-    // Tau
+    fPhoton->selectPhotons(fEvt->fRho,lVetoes);
+
+    // Tau    
     fTau     ->load(i0);
     fTau     ->selectTaus(lVetoes);
 
-    if(lType != kData && !passEvent(fEvt->fRun,fEvt->fLumi)) continue;
-    fEvt->load(i0);
-    fEvt->fillEvent();
-
-    // lepSF
-    // lep1SFtight, lep2SFtight
-    // lep1SFloose, lep2SFloose
+    if(lType == kData && !passEvent(fEvt->fRun,fEvt->fLumi)) continue; 
 
     // MET selection
-    std::vector<TLorentzVector> lSig;
-    if(fPhoton->fNPhotonsMedium > 0) lSig.push_back(lVetoes[0]);
-    if(lVetoes.size()           > 0) lSig.push_back(lVetoes[0]);    
-    if(fMuon->fNMuons           > 1) lSig.push_back(lVetoes[1]);
-    if(fElectron->fNElectrons   > 1 ) lSig.push_back(lVetoes[1]);
-    fEvt->fillModifiedMet(lSig);  
-
+    fEvt->fillModifiedMet(lVetoes); // what about photons for puppet?
+    
     // MET selection
     if(fEvt->fMet < 200. && fEvt->fPuppEt < 200. && fEvt->fFMet < 200. && fEvt->fFPuppEt < 200.) continue;  
-
+    
     // int select = 1;
     // get jets sfs
     // if(lType!=kMCTTBST && lType!=kMCTTCOM) select = select | 16;
+
     fVJet->load(i0);
     fVJet->selectVJets(lVetoes,1.5,fEvt->fMetPhi,fEvt->fRho);
+    
     fJet->load(i0); 
     fJet->selectJets(lVetoes,fEvt->fMetPhi,fEvt->fRho);
-
+    
     // fix Mt
     //fEvt->fillMt(fVJet->fJetPt,fVJet->fJetPhi); 
 
     fGen->load(i0);
     fGen->selectBoson(2);
     fGen->fillGenEvent();
-
+    
+    std::cout << "HERE" << std::endl;
     lOut->Fill();
   }
   lFile->cd();

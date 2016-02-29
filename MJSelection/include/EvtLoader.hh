@@ -23,15 +23,12 @@ public:
   void setupTree  (TTree *iTree,float iWeight);
   void load (int iEvent);
   //Fillers
-  void fillEvent();
+  void fillEvent(unsigned int triggerBit);
   bool passSkim();
   TLorentzVector Met(int iOption);
   //Trigger Related Stuff
-  void addTrigger(std::string iName);
   bool passFilter();
-  bool passTrigger();
   bool passTrigger(std::string iTrigger);
-  unsigned int triggerBit();
   float pEff();
   //PU relates stuff
   float        puWeight(float iPU);
@@ -70,7 +67,7 @@ protected:
   TTrigger     *fTrigger;
   TH1F         *fPUWeightHist;
   
-  std::vector<std::string>   fTrigString;
+  std::vector<std::vector<std::string>> fTrigString;
   char*  fSample;
   unsigned int fITrigger;
   unsigned int fMetFilters;

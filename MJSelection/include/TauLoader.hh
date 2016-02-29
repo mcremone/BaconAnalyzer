@@ -18,12 +18,12 @@ public:
   void load(int iEvent);
   bool selectTaus(std::vector<TLorentzVector> &iVetoes);
   std::vector<TTau*> fSelTaus;
+  int           fNTaus;
 
 protected: 
   TClonesArray *fTaus;
   TBranch      *fTauBr;
   TTree        *fTree;
-  int           fNTaus;
   std::vector<double> fVars;
   int           fN;
   double        fTauIso;

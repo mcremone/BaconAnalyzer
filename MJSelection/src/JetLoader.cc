@@ -41,7 +41,7 @@ void JetLoader::reset() {
   fSelJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
 }
-void JetLoader::setupTree(TTree *iTree) { 
+void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
   reset();
   fTree = iTree;
   fTree->Branch("ht"    ,&fHT    ,"fHT/D");
@@ -49,10 +49,12 @@ void JetLoader::setupTree(TTree *iTree) {
   fTree->Branch("nbtags",&fNBTags,"fNBTags/I");
   fTree->Branch("nfwd"  ,&fNFwd  ,"fNFwd/I");
   fTree->Branch("mindphi",&fMinDPhi  ,"fMinDPhi/D");
+  std::stringstream diJet;
+  diJet << "d" << iJetLabel;
   for(int i0 = 0; i0 < fN*(10)+6; i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of 47 vars
-  setupNtuple("j" ,iTree,fN,fVars); // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi for j1,j2,j3,j4 (3*4=12)
-  addOthers  ("j" ,iTree,fN,fVars); // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32)
-  addDijet   ("dj",iTree,1, fVars); // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
+  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);   // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi for j1,j2,j3,j4 (3*4=12)
+  addOthers  (iJetLabel.c_str(),iTree,fN,fVars);   // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32)
+  addDijet   (diJet.str().c_str(),iTree,1, fVars); // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
 }
 void JetLoader::load(int iEvent) { 
   fJets   ->Clear();
@@ -94,9 +96,9 @@ void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<do
     pSMass  << iHeader << i0 << "_mass";
     pSCSV   << iHeader << i0 << "_csv";
     pSQGID  << iHeader << i0 << "_qgid";
-    pSCHF   << iHeader << i0 << "_chf";
-    pSNHF   << iHeader << i0 << "_nhf";
-    pSEMF   << iHeader << i0 << "_emf";
+    pSCHF   << iHeader << i0 << "_CHF";
+    pSNHF   << iHeader << i0 << "_NHF";
+    pSEMF   << iHeader << i0 << "_NEMF";
     pSDPhi  << iHeader << i0 << "_dphi";
     pSPtT   << iHeader << i0 << "_pttrue";
     iTree->Branch(pSMass .str().c_str(),&iVals[lBase+0],(pSMass .str()+"/D").c_str());

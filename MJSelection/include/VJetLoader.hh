@@ -17,7 +17,7 @@ public:
   VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet);
   ~VJetLoader();
   void reset();
-  void setupTree(TTree *iTree);
+  void setupTree(TTree *iTree,std::string iJetLabel);
   void load(int iEvent);
   bool selectVJets(std::vector<TLorentzVector> &iVetoes,double dR,double iMetPhi,double iRho);
   std::vector<TJet*> fSelVJets;

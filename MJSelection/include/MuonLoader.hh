@@ -18,7 +18,6 @@ public:
   void load(int iEvent);
   bool selectMuons(std::vector<TLorentzVector> &iVetoes);
   double fillDiMuon();
-  void setDiMuon(TLorentzVector &iVec);
   void addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase);
   std::vector<TMuon*> fSelMuons;
   int           fNMuons;

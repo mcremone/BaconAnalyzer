@@ -19,7 +19,7 @@ public:
   void selectBoson(int iDMu);
   void matchParticle(int iId, TLorentzVector &lGen);
   void matchParticle(int iId, TLorentzVector &lGen1, TLorentzVector &lGen2);
-  //Helpters
+  //Helpers
   TGenParticle* getStatus1(int iId,bool iIsNeut);
   bool isNeutrino(TGenParticle *iPart);
   bool isGenParticle(int iId);
@@ -28,11 +28,11 @@ public:
   TGenParticle *fBoson;
   float frixione(TGenParticle *iPart);
   float computeTTbarCorr();
-protected: 
   TClonesArray  *fGens;
   TBranch       *fGenBr;
   TGenEventInfo *fGenInfo;
   TBranch       *fGenInfoBr;
+protected: 
   TTree         *fTree;
   float fXS;
   float fXSIn;

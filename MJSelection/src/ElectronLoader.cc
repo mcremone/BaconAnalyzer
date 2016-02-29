@@ -54,16 +54,23 @@ bool ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iV
     if(!passEleSel(pElectron, iRho))         continue;
     lCount++;
 
-    if(!passEleSel(pElectron,iRho) || lTCount == 0)   continue; //?
     lVeto.push_back(pElectron);
     addElectron(pElectron,fSelElectrons);
   }
-  for(unsigned int i0 = 0; i0 < lVeto.size(); i0++) addVElectron(lVeto[i0],iVetoes,0.000511);
   fNElectrons = lCount;
   if(fVars.size() > 0) fillElectron(fN,fSelElectrons,fVars);
-  if(lCount == 0) return false;
+
   if(fSelElectrons.size() >  0) fIso1 = eleIso(fSelElectrons[0],iRho);
   if(fSelElectrons.size() >  1) fIso2 = eleIso(fSelElectrons[1],iRho);
+
+  if(fNElectrons == 2){
+    double eMass = fillDiElectron();
+    if(eMass < 60 || eMass > 120) return false;
+  }
+  for(unsigned int i0 = 0; i0 < lVeto.size(); i0++) addVElectron(lVeto[i0],iVetoes,0.000511);
+
+  if(lCount == 0) return false;
+
   return true;
 }
 void ElectronLoader::addDiElectron(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase) { 
@@ -80,22 +87,14 @@ void ElectronLoader::addDiElectron(std::string iHeader,TTree *iTree,int iN,std::
  }
 }
 double ElectronLoader::fillDiElectron() { 
-  //Select Di-jet
-  double lTargetMass = 91.;
   double lMass = -1;
-  //TMuon *pMu0=0,*pMu1=0;
   TLorentzVector lVec; lVec.SetPtEtaPhiM(0,0,0,0);
-  for(unsigned int i0 = 0; i0 < fSelElectrons.size(); i0++) { 
-    TLorentzVector pVec0; pVec0.SetPtEtaPhiM(fSelElectrons[i0]->pt,fSelElectrons[i0]->eta,fSelElectrons[i0]->phi,0.0005);
-    for(unsigned int i1 = 0; i1 < i0; i1++) { 
-      TLorentzVector pVec1; pVec1.SetPtEtaPhiM(fSelElectrons[i1]->pt,fSelElectrons[i1]->eta,fSelElectrons[i1]->phi,0.0005);
-      if((fSelElectrons[i1]->q     )  *  (fSelElectrons[i0]->q) > 0)   continue;
-      if((fSelElectrons[i1]->pt < 40) && (fSelElectrons[i0]->pt < 40)) continue;
-      double pMass = (pVec0+pVec1).M();
-      if(fabs(pMass-lTargetMass) < fabs(lMass-lTargetMass) || lMass < 0) { 
-	lMass = pMass;
-	lVec = pVec0+pVec1;
-      } 
+  if((fSelElectrons[1]->q)  *  (fSelElectrons[0]->q) > 0){
+    if((fSelElectrons[1]->pt < 40) && (fSelElectrons[0]->pt < 40)) {
+      TLorentzVector pVec0; pVec0.SetPtEtaPhiM(fSelElectrons[0]->pt,fSelElectrons[0]->eta,fSelElectrons[0]->phi,0.0005);
+      TLorentzVector pVec1; pVec1.SetPtEtaPhiM(fSelElectrons[1]->pt,fSelElectrons[1]->eta,fSelElectrons[1]->phi,0.0005);
+      lMass = (pVec0+pVec1).M();
+      lVec = pVec0+pVec1;
     }
   }
   int lBase = 3.*fN; 

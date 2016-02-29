@@ -6,10 +6,12 @@
 using namespace baconhep;
 
 EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::string iPUWeight) { 
+  const std::string cmssw_base = getenv("CMSSW_BASE");
+
   fEvt      = new TEventInfo();
   iTree->SetBranchAddress("Info",       &fEvt);
   fEvtBr    = iTree->GetBranch("Info");
-  fTrigger  = new TTrigger(iHLTFile); // iHLTFile with list of triggers 
+  fTrigger  = new TTrigger(cmssw_base + iHLTFile); // iHLTFile with list of triggers 
   
   fVertices = new TClonesArray("baconhep::TVertex");
   iTree->SetBranchAddress("PV",       &fVertices);
@@ -60,6 +62,7 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   fTree->Branch("evtNum"          ,&fEvtV           ,"fEvtV/i");
   fTree->Branch("metfilter"       ,&fMetFilters     ,"fMetFilters/I");
   fTree->Branch("triggerBits"     ,&fITrigger       ,"fITrigger/i");
+  fTree->Branch("selectBits"      ,&fselectBits     ,"fselectBits/i");
   fTree->Branch("triggerEff"      ,&fEffTrigger     ,"fEffTrigger/F");
 
   fTree->Branch("npu"             ,&fNPU            ,"fNPU/i");
@@ -88,48 +91,26 @@ void EvtLoader::load(int iEvent) {
   fEvtBr    ->GetEntry(iEvent);
   fVertexBr ->GetEntry(iEvent);
 }
-void EvtLoader::addTrigger(std::string iName) { 
-  fTrigString.push_back(iName);
-}
-bool EvtLoader::passTrigger() {
-  bool lPass = false;
-  for(unsigned int i0 = 0; i0 < fTrigString.size(); i0++) { 
-    if(fTrigger->pass(fTrigString[i0],fEvt->triggerBits)) lPass = true;
-  }
-  return lPass;
-}
-bool EvtLoader::passTrigger(std::string iTrigger) { 
+bool EvtLoader::passTrigger(std::string iTrigger) {
   return fTrigger->pass(iTrigger,fEvt->triggerBits);
-}
-// FIXME std::vector<std::string> fTrigString
-unsigned int EvtLoader::triggerBit() {
-  unsigned int lBit = 0;
-  unsigned int lId = 0; 
-  for(unsigned int i0 = 0; i0 < fTrigString.size(); i0++) { 
-    if(fTrigger->pass(fTrigString[i0],fEvt->triggerBits))  lBit |= 1 << lId;
-    std::cout << "Trig" << fTrigger->pass(fTrigString[i0],fEvt->triggerBits) << std::endl;
-    lId++;
-    if(i0 == 0) lId--;
-  }
-  return lBit;
 }
 bool EvtLoader::passSkim() { 
   bool lMet    = fMet > 80;
   bool lFilter = fMetFilters % 2 == 0; 
   return (lMet && lFilter); 
 }
-void EvtLoader::fillEvent() { 
+void EvtLoader::fillEvent(unsigned int triggerBit) { 
   reset();
   fNPU        = fEvt->nPUmean;
   fNVtx       = nVtx();
-  fITrigger   = triggerBit();
+  fITrigger   = triggerBit;
   fEffTrigger = pEff();
   fPUWeight   = puWeight(float(fNVtx)); 
-  fMetFilters = metFilter(fEvt->metFilterFailBits); // ?
+  fMetFilters = fEvt->metFilterFailBits;
   fRun        = fEvt->runNum;
   fLumi       = fEvt->lumiSec;
   fEvtV       = fEvt->evtNum;
-  fRho        = fEvt->rhoJet; //rhoIso?
+  fRho        = fEvt->rhoIso;
   fMet        = fEvt->pfMETC;
   fMetPhi     = fEvt->pfMETCphi;
   fPuppEt      = fEvt->puppETC;
@@ -142,7 +123,6 @@ void  EvtLoader::fillModifiedMet(std::vector<TLorentzVector> &iVecCorr) {
     TLorentzVector pVec; pVec.SetPtEtaPhiM(iVecCorr[i0].Pt(),0,iVecCorr[i0].Phi(),0);
     lCorr += pVec;
   }
-
   //FakeMET 
   if(iVecCorr.size() > 0) { 
     correctMet(fFMet        ,fFMetPhi,        lCorr);

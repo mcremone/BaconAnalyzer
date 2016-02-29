@@ -34,36 +34,28 @@ void PhotonLoader::load(int iEvent) {
   fPhotonBr ->GetEntry(iEvent);
 }
 bool PhotonLoader::selectPhotons(float iRho,std::vector<TLorentzVector> &iVetoes) {
-//bool PhotonLoader::selectPhotons(float iRho,std::vector<TLorentzVector> &iVetoes, int lOption, TLorentzVector &ivPhoton) {
   reset(); 
   int lCount = 0,lTCount =0; 
   std::vector<TPhoton*> lVeto;    
   for  (int i0 = 0; i0 < fPhotons->GetEntriesFast(); i0++) { 
     TPhoton *pPhoton = (TPhoton*)((*fPhotons)[i0]);
 
-    //lOption kIsEB and kIsEE
-    //if(!(pPhoton->fiducialBits & lOption==5) && !(pPhoton->fiducialBits & lOption==5)) continue;  // exclude EB-EE transition region ?
-
     if(pPhoton->pt        <=  15)                       continue;
     if(fabs(pPhoton->eta) >=  2.5)                      continue;
     if(passVeto(pPhoton->eta,pPhoton->phi,0.4,iVetoes)) continue; // clean electrons from photons (only e-)?
     if(!passPhoLooseSel(pPhoton,iRho))                  continue;
     lCount++;
-    lVeto.push_back(pPhoton);
-    
-    if(pPhoton->pt        <= 175)  continue;
+
+    if(pPhoton->pt        >= 175)  continue;
     if(fabs(pPhoton->eta) >= 1.4442) continue;
     if(!passPhoMediumSel(pPhoton, iRho)) continue;
     lTCount++;
 
-    //TPhoton *iPhoton;
-    //if(!iPhoton || pPhoton->pt > iPhoton->pt)      iPhoton = pPhoton;
-    //if(iPhoton) ivPhoton.SetPtEtaPhiM(iPhoton->pt, iPhoton->eta, iPhoton->phi, 0);
-    //if(trigbits & 8) pEff = 1.;
-
+    lVeto.push_back(pPhoton);
     addPhoton(pPhoton,fSelPhotons);
   }
   for(unsigned int i0 = 0; i0 < lVeto.size(); i0++) addVPhoton(lVeto[i0],iVetoes,0.);
+
   fNPhotons = lCount;
   fNPhotonsMedium = lTCount;
   if(fVars.size() > 0) fillPhoton(fN,fSelPhotons,fVars);
