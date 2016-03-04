@@ -36,9 +36,11 @@ void EvtLoader::reset() {
   fRho          = 0; 
   fITrigger     = 0; 
   fEffTrigger   = 0;
+  fselectBits   = 0;
   fNVtx         = 0; 
   fNPU          = 0;
   fPUWeight     = 0; 
+  fevtWeight    = 0;
 
   fKfactor_CENT = 0;
   fEwkCorr_CENT = 0;
@@ -69,6 +71,7 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   fTree->Branch("npv"             ,&fNVtx           ,"fNVtx/i");
   fTree->Branch("puWeight"        ,&fPUWeight       ,"fPUWeight/F");
   fTree->Branch("scale1fb"        ,&fScale          ,"fScale/F");  
+  fTree->Branch("evtWeight"       ,&fevtWeight      ,"fevtWeight/F");
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
 
   fTree->Branch("nloKfactor_CENT" ,&fKfactor_CENT   ,"fKfactor_CENT/F");
@@ -99,13 +102,14 @@ bool EvtLoader::passSkim() {
   bool lFilter = fMetFilters % 2 == 0; 
   return (lMet && lFilter); 
 }
-void EvtLoader::fillEvent(unsigned int triggerBit) { 
+void EvtLoader::fillEvent(unsigned int trigBit) { 
   reset();
   fNPU        = fEvt->nPUmean;
   fNVtx       = nVtx();
-  fITrigger   = triggerBit;
+  fITrigger   = trigBit;
   fEffTrigger = pEff();
   fPUWeight   = puWeight(float(fNVtx)); 
+  fevtWeight  = 1;
   fMetFilters = fEvt->metFilterFailBits;
   fRun        = fEvt->runNum;
   fLumi       = fEvt->lumiSec;
@@ -117,19 +121,29 @@ void EvtLoader::fillEvent(unsigned int triggerBit) {
   fPuppEtPhi   = fEvt->puppETCphi;
   return;
 }
-void  EvtLoader::fillModifiedMet(std::vector<TLorentzVector> &iVecCorr) { 
-  TLorentzVector lCorr(0,0,0,0);
-  for(unsigned int i0 =0; i0 < iVecCorr.size(); i0++) { 
-    TLorentzVector pVec; pVec.SetPtEtaPhiM(iVecCorr[i0].Pt(),0,iVecCorr[i0].Phi(),0);
-    lCorr += pVec;
-  }
-  //FakeMET 
-  if(iVecCorr.size() > 0) { 
-    correctMet(fFMet        ,fFMetPhi,        lCorr);
+// Fake MET
+void  EvtLoader::fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vector<TLorentzVector> iPhotons) { 
+  TLorentzVector lCorr;
+  if(iVecCorr.size() > 0){
+    for(unsigned int i0 =0; i0 < iVecCorr.size(); i0++) lCorr += iVecCorr[i0];
+    fFMet        = fEvt->pfMETC;
+    fFMetPhi     = fEvt->pfMETCphi;
+    fFPuppEt      = fEvt->puppETC;
+    fFPuppEtPhi   = fEvt->puppETCphi;
     correctMet(fFPuppEt     ,fFPuppEtPhi,     lCorr);
+    correctMet(fFMet        ,fFMetPhi,        lCorr);
   }
-  fMt                = mT(fFMet,        fFMetPhi,        lCorr);
-  fPuppEtMt          = mT(fFPuppEt,     fFPuppEtPhi,     lCorr);
+  if(iPhotons.size() > 0){
+    fFMet        = fEvt->pfMETC;
+    fFMetPhi     = fEvt->pfMETCphi;
+    fFPuppEt      = fEvt->puppETC;
+    fFPuppEtPhi   = fEvt->puppETCphi;
+    lCorr = iPhotons[0];
+    correctMet(fFMet        ,fFMetPhi,        lCorr);
+  }
+  // check this
+  //fMt                = mT(fFMet,        fFMetPhi,        lCorr);
+  //fPuppEtMt          = mT(fFPuppEt,     fFPuppEtPhi,     lCorr);
 
 }
 void  EvtLoader::correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr) { 
@@ -199,4 +213,7 @@ float  EvtLoader::mT(float &iMet,float &iMetPhi,TLorentzVector &iVec) {
   if(fabs(lDPhi) > TMath::Pi()*2.-lDPhi) lDPhi = TMath::Pi()*2.-lDPhi;
   float lMt = sqrt(2.0*(iVec.Pt()*iMet*(1.0-cos(lDPhi))));
   return lMt;
+}
+void EvtLoader::fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes){
+  for(unsigned int i0 = 0; i0 < iVetoes.size(); i0++)   lVetoes.push_back(iVetoes[i0]);
 }

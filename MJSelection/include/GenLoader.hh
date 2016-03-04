@@ -17,8 +17,9 @@ public:
   void fillGenEvent();
   //Fill specific Gen Info
   void selectBoson(int iDMu);
-  void matchParticle(int iId, TLorentzVector &lGen);
-  void matchParticle(int iId, TLorentzVector &lGen1, TLorentzVector &lGen2);
+  bool ismatched(int iId, TLorentzVector vec1, double dR);
+  bool ismatched(int iId, TLorentzVector vec1, TLorentzVector vec2, double dR);
+  bool ismatchedJet(TLorentzVector jet0, double dR);
   //Helpers
   TGenParticle* getStatus1(int iId,bool iIsNeut);
   bool isNeutrino(TGenParticle *iPart);
@@ -28,15 +29,20 @@ public:
   TGenParticle *fBoson;
   float frixione(TGenParticle *iPart);
   float computeTTbarCorr();
+  TGenParticle* findDaughter(int iparent, int dauId);
+  int findDaughterId(int iparent, int dauId);
+  bool isHadronicTop(TGenParticle *genp, int j, double &topSize);
+
   TClonesArray  *fGens;
   TBranch       *fGenBr;
   TGenEventInfo *fGenInfo;
   TBranch       *fGenInfoBr;
+
+  float fWeight;
 protected: 
   TTree         *fTree;
   float fXS;
   float fXSIn;
-  float fWeight;
   float fQ;
   float fPId1;
   float fX1;

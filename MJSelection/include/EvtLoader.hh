@@ -23,7 +23,7 @@ public:
   void setupTree  (TTree *iTree,float iWeight);
   void load (int iEvent);
   //Fillers
-  void fillEvent(unsigned int triggerBit);
+  void fillEvent(unsigned int trigBit);
   bool passSkim();
   TLorentzVector Met(int iOption);
   //Trigger Related Stuff
@@ -36,7 +36,8 @@ public:
   bool         PV();
   void  correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr);
   //Met Stuff
-  void         fillModifiedMet(std::vector<TLorentzVector> &iVecCorr);
+  void         fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes);
+  void         fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vector<TLorentzVector> iPhotons);
   float        metSig(float iMet,float iMetPhi,float iCov00,float iCov01,float iCov10,float iCov11);
   unsigned int metFilter(unsigned int iMetFilter);
   float        mT(float &iMet,float &iMetPhi,TLorentzVector &iVec);
@@ -57,6 +58,10 @@ public:
   unsigned int fLumi;
   TEventInfo   *fEvt;
 
+  float        fevtWeight;
+  float        fselectBits;
+  float        fScale;
+
 protected: 
   TBranch      *fEvtBr;
 
@@ -76,7 +81,6 @@ protected:
   unsigned int fNPUP;
   unsigned int fNPUM;
   float        fPUWeight;
-  float        fScale;
 
   float fMt;
   float fPuppEtMt;

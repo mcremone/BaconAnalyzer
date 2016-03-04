@@ -18,7 +18,7 @@ public:
   void reset();
   void setupTree(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
-  bool selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,double iRho);
+  void selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,double iRho);
   std::vector<TJet*> fSelJets;
   //Fillers
   void addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
@@ -26,6 +26,10 @@ public:
   void addDijet(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
   void fillDiJet();
   double correction(TJet &iJet,double iRho);
+  //Constants
+  const double CSVL = 0.605;
+  const double CSVM = 0.89;
+  const double CSVT = 0.97;
 protected: 
   TClonesArray *fJets;
   TBranch      *fJetBr;
@@ -34,6 +38,10 @@ protected:
   int           fNJets;
   int           fNFwd;
   int           fNBTags;
+  int           fNBTagsL;
+  int           fNBTagsM;
+  int           fNBTagsT;
+  int           fNBTagsLdR2;
   std::vector<double> fVars;
   int           fN;
   double        fHT;

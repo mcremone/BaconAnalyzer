@@ -40,11 +40,12 @@ void ElectronLoader::load(int iEvent) {
   fElectrons   ->Clear();
   fElectronBr ->GetEntry(iEvent);
 }
-bool ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes) {
+void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes) {
   reset();
   int lCount = 0,lTCount=0; 
   for  (int i0 = 0; i0 < fElectrons->GetEntriesFast(); i0++) if(passEleTightSel((TElectron*)fElectrons->At(i0),iRho)) lTCount++;
-  fNElectronsTight = lTCount;
+  fNElectronsTight = lTCount; // tight electrons multiplicity
+
   std::vector<TElectron*> lVeto;  
   for  (int i0 = 0; i0 < fElectrons->GetEntriesFast(); i0++) { 
     TElectron *pElectron = (TElectron*)((*fElectrons)[i0]);
@@ -63,15 +64,18 @@ bool ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iV
   if(fSelElectrons.size() >  0) fIso1 = eleIso(fSelElectrons[0],iRho);
   if(fSelElectrons.size() >  1) fIso2 = eleIso(fSelElectrons[1],iRho);
 
-  if(fNElectrons == 2){
-    double eMass = fillDiElectron();
-    if(eMass < 60 || eMass > 120) return false;
+  if(fNElectrons <= 1 && lVeto.size()==1) {
+    if(passEleTightSel(lVeto[0], iRho) && lVeto[0]->pt > 40) {
+      addVElectron(lVeto[0],iVetoes,0.000511);
+    }
   }
-  for(unsigned int i0 = 0; i0 < lVeto.size(); i0++) addVElectron(lVeto[i0],iVetoes,0.000511);
+  if(fNElectrons <= 2 && lVeto.size()==2){
+    fillDiElectron(iRho,lVeto,iVetoes);
+  }
 
-  if(lCount == 0) return false;
-
-  return true;
+  //for(unsigned int i0 = 0; i0 < lVeto.size(); i0++) addVElectron(lVeto[i0],iVetoes,0.000511);
+  //if(lCount == 0) return false;
+  //return true;
 }
 void ElectronLoader::addDiElectron(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase) { 
  for(int i0 = 0; i0 < iN; i0++) { 
@@ -86,23 +90,33 @@ void ElectronLoader::addDiElectron(std::string iHeader,TTree *iTree,int iN,std::
    iTree->Branch(pSY    .str().c_str(),&iVals[iBase+3],(pSY    .str()+"/D").c_str());
  }
 }
-double ElectronLoader::fillDiElectron() { 
-  double lMass = -1;
+void ElectronLoader::fillDiElectron(double iRho, std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes) { 
   TLorentzVector lVec; lVec.SetPtEtaPhiM(0,0,0,0);
-  if((fSelElectrons[1]->q)  *  (fSelElectrons[0]->q) > 0){
-    if((fSelElectrons[1]->pt < 40) && (fSelElectrons[0]->pt < 40)) {
-      TLorentzVector pVec0; pVec0.SetPtEtaPhiM(fSelElectrons[0]->pt,fSelElectrons[0]->eta,fSelElectrons[0]->phi,0.0005);
-      TLorentzVector pVec1; pVec1.SetPtEtaPhiM(fSelElectrons[1]->pt,fSelElectrons[1]->eta,fSelElectrons[1]->phi,0.0005);
-      lMass = (pVec0+pVec1).M();
+  TElectron *vEle1,*vEle2;
+  if((lVeto[1]->q)  *  (lVeto[0]->q) < 0){ //opposite charge dielectron 
+    if((passEleTightSel(lVeto[0], iRho) && lVeto[0]->pt > 40) || (passEleTightSel(lVeto[1], iRho) && lVeto[1]->pt > 40)){ // at least one electron must pass tight selection                                                     
+      if(lVeto[0]->pt > lVeto[1]->pt){ //lep1 is the leading lepton 
+        vEle1 = lVeto[0];
+        vEle2 = lVeto[1];
+      }
+      else{
+        vEle2 = lVeto[0];
+        vEle1 = lVeto[1];
+      }
+      TLorentzVector pVec0; pVec0.SetPtEtaPhiM(lVeto[0]->pt,lVeto[0]->eta,lVeto[0]->phi,0.000510998910);
+      TLorentzVector pVec1; pVec1.SetPtEtaPhiM(lVeto[1]->pt,lVeto[1]->eta,lVeto[1]->phi,0.000510998910);
       lVec = pVec0+pVec1;
+      if(lVec.M() > 60 && lVec.M() < 120){
+        addVElectron(vEle1,iVetoes,0.000510998910);
+        addVElectron(vEle2,iVetoes,0.000510998910);
+      }
     }
   }
   int lBase = 3.*fN; 
   fVars[lBase+0] = lVec.Pt();
-  fVars[lBase+1] = lMass;
+  fVars[lBase+1] = lVec.M();
   fVars[lBase+2] = lVec.Phi();
   fVars[lBase+3] = lVec.Rapidity();
-  return lMass;
 }
 void ElectronLoader::setDiElectron(TLorentzVector &iVec) { 
   int lBase = 3.*fN; 

@@ -33,10 +33,11 @@ void PhotonLoader::load(int iEvent) {
   fPhotons   ->Clear();
   fPhotonBr ->GetEntry(iEvent);
 }
-bool PhotonLoader::selectPhotons(float iRho,std::vector<TLorentzVector> &iVetoes) {
+void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons) {
   reset(); 
   int lCount = 0,lTCount =0; 
-  std::vector<TPhoton*> lVeto;    
+  std::vector<TPhoton*> lVeto; 
+  TPhoton* photon = 0;
   for  (int i0 = 0; i0 < fPhotons->GetEntriesFast(); i0++) { 
     TPhoton *pPhoton = (TPhoton*)((*fPhotons)[i0]);
 
@@ -53,13 +54,15 @@ bool PhotonLoader::selectPhotons(float iRho,std::vector<TLorentzVector> &iVetoes
 
     lVeto.push_back(pPhoton);
     addPhoton(pPhoton,fSelPhotons);
+    if(!photon || (pPhoton->pt > photon->pt))  photon = pPhoton;
   }
-  for(unsigned int i0 = 0; i0 < lVeto.size(); i0++) addVPhoton(lVeto[i0],iVetoes,0.);
+  if(photon) addVPhoton(photon,iPhotons,0.);
 
   fNPhotons = lCount;
   fNPhotonsMedium = lTCount;
   if(fVars.size() > 0) fillPhoton(fN,fSelPhotons,fVars);
-  if(lCount == 0) return false;
   if(fSelPhotons.size() > 0) fIso = TMath::Max(fSelPhotons[0]->chHadIso  - iRho*phoEffArea(fSelPhotons[0]->scEta, 0), (double)0.);
-  return true;
+
+  //if(lCount == 0) return false;
+  //return true;
 }

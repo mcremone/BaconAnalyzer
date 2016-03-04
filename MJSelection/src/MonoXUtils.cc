@@ -168,7 +168,8 @@ bool passEleTightSel(const baconhep::TElectron *electron, const double rho)
 {
   // Phys14 PU20 bx25 cut-based veto ID
   // https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Working_points_for_PHYS14_sample
-  if(electron->pt < 40 || fabs(electron->eta) > 2.5) return false;
+  // if(electron->pt < 40 || fabs(electron->eta) > 2.5) return false;
+
   if(electron->isConv) return false;
 
   double iso = electron->chHadIso + TMath::Max( 0.0,(electron->gammaIso + electron->neuHadIso - rho*eleEffArea(electron->eta)) );

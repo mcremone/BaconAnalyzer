@@ -32,22 +32,22 @@ void TauLoader::load(int iEvent) {
   fTaus   ->Clear();
   fTauBr ->GetEntry(iEvent);
 }
-bool TauLoader::selectTaus(std::vector<TLorentzVector> &iVetoes) {
+void TauLoader::selectTaus(std::vector<TLorentzVector> &iVetoes) {
   reset(); 
   int lCount = 0; 
   for  (int i0 = 0; i0 < fTaus->GetEntriesFast(); i0++) { 
     TTau *pTau = (TTau*)((*fTaus)[i0]);
+    if(passVeto(pTau->eta,pTau->phi,0.4,iVetoes)) continue; 
     if(pTau->pt        <=  18)           continue;
     if(fabs(pTau->eta) >=  2.3)          continue;
     if(!passTauSel(pTau))             continue;
-    if(passVeto(pTau->eta,pTau->phi,0.4,iVetoes)) continue; // clean muons and electrons from taus
-    addVTau(pTau,iVetoes,pTau->m);
+    //addVTau(pTau,iVetoes,pTau->m); // ask Matteo if we should include or not - seems like no
     addTau(pTau,fSelTaus);
     lCount++;
   }
   fNTaus = lCount;
   if(fVars.size() > 0) fillTau(fN,fSelTaus,fVars);
   if(fSelTaus.size()  > 0) fTauIso = fSelTaus[0]->rawIso3Hits;
-  if(fSelTaus.size() == 0) return false;
-  return true;
+  //if(fSelTaus.size() == 0) return false;
+  //return true;
 }

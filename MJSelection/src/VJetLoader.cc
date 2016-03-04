@@ -48,7 +48,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("dFPhi");
   fTree = iTree;
   std::stringstream nVJet;
-  nVJet << "nvjet" << iJetLabel;
+  nVJet << "nv" << iJetLabel;
   fTree->Branch(nVJet.str().c_str(),&fNVJets,"fNVJets/I");
   for(int i0 = 0; i0 < fN*3.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
   for(int i0 = 0; i0 < fN*(int(fLabels.size())); i0++) {double pVar = 0; fVars.push_back(pVar);} 
@@ -61,7 +61,7 @@ void VJetLoader::load(int iEvent) {
   fVAddJets    ->Clear();
   fVAddJetBr   ->GetEntry(iEvent);
 }
-bool VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,double dR,double iMetPhi,double iRho) {
+void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,double dR,double iMetPhi,double iRho) {
   reset(); 
   int lCount = 0; 
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
@@ -70,15 +70,15 @@ bool VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,double dR,doub
     if(fabs(pVJet->eta) >=  2.4)                    continue;
     if(passVeto(pVJet->eta,pVJet->phi,dR,iVetoes))  continue;
     if(!passJetLooseSel(pVJet))                     continue;
-    addVJet(pVJet,iVetoes,pVJet->mass);
+    //addVJet(pVJet,iVetoes,pVJet->mass); // ask Matteo
     addJet(pVJet,fSelVJets);
     lCount++;
   }
   fNVJets = lCount;
   fillJet( fN,fSelVJets,fVars);
   fillVJet(fN,fSelVJets,fVars,iMetPhi,iRho);
-  if(fSelVJets.size() == 0) return false;
-  return true;
+  //if(fSelVJets.size() == 0) return false;
+  //return true;
 }
 void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,double iMetPhi,double iRho) { 
   int lBase = 3.*fN;

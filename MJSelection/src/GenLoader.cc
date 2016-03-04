@@ -130,6 +130,7 @@ void GenLoader::setupTree(TTree *iTree,float iXSIn) {
   fTree->Branch("gendmphi" ,&fDPhi,"fDPhi/F");
   fTree->Branch("gendmm"   ,&fDM  ,"fDM/F");
   fTree->Branch("gendmid"  ,&fDId ,"fDId/I");
+  fWeight = fGenInfo->weight;
 }
 void GenLoader::load(int iEvent) { 
   fGens     ->Clear();
@@ -294,8 +295,8 @@ bool GenLoader::isGenParticle(int iId) {
   return true;
 }
 int GenLoader::isttbarType() {
-  int nlep=0;
   assert(fGens);
+  int nlep=0;
   for(int i0=0; i0<fGens->GetEntriesFast(); i0++) {
     TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
     if(pGen->pdgId==11 || pGen->pdgId==13 || pGen->pdgId==15) {
@@ -310,28 +311,6 @@ int GenLoader::isttbarType() {
     }
   }
   return nlep;
-}
-void GenLoader::matchParticle(int iId, TLorentzVector &lGen) {
-  for(int i0=0; i0<fGens->GetEntriesFast(); i0++) {
-    TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
-    if(abs(pGen->pdgId) == iId) {
-      lGen.SetPtEtaPhiM(pGen->pt, pGen->eta, pGen->phi, pGen->mass);
-    }
-  }
-}
-void GenLoader::matchParticle(int iId, TLorentzVector &lGen0, TLorentzVector &lGen1) {
-  for(int i0=0; i0<fGens->GetEntriesFast(); i0++) {
-    TGenParticle *pGen0 = (TGenParticle*)((*fGens)[i0]);
-    if(abs(pGen0->pdgId) == iId) {
-      lGen0.SetPtEtaPhiM(pGen0->pt, pGen0->eta, pGen0->phi, pGen0->mass);
-      for(int i1=i0+1; i1<fGens->GetEntriesFast(); i1++) {
-	TGenParticle *pGen1 = (TGenParticle*)((*fGens)[i1]);
-	if(abs(pGen1->pdgId) == iId) {
-	  lGen1.SetPtEtaPhiM(pGen1->pt, pGen1->eta, pGen1->phi, pGen1->mass);
-	}
-      }
-    }
-  }
 }
 int GenLoader::getId(int iId,int iPId,bool iIsNeut) { 
   int lId   = iId;
@@ -371,10 +350,10 @@ float GenLoader::frixione(TGenParticle *iPart) {
   return lMax;
 }
 float GenLoader::computeTTbarCorr() {
-  //                                                                                                                                                                                                                              
-  // compute ttbar MC pT correction                                                                                                                                                                                               
-  // Note: are cap at pT(top) = 400 GeV and the factor of 1.001 the standard prescriptions,                                                                                                                                       
-  //       or just for B2G-14-004?                                                                                                                                                                                                
+  //                                                                                                                                                                                                                            
+  // compute ttbar MC pT correction                                                                                                                                                                                             
+  // Note: are cap at pT(top) = 400 GeV and the factor of 1.001 the standard prescriptions,                                                                                                                                     
+  //       or just for B2G-14-004?                                                                                                                                                                                              
   //                                                                                                                                                                                                                              
   const int TOP_PDGID = 6;
 
@@ -390,4 +369,109 @@ float GenLoader::computeTTbarCorr() {
   double w2 = exp(0.156 - 0.00137*pt2);
 
   return 1.001*sqrt(w1*w2);
+}
+bool GenLoader::ismatched(int iId, TLorentzVector vec, double dR){
+  for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+    TGenParticle *genp = (TGenParticle*)((*fGens)[i0]);
+    if(abs(genp->pdgId) == iId) {
+      TLorentzVector vGenp; vGenp.SetPtEtaPhiM(genp->pt, genp->eta, genp->phi, genp->mass);
+      if(vec.DeltaR(vGenp)<dR) return true;
+    }
+  }
+  return false;
+}
+bool GenLoader::ismatched(int iId, TLorentzVector vec0, TLorentzVector vec1, double dR){
+  for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+    TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
+    if(abs(genp0->pdgId) == iId) {
+      TLorentzVector vGenp0; vGenp0.SetPtEtaPhiM(genp0->pt, genp0->eta, genp0->phi, genp0->mass);
+      if(vec0.DeltaR(vGenp0)<dR){
+	for(int i1=i0+1; i1<fGens->GetEntriesFast(); i1++) {
+	  TGenParticle *genp1 = (TGenParticle*)((*fGens)[i1]);
+	  if(abs(genp1->pdgId) == iId) {
+	    TLorentzVector vGenp1; vGenp1.SetPtEtaPhiM(genp1->pt, genp1->eta, genp1->phi, genp1->mass);
+	    if(vec1.DeltaR(vGenp1)<dR) return true;
+	  }
+	}
+      }
+    }
+  }
+  return false;
+}
+TGenParticle* GenLoader::findDaughter(int iparent, int dauId)
+{
+  for(int k = iparent+1; k < fGens->GetEntriesFast(); k++) {
+    TGenParticle *genp = (TGenParticle*)((*fGens)[k]);
+    if(genp->parent == iparent) {
+      if(abs(genp->pdgId) == dauId) {
+        return genp;
+      }
+    }
+  }
+  return 0;
+}
+int GenLoader::findDaughterId(int iparent, int dauId)
+{
+  for(int k = iparent+1; k < fGens->GetEntriesFast(); k++) {
+    const baconhep::TGenParticle *genp = (TGenParticle*)((*fGens)[k]);;
+    if(genp->parent == iparent) {
+      if(abs(genp->pdgId) == dauId) {
+        return k;
+      }
+    }
+  }
+  return -1;
+}
+bool GenLoader::isHadronicTop(TGenParticle *genp, int j, double &topSize)
+{
+  TLorentzVector vTop,vB,vDau1,vDau2;
+  topSize = -999;
+  double tmpTopSize=0;
+  if(abs(genp->pdgId)==6) {
+    vTop.SetPtEtaPhiM(genp->pt, genp->eta, genp->phi, genp->mass);
+    TGenParticle *mcB = findDaughter(j,5); //
+    if(mcB) vB.SetPtEtaPhiM(mcB->pt, mcB->eta, mcB->phi, mcB->mass);
+    TGenParticle *mcW = findDaughter(j,24); //
+    if (!mcW || !mcB) return false;     // this shouldn't happen
+    tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vB));
+    Bool_t foundFinalW = kFALSE;
+    int iW = j;
+    while (!foundFinalW) {
+      int tmpId = findDaughterId(iW,24);
+      if (tmpId>=0) iW = tmpId;
+      else foundFinalW = kTRUE;
+    }
+    // iW should now be the final W index
+ 
+    int iQ=0, jQ=0;
+    for (; iQ<fGens->GetEntriesFast(); ++iQ) {
+      TGenParticle *dau1 = (TGenParticle*)((*fGens)[iQ]);
+      if(dau1->parent==iW && abs(dau1->pdgId)<6) {
+	vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
+        tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau1));
+        break; // found the first quark
+      }
+    }
+    for (jQ=iQ+1; jQ<fGens->GetEntriesFast(); ++jQ) {
+      TGenParticle *dau2 = (TGenParticle*)((*fGens)[jQ]);
+      if(dau2->parent==iW && abs(dau2->pdgId)<6) {
+	vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
+        tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau2));
+        topSize = TMath::Sqrt(tmpTopSize);
+	return true;
+      }
+    }
+  }
+  return false;
+}
+bool GenLoader::ismatchedJet(TLorentzVector jet0, double dR){
+  for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+    TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
+    double top_size = 0;// declare this
+    if (isHadronicTop(genp0,i0,top_size)){
+      TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
+      if (mcMom.DeltaR(jet0) < dR) return true;
+    }
+  }
+  return false;
 }

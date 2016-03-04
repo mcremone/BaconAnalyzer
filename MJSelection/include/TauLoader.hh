@@ -16,7 +16,7 @@ public:
   void reset();
   void setupTree(TTree *iTree);
   void load(int iEvent);
-  bool selectTaus(std::vector<TLorentzVector> &iVetoes);
+  void selectTaus(std::vector<TLorentzVector> &iVetoes);
   std::vector<TTau*> fSelTaus;
   int           fNTaus;
 

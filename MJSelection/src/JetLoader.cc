@@ -7,8 +7,8 @@ using namespace baconhep;
 
 JetLoader::JetLoader(TTree *iTree) { 
   fJets  = new TClonesArray("baconhep::TJet");
-  iTree->SetBranchAddress("AK4CHS",       &fJets);
-  fJetBr  = iTree->GetBranch("AK4CHS");
+  iTree->SetBranchAddress("AK4Puppi",       &fJets);
+  fJetBr  = iTree->GetBranch("AK4Puppi");
   fN = 4;
   std::vector<JetCorrectorParameters> corrParams;
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt"));
@@ -38,6 +38,10 @@ void JetLoader::reset() {
   fNBTags = 0;
   fNFwd   = 0; 
   fMinDPhi = 1000;
+  fNBTagsL = 0;
+  fNBTagsM = 0;
+  fNBTagsT = 0;
+  fNBTagsLdR2 = 0;
   fSelJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
 }
@@ -45,10 +49,14 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   reset();
   fTree = iTree;
   fTree->Branch("ht"    ,&fHT    ,"fHT/D");
-  fTree->Branch("njets" ,&fNJets ,"fNJets/I");
+  fTree->Branch("nPUPPIjets" ,&fNJets ,"fNJets/I");
   fTree->Branch("nbtags",&fNBTags,"fNBTags/I");
   fTree->Branch("nfwd"  ,&fNFwd  ,"fNFwd/I");
   fTree->Branch("mindphi",&fMinDPhi  ,"fMinDPhi/D");
+  fTree->Branch("nbPUPPIjetsL" ,&fNBTagsL ,"fNBTagsL/I");
+  fTree->Branch("nbPUPPIjetsM" ,&fNBTagsM ,"fNBTagsM/I");
+  fTree->Branch("nbPUPPIjetsT" ,&fNBTagsT ,"fNBTagsT/I");
+  fTree->Branch("nbPUPPIjetsLdR2" ,&fNBTagsLdR2 ,"fNBTagsLdR2/I");
   std::stringstream diJet;
   diJet << "d" << iJetLabel;
   for(int i0 = 0; i0 < fN*(10)+6; i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of 47 vars
@@ -60,9 +68,9 @@ void JetLoader::load(int iEvent) {
   fJets   ->Clear();
   fJetBr ->GetEntry(iEvent);
 }
-bool JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,double iRho) {
+void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,double iRho) {
   reset(); 
-  int lCount = 0,lNBTag = 0,lNFwd = 0;
+  int lCount = 0,lNBTag = 0,lNFwd = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0;
   fMinDPhi   = 1000; 
   for  (int i0 = 0; i0 < fJets->GetEntriesFast(); i0++) { 
     TJet *pJet = (TJet*)((*fJets)[i0]);
@@ -71,23 +79,36 @@ bool JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,d
     if(passVeto(pJet->eta,pJet->phi,0.4,iVetoes)) continue;
     if(fabs(pJet->eta) > 3.0) lNFwd++; 
     //if(i0 == 0) addVJet(pJet,iVetoes,pJet->mass);
-    if(!passJet04Sel(pJet) )  continue;
+    if(!passJetLooseSel(pJet) )  continue;
     fHT += pJet->pt;
     double pDPhi = TMath::Min(fabs(pJet->phi-iMetPhi),2.*TMath::Pi()-fabs(pJet->phi-iMetPhi));
     if(pDPhi < fMinDPhi && lCount < 4) fMinDPhi = pDPhi;
     lCount++;
     if(fabs(pJet->eta) > 2.5) continue;          
     addJet(pJet,fSelJets);
+
+    // jet and b-tag multiplicity
+    if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVL){
+      lNBTagL++;
+      //if(pJet->pt>0 && pJet.DeltaR(vBst15PUPPIJet1)>2) lNBtagLdR2++;
+    }
+    if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVM)     lNBTagM++;
+    if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVT)     lNBTagT++;
+
   }
   fNJets  = lCount;
   fNBTags = lNBTag;
   fNFwd   = lNFwd;
+  fNBTagsL = lNBTagL;
+  fNBTagsM = lNBTagM;
+  fNBTagsT = lNBTagT;
+  fNBTagsLdR2 = lNBTagLdR2;
   fillJet(fN,fSelJets,fVars);
   fillOthers(fN,fSelJets,fVars,iMetPhi,iRho);
-  if(fSelJets.size() == 0) return false;
-  if(fSelJets.size() <  2) return true;
+  //if(fSelJets.size() == 0) return false; // ask Matteo, it seems to me not necessary
+  //if(fSelJets.size() <  2) return true;
   fillDiJet();
-  return true;
+  //return true;
 }
 void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 
   for(int i0 = 0; i0 < iN; i0++) { 

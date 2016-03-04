@@ -16,7 +16,7 @@ public:
   void reset();
   void setupTree(TTree *iTree);
   void load(int iEvent);
-  bool selectPhotons(float iRho,std::vector<TLorentzVector> &iVetoes);
+  void selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons);
   std::vector<TPhoton*> fSelPhotons;
   int           fNPhotons;
   int           fNPhotonsMedium;
