@@ -17,8 +17,7 @@ public:
   void fillGenEvent();
   //Fill specific Gen Info
   void selectBoson(int iDMu);
-  bool ismatched(int iId, TLorentzVector vec1, double dR);
-  bool ismatched(int iId, TLorentzVector vec1, TLorentzVector vec2, double dR);
+  bool ismatched(int iId, std::vector<TLorentzVector> vec, double dR);
   bool ismatchedJet(TLorentzVector jet0, double dR);
   //Helpers
   TGenParticle* getStatus1(int iId,bool iIsNeut);
@@ -32,6 +31,7 @@ public:
   TGenParticle* findDaughter(int iparent, int dauId);
   int findDaughterId(int iparent, int dauId);
   bool isHadronicTop(TGenParticle *genp, int j, double &topSize);
+  void findBoson(int iId, int lOption);
 
   TClonesArray  *fGens;
   TBranch       *fGenBr;
@@ -39,6 +39,8 @@ public:
   TBranch       *fGenInfoBr;
 
   float fWeight;
+  float fBosonPt;
+  float fBosonPhi;
 protected: 
   TTree         *fTree;
   float fXS;

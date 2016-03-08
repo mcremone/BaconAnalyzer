@@ -3,6 +3,8 @@
 #include "../include/EvtLoader.hh"
 #include <iostream>
 
+#include "../include/LeptonEffUtils.hh"
+
 using namespace baconhep;
 
 EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::string iPUWeight) { 
@@ -17,7 +19,7 @@ EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::st
   iTree->SetBranchAddress("PV",       &fVertices);
   fVertexBr     = iTree->GetBranch("PV");
   
-  TFile *lFile = new TFile(iPUWeight.c_str()); // puWgt
+  TFile *lFile = new TFile(iPUWeight.c_str()); // puWgt file
   fPUWeightHist =  (TH1F*) lFile->Get("puWeights");
   fPUWeightHist->SetDirectory(0);
   lFile->Close();
@@ -42,7 +44,7 @@ void EvtLoader::reset() {
   fPUWeight     = 0; 
   fevtWeight    = 0;
 
-  fKfactor_CENT = 0;
+  fkFactor_CENT = 0;
   fEwkCorr_CENT = 0;
   fLepWeight    = 0;
 
@@ -65,7 +67,7 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   fTree->Branch("metfilter"       ,&fMetFilters     ,"fMetFilters/I");
   fTree->Branch("triggerBits"     ,&fITrigger       ,"fITrigger/i");
   fTree->Branch("selectBits"      ,&fselectBits     ,"fselectBits/i");
-  fTree->Branch("triggerEff"      ,&fEffTrigger     ,"fEffTrigger/F");
+  fTree->Branch("triggerEff"      ,&fEffTrigger     ,"fEffTrigger/D");
 
   fTree->Branch("npu"             ,&fNPU            ,"fNPU/i");
   fTree->Branch("npv"             ,&fNVtx           ,"fNVtx/i");
@@ -74,9 +76,9 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   fTree->Branch("evtWeight"       ,&fevtWeight      ,"fevtWeight/F");
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
 
-  fTree->Branch("nloKfactor_CENT" ,&fKfactor_CENT   ,"fKfactor_CENT/F");
+  fTree->Branch("nloKfactor_CENT" ,&fkFactor_CENT   ,"fKfactor_CENT/F");
   fTree->Branch("ewkCorr_CENT"    ,&fEwkCorr_CENT   ,"fEwkCorr_CENT/F");
-  fTree->Branch("lepWeight"       ,&fLepWeight      ,"fLepWeight/F");
+  fTree->Branch("lepWeight"       ,&fLepWeight      ,"fLepWeight/D");
 
   fTree->Branch("pfmet"           ,&fMet            ,"fMet/F");
   fTree->Branch("pfmetphi"        ,&fMetPhi         ,"fMetPhi/F");
@@ -107,7 +109,6 @@ void EvtLoader::fillEvent(unsigned int trigBit) {
   fNPU        = fEvt->nPUmean;
   fNVtx       = nVtx();
   fITrigger   = trigBit;
-  fEffTrigger = pEff();
   fPUWeight   = puWeight(float(fNVtx)); 
   fevtWeight  = 1;
   fMetFilters = fEvt->metFilterFailBits;
@@ -165,22 +166,7 @@ float EvtLoader::metSig(float iMet,float iMetPhi,float iCov00,float iCov01,float
 bool EvtLoader::passFilter() { 
   return (fEvt->metFilterFailBits == 0);
 }
-unsigned int EvtLoader::metFilter(unsigned int iMetFilter) { 
-  unsigned int lWord = 0; 
-  //Mapping of filters form Bacon to Bambu 
-  lWord |=  (iMetFilter &  1)   << 0; //HBHE Noise
-  lWord |=  (iMetFilter &  8)   << 1; //Ecal Dead Cell
-  //lWord |=  (iMetFilter & 16)   << 2; //Tracking Failure
-  lWord |=  (iMetFilter & 32)   << 3; //EEBadSc
-  //lWord |=  (iMetFilter & 64)   << 4; //EcalLaser
-  //lWord |=  (iMetFilter & 128)  << 5; //tkManyStrip
-  //lWord |=  (iMetFilter & 256)  << 6; //tktooManyStrip
-  //lWord |=  (iMetFilter & 512)  << 7; //tkLogError
-  lWord |=  (iMetFilter & 2)    << 2; //CSCTight
-  //CSCLoose Halo Filter missing from our bitset
-  //lWord |=  (iMetFilter & 4)    << 10; //Hcal Laser
-  return lWord;
-}
+// Vtx
 unsigned int EvtLoader::nVtx() { 
   unsigned int lNVertex = 0; 
   for(int i0 = 0; i0 < fVertices->GetEntries(); i0++) { 
@@ -198,10 +184,16 @@ unsigned int EvtLoader::nVtx() {
 bool EvtLoader::PV(){
   return fEvt->hasGoodPV;
 }
-float EvtLoader::pEff() {
-  float lTriggerEff = ((0.975+(fEvt->pfMETC-200)*0.025*0.025)*(fEvt->pfMETC<240)+1*(fEvt->pfMETC>=240));
-  return lTriggerEff;
+// Trigger
+void EvtLoader::triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<TLorentzVector> iPhotons) {
+  fEffTrigger = ((0.975+(fEvt->pfMETC-200)*0.025*0.025)*(fEvt->pfMETC<240)+1*(fEvt->pfMETC>=240));
+  if(iElectrons.size() > 0){
+    if(fITrigger & 4){ std::cout << "sf " << iElectrons[0].Pt() << " " << iElectrons[0].Eta() << std::endl;    fEffTrigger = getEleTriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());}
+    if(!(fITrigger & 4) && (fITrigger & 8)) fEffTrigger = 1;
+  }
+  if(iPhotons.size()   > 0)                 fEffTrigger = 1;
 }
+// puWeight
 float EvtLoader::puWeight(float iNPU) { 
   float lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(iNPU)));
   if(iNPU > 30) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(30)));
@@ -216,4 +208,32 @@ float  EvtLoader::mT(float &iMet,float &iMetPhi,TLorentzVector &iVec) {
 }
 void EvtLoader::fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes){
   for(unsigned int i0 = 0; i0 < iVetoes.size(); i0++)   lVetoes.push_back(iVetoes[i0]);
+}
+// kFactor and EWK
+void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std::string iHist2,std::string iSFactor4){
+  TFile *lFile = new TFile(iSFactor4.c_str());
+  fHist0 =  (TH1F*) lFile->Get(iHist0.c_str());
+  fHist0->SetDirectory(0);
+  fHist1 =  (TH1F*) lFile->Get(iHist1.c_str());
+  fHist1->SetDirectory(0);
+  fHist2 =  (TH1F*) lFile->Get(iHist2.c_str());
+  fHist2->SetDirectory(0);
+  lFile->Close();
+
+  fHist0->Divide(fHist1);
+
+  fkFactor_CENT = Float_t(fHist0->GetBinContent(fHist0->FindBin(iPt)));
+  if(iPt > 700) fkFactor_CENT = Float_t(fHist0->GetBinContent(fHist0->FindBin(700)));
+  if(iPt < 100) fkFactor_CENT = Float_t(fHist0->GetBinContent(fHist0->FindBin(100)));
+
+  fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(iPt)));
+  if(iPt > 700) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(700)));
+  if(iPt < 100) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(100)));
+}
+// lepton SF
+void EvtLoader::leptonSF(std::vector<TLorentzVector> iMuons,std::vector<TLorentzVector> iElectrons, bool isMatchedMu, bool isMatchedEle) {
+  if(iMuons.size() == 1 && isMatchedMu) fLepWeight = getTightMuonSF(iMuons[0].Pt(),iMuons[0].Eta());
+  if(iMuons.size() == 2 && isMatchedMu) fLepWeight = 0.5*(getTightMuonSF(iMuons[0].Pt(),iMuons[0].Eta())*getLooseMuonSF(iMuons[1].Pt(),iMuons[1].Eta()) + getLooseMuonSF(iMuons[0].Pt(),iMuons[0].Eta())*getTightMuonSF(iMuons[1].Pt(),iMuons[1].Eta()));
+  if(iElectrons.size() == 1 && isMatchedEle) fLepWeight = getTightEleSF(iElectrons[0].Pt(),iElectrons[0].Eta());
+  if(iElectrons.size() == 2 && isMatchedEle) fLepWeight = 0.5*(getTightEleSF(iElectrons[0].Pt(),iElectrons[0].Eta())*getVetoEleSF(iElectrons[1].Pt(),iElectrons[1].Eta()) + getVetoEleSF(iElectrons[0].Pt(),iElectrons[0].Eta())*getTightEleSF(iElectrons[1].Pt(),iElectrons[1].Eta()));
 }

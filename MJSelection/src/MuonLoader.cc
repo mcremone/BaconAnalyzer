@@ -28,8 +28,8 @@ void MuonLoader::setupTree(TTree *iTree) {
   fTree->Branch("nmuTight",&fNMuonsTight,"fNMuonsTight/I");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("mu",iTree,fN,fVars); // 2 Muons pt,eta,phi (2*3=6)
-  addDiMuon  ("dm",iTree,1, fVars,fN*3); // dimuon system *_pt,mass,phi,y for dm0 (1*4)
+  setupNtuple("vmuo",iTree,fN,fVars);        // 2 muons pt,eta,phi (2*3=6)
+  addDiMuon  ("vdimuo",iTree,1, fVars,fN*3); // dimuon system *_pt,mass,phi,y for dimuo0 (1*4)
 }
 void MuonLoader::load(int iEvent) { 
   fMuons   ->Clear();
@@ -50,7 +50,7 @@ void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
     if(!passMuonLooseSel(pMuon))                     continue;
     lCount++;
     lVeto.push_back(pMuon);
-    addMuon(pMuon,fSelMuons); // addObject to fSelMuons
+    addMuon(pMuon,fSelMuons);
   }
   fNMuons = lCount; // loose muons multiplicity
 
@@ -65,9 +65,6 @@ void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
   if(fNMuons <= 2 && lVeto.size()==2) {
     fillDiMuon(lVeto,iVetoes);
   }
-
-  //if(lCount == 0) return false; // no muons selected
-  //return true;
 }
 void MuonLoader::addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase) { 
  for(int i0 = 0; i0 < iN; i0++) { 

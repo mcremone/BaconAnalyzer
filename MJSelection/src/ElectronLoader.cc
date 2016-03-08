@@ -29,12 +29,12 @@ void ElectronLoader::setupTree(TTree *iTree) {
   fTree = iTree;
   fTree->Branch("nele",&fNElectrons,"fNElectrons/I");
   fTree->Branch("neleTight",&fNElectrons,"fNElectronsTight/I");
-  fTree->Branch("e0_iso",&fIso1,"fIso1/D");
-  fTree->Branch("e1_iso",&fIso2,"fIso2/D");
+  fTree->Branch("vele0_iso",&fIso1,"fIso1/D");
+  fTree->Branch("vele1_iso",&fIso2,"fIso2/D");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("e",iTree,fN,fVars); // 2 electrons e*_pt,e*_eta,e*_phi (2*3=6)
-  addDiElectron("de",iTree,1, fVars,fN*3); // dielectron de0_pt, _mass, _phi, _y (1*4 =4)
+  setupNtuple("vele",iTree,fN,fVars);          // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*3=6)
+  addDiElectron("vdiele",iTree,1, fVars,fN*3); // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
 }
 void ElectronLoader::load(int iEvent) { 
   fElectrons   ->Clear();
@@ -73,9 +73,6 @@ void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iV
     fillDiElectron(iRho,lVeto,iVetoes);
   }
 
-  //for(unsigned int i0 = 0; i0 < lVeto.size(); i0++) addVElectron(lVeto[i0],iVetoes,0.000511);
-  //if(lCount == 0) return false;
-  //return true;
 }
 void ElectronLoader::addDiElectron(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase) { 
  for(int i0 = 0; i0 < iN; i0++) { 

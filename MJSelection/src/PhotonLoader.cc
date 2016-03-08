@@ -25,9 +25,9 @@ void PhotonLoader::setupTree(TTree *iTree) {
   fTree = iTree;
   fTree->Branch("npho",&fNPhotons,"fNPhotons/I"); // photon multiplicity and isolation
   fTree->Branch("nphoMedium",&fNPhotonsMedium,"fNPhotonsMedium/I");
-  fTree->Branch("pho0_iso"     ,&fIso          ,"fIso/D");
+  fTree->Branch("vpho0_iso"     ,&fIso          ,"fIso/D");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("pho",iTree,fN,fVars); // pho0_pt,_eta,_phi (1*3=3)
+  setupNtuple("vpho",iTree,fN,fVars); // pho0_pt,_eta,_phi (1*3=3)
 }
 void PhotonLoader::load(int iEvent) { 
   fPhotons   ->Clear();
@@ -62,7 +62,4 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
   fNPhotonsMedium = lTCount;
   if(fVars.size() > 0) fillPhoton(fN,fSelPhotons,fVars);
   if(fSelPhotons.size() > 0) fIso = TMath::Max(fSelPhotons[0]->chHadIso  - iRho*phoEffArea(fSelPhotons[0]->scEta, 0), (double)0.);
-
-  //if(lCount == 0) return false;
-  //return true;
 }

@@ -26,20 +26,23 @@ public:
   void fillEvent(unsigned int trigBit);
   bool passSkim();
   TLorentzVector Met(int iOption);
-  //Trigger Related Stuff
+  //Trigger
   bool passFilter();
   bool passTrigger(std::string iTrigger);
-  float pEff();
-  //PU relates stuff
+  void triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<TLorentzVector> iPhotons);
+  //PU
   float        puWeight(float iPU);
   unsigned int nVtx();
   bool         PV();
-  void  correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr);
-  //Met Stuff
+  //EWK and kFactor
+  void computeCorr(float iPt,std::string iHist0,std::string iHist1,std::string iHist2,std::string iSFactor4="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconAna/DataFormats/data/scalefactors_v4.root");
+  //lepSF
+  void leptonSF(std::vector<TLorentzVector> iMuons,std::vector<TLorentzVector> iElectrons, bool isMatchedMu, bool isMatchedEle);
+  //MET
+  void         correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr);
   void         fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes);
   void         fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vector<TLorentzVector> iPhotons);
   float        metSig(float iMet,float iMetPhi,float iCov00,float iCov01,float iCov10,float iCov11);
-  unsigned int metFilter(unsigned int iMetFilter);
   float        mT(float &iMet,float &iMetPhi,TLorentzVector &iVec);
   //Vars
   float fRho;
@@ -58,10 +61,15 @@ public:
   unsigned int fLumi;
   TEventInfo   *fEvt;
 
-  float        fevtWeight;
-  float        fselectBits;
-  float        fScale;
+  float fevtWeight;
+  float fselectBits;
+  float fScale;
 
+  float fkFactor_CENT;
+  float fEwkCorr_CENT;
+
+  double fEffTrigger;
+  double fLepWeight;
 protected: 
   TBranch      *fEvtBr;
 
@@ -71,7 +79,10 @@ protected:
   TTree        *fTree;
   TTrigger     *fTrigger;
   TH1F         *fPUWeightHist;
-  
+  TH1F         *fHist0;
+  TH1F         *fHist1;
+  TH1F         *fHist2;
+
   std::vector<std::vector<std::string>> fTrigString;
   char*  fSample;
   unsigned int fITrigger;
@@ -80,14 +91,9 @@ protected:
   unsigned int fNPU;
   unsigned int fNPUP;
   unsigned int fNPUM;
-  float        fPUWeight;
 
+  float fPUWeight;
   float fMt;
   float fPuppEtMt;
   float fMetSig;
-
-  float fEffTrigger;
-  float fKfactor_CENT;
-  float fEwkCorr_CENT;
-  float fLepWeight;
 };
