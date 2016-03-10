@@ -47,7 +47,7 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
     if(!passPhoLooseSel(pPhoton,iRho))                  continue;
     lCount++;
 
-    if(pPhoton->pt        >= 175)  continue;
+    if(pPhoton->pt        <= 175)  continue;  // ASK MATTEO IMPORTANT
     if(fabs(pPhoton->eta) >= 1.4442) continue;
     if(!passPhoMediumSel(pPhoton, iRho)) continue;
     lTCount++;

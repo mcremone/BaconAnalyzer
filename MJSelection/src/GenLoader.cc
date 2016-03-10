@@ -378,28 +378,29 @@ float GenLoader::computeTTbarCorr() {
 
   return 1.001*sqrt(w1*w2);
 }
-bool GenLoader::ismatched(int iId, std::vector<TLorentzVector> vec, double dR){
+float GenLoader::lepmatched(int iId, std::vector<TLorentzVector> vec, double dR){
   if(vec.size() > 0){
     for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
       TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
       if(abs(genp0->pdgId) == iId) {
 	TLorentzVector vGenp0; vGenp0.SetPtEtaPhiM(genp0->pt, genp0->eta, genp0->phi, genp0->mass);
 	if(vec[0].DeltaR(vGenp0)<dR){
-	  if(vec.size() == 1) return true;
+	  if(vec.size() == 1) return 1;
 	  if(vec.size() == 2){
 	    for(int i1=i0+1; i1<fGens->GetEntriesFast(); i1++) {
 	      TGenParticle *genp1 = (TGenParticle*)((*fGens)[i1]);
 	      if(abs(genp1->pdgId) == iId) {
 		TLorentzVector vGenp1; vGenp1.SetPtEtaPhiM(genp1->pt, genp1->eta, genp1->phi, genp1->mass);
-		if(vec[1].DeltaR(vGenp1)<dR) return true;
+		if(vec[1].DeltaR(vGenp1)<dR) return 1;
+	      }
 	    }
-	    }
+	    return -1;
 	  }
 	}
       }
     }
   }
-  return false;
+  return 0;
 }
 TGenParticle* GenLoader::findDaughter(int iparent, int dauId)
 {
@@ -425,7 +426,7 @@ int GenLoader::findDaughterId(int iparent, int dauId)
   }
   return -1;
 }
-bool GenLoader::isHadronicTop(TGenParticle *genp, int j, double &topSize)
+bool GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize)
 {
   TLorentzVector vTop,vB,vDau1,vDau2;
   topSize = -999;
@@ -433,7 +434,10 @@ bool GenLoader::isHadronicTop(TGenParticle *genp, int j, double &topSize)
   if(abs(genp->pdgId)==6) {
     vTop.SetPtEtaPhiM(genp->pt, genp->eta, genp->phi, genp->mass);
     TGenParticle *mcB = findDaughter(j,5); //
-    if(mcB) vB.SetPtEtaPhiM(mcB->pt, mcB->eta, mcB->phi, mcB->mass);
+    if(mcB){
+      vB.SetPtEtaPhiM(mcB->pt, mcB->eta, mcB->phi, mcB->mass);
+      if (vB.DeltaR(jet) > dR) return false; // all decay products fall into jet cone
+    }
     TGenParticle *mcW = findDaughter(j,24); //
     if (!mcW || !mcB) return false;     // this shouldn't happen
     tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vB));
@@ -451,6 +455,7 @@ bool GenLoader::isHadronicTop(TGenParticle *genp, int j, double &topSize)
       TGenParticle *dau1 = (TGenParticle*)((*fGens)[iQ]);
       if(dau1->parent==iW && abs(dau1->pdgId)<6) {
 	vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
+	if (vDau1.DeltaR(jet) > dR) return false;
         tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau1));
         break; // found the first quark
       }
@@ -459,6 +464,7 @@ bool GenLoader::isHadronicTop(TGenParticle *genp, int j, double &topSize)
       TGenParticle *dau2 = (TGenParticle*)((*fGens)[jQ]);
       if(dau2->parent==iW && abs(dau2->pdgId)<6) {
 	vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
+	if (vDau2.DeltaR(jet) > dR) return false;
         tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau2));
         topSize = TMath::Sqrt(tmpTopSize);
 	return true;
@@ -467,13 +473,12 @@ bool GenLoader::isHadronicTop(TGenParticle *genp, int j, double &topSize)
   }
   return false;
 }
-bool GenLoader::ismatchedJet(TLorentzVector jet0, double dR){
+bool GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_size){
   for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
     TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
-    double top_size = 0;// declare this
-    if (isHadronicTop(genp0,i0,top_size)){
-      TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
-      if (mcMom.DeltaR(jet0) < dR) return true;
+    TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
+    if (mcMom.DeltaR(jet0) < dR) {
+      if (isHadronicTop(genp0,i0,jet0,dR,top_size)) return true;
     }
   }
   return false;

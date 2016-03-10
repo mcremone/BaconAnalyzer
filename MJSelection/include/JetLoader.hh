@@ -24,7 +24,7 @@ public:
   void reset();
   void setupTree(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
-  void selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,double iRho);
+  void selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double iMetPhi,double iRho);
   std::vector<TJet*> fSelJets;
   std::vector<const TJet*> fGoodJets;
   //Fillers
@@ -55,6 +55,7 @@ protected:
   std::vector<std::string> measurementTypes = {"mujets", "comb"};                         // measurements type
   std::vector<std::string> variationTypes = {"central", "up", "down"};                    // systematics type
   std::vector<std::string> flavorTypes = {"nominal", "Ms", "Bs"};                         // nominal, mistag and btag
+  std::vector<std::string> wpTypes = {"L","M","T"};                                       // working points                           
   std::vector<double>      fVars;
   std::vector<float>       fBTagVars;
   int           fN;

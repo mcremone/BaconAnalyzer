@@ -2,6 +2,7 @@
 #include "TMatrixD.h"
 #include "../include/EvtLoader.hh"
 #include <iostream>
+#include <sstream>
 
 #include "../include/LeptonEffUtils.hh"
 
@@ -13,13 +14,13 @@ EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::st
   fEvt      = new TEventInfo();
   iTree->SetBranchAddress("Info",       &fEvt);
   fEvtBr    = iTree->GetBranch("Info");
-  fTrigger  = new TTrigger(cmssw_base + iHLTFile); // iHLTFile with list of triggers 
+  fTrigger  = new TTrigger(cmssw_base + iHLTFile);
   
   fVertices = new TClonesArray("baconhep::TVertex");
   iTree->SetBranchAddress("PV",       &fVertices);
   fVertexBr     = iTree->GetBranch("PV");
   
-  TFile *lFile = new TFile(iPUWeight.c_str()); // puWgt file
+  TFile *lFile = new TFile(iPUWeight.c_str()); 
   fPUWeightHist =  (TH1F*) lFile->Get("puWeights");
   fPUWeightHist->SetDirectory(0);
   lFile->Close();
@@ -46,7 +47,6 @@ void EvtLoader::reset() {
 
   fkFactor_CENT = 0;
   fEwkCorr_CENT = 0;
-  fLepWeight    = 0;
 
   fMet          = 0; 
   fMetPhi       = 0; 
@@ -57,6 +57,9 @@ void EvtLoader::reset() {
   fFMetPhi      = 0;
   fFPuppEt      = 0;
   fFPuppEtPhi   = 0;
+
+  fMt           = 0;
+  fPuppEtMt     = 0;
 }
 void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   reset();
@@ -78,7 +81,6 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
 
   fTree->Branch("nloKfactor_CENT" ,&fkFactor_CENT   ,"fKfactor_CENT/F");
   fTree->Branch("ewkCorr_CENT"    ,&fEwkCorr_CENT   ,"fEwkCorr_CENT/F");
-  fTree->Branch("lepWeight"       ,&fLepWeight      ,"fLepWeight/D");
 
   fTree->Branch("pfmet"           ,&fMet            ,"fMet/F");
   fTree->Branch("pfmetphi"        ,&fMetPhi         ,"fMetPhi/F");
@@ -89,6 +91,10 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   fTree->Branch("fakepfmetphi"    ,&fFMetPhi        ,"fFMetPhi/F");
   fTree->Branch("fakepuppet"      ,&fFPuppEt        ,"fFPuppEt/F");
   fTree->Branch("fakepuppetphi"   ,&fFPuppEtPhi     ,"fFPuppEtPhi/F");
+
+  fTree->Branch("pfmT"            ,&fMt             ,"fMt/F");
+  fTree->Branch("puppetmT"        ,&fPuppEtMt       ,"fPuppEtMt/F");
+
   fScale = iWeight;
 }
 void EvtLoader::load(int iEvent) { 
@@ -109,6 +115,7 @@ void EvtLoader::fillEvent(unsigned int trigBit) {
   fNPU        = fEvt->nPUmean;
   fNVtx       = nVtx();
   fITrigger   = trigBit;
+  fselectBits = 1;
   fPUWeight   = puWeight(float(fNVtx)); 
   fevtWeight  = 1;
   fMetFilters = fEvt->metFilterFailBits;
@@ -142,10 +149,12 @@ void  EvtLoader::fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vect
     lCorr = iPhotons[0];
     correctMet(fFMet        ,fFMetPhi,        lCorr);
   }
-  // check this
-  //fMt                = mT(fFMet,        fFMetPhi,        lCorr);
-  //fPuppEtMt          = mT(fFPuppEt,     fFPuppEtPhi,     lCorr);
-
+}
+void  EvtLoader::fillmT(std::vector<TLorentzVector> &lCorr) {
+  if(lCorr.size()>0){
+    //fMt                = mT(fFMet,        fFMetPhi,        lCorr[0]);
+    fPuppEtMt          = mT(fFPuppEt,     fFPuppEtPhi,     lCorr[0]);
+  }
 }
 void  EvtLoader::correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr) { 
   TLorentzVector lVec;  lVec.SetPtEtaPhiM(iMet,0,iMetPhi,0);
@@ -188,7 +197,10 @@ bool EvtLoader::PV(){
 void EvtLoader::triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<TLorentzVector> iPhotons) {
   fEffTrigger = ((0.975+(fEvt->pfMETC-200)*0.025*0.025)*(fEvt->pfMETC<240)+1*(fEvt->pfMETC>=240));
   if(iElectrons.size() > 0){
-    if(fITrigger & 4){ std::cout << "sf " << iElectrons[0].Pt() << " " << iElectrons[0].Eta() << std::endl;    fEffTrigger = getEleTriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());}
+    if(fITrigger & 4){ 
+      //std::cout << "sf " << iElectrons[0].Pt() << " " << iElectrons[0].Eta() << std::endl;    
+      fEffTrigger = getEleTriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
+    }
     if(!(fITrigger & 4) && (fITrigger & 8)) fEffTrigger = 1;
   }
   if(iPhotons.size()   > 0)                 fEffTrigger = 1;
@@ -229,11 +241,4 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
   fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(iPt)));
   if(iPt > 700) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(700)));
   if(iPt < 100) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(100)));
-}
-// lepton SF
-void EvtLoader::leptonSF(std::vector<TLorentzVector> iMuons,std::vector<TLorentzVector> iElectrons, bool isMatchedMu, bool isMatchedEle) {
-  if(iMuons.size() == 1 && isMatchedMu) fLepWeight = getTightMuonSF(iMuons[0].Pt(),iMuons[0].Eta());
-  if(iMuons.size() == 2 && isMatchedMu) fLepWeight = 0.5*(getTightMuonSF(iMuons[0].Pt(),iMuons[0].Eta())*getLooseMuonSF(iMuons[1].Pt(),iMuons[1].Eta()) + getLooseMuonSF(iMuons[0].Pt(),iMuons[0].Eta())*getTightMuonSF(iMuons[1].Pt(),iMuons[1].Eta()));
-  if(iElectrons.size() == 1 && isMatchedEle) fLepWeight = getTightEleSF(iElectrons[0].Pt(),iElectrons[0].Eta());
-  if(iElectrons.size() == 2 && isMatchedEle) fLepWeight = 0.5*(getTightEleSF(iElectrons[0].Pt(),iElectrons[0].Eta())*getVetoEleSF(iElectrons[1].Pt(),iElectrons[1].Eta()) + getVetoEleSF(iElectrons[0].Pt(),iElectrons[0].Eta())*getTightEleSF(iElectrons[1].Pt(),iElectrons[1].Eta()));
 }

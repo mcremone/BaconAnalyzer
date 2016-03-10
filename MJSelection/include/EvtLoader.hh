@@ -1,8 +1,10 @@
 #include "BaconAna/DataFormats/interface/TEventInfo.hh"
 #include "BaconAna/DataFormats/interface/TVertex.hh"
 #include "BaconAna/Utils/interface/TTrigger.hh"
+#include "MonoXUtils.hh"
 
 #include "TH1F.h"
+#include "TH2D.h"
 #include "TTree.h"
 #include "TBranch.h"
 #include "TClonesArray.h"
@@ -17,7 +19,7 @@ class EvtLoader {
 public:
   EvtLoader(TTree *iTree,std::string iName,
             std::string iHLTFile="/src/BaconAna/DataFormats/data/HLTFile_25ns_new",
-	    std::string iPUWeight="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAnalyzer/MJSelection/Json/puWeights_13TeV_25ns.root");//,
+	    std::string iPUWeight="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAnalyzer/MJSelection/Json/puWeights_13TeV_25ns.root");
   ~EvtLoader(); 
   void reset();
   void setupTree  (TTree *iTree,float iWeight);
@@ -35,13 +37,16 @@ public:
   unsigned int nVtx();
   bool         PV();
   //EWK and kFactor
-  void computeCorr(float iPt,std::string iHist0,std::string iHist1,std::string iHist2,std::string iSFactor4="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconAna/DataFormats/data/scalefactors_v4.root");
-  //lepSF
-  void leptonSF(std::vector<TLorentzVector> iMuons,std::vector<TLorentzVector> iElectrons, bool isMatchedMu, bool isMatchedEle);
+  void computeCorr(float iPt,
+		   std::string iHist0,
+		   std::string iHist1,
+		   std::string iHist2,
+		   std::string iSFactor4="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconAna/DataFormats/data/scalefactors_v4.root");
   //MET
   void         correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr);
   void         fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes);
   void         fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vector<TLorentzVector> iPhotons);
+  void         fillmT(std::vector<TLorentzVector> &lCorr);
   float        metSig(float iMet,float iMetPhi,float iCov00,float iCov01,float iCov10,float iCov11);
   float        mT(float &iMet,float &iMetPhi,TLorentzVector &iVec);
   //Vars
@@ -56,13 +61,15 @@ public:
   float fFPuppEtPhi;
   float fFPuppEt;
 
+  float fMt;
+  float fPuppEtMt;
+
   unsigned int fRun;
   unsigned int fEvtV;
   unsigned int fLumi;
   TEventInfo   *fEvt;
 
   float fevtWeight;
-  float fselectBits;
   float fScale;
 
   float fkFactor_CENT;
@@ -70,6 +77,8 @@ public:
 
   double fEffTrigger;
   double fLepWeight;
+
+  int fselectBits;
 protected: 
   TBranch      *fEvtBr;
 
@@ -79,11 +88,13 @@ protected:
   TTree        *fTree;
   TTrigger     *fTrigger;
   TH1F         *fPUWeightHist;
+
   TH1F         *fHist0;
   TH1F         *fHist1;
   TH1F         *fHist2;
 
   std::vector<std::vector<std::string>> fTrigString;
+
   char*  fSample;
   unsigned int fITrigger;
   unsigned int fMetFilters;
@@ -93,7 +104,5 @@ protected:
   unsigned int fNPUM;
 
   float fPUWeight;
-  float fMt;
-  float fPuppEtMt;
   float fMetSig;
 };

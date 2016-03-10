@@ -115,8 +115,8 @@ int main( int argc, char **argv ) {
   // Loop over events i0 = iEvent
   //
   int neventstest = 0;
-  //for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  for(int i0 = 0; i0 < int(100); i0++){ // for testing
+  for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
+  //for(int i0 = 0; i0 < int(100); i0++){ // for testing
     if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // check GenInfo
@@ -148,25 +148,29 @@ int main( int argc, char **argv ) {
     if(trigbits==1) continue;
     
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lVetoes;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVetoes;
     // Muons
     fMuon    ->load(i0);
     fMuon    ->selectMuons(lMuons);
-    
+
     fEvt      ->load(i0);
     fEvt      ->fillEvent(trigbits);
-      
+
     // Electrons
     fElectron ->load(i0);
     fElectron ->selectElectrons(fEvt->fRho,lElectrons);
-    
+
     // Lepton SF
-    fEvt->leptonSF(lMuons,lElectrons,fGen->ismatched(13,lMuons,0.3),fGen->ismatched(11,lElectrons,0.3));
+    fillLepSF(fMuon->fNMuons,lMuons,fMuon->fhMuTight,fMuon->fhMuLoose,fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars);
+    fillLepSF(fElectron->fNElectrons,lElectrons,fElectron->fhEleTight,fElectron->fhEleVeto,fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars);
 
     // Fill Vetoes
     fEvt->fillVetoes(lElectrons,lVetoes);
-    fEvt->fillVetoes(lMuons,lVetoes);
-
+    //fEvt->fillVetoes(lMuons,lVetoes);
+    fEvt->fillModifiedMet(lVetoes,lPhotons);
+    std::cout << i0 << " " << fEvt->fPuppEt << " " << fEvt->fMet << " " << fEvt->fFPuppEt << " " << fEvt->fFMet <<  std::endl;
+    if(lMuons.size()) std::cout << i0 << " " << "ele " << lMuons[0].Pt() << std::endl;
+    if(lElectrons.size()) std::cout << i0 << " " << "ele " << lElectrons[0].Pt() << std::endl;
     if(lOption.find("data")!=std::string::npos && !passEvent(fEvt->fRun,fEvt->fLumi)) continue;
 
     // Taus
@@ -179,8 +183,10 @@ int main( int argc, char **argv ) {
 
     // MET selection
     fEvt->fillModifiedMet(lVetoes,lPhotons);
+
     if(fMuon->fNMuons == 0 && fEvt->fMet < 200. && fEvt->fPuppEt < 200. && fEvt->fFPuppEt < 200. && fEvt->fFMet < 200.) continue;
-    //std::cout << i0 << " " << fEvt->fPuppEt << " " << fEvt->fFPuppEt << std::endl;
+    std::cout << i0 << " " << fMuon->fNMuons << " " << lMuons.size() << " " << fElectron->fNElectrons << " " << lElectrons.size() << " " << fMuon->fmuoSFVars[0] << " " << fMuon->fmuoSFVars[1] << " " << fMuon->fmuoSFVars[2]  << " " << fElectron->feleSFVars[0] << " " << fElectron->feleSFVars[1] << " " << fElectron->feleSFVars[2] << std::endl;
+    //std::cout << i0 << " " << fEvt->fPuppEt << " " << fEvt->fMet << " " << fEvt->fFPuppEt << " " << fEvt->fFMet <<  std::endl;
 
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
@@ -189,26 +195,21 @@ int main( int argc, char **argv ) {
 
     // CA15Puppi Jets
     fVJet->load(i0);
-    fVJet->selectVJets(lVetoes,1.5,fEvt->fMetPhi,fEvt->fRho);
-
-    // int select = 1;
-    // float top_size = 0;
-    // match to top quark decay products
-    // if(lType==kMCTTBST && ismatchedJet(fVJet->fSelVJets[0],1.5)) select = select | 2; // ask Matteo - which jet is it?
-    // if(lType==kMCTTCOM && !ismatchedJet(fVJet->fSelVJets[0],1.5)) select = select | 2;
-    // if(lType!=kMCTTBST && lType!=kMCTTCOM) select = select | 2;
+    fVJet->selectVJets(lVetoes,lJets,1.5,fEvt->fPuppEtPhi,fEvt->fRho);
+    if(lJets.size()>0){ if((lOption.compare("mcttbst")==0 && fGen->ismatchedJet(lJets[0],1.5,fVJet->ftopSize))
+			   || (lOption.find("mcttcom")==0 && !fGen->ismatchedJet(lJets[0],1.5,fVJet->ftopSize))) fEvt->fselectBits |= 2; } // maybe think of another way to do this
 
     // AK4PUPPI Jets
     fJet->load(i0); 
-    fJet->selectJets(lVetoes,fEvt->fMetPhi,fEvt->fRho);
+    fJet->selectJets(lVetoes,lJets,fEvt->fMetPhi,fEvt->fRho);
     
     // fix Mt
-    //fEvt->fillMt(fVJet->fJetPt,fVJet->fJetPhi);
+    fEvt->fillmT(lJets);
 
     // ttbar, EWK and kFactor correction
     fGen->load(i0);
     if(lOption.find("mcg")!=std::string::npos){
-      fGen->findBoson(22,0); // no matching
+      fGen->findBoson(22,0); // no matching -- Ask Matteo
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"anlo1/anlo1_nominal","alo/alo_nominal","a_ewkcorr/a_ewkcorr");
     }
     if(lOption.find("mcz")!=std::string::npos || lOption.find("mcdy")!=std::string::npos){
@@ -217,7 +218,7 @@ int main( int argc, char **argv ) {
     }
     if(lOption.find("mcw")!=std::string::npos){
       fGen->findBoson(24,0);
-      if(fGen->fBosonPt>0){ fEvt->computeCorr(fGen->fBosonPt,"wnlo012/wnlo012_nominal","wlo/wlo_nominal","w_ewkcorr/w_ewkcorr"); }//std::cout << i0 << " " << fGen->fBosonPt << std::endl;}
+      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"wnlo012/wnlo012_nominal","wlo/wlo_nominal","w_ewkcorr/w_ewkcorr"); 
     }
     if(lOption.find("tt")!=std::string::npos){
       fEvt->fevtWeight = fEvt->fevtWeight * fGen->computeTTbarCorr();

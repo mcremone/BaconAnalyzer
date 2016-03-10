@@ -1,3 +1,9 @@
+//============================================================================================
+// Lepton Efficiencies functions:
+// - Lepton SF for loose and tight muon and ele
+// - Trigger Eff 
+//============================================================================================
+
 double getLooseMuonSF(const double pt, const double eta);
 double getTightMuonSF(const double pt, const double eta);
 
@@ -11,7 +17,6 @@ double getTightEleSF(const double pt, const double eta);
 double getEleTriggerDataEff(const double pt, const double eta);
 double getEleTriggerMCEff(const double pt, const double eta);
 double getEleTriggerSF(const double pt, const double eta);
-
 
 //--------------------------------------------------------------------------------------
 double getLooseMuonSF(const double pt, const double eta)
@@ -441,6 +446,7 @@ double getEleTriggerMCEff(const double pt, const double eta)
 //--------------------------------------------------------------------------------------
 double getEleTriggerSF(const double pt, const double eta)
 {
-  std::cout <<   getEleTriggerDataEff(pt,eta) << " " << getEleTriggerMCEff(pt,eta) << std::endl;
+  //std::cout <<   getEleTriggerDataEff(pt,eta) << " " << getEleTriggerMCEff(pt,eta) << std::endl;
   return getEleTriggerDataEff(pt,eta) / getEleTriggerMCEff(pt,eta);
 }
+

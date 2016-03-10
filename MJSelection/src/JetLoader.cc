@@ -60,9 +60,9 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   reset();
   fTree = iTree;
   //fTree->Branch("ht"            ,&fHT          ,"fHT/D");
+  //fTree->Branch("nfwd"          ,&fNFwd        ,"fNFwd/I");
   fTree->Branch("nPUPPIjets"      ,&fNJets       ,"fNJets/I");
   fTree->Branch("nbtags"          ,&fNBTags      ,"fNBTags/I");
-  //fTree->Branch("nfwd"          ,&fNFwd        ,"fNFwd/I");
   fTree->Branch("mindphi"         ,&fMinDPhi     ,"fMinDPhi/D");
   fTree->Branch("nbPUPPIjetsL"    ,&fNBTagsL     ,"fNBTagsL/I");
   fTree->Branch("nbPUPPIjetsM"    ,&fNBTagsM     ,"fNBTagsM/I");
@@ -75,15 +75,17 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   addOthers  (iJetLabel.c_str(),iTree,fN,fVars);                                      // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32)
   addDijet   (diJet.str().c_str(),iTree,1, fVars);                                    // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
   for(int i0 = 0; i0 < 60; i0++) {float pBTagVar = 0; fBTagVars.push_back(pBTagVar);} // declare array of 60 vars ( L0,L1,Lminus1,L2, M0,M1,Mminus1,M2 T0,T1,Tminus1,T2) for (CENT,MISTAGUP,MISTAGDO,BTAGUP,BTAGDO)
-  addBTag(iJetLabel.c_str(),iTree,"L",fLabels,0,fBTagVars);
-  addBTag(iJetLabel.c_str(),iTree,"M",fLabels,20,fBTagVars);
-  addBTag(iJetLabel.c_str(),iTree,"T",fLabels,40,fBTagVars);
+  int i1 = 0;
+  for(auto iwptype : wpTypes) { 
+    addBTag(iJetLabel.c_str(),iTree,iwptype,fLabels,i1,fBTagVars);
+    i1 += 20;
+  }
 }
 void JetLoader::load(int iEvent) { 
   fJets   ->Clear();
   fJetBr ->GetEntry(iEvent);
 }
-void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,double iRho) {
+void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double iMetPhi,double iRho) {
   reset(); 
   int lCount = 0,lNBTag = 0,lNFwd = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0;
   fMinDPhi   = 1000; 
@@ -104,7 +106,8 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,double iMetPhi,d
     // jet and b-tag multiplicity
     if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVL){
       lNBTagL++;
-      //if(pJet->pt>0 && pJet->DeltaR(vBst15PUPPIJet1)>2) lNBTagLdR2++;
+      TLorentzVector vPJet; vPJet.SetPtEtaPhiM(pJet->pt, pJet->eta, pJet->phi, pJet->mass);
+      if(iJets.size()>0) {if(pJet->pt>0 && vPJet.DeltaR(iJets[0])>2) lNBTagLdR2++;}
     }
     if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVM)     lNBTagM++;
     if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVT)     lNBTagT++;

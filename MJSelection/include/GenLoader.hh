@@ -17,8 +17,8 @@ public:
   void fillGenEvent();
   //Fill specific Gen Info
   void selectBoson(int iDMu);
-  bool ismatched(int iId, std::vector<TLorentzVector> vec, double dR);
-  bool ismatchedJet(TLorentzVector jet0, double dR);
+  float lepmatched(int iId, std::vector<TLorentzVector> vec, double dR);
+  bool ismatchedJet(TLorentzVector jet0, double dR,double &top_size);
   //Helpers
   TGenParticle* getStatus1(int iId,bool iIsNeut);
   bool isNeutrino(TGenParticle *iPart);
@@ -30,7 +30,7 @@ public:
   float computeTTbarCorr();
   TGenParticle* findDaughter(int iparent, int dauId);
   int findDaughterId(int iparent, int dauId);
-  bool isHadronicTop(TGenParticle *genp, int j, double &topSize);
+  bool isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize);
   void findBoson(int iId, int lOption);
 
   TClonesArray  *fGens;

@@ -1,16 +1,23 @@
 #include "../include/ElectronLoader.hh"
 
+#include "TFile.h"
 #include <cmath>
 #include <iostream> 
 #include <sstream> 
 
 using namespace baconhep;
 
-ElectronLoader::ElectronLoader(TTree *iTree) { 
+ElectronLoader::ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename) { 
   fElectrons  = new TClonesArray("baconhep::TElectron");
   iTree->SetBranchAddress("Electron",       &fElectrons);
   fElectronBr  = iTree->GetBranch("Electron");
   fN = 2;
+  TFile *fEleSF = new TFile(ieleScaleFactorFilename.c_str());
+  fhEleVeto =  (TH2D*) fEleSF->Get("factorized_scalefactors_Veto_ele");
+  fhEleVeto->SetDirectory(0);
+  fhEleTight = (TH2D*) fEleSF->Get("factorized_scalefactors_Tight_ele");
+  fhEleTight->SetDirectory(0);
+  fEleSF->Close();
 }
 ElectronLoader::~ElectronLoader() { 
   delete fElectrons;
@@ -21,6 +28,7 @@ void ElectronLoader::reset() {
   fNElectronsTight = 0; 
   fSelElectrons.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
+  for(unsigned int i0 = 0; i0 < feleSFVars.size(); i0++) feleSFVars[i0] = 1;
   fIso1 = 0; 
   fIso2 = 0; 
 }
@@ -35,6 +43,8 @@ void ElectronLoader::setupTree(TTree *iTree) {
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   setupNtuple("vele",iTree,fN,fVars);          // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*3=6)
   addDiElectron("vdiele",iTree,1, fVars,fN*3); // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
+  for(int i0 = 0; i0 <     3; i0++) {double pVar = 1; feleSFVars.push_back(pVar);}
+  addLepSF("eleSF",iTree,feleSFVars);          // eleSF0,eleSF1,eleSF2
 }
 void ElectronLoader::load(int iEvent) { 
   fElectrons   ->Clear();
@@ -89,23 +99,25 @@ void ElectronLoader::addDiElectron(std::string iHeader,TTree *iTree,int iN,std::
 }
 void ElectronLoader::fillDiElectron(double iRho, std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes) { 
   TLorentzVector lVec; lVec.SetPtEtaPhiM(0,0,0,0);
-  TElectron *vEle1,*vEle2;
+  //TElectron *vEle1,*vEle2;
   if((lVeto[1]->q)  *  (lVeto[0]->q) < 0){ //opposite charge dielectron 
     if((passEleTightSel(lVeto[0], iRho) && lVeto[0]->pt > 40) || (passEleTightSel(lVeto[1], iRho) && lVeto[1]->pt > 40)){ // at least one electron must pass tight selection                                                     
-      if(lVeto[0]->pt > lVeto[1]->pt){ //lep1 is the leading lepton 
-        vEle1 = lVeto[0];
-        vEle2 = lVeto[1];
-      }
-      else{
-        vEle2 = lVeto[0];
-        vEle1 = lVeto[1];
-      }
+      //if(lVeto[0]->pt > lVeto[1]->pt){ //lep1 is the leading lepton 
+      //vEle1 = lVeto[0];
+      //vEle2 = lVeto[1];
+      //}
+      //else{
+      //vEle2 = lVeto[0];
+      //vEle1 = lVeto[1];
+      //}
       TLorentzVector pVec0; pVec0.SetPtEtaPhiM(lVeto[0]->pt,lVeto[0]->eta,lVeto[0]->phi,0.000510998910);
       TLorentzVector pVec1; pVec1.SetPtEtaPhiM(lVeto[1]->pt,lVeto[1]->eta,lVeto[1]->phi,0.000510998910);
       lVec = pVec0+pVec1;
       if(lVec.M() > 60 && lVec.M() < 120){
-        addVElectron(vEle1,iVetoes,0.000510998910);
-        addVElectron(vEle2,iVetoes,0.000510998910);
+	iVetoes.push_back(pVec0);
+	iVetoes.push_back(pVec1);
+        //addVElectron(vEle1,iVetoes,0.000510998910);
+        //addVElectron(vEle2,iVetoes,0.000510998910);
       }
     }
   }
@@ -114,11 +126,4 @@ void ElectronLoader::fillDiElectron(double iRho, std::vector<TElectron*> lVeto, 
   fVars[lBase+1] = lVec.M();
   fVars[lBase+2] = lVec.Phi();
   fVars[lBase+3] = lVec.Rapidity();
-}
-void ElectronLoader::setDiElectron(TLorentzVector &iVec) { 
-  int lBase = 3.*fN; 
-  fVars[lBase+0] = iVec.Pt();
-  fVars[lBase+1] = iVec.M();
-  fVars[lBase+2] = iVec.Phi();
-  fVars[lBase+3] = iVec.Eta();
 }

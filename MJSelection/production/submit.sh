@@ -110,8 +110,8 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "T") ]]; then 
     ./sub.sh mc $eos Spring15_a25ns_ST_t-channel_antitop_4f_leptonDecays_MINIAOD 44.0802      $option1 $option2
     ./sub.sh mc $eos Spring15_a25ns_ST_t-channel_top_4f_leptonDecays_MINIAOD     26.2343      $option1 $option2
-    ./sub.sh mc $eos Spring15_a25ns_ST_tW_antitop_5f_inclusiveDecays_MINIAOD 35.6 $option1 $option2
-    ./sub.sh mc $eos Spring15_a25ns_ST_tW_top_5f_inclusiveDecays_MINIAOD     35.6 $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_ST_tW_antitop_5f_inclusiveDecays_MINIAOD        35.6      $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_ST_tW_top_5f_inclusiveDecays_MINIAOD            35.6      $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TT1L") ]]; then
     ./sub.sh mctt1l $eos Spring15_a25ns_TTJets_madgraph_MINIAOD         831.76       $option1 $option2; 
@@ -138,8 +138,8 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then
     ./sub.sh mc $eos Spring15_a25ns_ZZ_MINIAOD                               31.8        $option1 $option2; 
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then 
-    ./sub.sh data $eos MET_Run2015D_PrReco_05Oct_MINIAOD_v3                  1        $option1 $option2
-    ./sub.sh data $eos MET_Run2015D_PrReco_v4_MINIAOD_v3                  1        $option1 $option2
+    ./sub.sh data $eos MET_Run2015D_PrReco_05Oct_MINIAOD                  1        $option1 $option2
+    ./sub.sh data $eos MET_Run2015D_PrReco_v4_MINIAOD                  1        $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "G") ]]; then 
     ./sub.sh mcgjets $eos Spring15_a25ns_GJets_HT_100To200_MINIAOD                 9235       $option1 $option2
@@ -160,8 +160,8 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then
     ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT_600ToInf_MINIAOD                 93.47      $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then
-    ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_05Oct_MINIAOD_v3                  1        $option1 $option2
-    ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_v4_MINIAOD_v3                  1        $option1 $option2
+    ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_05Oct_MINIAOD                  1        $option1 $option2
+    ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_v4_MINIAOD                     1        $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTDM") ]]; then    ./sub.sh mc $eos Spring15_a25ns_TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_MINIAOD 1.  $option1 $option2; fi
 

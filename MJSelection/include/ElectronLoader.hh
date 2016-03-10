@@ -1,6 +1,7 @@
 
 #ifndef ElectronLoader_H
 #define ElectronLoader_H
+#include "TH2D.h"
 #include "TTree.h"
 #include "TLorentzVector.h"
 #include "TBranch.h"
@@ -12,7 +13,7 @@ using namespace baconhep;
 
 class ElectronLoader { 
 public:
-  ElectronLoader(TTree *iTree);
+  ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconSkim/Utils/data/scalefactors_ele-2.root");
   ~ElectronLoader();
   void reset();
   void setupTree(TTree *iTree);
@@ -21,7 +22,9 @@ public:
   std::vector<TElectron*> fSelElectrons;
   void addDiElectron(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase);
   void fillDiElectron(double iRho,std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes);
-  void setDiElectron(TLorentzVector &iVec);
+  std::vector<double> feleSFVars;
+  TH2D         *fhEleVeto;
+  TH2D         *fhEleTight;
   int           fNElectrons;
   int           fNElectronsTight;
 
@@ -33,5 +36,6 @@ protected:
   int           fN;
   double        fIso1;
   double        fIso2;
+
 };
 #endif

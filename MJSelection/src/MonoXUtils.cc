@@ -261,7 +261,7 @@ bool passPhoLooseSel(const baconhep::TPhoton *photon, const double rho)
 
   return true;
 }
-
+//--------------------------------------------------------------------------------------------------
 bool passPhoMediumSel(const baconhep::TPhoton *photon, const double rho)
 {
   // Medium photon ID (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#PHYS14_selections_PU20_bunch_cro)
@@ -288,6 +288,7 @@ bool passPhoMediumSel(const baconhep::TPhoton *photon, const double rho)
   return true;
 }
 ///tools
+//--------------------------------------------------------------------------------------------------
 bool passVeto(double iEta,double iPhi,double idR, std::vector<TLorentzVector> &iVetoes) { 
   bool pMatch = false;
   for(unsigned int i1 = 0; i1 < iVetoes.size(); i1++) { 
@@ -300,6 +301,7 @@ bool passVeto(double iEta,double iPhi,double idR, std::vector<TLorentzVector> &i
   }
   return pMatch;
 }
+//--------------------------------------------------------------------------------------------------
 void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 
   for(int i0 = 0; i0 < iN; i0++) { 
     int iBase = i0*3;
@@ -312,6 +314,7 @@ void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iV
     iTree->Branch(pSPhi.str().c_str(),&iVals[iBase+2],(pSPhi.str()+"/D").c_str());
   }
 }
+//--------------------------------------------------------------------------------------------------
 void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead,std::vector<std::string> &iLabels) { 
   int lBase  = iHead;
   int lCount = 0;
@@ -322,4 +325,47 @@ void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iV
     if(i0 % int(iLabels.size()) == 0 && i0 > 0) lCount++; 
     lBase++;
   }
+}
+//--------------------------------------------------------------------------------------------------
+double getVal(TH1D*h,double val) {
+  return h->GetBinContent(h->FindBin(val));
+}
+//--------------------------------------------------------------------------------------------------
+double getVal2D(TH2D*h,double val1, double val2) {
+  return h->GetBinContent(h->FindBin(val1,val2));
+}
+//--------------------------------------------------------------------------------------------------
+void addLepSF(std::string iHeader,TTree *iTree,std::vector<double> &iVals) {
+  for(int i0 = 0; i0 < 3; i0++) {
+    std::stringstream pSF;
+    pSF << iHeader << i0;
+    iTree->Branch(pSF.str().c_str(),&iVals[i0],(pSF.str()+"/D").c_str());
+  }
+}
+//--------------------------------------------------------------------------------------------------
+void fillLepSF(int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals) {
+  std::vector <double> flepSFtight, flepSFloose;
+  flepSFtight.clear(); flepSFloose.clear();
+  for(unsigned int i0=0; i0<iLeptons.size(); i0++){
+    flepSFtight.push_back(getVal2D(tightHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt())); //getTightMuonSF(iMuons[i0].Pt(),iMuons[i0].Eta()) - getTightEleSF(iElectrons[i0].Pt(),iElectrons[i0].Eta())
+    flepSFloose.push_back(getVal2D(looseHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt())); //getLooseMuonSF(iMuons[i0].Pt(),iMuons[i0].Eta()) - getVetoEleSF(iElectrons[i0].Pt(),iElectrons[i0].Eta()))
+  }
+  for(unsigned int i0=0; i0<2; i0++){
+    iVals[i0] = getLepEventReweight(i0, nLep, iLeptons, isMatched, flepSFtight, flepSFloose);
+  }
+}
+//--------------------------------------------------------------------------------------
+double getLepEventReweight(int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose){
+  // re-weighting for events with 0 leptons - i.e. 0 loose muons or 0 veto electrons
+  if(Nminlep ==0 && vleptons.size()==0) return 1;
+  // re-weighting for events with exactly one tight lepton
+  if(Nminlep ==1 && Nlep <= 1 && vleptons.size()==1 && isMatched==1){
+    return lepSFtight[0];
+  }
+  // re-weighting for events with exactly one tight lepton and one loose lepton
+  if(Nminlep==2 && Nlep <= 2 && vleptons.size()==2){
+    if(isMatched==1) return 0.5*(lepSFtight[0]*lepSFloose[1] + lepSFloose[0]*lepSFtight[1]);
+    if(isMatched==-1) return 0.5*(lepSFtight[0] + lepSFloose[0]);
+  }
+  return 1;
 }
