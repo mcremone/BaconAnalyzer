@@ -1,0 +1,435 @@
+Sender: LSF System <lsfadmin@b6c1d444a4cd.cern.ch>
+Subject: Job 762458627: <batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh> in cluster <batch> Exited
+
+Job <batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh> was submitted from host <lxplus0040.cern.ch> by user <mcremone> in cluster <batch>.
+Job was executed on host(s) <b6c1d444a4cd.cern.ch>, in queue <8nh>, as user <mcremone> in cluster <batch>.
+</afs/cern.ch/user/m/mcremone> was used as the home directory.
+</afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot> was used as the working directory.
+Started at Wed Jan 27 04:45:18 2016
+Results reported on Wed Jan 27 04:46:28 2016
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh
+------------------------------------------------------------
+
+Exited with exit code 255.
+
+Resource usage summary:
+
+    CPU time :                                   0.89 sec.
+    Max Memory :                                 12.17 MB
+    Average Memory :                             5.11 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   122 MB
+    Max Processes :                              4
+    Max Threads :                                4
+    Run time :                                   68 sec.
+    Turnaround time :                            74 sec.
+
+The output (if any) follows:
+
+@(#)CERN job starter $Date: 2010/06/23 14:22:16 $
+Working directory is </pool/lsf/mcremone/762458627> on <b6c1d444a4cd.cern.ch>
+
+sh: batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh: No such file or directory
+
+Job finished at Wed Jan 27 04:45:38 CET 2016 on node 
+ under linux version Scientific Linux CERN SLC release 6.7 (Carbon)
+
+CERN statistics: This process used approximately : 0:00:01 KSI2K hours (1 KSI2K seconds)
+                 This process corresponds to     : 0:00:04 HS06  hours (4 HS06  seconds)
+Sender: LSF System <lsfadmin@b6475097de28.cern.ch>
+Subject: Job 762459503: <batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh> in cluster <batch> Exited
+
+Job <batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh> was submitted from host <lxplus0040.cern.ch> by user <mcremone> in cluster <batch>.
+Job was executed on host(s) <b6475097de28.cern.ch>, in queue <8nh>, as user <mcremone> in cluster <batch>.
+</afs/cern.ch/user/m/mcremone> was used as the home directory.
+</afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot> was used as the working directory.
+Started at Wed Jan 27 04:53:39 2016
+Results reported on Wed Jan 27 04:54:48 2016
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh
+------------------------------------------------------------
+
+Exited with exit code 255.
+
+Resource usage summary:
+
+    CPU time :                                   0.69 sec.
+    Max Memory :                                 12.18 MB
+    Average Memory :                             5.11 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   122 MB
+    Max Processes :                              4
+    Max Threads :                                4
+    Run time :                                   67 sec.
+    Turnaround time :                            74 sec.
+
+The output (if any) follows:
+
+@(#)CERN job starter $Date: 2010/06/23 14:22:16 $
+Working directory is </pool/lsf/mcremone/762459503> on <b6475097de28.cern.ch>
+
+sh: batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh: No such file or directory
+
+Job finished at Wed Jan 27 04:53:58 CET 2016 on node 
+ under linux version Scientific Linux CERN SLC release 6.7 (Carbon)
+
+CERN statistics: This process used approximately : 0:00:00 KSI2K hours (0 KSI2K seconds)
+                 This process corresponds to     : 0:00:03 HS06  hours (3 HS06  seconds)
+Sender: LSF System <lsfadmin@b697b2210d36.cern.ch>
+Subject: Job 762459609: </afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot/batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh> in cluster <batch> Exited
+
+Job </afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot/batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh> was submitted from host <lxplus0040.cern.ch> by user <mcremone> in cluster <batch>.
+Job was executed on host(s) <b697b2210d36.cern.ch>, in queue <8nh>, as user <mcremone> in cluster <batch>.
+</afs/cern.ch/user/m/mcremone> was used as the home directory.
+</afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot> was used as the working directory.
+Started at Wed Jan 27 04:56:05 2016
+Results reported on Wed Jan 27 10:20:54 2016
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot/batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh
+------------------------------------------------------------
+
+Exited with exit code 255.
+
+Resource usage summary:
+
+    CPU time :                                   171.87 sec.
+    Max Memory :                                 23660.86 MB
+    Average Memory :                             18296.41 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   23883 MB
+    Max Processes :                              14
+    Max Threads :                                15
+    Run time :                                   19486 sec.
+    Turnaround time :                            19493 sec.
+
+The output (if any) follows:
+
+@(#)CERN job starter $Date: 2010/06/23 14:22:16 $
+Working directory is </pool/lsf/mcremone/762459609> on <b697b2210d36.cern.ch>
+
+/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot/batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh: line 3: unset: `SRT_LD_LIBRARY_PATH_SCRAMRTDEL;': not a valid identifier
+/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot/batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh: line 3: unset: `SRT_LD_LIBRARY_PATH_SCRAMRT="/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/biglib/slc6_amd64_gcc491:/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/lib/slc6_amd64_gcc491:/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/biglib/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/lib/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_12/biglib/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_12/lib/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/llvm/3.6/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/gcc/4.9.1-cms/lib64:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/gcc/4.9.1-cms/lib";': not a valid identifier
+/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot/batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh: line 3: unset: `LD_LIBRARY_PATH="/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/biglib/slc6_amd64_gcc491:/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/lib/slc6_amd64_gcc491:/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/biglib/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/lib/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_12/biglib/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_12/lib/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/llvm/3.6/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/gcc/4.9.1-cms/lib64:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/gcc/4.9.1-cms/lib:/usr/lsf/lib64";': not a valid identifier
+/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot/batch/Muo_ResMonoZbb_WCR_ONLY_PUPPI_CENT.sh: line 3: unset: `PATH="/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/bin/slc6_amd64_gcc491:/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/bin/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_12/bin/slc6_amd64_gcc491:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/llvm/3.6/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc491/external/gcc/4.9.1-cms/bin:/afs/cern.ch/group/zh/bin:/afs/cern.ch/user/m/mcremone/scripts:/afs/cern.ch/cms/caf/scripts:/cvmfs/cms.cern.ch/common:/cvmfs/cms.cern.ch/bin:/bin:/usr/bin:/afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/python:/afs/cern.ch/cms/ccs/wm/scripts/Crab/CRAB_2_11_1_patch1/external/DLSAPI/bin:/usr/sue/bin:/usr/lib64/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:/afs/cern.ch/user/m/mcremone/bin:/afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot";': not a valid identifier
+  *******************************************
+  *                                         *
+  *        W E L C O M E  to  R O O T       *
+  *                                         *
+  *   Version   5.34/32      23 June 2015   *
+  *                                         *
+  *  You are welcome to visit our Web site  *
+  *          http://root.cern.ch            *
+  *                                         *
+  *******************************************
+
+ROOT 5.34/32 (heads/v5-34-00-patches@v5-34-30-102-g626b950, Nov 17 2015, 15:46:00 on linuxx8664gcc)
+
+CINT/ROOT C/C++ Interpreter version 5.18.00, July 2, 2010
+Type ? for help. Commands must be C++ statements.
+Enclose multiple statements between { }.
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=std {  }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=__gnu_cxx {  }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=__gnu_cxx { template <typename _Iterator, typename _Container> class __normal_iterator; }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Math {  } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Math { class IBaseFunctionMultiDim; } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Math { class IGradientFunctionMultiDim; } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Math { template <unsigned int, typename _val_type> class TDataPoint; } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Math { template <typename _val_type> class TDataPointN; } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Math { template <typename _DataPoint> class KDTree; } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Fit {  } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Fit { template <typename FunType> class Chi2FCN; } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Fit { template <typename FunType> class LogLikelihoodFCN; } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT { namespace Fit { template <typename FunType> class PoissonLikelihoodFCN; } }> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <[=libMathCore.so ]> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::BinData> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::Chi2FCN<ROOT::Math::IBaseFunctionMultiDim>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::Chi2FCN<ROOT::Math::IGradientFunctionMultiDim>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::DataOptions> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::DataRange> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::FitConfig> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::FitData> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::FitResult> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::Fitter> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::LogLikelihoodFCN<ROOT::Math::IBaseFunctionMultiDim>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::LogLikelihoodFCN<ROOT::Math::IGradientFunctionMultiDim>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::ParameterSettings> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::PoissonLikelihoodFCN<ROOT::Math::IBaseFunctionMultiDim>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::PoissonLikelihoodFCN<ROOT::Math::IGradientFunctionMultiDim>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::SparseData> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Fit::UnBinData> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::AdaptiveIntegratorMultiDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::BaseIntegratorOptions> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::BasicFitMethodFunction<ROOT::Math::IBaseFunctionMultiDim>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::BasicFitMethodFunction<ROOT::Math::IGradientFunctionMultiDim>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::BasicMinimizer> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::BrentMinimizer1D> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::BrentRootFinder> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::ChebyshevPol> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::DistSampler> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::DistSamplerOptions> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::Factory> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::Functor> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::Functor1D> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::GaussIntegrator> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::GaussLegendreIntegrator> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::GenAlgoOptions> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::GoFTest> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::GradFunctor> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::GradFunctor1D> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IBaseFunctionMultiDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IBaseFunctionOneDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IBaseParam> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IGradientFunctionMultiDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IGradientFunctionOneDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IGradientMultiDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IGradientOneDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IMinimizer1D> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IOptions> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IParametricFunctionMultiDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IParametricFunctionOneDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IParametricGradFunctionMultiDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IParametricGradFunctionOneDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IRootFinderMethod> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IntegratorMultiDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IntegratorMultiDimOptions> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IntegratorOneDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::IntegratorOneDimOptions> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::KDTree<ROOT::Math::TDataPoint1D>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::KDTree<ROOT::Math::TDataPoint<1,double> >> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::MinimTransformFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::MinimTransformVariable> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::Minimizer> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::MinimizerOptions> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::ParamFunctor> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::RichardsonDerivator> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::RootFinder> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::TDataPoint<1,Double_t>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::TDataPoint<1,Float_t>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::TDataPoint<1,double>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::TDataPoint<1,float>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::TDataPointN<Double_t>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::TDataPointN<Float_t>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::TDataPointN<double>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::TDataPointN<float>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::VirtualIntegrator> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::VirtualIntegratorMultiDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=ROOT::Math::VirtualIntegratorOneDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TComplex> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TKDTree<Int_t,Double_t>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TKDTree<Int_t,Float_t>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TKDTree<int,double>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TKDTree<int,float>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TKDTreeBinning> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TRandom> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TRandom1> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TRandom2> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TRandom3> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TStatistic> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=TVirtualFitter> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=__gnu_cxx::__normal_iterator<const double*,vector<double> >> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=__gnu_cxx::__normal_iterator<double*,vector<double> >> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=reverse_iterator<__gnu_cxx::__normal_iterator<double*,vector<double> > >> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=vector<Double_t>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=vector<Double_t>::const_iterator> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=vector<Double_t>::iterator> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=vector<Double_t>::reverse_iterator> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=vector<ROOT::Fit::ParameterSettings>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=vector<double>> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=vector<std::vector<double> >> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <class=vector<vector<double> >> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/BinData.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/DataOptions.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/DataRange.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/FitConfig.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/DataVector.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/FitResult.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/Fitter.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/ParameterSettings.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/SparseData.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Fit/UnBinData.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/AdaptiveIntegratorMultiDim.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/IntegratorOptions.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/BasicMinimizer.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/BrentMinimizer1D.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/BrentRootFinder.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/ChebyshevPol.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/DistSampler.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/DistSamplerOptions.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/Factory.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/Functor.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/GaussIntegrator.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/GaussLegendreIntegrator.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/GenAlgoOptions.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/GoFTest.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/IFunction.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/IParamFunction.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/IMinimizer1D.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/IOptions.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/IRootFinderMethod.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/IntegratorMultiDim.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/Integrator.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/MinimTransformFunction.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/MinimTransformVariable.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/Minimizer.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/MinimizerOptions.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/ParamFunctor.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/RichardsonDerivator.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/RootFinder.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=Math/VirtualIntegrator.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=TComplex.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=TKDTreeBinning.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=TRandom.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=TRandom1.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=TRandom2.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=TRandom3.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=TStatistic.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <header=TVirtualFitter.h> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=TMath> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT::Fit> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT::Math> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT::Math::IntegrationOneDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <namespace=ROOT::Math::IntegrationMultiDim> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=TKDTreeID> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=TKDTreeIF> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Math::TDataPoint1F> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Math::TDataPoint1D> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Math::IGenFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Math::IMultiGenFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Math::IGradFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Math::IMultiGradFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Math::Integrator> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Math::FitMethodFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Math::FitMethodGradFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Fit::Chi2Function> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Fit::Chi2GradFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Fit::LogLikelihoodFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Fit::LogLikelihoodGradFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Fit::PoissonLLFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <typedef=ROOT::Fit::PoissonLLGradFunction> for level 0; ignored
+Warning in <TEnvRec::ChangeValue>: duplicate entry <enum=ROOT::Math::IntegrationOneDim::Type> for level 0; ignored
+Warning in <TClassTable::Add>: class TApplication already in TClassTable
+Warning in <TClassTable::Add>: class TApplicationImp already in TClassTable
+Warning in <TClassTable::Add>: class TAttFill already in TClassTable
+Warning in <TClassTable::Add>: class TAttLine already in TClassTable
+Warning in <TClassTable::Add>: class TAttMarker already in TClassTable
+Warning in <TClassTable::Add>: class TAttPad already in TClassTable
+Warning in <TClassTable::Add>: class TAttAxis already in TClassTable
+Warning in <TClassTable::Add>: class TAttText already in TClassTable
+Warning in <TClassTable::Add>: class TAtt3D already in TClassTable
+Warning in <TClassTable::Add>: class TAttBBox already in TClassTable
+Warning in <TClassTable::Add>: class TAttBBox2D already in TClassTable
+Warning in <TClassTable::Add>: class TBenchmark already in TClassTable
+Warning in <TClassTable::Add>: class TBrowser already in TClassTable
+Warning in <TClassTable::Add>: class TBrowserImp already in TClassTable
+Warning in <TClassTable::Add>: class TBuffer already in TClassTable
+Warning in <TClassTable::Add>: class TRootIOCtor already in TClassTable
+Warning in <TClassTable::Add>: class TCanvasImp already in TClassTable
+Warning in <TClassTable::Add>: class TColor already in TClassTable
+Warning in <TClassTable::Add>: class TColorGradient already in TClassTable
+Warning in <TClassTable::Add>: class TLinearGradient already in TClassTable
+Warning in <TClassTable::Add>: class TRadialGradient already in TClassTable
+Warning in <TClassTable::Add>: class TContextMenu already in TClassTable
+Warning in <TClassTable::Add>: class TContextMenuImp already in TClassTable
+Warning in <TClassTable::Add>: class TControlBarImp already in TClassTable
+Warning in <TClassTable::Add>: class TInspectorImp already in TClassTable
+Warning in <TClassTable::Add>: class TDatime already in TClassTable
+Warning in <TClassTable::Add>: class TDirectory already in TClassTable
+Warning in <TClassTable::Add>: class TEnv already in TClassTable
+Warning in <TClassTable::Add>: class TEnvRec already in TClassTable
+Warning in <TClassTable::Add>: class TFileHandler already in TClassTable
+Warning in <TClassTable::Add>: class TGuiFactory already in TClassTable
+Warning in <TClassTable::Add>: class TStyle already in TClassTable
+Warning in <TClassTable::Add>: class TVirtualX already in TClassTable
+Warning in <TClassTable::Add>: class TVirtualPad already in TClassTable
+Warning in <TClassTable::Add>: class TVirtualViewer3D already in TClassTable
+Warning in <TClassTable::Add>: class TBuffer3D already in TClassTable
+Warning in <TClassTable::Add>: class TGLManager already in TClassTable
+Warning in <TClassTable::Add>: class TVirtualGLPainter already in TClassTable
+Warning in <TClassTable::Add>: class TVirtualGLManip already in TClassTable
+Warning in <TClassTable::Add>: class TVirtualPS already in TClassTable
+Warning in <TClassTable::Add>: class TGLPaintDevice already in TClassTable
+Warning in <TClassTable::Add>: class TVirtualPadPainter already in TClassTable
+Warning in <TClassTable::Add>: class TVirtualPadEditor already in TClassTable
+Warning in <TClassTable::Add>: class TVirtualFFT already in TClassTable
+
+ *** Break *** segmentation violation
+
+
+
+===========================================================
+There was a crash.
+This is the entire stack trace of all threads:
+===========================================================
+#0  0x00002b8eabb6165e in waitpid () from /lib64/libc.so.6
+#1  0x00002b8eabaf3609 in do_system () from /lib64/libc.so.6
+#2  0x00002b8eab0108f4 in TUnixSystem::StackTrace() () from /usr/lib64/root/libCore.so.5.34
+#3  0x00002b8eab00fd13 in TUnixSystem::DispatchSignals(ESignals) () from /usr/lib64/root/libCore.so.5.34
+#4  <signal handler called>
+#5  0x00002b8eae32f2cc in TClassTable::AddAlternate(char const*, char const*) () from /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib/libCore.so
+#6  0x00002b8eae2592e3 in ROOT::GenerateInitInstanceLocal () from /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib/libCore.so
+#7  0x00002b8eae238c14 in _GLOBAL__sub_I_G__Core.cxx () from /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib/libCore.so
+#8  0x00002b8eaa99166f in _dl_init_internal () from /lib64/ld-linux-x86-64.so.2
+#9  0x00002b8eaa995e95 in dl_open_worker () from /lib64/ld-linux-x86-64.so.2
+#10 0x00002b8eaa991286 in _dl_catch_error () from /lib64/ld-linux-x86-64.so.2
+#11 0x00002b8eaa99563a in _dl_open () from /lib64/ld-linux-x86-64.so.2
+#12 0x00002b8eabe4af66 in dlopen_doit () from /lib64/libdl.so.2
+#13 0x00002b8eaa991286 in _dl_catch_error () from /lib64/ld-linux-x86-64.so.2
+#14 0x00002b8eabe4b29c in _dlerror_run () from /lib64/libdl.so.2
+#15 0x00002b8eabe4aee1 in dlopen
+
+GLIBC_2.2.5 () from /lib64/libdl.so.2
+#16 0x00002b8eac1c01bc in G__dlopen () from /usr/lib64/root/libCint.so.5.34
+#17 0x00002b8eac1c049f in G__shl_load () from /usr/lib64/root/libCint.so.5.34
+#18 0x00002b8eac137f65 in G__loadfile () from /usr/lib64/root/libCint.so.5.34
+#19 0x00002b8eaafd0048 in TCint::Load(char const*, bool) () from /usr/lib64/root/libCore.so.5.34
+#20 0x00002b8eaaf961b0 in TSystem::Load(char const*, char const*, bool) () from /usr/lib64/root/libCore.so.5.34
+#21 0x00002b8eab74db57 in TRint::TRint(char const*, int*, char**, void*, int, bool) () from /usr/lib64/root/libRint.so.5.34
+#22 0x000000000040102e in main ()
+===========================================================
+
+
+The lines below might hint at the cause of the crash.
+If they do not help you then please submit a bug report at
+http://root.cern.ch/bugs. Please post the ENTIRE stack trace
+from above as an attachment in addition to anything else
+that might help us fixing this issue.
+===========================================================
+#5  0x00002b8eae32f2cc in TClassTable::AddAlternate(char const*, char const*) () from /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib/libCore.so
+#6  0x00002b8eae2592e3 in ROOT::GenerateInitInstanceLocal () from /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib/libCore.so
+#7  0x00002b8eae238c14 in _GLOBAL__sub_I_G__Core.cxx () from /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw-patch/CMSSW_7_4_12_patch1/external/slc6_amd64_gcc491/lib/libCore.so
+#8  0x00002b8eaa99166f in _dl_init_internal () from /lib64/ld-linux-x86-64.so.2
+#9  0x00002b8eaa995e95 in dl_open_worker () from /lib64/ld-linux-x86-64.so.2
+#10 0x00002b8eaa991286 in _dl_catch_error () from /lib64/ld-linux-x86-64.so.2
+#11 0x00002b8eaa99563a in _dl_open () from /lib64/ld-linux-x86-64.so.2
+#12 0x00002b8eabe4af66 in dlopen_doit () from /lib64/libdl.so.2
+#13 0x00002b8eaa991286 in _dl_catch_error () from /lib64/ld-linux-x86-64.so.2
+#14 0x00002b8eabe4b29c in _dlerror_run () from /lib64/libdl.so.2
+#15 0x00002b8eabe4aee1 in dlopen
+
+GLIBC_2.2.5 () from /lib64/libdl.so.2
+===========================================================
+
+
+
+Job finished at Wed Jan 27 10:20:00 CET 2016 on node 
+ under linux version Scientific Linux CERN SLC release 6.7 (Carbon)
+
+CERN statistics: This process used approximately : 0:05:14 KSI2K hours (314 KSI2K seconds)
+                 This process corresponds to     : 0:20:24 HS06  hours (1224 HS06  seconds)
