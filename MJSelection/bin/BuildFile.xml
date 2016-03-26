@@ -2,6 +2,6 @@
 <use name="BaconAnalyzer/MJSelection"/>
 <use name="root"/>
 <flags CXXFLAGS="-g -Wall"/>
-<bin   file="runMJ.cpp" name="runMJ"> </bin>
+<bin   file="runMonoX.cpp" name="runMonoX"> </bin>
 
 
