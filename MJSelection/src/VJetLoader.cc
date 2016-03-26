@@ -51,9 +51,9 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   nVJet << "nf" << iJetLabel;
   pfTS << "topSize" << iJetLabel;
   fTree->Branch(nVJet.str().c_str(),&fNVJets,"fNVJets/I");
-  for(int i0 = 0; i0 < fN*3.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
+  for(int i0 = 0; i0 < fN*4.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
   for(int i0 = 0; i0 < fN*(int(fLabels.size())); i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars); // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi for vjet1 (3*1=3)
+  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,1); // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi,*_mass for vjet0 (4*1=4)
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,fN*3,fLabels);
   fTree->Branch(pfTS.str().c_str(),&ftopSize,"ftopSize/D"); 
 }

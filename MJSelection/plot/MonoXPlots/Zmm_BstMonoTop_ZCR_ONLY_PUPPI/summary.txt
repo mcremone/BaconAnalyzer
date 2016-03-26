@@ -1,9 +1,0 @@
-                                QCD           0.00
-                         Single Top           2.17
-                           t#bar{t}           9.70
-                            Diboson           2.50
-                             W+jets           0.42
-                             Z+jets          62.74
----------------------------------------------
-                       SM Expected:          77.53
-                          Observed:          76.00

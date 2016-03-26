@@ -54,7 +54,7 @@ void JetLoader::reset() {
   fSelJets.clear();
   fGoodJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
-  for(unsigned int i0 = 0; i0 < fBTagVars.size(); i0++) fBTagVars[i0] = 0;
+  for(unsigned int i0 = 0; i0 < fBTagVars.size(); i0++) fBTagVars[i0] = 1;
 }
 void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
   reset();
@@ -70,8 +70,8 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch("nbPUPPIjetsLdR2" ,&fNBTagsLdR2  ,"fNBTagsLdR2/I");
   std::stringstream diJet;
   diJet << "d" << iJetLabel;
-  for(int i0 = 0; i0 < fN*(10)+6; i0++) {double pVar = 0; fVars.push_back(pVar);}     // declare array of 47 vars
-  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);                                      // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi for j1,j2,j3,j4 (3*4=12)
+  for(int i0 = 0; i0 < fN*(10)+10; i0++) {double pVar = 0; fVars.push_back(pVar);}    // declare array of 51 vars
+  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,1);                                    // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi,j*_mass for j1,j2,j3,j4 (4*4=16)
   addOthers  (iJetLabel.c_str(),iTree,fN,fVars);                                      // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32)
   addDijet   (diJet.str().c_str(),iTree,1, fVars);                                    // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
   for(int i0 = 0; i0 < 60; i0++) {float pBTagVar = 0; fBTagVars.push_back(pBTagVar);} // declare array of 60 vars ( L0,L1,Lminus1,L2, M0,M1,Mminus1,M2 T0,T1,Tminus1,T2) for (CENT,MISTAGUP,MISTAGDO,BTAGUP,BTAGDO)
@@ -215,8 +215,8 @@ void JetLoader::fillDiJet() {
   fVars[lBase+6] = TMath::Min(lDPhi,2.*TMath::Pi()-lDPhi);
 }
 void JetLoader::addBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> &iLabels,int iN,std::vector<float> &iVals) {
-  for(int i0 = iN; i0 < iN+int(iLabels.size()); i0++) {
-    int iBase =i0*4;
+  int iBase=iN;
+  for(int i0 = 0; i0 < int(iLabels.size()); i0++) {
     std::stringstream pVal0,pVal1,pValminus1,pVal2;
     pVal0       << iHeader << "btagw" << iLabel << "0"      << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwL0_CENT -- just vary M,T and the others - first the others
     pVal1       << iHeader << "btagw" << iLabel << "1"      << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwL1_CENT
@@ -226,14 +226,15 @@ void JetLoader::addBTag(std::string iHeader,TTree *iTree,std::string iLabel,std:
     iTree->Branch(pVal1      .str().c_str(),&iVals[iBase+1],(pVal1      .str()+"/F").c_str());
     iTree->Branch(pValminus1 .str().c_str(),&iVals[iBase+2],(pValminus1 .str()+"/F").c_str());
     iTree->Branch(pVal2      .str().c_str(),&iVals[iBase+3],(pVal2      .str()+"/F").c_str());
-    iBase++;
+    iBase+=4;
   }
 }
 void JetLoader::fillBTag(std::vector<const TJet*> iObjects) {
   // CENT (), MISTAG(Ms), BTAG(Bs)  - 5 - CENT(vSFL.at(0)),MsUP(vSFL.at(1)),MsDO(vSFL.at(2)),BsUP(vSFL.at(3)),BsDO(vSFL.at(4))
+  int iN = 0;
   for(unsigned int j0=0; j0<3; j0++){
-    int iN = j0*20;
     std::vector<std::vector<float>> vSFL,vSFL_nominal;
+    vSFL.clear(); vSFL_nominal.clear();
     for(auto iftype :flavorTypes) {vSFL_nominal.push_back(getJetSFs(iftype,iObjects, freaders[j0].at(0), freaders[j0].at(3)));} // 0 and 3 HF and LF respectively - flavor types:nominal,Ms,Bs
     vSFL.push_back(vSFL_nominal.at(0));
     for(unsigned int i0=1; i0<3; i0++){
@@ -249,7 +250,8 @@ void JetLoader::fillBTag(std::vector<const TJet*> iObjects) {
       fBTagVars[lBase+0] = getBtagEventReweight(0,  iObjects, vSFL.at(j1));
       fBTagVars[lBase+1] = getBtagEventReweight(1,  iObjects, vSFL.at(j1));
       fBTagVars[lBase+2] = getBtagEventReweight(-1, iObjects, vSFL.at(j1));
-      fBTagVars[lBase+3] = getBtagEventReweight(2,  iObjects, vSFL.at(j1));  
+      fBTagVars[lBase+3] = getBtagEventReweight(2,  iObjects, vSFL.at(j1));
     }
+    iN += 20;
   }
 }

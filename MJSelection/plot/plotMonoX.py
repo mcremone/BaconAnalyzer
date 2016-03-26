@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
+# To run plots in batch
 
 import optparse
 
@@ -15,6 +16,6 @@ parser.add_option('-s', '--syst', help='syst',dest='syst')
 file_output = open ("batch/" + options.preselection + "_" + options.selection + "_" + options.subsample + "_" + options.combo + "_" + options.algo + "_" + options.syst + ".sh", "wa")
 
 print >> file_output,  "#!/bin/bash"
-print >> file_output,  "cd /afs/cern.ch/work/m/mcremone/private/CMSSW_7_4_12_patch1/src/BaconSkim/MonoXSelection/plot"
+print >> file_output,  "cd /afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconAnalyzer/MJSelection/plot/"
 print >> file_output,  "eval \`scramv1 runtime -sh\`"
 print >> file_output,  "root -b -q plotMonoX.C+\(\\\""+options.preselection+"\\\"\,\\\""+options.selection+"\\\"\,\\\""+options.subsample+"\\\"\,\\\""+options.combo+"\\\"\,\\\""+options.algo+"\\\"\,\\\""+options.syst+"\\\"\)"

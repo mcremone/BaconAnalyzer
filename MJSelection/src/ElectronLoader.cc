@@ -13,9 +13,9 @@ ElectronLoader::ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename)
   fElectronBr  = iTree->GetBranch("Electron");
   fN = 2;
   TFile *fEleSF = new TFile(ieleScaleFactorFilename.c_str());
-  fhEleVeto =  (TH2D*) fEleSF->Get("factorized_scalefactors_Veto_ele");
+  fhEleVeto =  (TH2D*) fEleSF->Get("scalefactors_Veto_ele");
   fhEleVeto->SetDirectory(0);
-  fhEleTight = (TH2D*) fEleSF->Get("factorized_scalefactors_Tight_ele");
+  fhEleTight = (TH2D*) fEleSF->Get("scalefactors_Tight_ele");
   fhEleTight->SetDirectory(0);
   fEleSF->Close();
 }
@@ -41,7 +41,7 @@ void ElectronLoader::setupTree(TTree *iTree) {
   fTree->Branch("vele1_iso",&fIso2,"fIso2/D");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("vele",iTree,fN,fVars);          // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*3=6)
+  setupNtuple("vele",iTree,fN,fVars);          // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
   addDiElectron("vdiele",iTree,1, fVars,fN*3); // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
   for(int i0 = 0; i0 <     3; i0++) {double pVar = 1; feleSFVars.push_back(pVar);}
   addLepSF("eleSF",iTree,feleSFVars);          // eleSF0,eleSF1,eleSF2

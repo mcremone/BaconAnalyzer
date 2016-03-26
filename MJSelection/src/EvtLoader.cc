@@ -112,42 +112,45 @@ bool EvtLoader::passSkim() {
 }
 void EvtLoader::fillEvent(unsigned int trigBit) { 
   reset();
-  fNPU        = fEvt->nPUmean;
-  fNVtx       = nVtx();
-  fITrigger   = trigBit;
-  fselectBits = 1;
-  fPUWeight   = puWeight(float(fNVtx)); 
-  fevtWeight  = 1;
-  fMetFilters = fEvt->metFilterFailBits;
-  fRun        = fEvt->runNum;
-  fLumi       = fEvt->lumiSec;
-  fEvtV       = fEvt->evtNum;
-  fRho        = fEvt->rhoIso;
-  fMet        = fEvt->pfMETC;
-  fMetPhi     = fEvt->pfMETCphi;
-  fPuppEt      = fEvt->puppETC;
-  fPuppEtPhi   = fEvt->puppETCphi;
+  fNPU          = fEvt->nPUmean;
+  fNVtx         = nVtx();
+  fITrigger     = trigBit;
+  fselectBits   = 1;
+  fPUWeight     = puWeight(float(fNVtx)); 
+  fevtWeight    = 1;
+  fMetFilters   = fEvt->metFilterFailBits;
+  fRun          = fEvt->runNum;
+  fLumi         = fEvt->lumiSec;
+  fEvtV         = fEvt->evtNum;
+  fRho          = fEvt->rhoIso;
+  fkFactor_CENT = 1;
+  fEwkCorr_CENT = 1;
+  fMet          = fEvt->pfMETC;
+  fMetPhi       = fEvt->pfMETCphi;
+  fPuppEt       = fEvt->puppETC;
+  fPuppEtPhi    = fEvt->puppETCphi;
   return;
 }
 // Fake MET
 void  EvtLoader::fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vector<TLorentzVector> iPhotons) { 
-  TLorentzVector lCorr;
   if(iVecCorr.size() > 0){
-    for(unsigned int i0 =0; i0 < iVecCorr.size(); i0++) lCorr += iVecCorr[i0];
+    TLorentzVector lCorr0;
+    for(unsigned int i0 =0; i0 < iVecCorr.size(); i0++) lCorr0 += iVecCorr[i0];
     fFMet        = fEvt->pfMETC;
     fFMetPhi     = fEvt->pfMETCphi;
     fFPuppEt      = fEvt->puppETC;
     fFPuppEtPhi   = fEvt->puppETCphi;
-    correctMet(fFPuppEt     ,fFPuppEtPhi,     lCorr);
-    correctMet(fFMet        ,fFMetPhi,        lCorr);
+    correctMet(fFPuppEt     ,fFPuppEtPhi,     lCorr0);
+    correctMet(fFMet        ,fFMetPhi,        lCorr0);
   }
   if(iPhotons.size() > 0){
+    TLorentzVector lCorr1;
     fFMet        = fEvt->pfMETC;
     fFMetPhi     = fEvt->pfMETCphi;
     fFPuppEt      = fEvt->puppETC;
     fFPuppEtPhi   = fEvt->puppETCphi;
-    lCorr = iPhotons[0];
-    correctMet(fFMet        ,fFMetPhi,        lCorr);
+    lCorr1 = iPhotons[0];
+    correctMet(fFMet        ,fFMetPhi,        lCorr1);
   }
 }
 void  EvtLoader::fillmT(std::vector<TLorentzVector> &lCorr) {

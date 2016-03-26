@@ -13,9 +13,9 @@ MuonLoader::MuonLoader(TTree *iTree,std::string imuScaleFactorFilename) {
   fMuonBr  = iTree->GetBranch("Muon");
   fN = 2;
   TFile *fMuSF = new TFile(imuScaleFactorFilename.c_str());
-  fhMuLoose =  (TH2D*) fMuSF->Get("unfactorized_scalefactors_Loose_mu");
+  fhMuLoose =  (TH2D*) fMuSF->Get("scalefactors_Loose_mu");
   fhMuLoose->SetDirectory(0);
-  fhMuTight =  (TH2D*) fMuSF->Get("unfactorized_scalefactors_Tight_mu");
+  fhMuTight =  (TH2D*) fMuSF->Get("scalefactors_Tight_mu");
   fhMuTight->SetDirectory(0);
   fMuSF->Close();
 }
@@ -37,7 +37,7 @@ void MuonLoader::setupTree(TTree *iTree) {
   fTree->Branch("nmuTight",&fNMuonsTight,"fNMuonsTight/I");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("vmuo",iTree,fN,fVars);        // 2 muons pt,eta,phi (2*3=6)
+  setupNtuple("vmuo",iTree,fN,fVars);        // 2 muons pt,eta,phi,mass (2*4=8)
   addDiMuon  ("vdimuo",iTree,1, fVars,fN*3); // dimuon system *_pt,mass,phi,y for dimuo0 (1*4)
   for(int i0 = 0; i0 <     3; i0++) {double pVar = 1; fmuoSFVars.push_back(pVar);}
   addLepSF   ("muoSF",iTree,fmuoSFVars);     // muoSF0,muoSF1,muoSF2
@@ -118,15 +118,3 @@ void MuonLoader::fillDiMuon(std::vector<TMuon*> lVeto, std::vector<TLorentzVecto
     }
   }
 }
-/*
-void fillLepSF(int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals) {
-  std::vector <double> flepSFtight, flepSFloose;
-  flepSFtight.clear(); flepSFloose.clear();
-  for(unsigned int i0=0; i0<iLeptons.size(); i0++){
-    flepSFtight.push_back(getVal2D(tightHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt())); //getTightMuonSF(iMuons[i0].Pt(),iMuons[i0].Eta()) - getTightEleSF(iElectrons[i0].Pt(),iElectrons[i0].Eta())
-    flepSFloose.push_back(getVal2D(looseHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt())); //getLooseMuonSF(iMuons[i0].Pt(),iMuons[i0].Eta()) - getVetoEleSF(iElectrons[i0].Pt(),iElectrons[i0].Eta()))
-  }
-  for(unsigned int i0=0; i0<2; i0++){                                                                                                                                                                                           
-    fmuoSFVars[i0] = getLepEventReweight(i0, nLep, iLeptons, isMatched, flepSFtight, flepSFloose);                                                                                                                                }
-}
-*/

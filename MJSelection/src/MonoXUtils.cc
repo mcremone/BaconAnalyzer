@@ -315,6 +315,23 @@ void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iV
   }
 }
 //--------------------------------------------------------------------------------------------------
+void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead) {
+  if(iHead==1){
+    for(int i0 = 0; i0 < iN; i0++) {
+      int iBase = i0*3;
+      std::stringstream pSPt,pSEta,pSPhi,pSMass;
+      pSPt  << iHeader << i0 << "_pt";
+      pSEta << iHeader << i0 << "_eta";
+      pSPhi << iHeader << i0 << "_phi";
+      pSMass << iHeader << i0 << "_mass";
+      iTree->Branch(pSPt .str().c_str(),&iVals[iBase+0],(pSPt .str()+"/D").c_str());
+      iTree->Branch(pSEta.str().c_str(),&iVals[iBase+1],(pSEta.str()+"/D").c_str());
+      iTree->Branch(pSPhi.str().c_str(),&iVals[iBase+2],(pSPhi.str()+"/D").c_str());
+      iTree->Branch(pSMass.str().c_str(),&iVals[iBase+2],(pSMass.str()+"/D").c_str());
+    }
+  }
+}
+//--------------------------------------------------------------------------------------------------
 void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead,std::vector<std::string> &iLabels) { 
   int lBase  = iHead;
   int lCount = 0;

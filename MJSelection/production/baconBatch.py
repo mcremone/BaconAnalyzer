@@ -164,7 +164,8 @@ def parse_to_dict(l_list):
 		iskey+=1
   return ret
 
-def getFilesJob(dirin,job,tnjobs):
+def getFilesJob(dirin,job,tnjobs):  
+  print dirin
   if tnjobs == 1 : 
   	tnjobs = -1
 	job = 0
@@ -173,8 +174,10 @@ def getFilesJob(dirin,job,tnjobs):
   else : alldirs=[dirin]
   infiles = []
   for dir in alldirs:
-    if '/store/' in dir : infiles.extend(makeCaFiles(dir,options.blacklist,tnjobs,job))
-    else : infiles.extend(makeFiles(dir,options.blacklist,tnjobs,job))
+  # taking only first dir
+  #dir  = alldirs[0]
+	  if '/store/' in dir : infiles.extend(makeCaFiles(dir,options.blacklist,tnjobs,job))
+	  else : infiles.extend(makeFiles(dir,options.blacklist,tnjobs,job))
   if options.verbose: print "VERB -- Found following files for dir %s --> "%dir, infiles
   return infiles
 

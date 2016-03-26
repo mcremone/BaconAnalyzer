@@ -301,7 +301,7 @@ bool GenLoader::isGenParticle(int iId) {
     TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
     if(fabs(pGen->pdgId)==iId) return true;
   }
-  return true;
+  return false;
 }
 int GenLoader::isttbarType() {
   assert(fGens);

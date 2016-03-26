@@ -13,37 +13,53 @@ xs=$4
 option1=$5
 option2=$6
 
-options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q 8nh"
+options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q 2nd"
 #options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q cmscaf1nd"
 if [ $ismc = "data" ]; then
-    options1="Output.root -a 5:1  -a 2:"${ismc}" -a 3:$PWD/../Json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt  -n 2000 -q 8nh"
+    options1="Output.root -a 5:1  -a 2:"${ismc}" -a 3:$PWD/../Json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt  -n 2000 -q 2nd"
 fi
 
 scandir=$dir$label
 submitted=0
 total=0
+
 function scan { 
     local scandir=$1
     echo $scandir
     submitted=0
     for x in `/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select ls $scandir |  awk '{print $1}'`; do
-	hasdot=`echo $x | grep -c "\."` 
-	if [ "$hasdot" -eq 0 ]; then
-	    echo "Scanning: "$scandir/$x
-	    scan  $scandir/$x
-	fi
-	hasroot=`echo $x | grep -c .root` 
-	if [ "$hasroot" -eq 0 ]; then 
-	    echo " "
-	else 
-	   if [ "$submitted" -eq 0 ]; then
-	       python baconBatch.py runMJ  $options1 -a "4:"$xs -d "1:"$scandir  -o $PWD/../MonoXbits/${label}_${ismc}   $option1 $option2
-	       submitted=$((submitted+1))
-	       total=$((total+1))
-	   fi
-	fi
+        hasdot=`echo $x | grep -c "\."`
+        if [ "$hasdot" -eq 0 ]; then
+            echo "Scanning: "$scandir/$x
+            scan  $scandir/$x
+        fi
+        hasroot=`echo $x | grep -c .root`
+        if [ "$hasroot" -ne 0 ]; then
+            if [ "$submitted" -eq 0 ]; then
+		python baconBatch.py runMonoX  $options1 -a "4:"$xs -d "1:"$scandir  -o $PWD/../baconbits/${label}_${ismc}   $option1 $option2
+		#echo $scandir
+		submitted=$((submitted+1))
+		total=$((total+1))
+            fi
+        fi
     done
 }
-scan $scandir
 
+for x in `/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select ls $scandir |  awk '{print $scandir}'`; do
+    hasrootdir=`echo $x | grep -c .root`
+    if [ "$hasrootdir" -eq 1 ]; then
+	break
+    fi
+done
+if [ "$hasrootdir" -ne 0 ]; then
+    submitted=0	
+    if [ "$submitted" -eq 0 ]; then
+	python baconBatch.py runMonoX  $options1 -a "4:"$xs -d "1:"$scandir  -o $PWD/../baconbits/${label}_${ismc}   $option1 $option2
+	#echo $scandir
+	submitted=$((submitted+1))
+        total=$((total+1))	
+    fi
+else
+    scan $scandir
+fi
 exit

@@ -58,70 +58,79 @@ void plotMonoX(const string preselection, const string selection, const string s
   CPlot::sOutDir = outputDir;
 
   //
-  // samples
+  // Samples
   // Note: macro assumes samplev[0] is data
   //
   vector<CSample*> samplev;
 
   samplev.push_back(new CSample("data",0,0));
-  if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("../baconbits/MET.root");
-  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("../baconbits/SingleElectron.root");
-  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("../baconbits/SinglePhoton.root");
+  if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("../MonoXbits/MET.root");
+  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("../MonoXbits/SingleElectron.root");
+  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("../MonoXbits/SinglePhoton.root");
   samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-  samplev.back()->fnamev.push_back("../baconbits/QCD.root");
+  samplev.back()->fnamev.push_back("../MonoXbits/QCD.root");
   if (preselection.compare("Pho")!=0) {
+    samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
+    samplev.back()->fnamev.push_back("../baconbits/T.root");
+    samplev.back()->fnamev.push_back("../baconbits/TZ.root");
+    samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
+    samplev.back()->fnamev.push_back("../baconbits/TTBST.root");
+    samplev.back()->fnamev.push_back("../baconbits/TTCOM.root");
+    samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
+    samplev.back()->fnamev.push_back("../baconbits/TTG.root");
     samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
     samplev.back()->fnamev.push_back("../baconbits/WW.root");
     samplev.back()->fnamev.push_back("../baconbits/WZ.root");
     samplev.back()->fnamev.push_back("../baconbits/ZZ.root");
     samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
-    //    samplev.back()->fnamev.push_back("../baconbits/W.root");
-    samplev.back()->fnamev.push_back("../baconbits/WHF.root");
-    //    samplev.push_back(new CSample("W+LF",kGreen - 7,kGreen - 7));
-    samplev.back()->fnamev.push_back("../baconbits/WLF.root");
-    //      samplev.back()->fnamev.push_back("../baconbits/WNLO.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/W.root");
+    samplev.back()->fnamev.push_back("../MonoXbits/WHF.root");
+    // samplev.push_back(new CSample("W+LF",kGreen - 7,kGreen - 7));
+    samplev.back()->fnamev.push_back("../MonoXbits/WLF.root");
     samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
-    //    samplev.back()->fnamev.push_back("../baconbits/Z.root");
-    samplev.back()->fnamev.push_back("../baconbits/ZHF.root");   
-    samplev.back()->fnamev.push_back("../baconbits/ZLF.root");
-    samplev.back()->fnamev.push_back("../baconbits/DYHF.root");
-    samplev.back()->fnamev.push_back("../baconbits/DYLF.root");
-    samplev.push_back(new CSample("t#bar{t} comb.",kOrange - 3,kOrange - 3));
-    samplev.back()->fnamev.push_back("../baconbits/TTBST.root");
-    samplev.back()->fnamev.push_back("../baconbits/TTCOM.root");
-    samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
-    samplev.back()->fnamev.push_back("../baconbits/TTG.root");
-    samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
-    samplev.back()->fnamev.push_back("../baconbits/T.root");
-    samplev.back()->fnamev.push_back("../baconbits/TZ.root");
-    samplev.push_back(new CSample("t#bar{t} merged",kOrange - 4,kOrange - 4));
-    samplev.back()->fnamev.push_back("../baconbits/TTBST.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/Z.root");
+    samplev.back()->fnamev.push_back("../MonoXbits/ZHF.root");   
+    samplev.back()->fnamev.push_back("../MonoXbits/ZLF.root");
+    samplev.back()->fnamev.push_back("../MonoXbits/DYHF.root");
+    samplev.back()->fnamev.push_back("../MonoXbits/DYLF.root");
+    // samplev.push_back(new CSample("t#bar{t} comb.",kOrange - 3,kOrange - 3));
+    // samplev.back()->fnamev.push_back("../MonoXbits/TT1L.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/TT2L.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/TTHAD.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/TTBST.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/TTCOM.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/TTZ.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/TTG.root");
+    // samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
+    // samplev.back()->fnamev.push_back("../MonoXbits/T.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/TZ.root");
+    // samplev.push_back(new CSample("t#bar{t} merged",kOrange - 4,kOrange - 4));
+    // samplev.back()->fnamev.push_back("../MonoXbits/TTBST.root");
   }
   if (preselection.compare("Pho")==0){
     samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
-    //    samplev.back()->fnamev.push_back("../baconbits/G.root");
-    samplev.back()->fnamev.push_back("../baconbits/GHF.root");
-    samplev.back()->fnamev.push_back("../baconbits/GLF.root");
+    //    samplev.back()->fnamev.push_back("../MonoXbits/G.root");
+    samplev.back()->fnamev.push_back("../MonoXbits/GHF.root");
+    samplev.back()->fnamev.push_back("../MonoXbits/GLF.root");
   }
-  //  if (subsample.compare("SR")==0 || subsample.find("Znunu")==0){
   if (subsample.compare("SR")==0){   
     samplev.push_back(new CSample("M_{S} 1100, M#chi 100", kBlue, kBlue));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-1100_Mchi-100_13TeV-madgraph-pythia8_mc.root");
+    samplev.back()->fnamev.push_back("../MonoXbits/Spring15_a25ns_Monotop_S1_Mres-1100_Mchi-100_MINIAOD_mc.root");
     samplev.push_back(new CSample("M_{V} 300 X 5", kRed, kRed));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-300_13TeV-madgraph-pythia8_mc.root");
+    samplev.back()->fnamev.push_back("../MonoXbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-300_13TeV-madgraph-pythia8_mc.root");
     // samplev.push_back(new CSample("Mres-1300_Mchi-100", kBlack, kBlack));
-    // samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-1300_Mchi-100_13TeV-madgraph-pythia8_mc.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-1300_Mchi-100_13TeV-madgraph-pythia8_mc.root");
     // samplev.push_back(new CSample("Mchi-500", kGreen, kGreen));
-    // samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-500_13TeV-madgraph-pythia8_mc.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-500_13TeV-madgraph-pythia8_mc.root");
     // samplev.push_back(new CSample("Mres-900_Mchi-100", kMagenta, kMagenta));
-    // samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-900_Mchi-100_13TeV-madgraph-pythia8_mc.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-900_Mchi-100_13TeV-madgraph-pythia8_mc.root");
     // samplev.push_back(new CSample("Mchi-900", kCyan, kCyan));
-    // samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-900_13TeV-madgraph-pythia8_mc.root");
+    // samplev.back()->fnamev.push_back("../MonoXbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-900_13TeV-madgraph-pythia8_mc.root");
     // samplev.push_back(new CSample("TTDM", kMagenta - 10, kMagenta - 10));
-    // samplev.back()->fnamev.push_back("../baconbits/TTDM.root");  
-    // integrated luminosity to scale MC
+    // samplev.back()->fnamev.push_back("../MonoXbits/TTDM.root");  
   }
 
+  // integrated luminosity to scale MC
   const double LUMI = 2.26;
   
   // histograms for various corrections
@@ -145,52 +154,54 @@ void plotMonoX(const string preselection, const string selection, const string s
   const Int_t NBINS = 5;
   Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
-    sprintf(hname,"hMET_%i",isam);    hMETv.push_back(new TH1D(hname,"",NBINS,edges));     hMETv[isam]->Sumw2();
-    sprintf(hname,"hMETLog_%i",isam); hMETLogv.push_back(new TH1D(hname,"",NBINS,edges)); hMETLogv[isam]->Sumw2();
-    sprintf(hname,"hFatJetMass_%i",isam); hFatJetMassv.push_back(new TH1D(hname,"",20,0,300)); hFatJetMassv[isam]->Sumw2();
-    sprintf(hname,"hFatJetPt_%i",isam); hFatJetPtv.push_back(new TH1D(hname,"",20,250,1000)); hFatJetPtv[isam]->Sumw2();
+    sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",NBINS,edges));            hMETv[isam]->Sumw2();
+    sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",NBINS,edges));         hMETLogv[isam]->Sumw2();
+    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,0,300));        hFatJetMassv[isam]->Sumw2();
+    sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",20,250,1000));       hFatJetPtv[isam]->Sumw2();
     sprintf(hname,"hTransverseMass_%i",isam); hTransverseMassv.push_back(new TH1D(hname,"",30,300,2000)); hTransverseMassv[isam]->Sumw2();
-    sprintf(hname,"hFatJetTau32_%i",isam); hFatJetTau32v.push_back(new TH1D(hname,"",15,0.2,1)); hFatJetTau32v[isam]->Sumw2();
-    sprintf(hname,"hBtag_%i",isam); hBtagv.push_back(new TH1D(hname,"",15,0.1,1.)); hBtagv[isam]->Sumw2();
-    sprintf(hname,"hMinDPhiJetsMet_%i",isam); hMinDPhiJetsMetv.push_back(new TH1D(hname,"",20,0,3.14)); hMinDPhiJetsMetv[isam]->Sumw2();
-    sprintf(hname,"hNJets_%i",isam); hNJetsv.push_back(new TH1D(hname,"",10,0,10)); hNJetsv[isam]->Sumw2();
-    sprintf(hname,"hJet1CHF_%i",isam); hJet1CHFv.push_back(new TH1D(hname,"",30,0,1)); hJet1CHFv[isam]->Sumw2();
-    sprintf(hname,"hJet1NHF_%i",isam); hJet1NHFv.push_back(new TH1D(hname,"",30,0,1)); hJet1NHFv[isam]->Sumw2();
-    sprintf(hname,"hJet1NEMF_%i",isam); hJet1NEMFv.push_back(new TH1D(hname,"",30,0,1)); hJet1NEMFv[isam]->Sumw2();
-    sprintf(hname,"hJet1Eta_%i",isam); hJet1Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));     hJet1Etav[isam]->Sumw2();
-    sprintf(hname,"hJet2Eta_%i",isam); hJet2Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));     hJet2Etav[isam]->Sumw2();
-    sprintf(hname,"hJet3Eta_%i",isam); hJet3Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));     hJet3Etav[isam]->Sumw2();
-    sprintf(hname,"hJet4Eta_%i",isam); hJet4Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));     hJet4Etav[isam]->Sumw2();
+    sprintf(hname,"hFatJetTau32_%i",isam);    hFatJetTau32v.push_back(new TH1D(hname,"",15,0.2,1));       hFatJetTau32v[isam]->Sumw2();
+    sprintf(hname,"hBtag_%i",isam);           hBtagv.push_back(new TH1D(hname,"",15,0.1,1.));             hBtagv[isam]->Sumw2();
+    sprintf(hname,"hMinDPhiJetsMet_%i",isam); hMinDPhiJetsMetv.push_back(new TH1D(hname,"",20,0,3.14));   hMinDPhiJetsMetv[isam]->Sumw2();
+    sprintf(hname,"hNJets_%i",isam);          hNJetsv.push_back(new TH1D(hname,"",10,0,10));              hNJetsv[isam]->Sumw2();
+    sprintf(hname,"hJet1CHF_%i",isam);        hJet1CHFv.push_back(new TH1D(hname,"",30,0,1));             hJet1CHFv[isam]->Sumw2();
+    sprintf(hname,"hJet1NHF_%i",isam);        hJet1NHFv.push_back(new TH1D(hname,"",30,0,1));             hJet1NHFv[isam]->Sumw2();
+    sprintf(hname,"hJet1NEMF_%i",isam);       hJet1NEMFv.push_back(new TH1D(hname,"",30,0,1));            hJet1NEMFv[isam]->Sumw2();
+    sprintf(hname,"hJet1Eta_%i",isam);        hJet1Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet1Etav[isam]->Sumw2();
+    sprintf(hname,"hJet2Eta_%i",isam);        hJet2Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet2Etav[isam]->Sumw2();
+    sprintf(hname,"hJet3Eta_%i",isam);        hJet3Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet3Etav[isam]->Sumw2();
+    sprintf(hname,"hJet4Eta_%i",isam);        hJet4Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet4Etav[isam]->Sumw2();
     neventsv.push_back(0);
   }
 
-  TH1D *hMETMC    = (TH1D*)hMETv[0]->Clone("hMETMC");
-  TH1D *hMETLogMC = (TH1D*)hMETLogv[0]->Clone("hMETLogMC");
-  TH1D *hFatJetMassMC  = (TH1D*)hFatJetMassv[0]->Clone("hFatJetMassMC");
-  TH1D *hFatJetPtMC  = (TH1D*)hFatJetPtv[0]->Clone("hFatJetPtMC");
+  TH1D *hMETMC             = (TH1D*)hMETv[0]->Clone("hMETMC");
+  TH1D *hMETLogMC          = (TH1D*)hMETLogv[0]->Clone("hMETLogMC");
+  TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0]->Clone("hFatJetMassMC");
+  TH1D *hFatJetPtMC        = (TH1D*)hFatJetPtv[0]->Clone("hFatJetPtMC");
   TH1D *hTransverseMassMC  = (TH1D*)hTransverseMassv[0]->Clone("hTransverseMassMC");
-  TH1D *hFatJetTau32MC  = (TH1D*)hFatJetTau32v[0]->Clone("hFatJetTau32MC");
-  TH1D *hBtagMC  = (TH1D*)hBtagv[0]->Clone("hBtagMC");
+  TH1D *hFatJetTau32MC     = (TH1D*)hFatJetTau32v[0]->Clone("hFatJetTau32MC");
+  TH1D *hBtagMC            = (TH1D*)hBtagv[0]->Clone("hBtagMC");
   TH1D *hMinDPhiJetsMetMC  = (TH1D*)hMinDPhiJetsMetv[0]->Clone("hMinDPhiJetsMetMC");
-  TH1D *hNJetsMC  = (TH1D*)hNJetsv[0]->Clone("hNJetsMC");
-  TH1D *hJet1CHFMC  = (TH1D*)hJet1CHFv[0]->Clone("hJet1CHFMC");
-  TH1D *hJet1NHFMC  = (TH1D*)hJet1NHFv[0]->Clone("hJet1NHFMC");
-  TH1D *hJet1NEMFMC  = (TH1D*)hJet1NEMFv[0]->Clone("hJet1NEMFMC");
-  TH1D *hJet1EtaMC = (TH1D*)hJet1Etav[0]->Clone("hJet1EtaMC");
-  TH1D *hJet2EtaMC = (TH1D*)hJet2Etav[0]->Clone("hJet2EtaMC");
-  TH1D *hJet3EtaMC = (TH1D*)hJet3Etav[0]->Clone("hJet3EtaMC");
-  TH1D *hJet4EtaMC = (TH1D*)hJet4Etav[0]->Clone("hJet4EtaMC");
-  double neventsMC=0;
+  TH1D *hNJetsMC           = (TH1D*)hNJetsv[0]->Clone("hNJetsMC");
+  TH1D *hJet1CHFMC         = (TH1D*)hJet1CHFv[0]->Clone("hJet1CHFMC");
+  TH1D *hJet1NHFMC         = (TH1D*)hJet1NHFv[0]->Clone("hJet1NHFMC");
+  TH1D *hJet1NEMFMC        = (TH1D*)hJet1NEMFv[0]->Clone("hJet1NEMFMC");
+  TH1D *hJet1EtaMC         = (TH1D*)hJet1Etav[0]->Clone("hJet1EtaMC");
+  TH1D *hJet2EtaMC         = (TH1D*)hJet2Etav[0]->Clone("hJet2EtaMC");
+  TH1D *hJet3EtaMC         = (TH1D*)hJet3Etav[0]->Clone("hJet3EtaMC");
+  TH1D *hJet4EtaMC         = (TH1D*)hJet4Etav[0]->Clone("hJet4EtaMC");
+  TH1D *hMETSig1           = (TH1D*)hMETv[0]->Clone("hMETSig1");
+  TH1D *hMETSig2           = (TH1D*)hMETv[0]->Clone("hMETSig2");
+  // TH1D *hMETSig3           = (TH1D*)hMETv[0]->Clone("hMETSig3");
+  // TH1D *hMETSig4           = (TH1D*)hMETv[0]->Clone("hMETSig4");                                                                                                                                                 
+  // TH1D *hMETSig5           = (TH1D*)hMETv[0]->Clone("hMETSig5");                                                                                                                                      
+  // TH1D *hMETSig6           = (TH1D*)hMETv[0]->Clone("hMETSig6"); 
 
-  TH1D *hMETSig1  = (TH1D*)hMETv[0]->Clone("hMETSig1");
-  TH1D *hMETSig2  = (TH1D*)hMETv[0]->Clone("hMETSig2");
-  // TH1D *hMETSig3  = (TH1D*)hMETv[0]->Clone("hMETSig3");
-  // TH1D *hMETSig4  = (TH1D*)hMETv[0]->Clone("hMETSig4");
-  // TH1D *hMETSig5  = (TH1D*)hMETv[0]->Clone("hMETSig5");
-  // TH1D *hMETSig6  = (TH1D*)hMETv[0]->Clone("hMETSig6");
+  double neventsMC = 0;
 
   TFile *infile=0;
   TTree *intree=0;
+
+  // Loop over samples
 
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     CSample *sample = samplev[isam];
@@ -209,104 +220,99 @@ void plotMonoX(const string preselection, const string selection, const string s
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits     = new BitsLoader(intree,algo,syst,preselection);
+      fBits  = new BitsLoader(intree,"15",algo,syst,preselection);
       double nevts=0;
       int noweight=0;
 
+      std::cout << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
-	//	if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
-	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
+	// if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
+	// if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
 	// common selection
 	if(fBits->metfilter!=0)                   continue;
 	//preselection
 	if(!fBits->passPreSelection(preselection)) continue;
+	
 	//selection
 	float btagw=1;
 	if(!fBits->passSelection(preselection,selection,subsample,combo,btagw)) continue;
 
         double wgt = 1;
-	  if(!isData) {
-	    wgt *= LUMI*fBits->scale1fb*fBits->nloKfactor*fBits->ewkCorr*btagw*fBits->triggerEff*fBits->evtWeight*fBits->lepWeight;
-	    // if(sample->label=="t#bar{t}" && ifile==0 && fBits->topSize<1.2){
-	    //   wgt *= fBits->ToptagSF;
-	    // }
-	    // if(sample->label!="t#bar{t}" || ifile!=0 || fBits->topSize>=1.2){
-	    //   wgt *= fBits->TopmistagSF;
-	    // }
-	    // if(sample->label=="W+jets" || sample->label=="Z+jets" || sample->label=="#gamma+jets"){
-	    //   if(subsample=="SR" || subsample=="TopCR" || subsample=="minusMass" || subsample=="minusTau32"){
-	    // 	if(ifile==0 || ifile==2) {
-	    // 	  wgt *= fBits->btagSF;
-	    // 	}
-	    // 	if(ifile==1 || ifile==3) {
-	    // 	  wgt *= fBits->bmistagSF;
-	    // 	}
-	    //   }
-	    // }
+	if(!isData) {
+	  wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->triggerEff*btagw*fBits->eleSF0*fBits->eleSF1*fBits->eleSF2*fBits->muoSF0*fBits->muoSF1*fBits->muoSF2;
+	  if(sample->label=="t#bar{t}" && ifile==0 && fBits->topSize<1.2){
+	     wgt *= fBits->ToptagSF;
+	  }
+	  if(sample->label!="t#bar{t}" || ifile!=0 || fBits->topSize>=1.2){
+	     wgt *= fBits->TopmistagSF;
+	  }
 
-	    if(sample->label=="t#bar{t} merged" && ifile==0 && fBits->topSize<1.2){ 
-              wgt *= fBits->ToptagSF;
-            }
-	    if(sample->label=="t#bar{t} merged" && ifile==0 && fBits->topSize>=1.2){                                                                                                                 
-	      wgt *= 0;                                                                                                                                                                             
-	    }                                                                                                                                                                                        
-	    if(sample->label=="t#bar{t} comb." && ifile==0 && fBits->topSize<1.2){                                                                                                      
-	      wgt *= 0;                                                                                                                                                                         
-	    }   
-	    if(sample->label!="t#bar{t} merged" || ifile!=0 || fBits->topSize>=1.2){
-              wgt *= fBits->TopmistagSF;
-            }
-            if(sample->label=="W+jets" || sample->label=="Z+jets" || sample->label=="#gamma+jets"){
-              if(subsample=="SR" || subsample=="TopCR" || subsample=="minusMass" || subsample=="minusTau32"){
-                if(ifile==0 || ifile==2) {
-                  wgt *= fBits->btagSF;
-                }
-                if(ifile==1 || ifile==3) {
-                  wgt *= fBits->bmistagSF;
-                }
-              }
-            }
+	  // if(sample->label=="t#bar{t} merged" && ifile==0 && fBits->topSize<1.2){ 
+	  //   wgt *= fBits->ToptagSF;
+	  // }
+	  // if(sample->label=="t#bar{t} merged" && ifile==0 && fBits->topSize>=1.2){                                                                                                                 
+	  //   wgt *= 0;                                                                                                                                                                             
+	  // }                                                                                                                                                                                        
+	  // if(sample->label=="t#bar{t} comb." && ifile==0 && fBits->topSize<1.2){                                                                                                      
+	  //   wgt *= 0;                                                                                                                                                                         
+	  // }   
+	  // if(sample->label!="t#bar{t} merged" || ifile!=0 || fBits->topSize>=1.2){
+	  //   wgt *= fBits->TopmistagSF;
+	  // }
+	  
+	  if(sample->label=="W+jets" || sample->label=="Z+jets" || sample->label=="#gamma+jets"){
+	    if( fBits->ewkCorr*fBits->nloKfactor ==0) wgt *= 1;
+	    else wgt *= fBits->ewkCorr*fBits->nloKfactor;
+	    if(subsample=="SR" || subsample=="TopCR" || subsample=="minusMass" || subsample=="minusTau32"){
+	      if(ifile==0 || ifile==2) {
+		wgt *= fBits->btagSF;
+	      }
+	      if(ifile==1 || ifile==3) {
+		wgt *= fBits->bmistagSF;
+	      }
+	    }
+	  }
 	}
-        nevts += wgt;
+	nevts += wgt;
 	noweight++;
-
+	
         neventsv[isam]+=wgt;
-        hMETv[isam]    ->Fill(fBits->getMET(preselection).Pt(),       wgt);
-        hMETLogv[isam] ->Fill(fBits->getMET(preselection).Pt(),       wgt);
-	hFatJetMassv[isam]    ->Fill(fBits->fjet_mass(selection),       wgt);
-	hFatJetPtv[isam]    ->Fill(fBits->bst15_jet1->Pt(),       wgt);
-        hTransverseMassv[isam]    ->Fill(fBits->transverse_mass(selection),       wgt);
+        hMETv[isam]            ->Fill(fBits->getMET(preselection).Pt(),       wgt);
+        hMETLogv[isam]         ->Fill(fBits->getMET(preselection).Pt(),       wgt);
+	hFatJetMassv[isam]     ->Fill(fBits->fjet_mass(selection),       wgt);
+	hFatJetPtv[isam]       ->Fill(fBits->bst_jet0_pt,       wgt);
+        hTransverseMassv[isam] ->Fill(fBits->transverse_mass(selection),       wgt);
 	hFatJetTau32v[isam]    ->Fill(fBits->nsubjet(selection),       wgt);
-        hBtagv[isam]    ->Fill(fBits->btag(selection),       wgt);
-	hMinDPhiJetsMetv[isam]    ->Fill(fBits->min_dphijetsmet,       wgt);
-        hNJetsv[isam]    ->Fill(fBits->njets,       wgt);
-	hJet1CHFv[isam]    ->Fill(fBits->chf(selection),       wgt);
-        hJet1NHFv[isam]    ->Fill(fBits->nhf(selection),       wgt);
-        hJet1NEMFv[isam]    ->Fill(fBits->nemf(selection),       wgt);
-	hJet1Etav[isam]->Fill(fBits->res_jet1->Eta(), wgt);
-	hJet2Etav[isam]->Fill(fBits->res_jet2->Eta(), wgt);
-	hJet3Etav[isam]->Fill(fBits->res_jet3->Eta(), wgt);
-	hJet4Etav[isam]->Fill(fBits->res_jet4->Eta(), wgt);
-	//        if((!isData && subsample.compare("SR")!=0) || (!isData && !isSignal && subsample.compare("SR")==0 || subsample.find("Znunu")==0))){
-	if((!isData && subsample.compare("SR")!=0) || (!isData && !isSignal && subsample.compare("SR")==0)){
+        hBtagv[isam]           ->Fill(fBits->btag(selection),       wgt);
+	hMinDPhiJetsMetv[isam] ->Fill(fBits->min_dphijetsmet,       wgt);
+        hNJetsv[isam]          ->Fill(fBits->njets,       wgt);
+	hJet1CHFv[isam]        ->Fill(fBits->chf(selection),       wgt);
+        hJet1NHFv[isam]        ->Fill(fBits->nhf(selection),       wgt);
+        hJet1NEMFv[isam]       ->Fill(fBits->nemf(selection),       wgt);
+	hJet1Etav[isam]        ->Fill(fBits->res_jet0_eta, wgt);
+	hJet2Etav[isam]        ->Fill(fBits->res_jet1_eta, wgt);
+	hJet3Etav[isam]        ->Fill(fBits->res_jet2_eta, wgt);
+	hJet4Etav[isam]        ->Fill(fBits->res_jet3_eta, wgt);
+
+	if((!isData && subsample.compare("SR")!=0) || (!isData  && !isSignal && subsample.compare("SR")==0)){ // && !isSignal
           neventsMC+=wgt;
-          hMETMC    ->Fill(fBits->getMET(preselection).Pt(),       wgt);
-          hMETLogMC ->Fill(fBits->getMET(preselection).Pt(),       wgt);
-	  hFatJetMassMC    ->Fill(fBits->fjet_mass(selection),       wgt);
-	  hFatJetPtMC    ->Fill(fBits->bst15_jet1->Pt(),       wgt);
-	  hTransverseMassMC    ->Fill(fBits->transverse_mass(selection),       wgt);
+          hMETMC            ->Fill(fBits->getMET(preselection).Pt(),       wgt);
+          hMETLogMC         ->Fill(fBits->getMET(preselection).Pt(),       wgt);
+	  hFatJetMassMC     ->Fill(fBits->fjet_mass(selection),       wgt);
+	  hFatJetPtMC       ->Fill(fBits->bst_jet0_pt,       wgt);
+	  hTransverseMassMC ->Fill(fBits->transverse_mass(selection),       wgt);
 	  hFatJetTau32MC    ->Fill(fBits->nsubjet(selection),       wgt);
-	  hBtagMC    ->Fill(fBits->btag(selection),       wgt);
-	  hMinDPhiJetsMetMC    ->Fill(fBits->min_dphijetsmet,       wgt);
-	  hNJetsMC    ->Fill(fBits->njets,       wgt);
-	  hJet1CHFMC    ->Fill(fBits->chf(selection),       wgt);
-	  hJet1NHFMC    ->Fill(fBits->nhf(selection),       wgt);
-	  hJet1NEMFMC    ->Fill(fBits->nemf(selection),       wgt);
-	  hJet1EtaMC->Fill(fBits->res_jet1->Eta(), wgt);
-	  hJet2EtaMC->Fill(fBits->res_jet2->Eta(), wgt);
-	  hJet3EtaMC->Fill(fBits->res_jet3->Eta(), wgt);
-	  hJet4EtaMC->Fill(fBits->res_jet4->Eta(), wgt);
+	  hBtagMC           ->Fill(fBits->btag(selection),       wgt);
+	  hMinDPhiJetsMetMC ->Fill(fBits->min_dphijetsmet,       wgt);
+	  hNJetsMC          ->Fill(fBits->njets,       wgt);
+	  hJet1CHFMC        ->Fill(fBits->chf(selection),       wgt);
+	  hJet1NHFMC        ->Fill(fBits->nhf(selection),       wgt);
+	  hJet1NEMFMC       ->Fill(fBits->nemf(selection),       wgt);
+	  hJet1EtaMC        ->Fill(fBits->res_jet0_eta, wgt);
+	  hJet2EtaMC        ->Fill(fBits->res_jet1_eta, wgt);
+	  hJet3EtaMC        ->Fill(fBits->res_jet2_eta, wgt);
+	  hJet4EtaMC        ->Fill(fBits->res_jet3_eta, wgt);
         }
 	if(!isData){
 	  if(isSignal1) hMETSig1->Fill(fBits->getMET(preselection).Pt(),       wgt);
@@ -369,15 +375,12 @@ void plotMonoX(const string preselection, const string selection, const string s
   cout << "*--------------------------------------------------" << endl;
   cout << endl;
 
-  //  makeHTML(outputDir);
-
   ofstream txtfile;
   char txtfname[200];
   sprintf(txtfname,"%s/summary.txt",outputDir.c_str());
   txtfile.open(txtfname);
   txtfile << setprecision(2) << fixed;
   float max = samplev.size();
-  //  if (subsample.compare("SR")==0 || subsample.find("Znunu")==0) max = samplev.size()-2;
   if (subsample.compare("SR")==0) max = samplev.size()-2;    
   for(unsigned int isam=1; isam<max; isam++) {
     txtfile << setw(35) << samplev[isam]->label;
@@ -386,7 +389,6 @@ void plotMonoX(const string preselection, const string selection, const string s
   txtfile << "---------------------------------------------"  << endl;
   txtfile << setw(35) << "SM Expected:" << setw(15) << neventsMC << endl;
   if(!doBlind) { txtfile << setw(35) << "Observed:" << setw(15) << neventsv[0] << endl; }
-  //  if(subsample.compare("SR")==0 || subsample.find("Znunu")==0){
   if(subsample.compare("SR")==0){
     txtfile << "---------------------------------------------"  << endl;
     for(unsigned int isam=max; isam<samplev.size(); isam++) {
@@ -404,30 +406,28 @@ void plotMonoX(const string preselection, const string selection, const string s
   //==============================================================================================================
 
   TCanvas *c = MakeCanvas("c","c",800,800);
-  // c->Divide(1,2,0,0);
-  // c->cd(1)->SetPad(0,0.3,1.0,1.0);
-  // c->cd(1)->SetTopMargin(0.1);
-  // c->cd(1)->SetBottomMargin(0);
-  // c->cd(1)->SetLeftMargin(0.15);
-  // c->cd(1)->SetRightMargin(0.07);
-  // c->cd(1)->SetTickx(1);
-  // c->cd(1)->SetTicky(1);
+  c->Divide(1,2,0,0);
+  c->cd(1)->SetPad(0,0.3,1.0,1.0);
+  c->cd(1)->SetTopMargin(0.1);
+  c->cd(1)->SetBottomMargin(0);
+  c->cd(1)->SetLeftMargin(0.15);
+  c->cd(1)->SetRightMargin(0.07);
+  c->cd(1)->SetTickx(1);
+  c->cd(1)->SetTicky(1);
+  c->cd(2)->SetPad(0,0,1.0,0.3);
+  c->cd(2)->SetTopMargin(0);
+  c->cd(2)->SetBottomMargin(0.45);
+  c->cd(2)->SetLeftMargin(0.15);
+  c->cd(2)->SetRightMargin(0.07);
+  c->cd(2)->SetTickx(1);
+  c->cd(2)->SetTicky(1);
 
-  // c->cd(2)->SetPad(0,0,1.0,0.3);
-  // c->cd(2)->SetTopMargin(0);
-  // c->cd(2)->SetBottomMargin(0.45);
-  // c->cd(2)->SetLeftMargin(0.15);
-  // c->cd(2)->SetRightMargin(0.07);
-  // c->cd(2)->SetTickx(1);
-  // c->cd(2)->SetTicky(1);
-
-  //  c->SetPad(0,0.3,1.0,1.0);
-  c->SetTopMargin(0.1);
-  c->SetBottomMargin(0.15);
-  c->SetLeftMargin(0.15);
-  c->SetRightMargin(0.07);
-  c->SetTickx(1);
-  c->SetTicky(1);
+  // c->SetTopMargin(0.1);
+  // c->SetBottomMargin(0.15);
+  // c->SetLeftMargin(0.15);
+  // c->SetRightMargin(0.07);
+  // c->SetTickx(1);
+  // c->SetTicky(1);
 
   char ylabel[100];
 
@@ -441,7 +441,7 @@ void plotMonoX(const string preselection, const string selection, const string s
 	   4e2*(hMETLogMC->GetBinContent(hMETLogMC->GetMaximumBin()))/(hMETLogMC->GetBinWidth(hMETLogMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / GeV/c^{2}");
-  makePlot(c, "mtrim", "Soft Drop Mass [GeV/c^{2}]", ylabel, hFatJetMassv, samplev, hFatJetMassMC, hFatJetMassPull, doBlind, LUMI, false, -0.45, -0.03,
+  makePlot(c, "msd", "Soft Drop Mass [GeV/c^{2}]", ylabel, hFatJetMassv, samplev, hFatJetMassMC, hFatJetMassPull, doBlind, LUMI, false, -0.45, -0.03,
            0.1, 2.1*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f GeV/c^{2}",hFatJetPtv[0]->GetBinWidth(1));
@@ -465,9 +465,12 @@ void plotMonoX(const string preselection, const string selection, const string s
            0.1, 2.1*(hMinDPhiJetsMetMC->GetBinContent(hMinDPhiJetsMetMC->GetMaximumBin()))/(hMinDPhiJetsMetMC->GetBinWidth(hMinDPhiJetsMetMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %i ",int(hNJetsv[0]->GetBinWidth(1)));
-  makePlot(c, "njets", "N_{jets} (AK4)", "Events", hNJetsv, samplev, hNJetsMC, hNJetsPull, doBlind, LUMI, true, 0.0, -0.03,
-           2e-4*(hNJetsMC->GetBinContent(hNJetsMC->GetMaximumBin()))/(hNJetsMC->GetBinWidth(hNJetsMC->GetMaximumBin())), 
-	   2e3*(hNJetsMC->GetBinContent(hNJetsMC->GetMaximumBin()))/(hNJetsMC->GetBinWidth(hNJetsMC->GetMaximumBin())), selection, subsample);
+  makePlot(c, "njets", "N_{jets} (AK4)", "Events", hNJetsv, samplev, hNJetsMC, hNJetsPull, doBlind, LUMI, false, 0.0, -0.03,
+           0.1, 2.1*(hNJetsMC->GetBinContent(hNJetsMC->GetMaximumBin()))/(hNJetsMC->GetBinWidth(hNJetsMC->GetMaximumBin())), selection, subsample);
+
+  sprintf(ylabel,"Events / %i ",int(hNBJetsv[0]->GetBinWidth(1)));
+  makePlot(c, "nbjets", "N^{#Delta R(j,J)>2}_{b-jets} (AK4)", "Events", hNBJetsv, samplev, hNBJetsMC, hNBJetsPull, doBlind, LUMI, false, 0.0, -0.03,
+           0.1, 2.1*(hNBJetsMC->GetBinContent(hNBJetsMC->GetMaximumBin()))/(hNBJetsMC->GetBinWidth(hNBJetsMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f ",hJet1CHFv[0]->GetBinWidth(1));
   makePlot(c, "chf", "CHF", "Events", hJet1CHFv, samplev, hJet1CHFMC, hJet1CHFPull, doBlind, LUMI, true, 0.0, -0.03,
@@ -500,7 +503,6 @@ void plotMonoX(const string preselection, const string selection, const string s
   makePlot(c, "jet4eta", "jets #eta", ylabel, hJet4Etav, samplev, hJet4EtaMC, hJet4EtaPull, doBlind, LUMI, false, 0.05, -0.03,
            0.1, 1.6*(hJet4EtaMC->GetBinContent(hJet4EtaMC->GetMaximumBin())), selection, subsample);
 
-
   cout << endl;
   cout << " <> Output saved in " << outputDir << endl;
   cout << endl; 
@@ -515,7 +517,8 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
               const double ymin, const double ymax, const string selection, const string subsample)
 {
   const int uncColor = kGray+3;
-  // should divide by bin width
+
+  // Should divide by bin width
   for (int iB=1; iB<hExp->GetNbinsX()+1; ++iB) {
     float currentVal = hExp->GetBinContent(iB);
     float currentErr = hExp->GetBinError(iB);
@@ -539,37 +542,24 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   plot.AddHist1D(hExp,"E2",uncColor,1,3004);
   if(!doBlind) { plot.AddHist1D(histv[0],samplev[0]->label,"E"); }
   float max = samplev.size();
-  //  if (subsample.compare("SR")==0 || subsample.find("Znunu")==0) max = samplev.size()-2;
   if (subsample.compare("SR")==0) max = samplev.size()-2; 
   for(unsigned int i=1; i<max; i++) {
     plot.AddToStack(histv[i],samplev[i]->label,samplev[i]->fillcolor,samplev[i]->linecolor);
   }
-  // unsigned int i=0;
-  // if(selection == "BstMonoTop" || selection == "ResMonoTop")  i=histv.size()-6;
-  // if(selection == "BstMonoHiggs" || selection == "ResMonoHiggs")  i=histv.size()-5;
-  // if(selection == "BstMonoV" || selection == "ResMonoV")
-  //   {
-  //     if(subsample == "Zbb")  i=histv.size()-4;
-  //     //      if(subsample == "Zcc")  i=histv.size()-3;
-  //     if(subsample == "Wcs")  i=histv.size()-2;
-  //     if(subsample == "Vlf")  i=histv.size()-1;
-  //   }
 
-  // if(i!=0) 
-  //  if (subsample.compare("SR")==0 || subsample.find("Znunu")==0){
   if (subsample.compare("SR")==0){
     for(unsigned int i=max; i<histv.size(); i++) {
       plot.AddHist1D(histv[i],samplev[i]->label,"hist",samplev[i]->fillcolor,samplev[i]->linecolor);
     }
   }
+
+  // Add CMS label
   char lumitext[100];
   sprintf(lumitext,"%.2f fb^{-1} (13 TeV)",lumi);
-  // plot.AddTextBox(lumitext,0.66,0.99,0.95,0.925,0,kBlack);
-  // plot.AddTextBox("CMS",0.68,0.88,0.80,0.82,0,kBlack,62);
-  // plot.AddTextBox("Preliminary",0.68,0.82,0.87,0.77,0,kBlack,52);
   plot.AddTextBox(lumitext,0.66,0.99,0.95,0.925,0,kBlack);
   plot.AddTextBox("CMS",0.18,0.88,0.30,0.82,0,kBlack,62);
   plot.AddTextBox("Preliminary",0.18,0.82,0.37,0.77,0,kBlack,52);
+
   const double xmin = histv[0]->GetXaxis()->GetBinLowEdge(1);
   const double xmax = histv[0]->GetXaxis()->GetBinUpEdge(histv[0]->GetNbinsX());
 
@@ -586,28 +576,44 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   }
 
   hPull->SetMarkerSize(0.8);
-  // const double xmin = histv[0]->GetXaxis()->GetBinLowEdge(1);
-  // const double xmax = histv[0]->GetXaxis()->GetBinUpEdge(histv[0]->GetNbinsX());
+  const double xmin = histv[0]->GetXaxis()->GetBinLowEdge(1);
+  const double xmax = histv[0]->GetXaxis()->GetBinUpEdge(histv[0]->GetNbinsX());
+  TH1D *hExpPull = (TH1D*)hExp->Clone("hExpPull");
+  for (int iB=1; iB<hExpPull->GetNbinsX()+1; ++iB) {
+    float currentVal = hExpPull->GetBinContent(iB);
+    float currentErr = hExpPull->GetBinError(iB);
+    hExpPull->SetBinContent(iB,1.);
+    hExpPull->SetBinError(iB,currentErr/currentVal);
+  }
   CPlot plotPull(outname.c_str(),"",xlabel.c_str(),"Pull");
+  plotPull.AddHist1D(hExpPull,"E2",uncColor,1,3004);
   plotPull.AddHist1D(hPull,"EX0",kBlack);
-  plotPull.SetYRange(-5.9,5.9);
-  plotPull.AddLine(xmin,0,xmax,0,kBlack,3);
+  plotPull.SetYRange(0.,2.);
+  plotPull.AddLine(xmin,1,xmax,1,kBlack,3);
 
-  plot.Draw(c,true,"png");
-  plot.Draw(c,true,"pdf");
-  //  plotPull.Draw(c,true,"png",2);
-//  plotPull.Draw(c,true,"pdf",2);
+  plot.Draw(c,false,"png",1);
+  plot.Draw(c,false,"pdf",1);
+  plotPull.Draw(c,true,"png",2);
+  plotPull.Draw(c,true,"pdf",2);
 }
 
 //--------------------------------------------------------------------------------------------------
 TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind)
 {
+  Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
   TH1D *hPull = new TH1D(name.c_str(),"",hData->GetNbinsX(),hData->GetXaxis()->GetXmin(),hData->GetXaxis()->GetXmax());
+  if (name=="hMETPull" || name=="hMETLogPull")
+    hPull = new TH1D(name.c_str(),"",NBINS,edges);
   for(int ibin=1; ibin<=hData->GetNbinsX(); ibin++) {
-    double numer = hData->GetBinContent(ibin) - hMC->GetBinContent(ibin);
-    double denom = sqrt((hData->GetBinError(ibin))*(hData->GetBinError(ibin)) + (hMC->GetBinError(ibin))*(hMC->GetBinError(ibin)));
+    // double numer = hData->GetBinContent(ibin) - hMC->GetBinContent(ibin);
+    // double denom = sqrt((hData->GetBinError(ibin))*(hData->GetBinError(ibin)) + (hMC->GetBinError(ibin))*(hMC->GetBinError(ibin)));
+    // double pull  = (denom>0) ? numer/denom : 0;
+    // double err   = (denom>0) ? 1 : 0;
+
+    double numer = hData->GetBinContent(ibin);
+    double denom = hMC->GetBinContent(ibin);
     double pull  = (denom>0) ? numer/denom : 0;
-    double err   = (denom>0) ? 1 : 0;
+    double err   = (denom>0) ? sqrt(hData->GetBinContent(ibin))/hMC->GetBinContent(ibin) : 
 
     if(doBlind) {
       pull = 0;
@@ -630,59 +636,10 @@ TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind
   return hPull;
 }
 
-//--------------------------------------------------------------------------------------------------
-void makeHTML(const string outputDir)
-{
-  enum { kBST_ONLY=0, kRES_ONLY, kMJ_ONLY, kBST_COMBO, kRES_COMBO, kMJ_COMBO, kBST_PRE, kRES_PRE, kMJ_PRE };
-
-  ofstream htmlfile;
-  char htmlfname[200];
-  sprintf(htmlfname,"%s/plots.html",outputDir.c_str());
-  htmlfile.open(htmlfname);
-  htmlfile << "<!DOCTYPE html" << endl;
-  htmlfile << " PUBLIC \"-//W3C//DTD HTML 3.2//EN\">" << endl;
-  htmlfile << "<html>" << endl;
-  htmlfile << "<head><title>B2G Selection</title></head>" << endl;
-  htmlfile << "<body bgcolor=\"EEEEEE\">" << endl;
-
-  htmlfile << "<table border=\"0\" cellspacing=\"5\" width=\"100%\">" << endl;
-  htmlfile << "<tr>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"met.png\"><img src=\"met.png\" alt=\"met.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"metlog.png\"><img src=\"metlog.png\" alt=\"metlog.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"njets.png\"><img src=\"njets.png\" alt=\"njets.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"nbjets.png\"><img src=\"nbjets.png\" alt=\"nbjets.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "</tr>" << endl;
-  htmlfile << "</table>" << endl;
-
-  htmlfile << "<table border=\"0\" cellspacing=\"5\" width=\"100%\">" << endl;
-  htmlfile << "<tr>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet1pt.png\"><img src=\"jet1pt.png\" alt=\"jet1pt.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet1eta.png\"><img src=\"jet1eta.png\" alt=\"jet1eta.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet1phi.png\"><img src=\"jet1phi.png\" alt=\"jet1phi.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"></td>" << endl;
-  htmlfile << "</tr>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet2pt.png\"><img src=\"jet2pt.png\" alt=\"jet2pt.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet2eta.png\"><img src=\"jet2eta.png\" alt=\"jet2eta.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet2phi.png\"><img src=\"jet2phi.png\" alt=\"jet2phi.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"></td>" << endl;
-  htmlfile << "</tr>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet3pt.png\"><img src=\"jet3pt.png\" alt=\"jet3pt.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet3eta.png\"><img src=\"jet3eta.png\" alt=\"jet3eta.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet3phi.png\"><img src=\"jet3phi.png\" alt=\"jet3phi.png\" width=\"100%\"></a></td>" << endl;
-  htmlfile << "<td width=\"25%\"></td>" << endl;
-  htmlfile << "</tr>" << endl;
-  htmlfile << "</table>" << endl;
-  htmlfile << "<hr />" << endl;
-
-  htmlfile << "</body>" << endl;
-  htmlfile << "</html>" << endl;
-  htmlfile.close(); 
-}
 //--------------------------------------------------------------------------------------------------                                                                                                      
 float CalcSig(TH1D*sig, TH1D*bkg) {
   float fSig2 = 0;
   int nb = sig->GetNbinsX();
-  //  std::cout << "nb = " << nb << std::endl;
   for (int i = 0; i <= nb+1; i++) {
     if (sig->GetBinContent(i) > 0 && bkg->GetBinContent(i)>0) {
       fSig2 += pow(sig->GetBinContent(i),2)/bkg->GetBinContent(i);
