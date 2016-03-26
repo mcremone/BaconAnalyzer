@@ -50,6 +50,7 @@ void addLepSF(std::string iHeader,TTree *iTree,std::vector<double> &iVals);
 void fillLepSF(int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals);
 double getLepEventReweight(int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose);
 void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
+void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead);
 void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead,std::vector<std::string> &iLabels);
 template<class T> void addObject(T *iObject,std::vector<T*> &iObjects) {
   bool lFill = false;
@@ -70,6 +71,16 @@ template<class T> void fillObject(int iN,std::vector<T*> &iObjects,std::vector<d
     iVals[i0*3+2] = iObjects[i0]->phi;
   }
 }
+template<class T> void fillObjectMass(int iN,std::vector<T*> &iObjects,std::vector<double> &iVals) {
+  int lMin = iObjects.size();
+  if(iN < lMin) lMin = iN;
+  for(int i0 = 0; i0 < lMin; i0++) {
+    iVals[i0*3+0] = iObjects[i0]->pt;
+    iVals[i0*3+1] = iObjects[i0]->eta;
+    iVals[i0*3+2] = iObjects[i0]->phi;
+    iVals[i0*3+3] = iObjects[i0]->mass;
+  }
+}
 template<class T> void addVeto(T* iObject,std::vector<TLorentzVector> &iVetoes,double iM) { 
   TLorentzVector lVec; lVec.SetPtEtaPhiM(iObject->pt,iObject->eta,iObject->phi,iM);
   iVetoes.push_back(lVec);
@@ -84,7 +95,7 @@ template<class T> void addVeto(T* iObject,std::vector<TLorentzVector> &iVetoes,d
 #define fillElectron  fillObject<baconhep::TElectron>
 #define fillMuon      fillObject<baconhep::TMuon>
 #define fillTau       fillObject<baconhep::TTau>
-#define fillJet       fillObject<baconhep::TJet>
+#define fillJet       fillObjectMass<baconhep::TJet>
 #define fillPhoton    fillObject<baconhep::TPhoton>
 
 #define addVElectron   addVeto<baconhep::TElectron>

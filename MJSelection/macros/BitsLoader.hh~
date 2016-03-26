@@ -17,7 +17,6 @@
 #include <cassert>
 
 #include "CPlot.hh"                   // helper class for plots
-//#include "KStyle.hh"                  // style settings for drawing
 #include "CSample.hh"                 // helper class to manage samples
 
 using namespace std;
@@ -86,69 +85,49 @@ public:
   float genvpt(string selection);
   float genvphi(string selection);
 
-  unsigned int metfilter;                 // MET filter bits
   //
   // variables to read in bacon bits
   //
-  unsigned int runNum, lumiSec, evtNum;   // event ID
-  unsigned int triggerBits, selectBits;               // trigger bits
-  float triggerEff;                // trigger efficiency
-  float evtWeight, puWeight, lepWeight;
-  float topSize;
-  float npu;                  // number of PU
-  float npv;           // number of PV
-  unsigned int nmu, nele, ntau, npho;
-  unsigned int njets, nf15jets, nf8jets, nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2;             // jet multiplicity
-  float scale1fb;                         // cross section scale factor per 1/fb
-  float nloKfactor, ewkCorr;
-  float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2; //btag SF
+  int metfilter;                                                                  // MET filter bits          
+  unsigned int runNum, lumiSec, evtNum;                                           // event ID
+  unsigned int triggerBits, selectBits;                                           // trigger and jet type bits
+  double triggerEff;                                                              // trigger efficiency
+  float evtWeight, puWeight;                                                      // pu and evt weight
+  double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2;                          // weights
+  double topSize;                                                                 // topSize
+  unsigned int npu, npv;                                                          // PU, PV multiplicity
+  int nmu, nele, ntau, npho;                                                      // object multiplicity
+  int njets, nf15jets, nbtags, nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2; // jet multiplicity
+  float scale1fb;                                                                 // cross section scale factor per 1/fb
+  float nloKfactor, ewkCorr;                                                      // kFactor and EWK correction
+  float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2;                  // btag SF
   float res_btagwM0, res_btagwM1, res_btagwMminus1, res_btagwM2;
   float res_btagwT0, res_btagwT1, res_btagwTminus1, res_btagwT2;
-  float bst15_btagwL0, bst15_btagwL1, bst15_btagwLminus1, bst15_btagwL2; //btag SF                                                
-  float bst15_btagwM0, bst15_btagwM1, bst15_btagwMminus1, bst15_btagwM2;
-  float bst15_btagwT0, bst15_btagwT1, bst15_btagwTminus1, bst15_btagwT2;
-  float bst8_btagwL0, bst8_btagwL1, bst8_btagwLminus1, bst8_btagwL2; //btag SF                                               
-  float bst8_btagwM0, bst8_btagwM1, bst8_btagwMminus1, bst8_btagwM2;
-  float bst8_btagwT0, bst8_btagwT1, bst8_btagwTminus1, bst8_btagwT2;
-
-  TLorentzVector *vmet=0, *vfakemet=0;                  // MET
-  float min_dphijetsmet;                // min delta phi between MET and narrow jets
+  float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                    // MET
+  double min_dphijetsmet;                                                         // min delta phi between MET and narrow jets
 
   //
   // Jets with pT-ordering:
   //
-  TLorentzVector *res_jet1=0,        *res_jet2=0,        *res_jet3=0,        *res_jet4=0;        // jet 4-vector
-  float           res_genVpt, res_genVphi;
-  float           res_jet1CHF;
-  float           res_jet1NHF;
-  float           res_jet1NEMF;
-  float           res_jetsm;
-  float           res_mt;
+  double           res_jet0_pt, res_jet0_eta, res_jet0_phi, res_jet0_mass;        // 4 leading resolved jets
+  double           res_jet1_pt, res_jet1_eta, res_jet1_phi, res_jet1_mass;
+  double           res_jet2_pt, res_jet2_eta, res_jet2_phi, res_jet2_mass;
+  double           res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet3_mass;
+  float            res_genVpt, res_genVphi;                                       // jet at gen level
+  double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF , res_jet0_dphi;     // res jet variables
 
-  TLorentzVector *bst15_jet1=0;
-  float           bst15_jet1msd, bst15_jet1tau32, bst15_jet1tau21; //boosted tagger variables                                                                                            
-  float           bst15_jet1maxsubcsv, bst15_jet1minsubcsv; //subjet btag                                                                                            
-  float           bst15_genVpt, bst15_genVphi;
-  float           bst15_jet1rho, bst15_jet1phil;
-  float           bst15_jet1CHF;
-  float           bst15_jet1NHF;
-  float           bst15_jet1NEMF;
-  float           bst15_mt;
+  double           bst_jet0_pt,bst_jet0_eta,bst_jet0_phi,bst_jet0_mass;           // leading boosted jet
+  double           bst_jet0_msd, bst_jet0_tau32, bst_jet0_tau21;                  // boosted tagger variables                                                                                            
+  double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                        // subjet btag                                                                                            
+  float            bst_genVpt, bst_genVphi;                                       // jet at gen level
+  float            bst_jet0_rho, bst_jet0_phil;                                   // msd and pt dependent variables
+  double           bst_jet0_CHF, bst_jet0_NHF, bst_jet0_NEMF;                     // boosted jet variables
+  float            bst_mt;                                                        // mT
 
-  TLorentzVector *bst8_jet1=0;
-  float           bst8_jet1msd, bst8_jet1tau32, bst8_jet1tau21; //boosted tagger variables                                                                                            
-  float           bst8_jet1maxsubcsv, bst8_jet1minsubcsv; //subjet btag                                                                                            
-  float           bst8_genVpt, bst8_genVphi;
-  float           bst8_jet1rho, bst8_jet1phil;
-  float           bst8_jet1CHF;
-  float           bst8_jet1NHF;
-  float           bst8_jet1NEMF;
-  float           bst8_mt;
-
-  const float ToptagSF     = 1.1297;
-  const float TopmistagSF = 1.1307;
-  const float btagSF       = 0.9516;
-  const float bmistagSF   = 0.8909;
+  const float ToptagSF     = 1.1318;                                              // ToptagSF
+  const float TopmistagSF  = 1.1639;                                              // TopmistagSF 
+  const float btagSF       = 0.9851;                                              // btagSF
+  const float bmistagSF    = 0.8853;                                              // bmistagSF
 
 protected:
 
