@@ -101,6 +101,8 @@ void EvtLoader::load(int iEvent) {
   fVertices ->Clear();
   fEvtBr    ->GetEntry(iEvent);
   fVertexBr ->GetEntry(iEvent);
+  fRun   = fEvt->runNum;
+  fLumi  = fEvt->lumiSec;
 }
 bool EvtLoader::passTrigger(std::string iTrigger) {
   return fTrigger->pass(iTrigger,fEvt->triggerBits);
@@ -119,8 +121,6 @@ void EvtLoader::fillEvent(unsigned int trigBit) {
   fPUWeight     = puWeight(float(fNVtx)); 
   fevtWeight    = 1;
   fMetFilters   = fEvt->metFilterFailBits;
-  fRun          = fEvt->runNum;
-  fLumi         = fEvt->lumiSec;
   fEvtV         = fEvt->evtNum;
   fRho          = fEvt->rhoIso;
   fkFactor_CENT = 1;

@@ -26,7 +26,6 @@ bool RunLumiRangeMap::HasRunLumi(const RunLumiPairType &runLumi) const
 //--------------------------------------------------------------------------------------------------
 void RunLumiRangeMap::AddJSONFile(const std::string &filepath) 
 {
-
   //read json without boost bullshit
   Jzon::Object rootNode;
   Jzon::FileReader::ReadFile(filepath, rootNode);
@@ -52,12 +51,11 @@ void RunLumiRangeMap::AddJSONFile(const std::string &filepath)
     for (MapType::const_iterator it = fMap.begin(); it != fMap.end(); ++it) {
       printf("  Run %u:\n",it->first);
       for (MapType::mapped_type::const_iterator jt = it->second.begin(); jt < it->second.end(); ++jt) {
-        printf("    Lumis %u - %u\n",jt->first,jt->second);
+	printf("    Lumis %u - %u\n",jt->first,jt->second);
       }
     }
-
   }
-
+  
 }
 
 //--------------------------------------------------------------------------------------------------

@@ -59,7 +59,7 @@ TTree* load(std::string iName) {
 }
 
 // For Json 
-bool passEvent(unsigned int iRun,unsigned int iLumi) { 
+bool passEvent(unsigned int iRun,unsigned int iLumi) {
   RunLumiRangeMap::RunLumiPairType lRunLumi(iRun,iLumi);
   return fRangeMap->HasRunLumi(lRunLumi);
 }
@@ -116,8 +116,12 @@ int main( int argc, char **argv ) {
   //
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  //for(int i0 = 0; i0 < int(10); i0++){ // for testing
-    //if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
+    //for(int i0 = 0; i0 < int(50000); i0++){ // for testing
+    // if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
+    
+    // check json 
+    fEvt->load(i0);
+    if(lOption.find("data")!=std::string::npos && !passEvent(fEvt->fRun,fEvt->fLumi)) continue;
     
     // check GenInfo
     if(lOption.find("data")==std::string::npos)    fGen->load(i0);
@@ -133,7 +137,7 @@ int main( int argc, char **argv ) {
     }
 
     // primary vertex requirement
-    fEvt->load(i0);           if(!fEvt->PV()) continue;
+    if(!fEvt->PV()) continue;
     
     // triggerbits for MET, Electrons, Photons and Muons
     unsigned int trigbits=1;    
@@ -160,14 +164,14 @@ int main( int argc, char **argv ) {
     // Muons
     fMuon    ->load(i0);
     fMuon    ->selectMuons(lMuons);
-
+    
     fEvt      ->load(i0);
     fEvt      ->fillEvent(trigbits);
     
     // Electrons
     fElectron ->load(i0);
     fElectron ->selectElectrons(fEvt->fRho,lElectrons);
-
+    
     // Lepton SF
     if(lOption.find("data")==std::string::npos){
       fillLepSF(fMuon->fNMuons,lMuons,fMuon->fhMuTight,fMuon->fhMuLoose,fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars);
@@ -179,8 +183,6 @@ int main( int argc, char **argv ) {
     fEvt->fillVetoes(lMuons,lVetoes);        // In principle this will produce a different output from Matteo
     fEvt->fillModifiedMet(lVetoes,lPhotons);
 
-    if(lOption.find("data")!=std::string::npos && !passEvent(fEvt->fRun,fEvt->fLumi)) continue;
-
     // Taus
     fTau     ->load(i0);
     fTau     ->selectTaus(lVetoes);
@@ -191,7 +193,8 @@ int main( int argc, char **argv ) {
     
     // MET selection
     fEvt->fillModifiedMet(lVetoes,lPhotons);
-    if(fMuon->fNMuons ==0 && fEvt->fMet < 200. && fEvt->fPuppEt < 200. && fEvt->fFPuppEt < 200. && fEvt->fFMet < 200.) continue;
+    
+    if(fEvt->fMet < 200. && fEvt->fPuppEt < 200. && fEvt->fFPuppEt < 200. && fEvt->fFMet < 200.) continue;
 
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
@@ -206,10 +209,12 @@ int main( int argc, char **argv ) {
 	fEvt->fselectBits |= 2; 
       }
     }
+    
     // AK4PUPPI Jets
     fJet->load(i0); 
     fJet->selectJets(lVetoes,lJets,fEvt->fMetPhi,fEvt->fRho);
-    
+    if(fJet->fNJets < 1) continue;
+
     // mT FIXME
     fEvt->fillmT(lJets);
 
@@ -232,7 +237,7 @@ int main( int argc, char **argv ) {
       if(lOption.find("tt1l")!=std::string::npos) fGen->findBoson(24,1);
       if(lOption.find("tt2l")!=std::string::npos) fGen->findBoson(6,1);
     }
-
+    
     lOut->Fill();
     neventstest++;
   }

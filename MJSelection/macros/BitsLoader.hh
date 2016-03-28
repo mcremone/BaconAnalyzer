@@ -88,46 +88,47 @@ public:
   //
   // variables to read in bacon bits
   //
-  int metfilter;                                                                  // MET filter bits          
-  unsigned int runNum, lumiSec, evtNum;                                           // event ID
-  unsigned int triggerBits, selectBits;                                           // trigger and jet type bits
-  double triggerEff;                                                              // trigger efficiency
-  float evtWeight, puWeight;                                                      // pu and evt weight
-  double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2;                          // weights
-  double topSize;                                                                 // topSize
-  unsigned int npu, npv;                                                          // PU, PV multiplicity
-  int nmu, nele, ntau, npho;                                                      // object multiplicity
-  int njets, nf15jets, nbtags, nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2; // jet multiplicity
-  float scale1fb;                                                                 // cross section scale factor per 1/fb
-  float nloKfactor, ewkCorr;                                                      // kFactor and EWK correction
-  float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2;                  // btag SF
-  float res_btagwM0, res_btagwM1, res_btagwMminus1, res_btagwM2;
+  int metfilter;                                                                   // MET filter bits          
+  unsigned int runNum, lumiSec, evtNum;                                            // event ID
+  unsigned int triggerBits, selectBits;                                            // trigger and jet type bits
+  double triggerEff;                                                               // trigger efficiency
+  float evtWeight, puWeight;                                                       // pu and evt weight
+  double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2;                           // weights
+  double topSize;                                                                  // topSize
+  unsigned int npu, npv;                                                           // PU, PV multiplicity
+  int nmu, nele, ntau, npho;                                                       // object multiplicity
+  int njets, nfjets, nf15jets;                                                     // jet multiplicity 
+  int nbtags, nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2;                   // b-jet multiplicity
+  float scale1fb;                                                                  // cross section scale factor per 1/fb
+  float nloKfactor, ewkCorr;                                                       // kFactor and EWK correction
+  float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2;                   // btag SF
+  float res_btagwM0, res_btagwM1, res_btagwMminus1, res_btagwM2 ;
   float res_btagwT0, res_btagwT1, res_btagwTminus1, res_btagwT2;
-  float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                    // MET
-  double min_dphijetsmet;                                                         // min delta phi between MET and narrow jets
+  float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                     // MET
+  double min_dphijetsmet;                                                          // min delta phi between MET and narrow jets
 
   //
   // Jets with pT-ordering:
   //
-  double           res_jet0_pt, res_jet0_eta, res_jet0_phi, res_jet0_mass;        // 4 leading resolved jets
-  double           res_jet1_pt, res_jet1_eta, res_jet1_phi, res_jet1_mass;
+  double           res_jet0_pt, res_jet0_eta, res_jet0_phi, res_jet0_mass;         // 4 leading resolved jets
+  double           res_jet1_pt, res_jet1_eta, res_jet1_phi, res_jet1_mass; 
   double           res_jet2_pt, res_jet2_eta, res_jet2_phi, res_jet2_mass;
   double           res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet3_mass;
-  float            res_genVpt, res_genVphi;                                       // jet at gen level
-  double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF , res_jet0_dphi;     // res jet variables
+  float            res_genVpt, res_genVphi;                                        // jet at gen level
+  double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF , res_jet0_dphi;      // res jet variables
 
-  double           bst_jet0_pt,bst_jet0_eta,bst_jet0_phi,bst_jet0_mass;           // leading boosted jet
-  double           bst_jet0_msd, bst_jet0_tau32, bst_jet0_tau21;                  // boosted tagger variables                                                                                            
-  double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                        // subjet btag                                                                                            
-  float            bst_genVpt, bst_genVphi;                                       // jet at gen level
-  float            bst_jet0_rho, bst_jet0_phil;                                   // msd and pt dependent variables
-  double           bst_jet0_CHF, bst_jet0_NHF, bst_jet0_NEMF;                     // boosted jet variables
-  float            bst_mt;                                                        // mT
+  double           bst_jet0_pt,bst_jet0_eta,bst_jet0_phi,bst_jet0_mass;            // leading boosted jet
+  double           bst_jet0_msd, bst_jet0_tau32, bst_jet0_tau21;                   // boosted tagger variables                                                                                            
+  double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                         // subjet btag                                                                                            
+  float            bst_genVpt, bst_genVphi;                                        // jet at gen level
+  float            bst_jet0_rho, bst_jet0_phil;                                    // msd and pt dependent variables
+  double           bst_jet0_CHF, bst_jet0_NHF, bst_jet0_NEMF;                      // boosted jet variables
+  float            bst_mt;                                                         // mT
 
-  const float ToptagSF     = 1.1318;                                              // ToptagSF
-  const float TopmistagSF  = 1.1639;                                              // TopmistagSF 
-  const float btagSF       = 0.9851;                                              // btagSF
-  const float bmistagSF    = 0.8853;                                              // bmistagSF
+  const float ToptagSF     = 1.1318;                                               // ToptagSF
+  const float TopmistagSF  = 1.1639;                                               // TopmistagSF 
+  const float btagSF       = 0.9851;                                               // btagSF
+  const float bmistagSF    = 0.8853;                                               // bmistagSF
 
 protected:
 

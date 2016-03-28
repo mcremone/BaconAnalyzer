@@ -30,7 +30,7 @@ BitsLoader::BitsLoader(TTree *iTree,TString jet, TString algo,TString syst, stri
     iTree->SetBranchAddress("fake"+met+"phi",                    &vfakemetphi);
     iTree->SetBranchAddress(met+"mT",                            &bst_mt);
     iTree->SetBranchAddress("n"+algo+"jets",                     &njets);
-    iTree->SetBranchAddress("nfbst"jet+"_"+algo+"jet",           &nfjets);
+    iTree->SetBranchAddress("nfbst"+jet+"_"+algo+"jet",          &nfjets);
     iTree->SetBranchAddress("nbtags",                            &nbtags);
     iTree->SetBranchAddress("nb"+algo+"jetsL",                   &nbjetsL);
     iTree->SetBranchAddress("nb"+algo+"jetsM",                   &nbjetsM);
