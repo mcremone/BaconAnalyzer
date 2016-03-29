@@ -75,7 +75,7 @@ public:
   bool passBoostedMonoTopTopCRminusBtag(string preselection);
   bool passSelection(string preselection, string selection, string subsample, string combo, float &btagw);
   double getWgt(bool isData, TString algo, double LUMI, float btagw);
-  float transverse_mass(string selection);
+  //float transverse_mass(string selection);
   float fjet_mass(string selection);
   float nsubjet(string selection);
   float btag(string selection);
@@ -115,7 +115,7 @@ public:
   double           res_jet2_pt, res_jet2_eta, res_jet2_phi, res_jet2_mass;
   double           res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet3_mass;
   float            res_genVpt, res_genVphi;                                        // jet at gen level
-  double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF , res_jet0_dphi;      // res jet variables
+  double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF; // , res_jet0_dphi;      // res jet variables
 
   double           bst_jet0_pt,bst_jet0_eta,bst_jet0_phi,bst_jet0_mass;            // leading boosted jet
   double           bst_jet0_msd, bst_jet0_tau32, bst_jet0_tau21;                   // boosted tagger variables                                                                                            
@@ -135,7 +135,7 @@ protected:
   const unsigned int kMET  = 2;
   const unsigned int kSingleElectron = 4;
   const unsigned int kSinglePhoton  = 8;
-  const unsigned int kBOOSTED15PUPPI = 2;
+  const unsigned int kBOOSTED15PUPPI = 1;
   const unsigned int kBOOSTED15CHS = 4;
   const unsigned int kBOOSTED8PUPPI = 8;
   const unsigned int kBOOSTED8CHS = 16;

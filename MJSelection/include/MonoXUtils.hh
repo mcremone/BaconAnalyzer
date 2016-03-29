@@ -23,35 +23,33 @@
 #include <vector>
 #include <cassert>
 #include <iostream>
-//LepSF
-//#include "LeptonEffUtils.hh"
+
 //=== FUNCTION DECLARATIONS ======================================================================================
 
 //--------------------------------------------------------------------------------------------------
-bool   passJet04Sel     (const baconhep::TJet *jet);
-bool   passJetLooseSel  (const baconhep::TJet *jet);
-double eleEffArea       (const double eta);
-double phoEffArea       (const double eta, const int type);
-bool   passEleSel       (const baconhep::TElectron *electron, const double rho);
-bool   passEleTightSel  (const baconhep::TElectron *electron, const double rho);
-bool   passMuonLooseSel (const baconhep::TMuon *muon);
-bool   passMuonTightSel (const baconhep::TMuon *muon);
-bool   passTauSel       (const baconhep::TTau *tau);
-bool   passPhoSel       (const baconhep::TPhoton *photon, const double rho);
-bool   passPhoLooseSel  (const baconhep::TPhoton *photon, const double rho);
-bool   passPhoMediumSel (const baconhep::TPhoton *photon, const double rho);
-double eleIso           (const baconhep::TElectron *electron, const double rho);
-double phoEffAreaHighPt (const double eta, const int type);
-//Tools
-double getVal   (TH1D*h,double val);
-double getVal2D (TH2D*h,double val1, double val2);
-bool   passVeto (double iEta,double iPhi,double idR,std::vector<TLorentzVector> &iVetoes);
-void addLepSF(std::string iHeader,TTree *iTree,std::vector<double> &iVals);
-void fillLepSF(int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals);
-double getLepEventReweight(int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose);
-void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
-void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead);
-void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead,std::vector<std::string> &iLabels);
+bool   passJet04Sel        (const baconhep::TJet *jet);
+bool   passJetLooseSel     (const baconhep::TJet *jet);
+double eleEffArea          (const double eta);
+double phoEffArea          (const double eta, const int type);
+bool   passEleSel          (const baconhep::TElectron *electron, const double rho);
+bool   passEleTightSel     (const baconhep::TElectron *electron, const double rho);
+bool   passMuonLooseSel    (const baconhep::TMuon *muon);
+bool   passMuonTightSel    (const baconhep::TMuon *muon);
+bool   passTauSel          (const baconhep::TTau *tau);
+bool   passPhoSel          (const baconhep::TPhoton *photon, const double rho);
+bool   passPhoLooseSel     (const baconhep::TPhoton *photon, const double rho);
+bool   passPhoMediumSel    (const baconhep::TPhoton *photon, const double rho);
+double eleIso              (const baconhep::TElectron *electron, const double rho);
+double phoEffAreaHighPt    (const double eta, const int type);
+double getVal              (TH1D*h,double val);
+double getVal2D            (TH2D*h,double val1, double val2);
+bool   passVeto            (double iEta,double iPhi,double idR,std::vector<TLorentzVector> &iVetoes);
+void   addLepSF            (std::string iHeader,TTree *iTree,std::vector<double> &iVals);
+void   fillLepSF           (int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals);
+double getLepEventReweight (int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose);
+void   setupNtuple         (std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
+void   setupNtuple         (std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead);
+void   setupNtuple         (std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead,std::vector<std::string> &iLabels);
 template<class T> void addObject(T *iObject,std::vector<T*> &iObjects) {
   bool lFill = false;
   for(typename std::vector<T*>::iterator pIter = iObjects.begin(); pIter != iObjects.end(); pIter++) {

@@ -82,10 +82,11 @@ void GenLoader::setupTree(TTree *iTree,float iXSIn) {
   reset();
   fTree = iTree;
   iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); fWeight = fGenInfo->weight;
-  iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F"); fXSIn = iXSIn;
+  iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F");   fXSIn = iXSIn;
 
-  fTree->Branch("genPt"   ,&fBosonPt  ,"fBosonPt/F");
-  fTree->Branch("genPhi"  ,&fBosonPhi ,"fBosonPhi/F");
+  fTree->Branch("genPt"      ,&fBosonPt   ,"fBosonPt/F");
+  fTree->Branch("genPhi"     ,&fBosonPhi  ,"fBosonPhi/F");
+
   /*
   iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F");
   iTree->Branch("xs"         ,&fXS        ,"fXS/F");

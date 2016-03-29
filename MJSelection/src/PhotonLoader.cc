@@ -23,11 +23,11 @@ void PhotonLoader::reset() {
 void PhotonLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("npho",&fNPhotons,"fNPhotons/I"); // photon multiplicity and isolation
-  fTree->Branch("nphoMedium",&fNPhotonsMedium,"fNPhotonsMedium/I");
-  fTree->Branch("vpho0_iso"     ,&fIso          ,"fIso/D");
+  fTree->Branch("npho",       &fNPhotons,      "fNPhotons/I");       // photon multiplicity 
+  fTree->Branch("nphoMedium", &fNPhotonsMedium,"fNPhotonsMedium/I"); // medium photon multiplicity
+  fTree->Branch("vpho0_iso",  &fIso,           "fIso/D");            // photon isolation
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("vpho",iTree,fN,fVars); // pho0_pt,_eta,_phi (1*3=3)
+  setupNtuple("vpho",iTree,fN,fVars);                                // pho0_pt,_eta,_phi (1*3=3)
 }
 void PhotonLoader::load(int iEvent) { 
   fPhotons   ->Clear();
@@ -43,13 +43,13 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
 
     if(pPhoton->pt        <=  15)                       continue;
     if(fabs(pPhoton->eta) >=  2.5)                      continue;
-    if(passVeto(pPhoton->eta,pPhoton->phi,0.4,iVetoes)) continue; // clean electrons from photons (only e-)?
+    if(passVeto(pPhoton->eta,pPhoton->phi,0.4,iVetoes)) continue;    // clean electrons from photons (only e-)?
     if(!passPhoLooseSel(pPhoton,iRho))                  continue;
     lCount++;
 
-    if(pPhoton->pt        <= 175)  continue;  // ASK MATTEO IMPORTANT
-    if(fabs(pPhoton->eta) >= 1.4442) continue;
-    if(!passPhoMediumSel(pPhoton, iRho)) continue;
+    if(pPhoton->pt        <= 175)                       continue;
+    if(fabs(pPhoton->eta) >= 1.4442)                    continue;
+    if(!passPhoMediumSel(pPhoton, iRho))                continue;
     lTCount++;
 
     lVeto.push_back(pPhoton);

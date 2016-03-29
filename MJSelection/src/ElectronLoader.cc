@@ -41,9 +41,9 @@ void ElectronLoader::setupTree(TTree *iTree) {
   fTree->Branch("vele1_iso",&fIso2,"fIso2/D");
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
+  for(int i0 = 0; i0 <     3; i0++) {double pVar = 1; feleSFVars.push_back(pVar);}
   setupNtuple("vele",iTree,fN,fVars);          // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
   addDiElectron("vdiele",iTree,1, fVars,fN*3); // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
-  for(int i0 = 0; i0 <     3; i0++) {double pVar = 1; feleSFVars.push_back(pVar);}
   addLepSF("eleSF",iTree,feleSFVars);          // eleSF0,eleSF1,eleSF2
 }
 void ElectronLoader::load(int iEvent) { 
@@ -52,10 +52,13 @@ void ElectronLoader::load(int iEvent) {
 }
 void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes) {
   reset();
+
+  // Tight electrons multiplicity
   int lCount = 0,lTCount=0; 
   for  (int i0 = 0; i0 < fElectrons->GetEntriesFast(); i0++) if(passEleTightSel((TElectron*)fElectrons->At(i0),iRho)) lTCount++;
-  fNElectronsTight = lTCount; // tight electrons multiplicity
+  fNElectronsTight = lTCount;
 
+  // Veto electrons selection
   std::vector<TElectron*> lVeto;  
   for  (int i0 = 0; i0 < fElectrons->GetEntriesFast(); i0++) { 
     TElectron *pElectron = (TElectron*)((*fElectrons)[i0]);
@@ -74,6 +77,7 @@ void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iV
   if(fSelElectrons.size() >  0) fIso1 = eleIso(fSelElectrons[0],iRho);
   if(fSelElectrons.size() >  1) fIso2 = eleIso(fSelElectrons[1],iRho);
 
+  // Save tight electrons and dielectrons as vetoes
   if(fNElectrons <= 1 && lVeto.size()==1) {
     if(passEleTightSel(lVeto[0], iRho) && lVeto[0]->pt > 40) {
       addVElectron(lVeto[0],iVetoes,0.000511);

@@ -44,9 +44,10 @@ JetLoader       *fJet      = 0;
 VJetLoader      *fVJet     = 0;
 RunLumiRangeMap *fRangeMap = 0; 
 
-//VJetLoader      *fVJet1     = 0;
-//VJetLoader      *fVJet2     = 0;
-//VJetLoader      *fVJet3     = 0;
+// Note for other types of jets e.g: 
+// VJetLoader      *fVJet15CHS     = 0;
+// fVJet15CHS    = new VJetLoader    (lTree,"CA15CHS","AddCA15CHS");
+// fVJet15CHS   ->setupTree      (lOut,"bst15_CHSjet");
 
 TH1F *fHist                = 0; 
 
@@ -88,11 +89,6 @@ int main( int argc, char **argv ) {
   fVJet     = new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
-  // for other types of jets and cone sizes
-  //fVJet1    = new VJetLoader    (lTree,"CA15CHS","AddCA15CHS");
-  //fVJet2    = new VJetLoader    (lTree,"CA8Puppi","AddCA8Puppi");
-  //fVJet3    = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");
-
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
 
@@ -106,34 +102,31 @@ int main( int argc, char **argv ) {
   fPhoton  ->setupTree      (lOut); 
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
-  // for other types of jets and cone sizes
-  //fVJet1 ->setupTree      (lOut,"bst15_CHSjet");
-  //fVJet2 ->setupTree      (lOut,"bst8_PUPPIjet");
-  //fVJet3 ->setupTree      (lOut,"bst8_PUPPIjet");
-
   //
   // Loop over events i0 = iEvent
   //
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-    //for(int i0 = 0; i0 < int(50000); i0++){ // for testing
+  //for(int i0 = 0; i0 < int(50000); i0++){ // for testing
     // if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
-    // check json 
+    // check json and GenInfo
     fEvt->load(i0);
-    if(lOption.find("data")!=std::string::npos && !passEvent(fEvt->fRun,fEvt->fLumi)) continue;
-    
-    // check GenInfo
-    if(lOption.find("data")==std::string::npos)    fGen->load(i0);
-    if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
-    if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
-    if(lOption.find("tt")!=std::string::npos){
-      int nlep = fGen->isttbarType();
-      if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
-      if(lOption.find("tt1l")!=std::string::npos && nlep!=1)                                            continue;
-      if(lOption.find("tthad")!=std::string::npos && nlep!=0)                                           continue;
-      if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
-      if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
+    if(lOption.find("data")!=std::string::npos){
+      if(!passEvent(fEvt->fRun,fEvt->fLumi))                                                              continue;
+    }
+    else{
+      fGen->load(i0);
+      if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
+      if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
+      if(lOption.find("tt")!=std::string::npos){
+	int nlep = fGen->isttbarType();
+	if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
+	if(lOption.find("tt1l")!=std::string::npos && nlep!=1)                                            continue;
+	if(lOption.find("tthad")!=std::string::npos && nlep!=0)                                           continue;
+      if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                       continue;
+      if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                       continue;
+      }
     }
 
     // primary vertex requirement
@@ -161,6 +154,7 @@ int main( int argc, char **argv ) {
     
     // Objects
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVetoes;
+
     // Muons
     fMuon    ->load(i0);
     fMuon    ->selectMuons(lMuons);
@@ -181,7 +175,6 @@ int main( int argc, char **argv ) {
     // Fill Vetoes
     fEvt->fillVetoes(lElectrons,lVetoes);
     fEvt->fillVetoes(lMuons,lVetoes);        // In principle this will produce a different output from Matteo
-    fEvt->fillModifiedMet(lVetoes,lPhotons);
 
     // Taus
     fTau     ->load(i0);
@@ -193,7 +186,6 @@ int main( int argc, char **argv ) {
     
     // MET selection
     fEvt->fillModifiedMet(lVetoes,lPhotons);
-    
     if(fEvt->fMet < 200. && fEvt->fPuppEt < 200. && fEvt->fFPuppEt < 200. && fEvt->fFMet < 200.) continue;
 
     // Trigger Efficiencies
@@ -201,18 +193,18 @@ int main( int argc, char **argv ) {
     
     // CA15Puppi Jets
     fVJet->load(i0);
-    fVJet->selectVJets(lVetoes,lJets,1.5,fEvt->fPuppEtPhi,fEvt->fRho);
+    fVJet->selectVJets(lVetoes,lJets,1.5);  //,fEvt->fPuppEtPhi,fEvt->fRho);
     
     // TopSize FIXME
     if(lJets.size()>0){ if((lOption.compare("mcttbst")==0 && fGen->ismatchedJet(lJets[0],1.5,fVJet->ftopSize))
 			   || (lOption.compare("mcttcom")==0 && !fGen->ismatchedJet(lJets[0],1.5,fVJet->ftopSize))){
-	fEvt->fselectBits |= 2; 
+	fEvt->fselectBits =  fEvt->fselectBits | 2; 
       }
     }
     
     // AK4PUPPI Jets
     fJet->load(i0); 
-    fJet->selectJets(lVetoes,lJets,fEvt->fMetPhi,fEvt->fRho);
+    fJet->selectJets(lVetoes,lJets,fEvt->fPuppEtPhi,fEvt->fFPuppEtPhi);
     if(fJet->fNJets < 1) continue;
 
     // mT FIXME

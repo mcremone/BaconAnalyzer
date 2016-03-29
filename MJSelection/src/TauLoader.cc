@@ -23,10 +23,10 @@ void TauLoader::reset() {
 void TauLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("ntau",&fNTaus,"fNTaus/I");
-  fTree->Branch("vtau0_iso",&fTauIso,"fTauIso/D"); // tau0_isolation
+  fTree->Branch("ntau",&fNTaus,"fNTaus/I");                 // tau multiplicity
+  fTree->Branch("vtau0_iso",&fTauIso,"fTauIso/D");          // tau0_isolation
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple("vtau",iTree,fN,fVars); // tau0_pt, tau0_eta, tau0_phi (1*4=4)
+  setupNtuple("vtau",iTree,fN,fVars);                       // tau0_pt, tau0_eta, tau0_phi (1*4=4)
 }
 void TauLoader::load(int iEvent) { 
   fTaus   ->Clear();
@@ -40,14 +40,12 @@ void TauLoader::selectTaus(std::vector<TLorentzVector> &iVetoes) {
     if(passVeto(pTau->eta,pTau->phi,0.4,iVetoes)) continue; 
     if(pTau->pt        <=  18)           continue;
     if(fabs(pTau->eta) >=  2.3)          continue;
-    if(!passTauSel(pTau))             continue;
-    //addVTau(pTau,iVetoes,pTau->m); // ask Matteo if we should include or not - seems like no
+    if(!passTauSel(pTau))                continue;
+    //addVTau(pTau,iVetoes,pTau->m);                          // ask Matteo if we should include or not - seems like no
     addTau(pTau,fSelTaus);
     lCount++;
   }
   fNTaus = lCount;
   if(fVars.size() > 0) fillTau(fN,fSelTaus,fVars);
   if(fSelTaus.size()  > 0) fTauIso = fSelTaus[0]->rawIso3Hits;
-  //if(fSelTaus.size() == 0) return false;
-  //return true;
 }

@@ -30,7 +30,7 @@ JetLoader::~JetLoader() {
   delete fJets;
   delete fJetBr;
 }
-double JetLoader::correction(TJet &iJet,double iRho) { 
+double JetLoader::correction(TJet &iJet,float iRho) { 
   TLorentzVector lVec; lVec.SetPtEtaPhiM(iJet.ptRaw,iJet.eta,iJet.phi,iJet.mass);
   fJetCorr->setJetEta(iJet.eta);
   fJetCorr->setJetPt (iJet.ptRaw);
@@ -42,14 +42,11 @@ double JetLoader::correction(TJet &iJet,double iRho) {
   return ((fJetCorr->getCorrection())*iJet.ptRaw);
 }
 void JetLoader::reset() { 
-  fHT     = 0; 
-  fNJets  = 0; 
-  fNBTags = 0;
-  fNFwd   = 0; 
-  fMinDPhi = 1000;
-  fNBTagsL = 0;
-  fNBTagsM = 0;
-  fNBTagsT = 0;
+  fNJets      = 0; 
+  fNBTags     = 0;
+  fNBTagsL    = 0;
+  fNBTagsM    = 0;
+  fNBTagsT    = 0;
   fNBTagsLdR2 = 0;
   fSelJets.clear();
   fGoodJets.clear();
@@ -59,21 +56,20 @@ void JetLoader::reset() {
 void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
   reset();
   fTree = iTree;
-  //fTree->Branch("ht"            ,&fHT          ,"fHT/D");
-  //fTree->Branch("nfwd"          ,&fNFwd        ,"fNFwd/I");
   fTree->Branch("nPUPPIjets"      ,&fNJets       ,"fNJets/I");
+  fTree->Branch("mindPhi"         ,&fMinDPhi     ,"fMinDPhi/D");
+  fTree->Branch("mindFPhi"        ,&fMinDFPhi    ,"fMinDFPhi/D");
+  for(int i0 = 0; i0 < fN*(10)+10; i0++) {double pVar = 0; fVars.push_back(pVar);}    // declare array of 51 vars
+  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,1);                                    // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi,j*_mass for j1,j2,j3,j4 (4*4=16)
+  addOthers  (iJetLabel.c_str(),iTree,fN,fVars);                                      // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32)
+  std::stringstream diJet;   diJet << "d" << iJetLabel;
+  addDijet   (diJet.str().c_str(),iTree,1, fVars);                                    // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
+  // b tagging
   fTree->Branch("nbtags"          ,&fNBTags      ,"fNBTags/I");
-  fTree->Branch("mindphi"         ,&fMinDPhi     ,"fMinDPhi/D");
   fTree->Branch("nbPUPPIjetsL"    ,&fNBTagsL     ,"fNBTagsL/I");
   fTree->Branch("nbPUPPIjetsM"    ,&fNBTagsM     ,"fNBTagsM/I");
   fTree->Branch("nbPUPPIjetsT"    ,&fNBTagsT     ,"fNBTagsT/I");
   fTree->Branch("nbPUPPIjetsLdR2" ,&fNBTagsLdR2  ,"fNBTagsLdR2/I");
-  std::stringstream diJet;
-  diJet << "d" << iJetLabel;
-  for(int i0 = 0; i0 < fN*(10)+10; i0++) {double pVar = 0; fVars.push_back(pVar);}    // declare array of 51 vars
-  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,1);                                    // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi,j*_mass for j1,j2,j3,j4 (4*4=16)
-  addOthers  (iJetLabel.c_str(),iTree,fN,fVars);                                      // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32)
-  addDijet   (diJet.str().c_str(),iTree,1, fVars);                                    // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
   for(int i0 = 0; i0 < 60; i0++) {float pBTagVar = 0; fBTagVars.push_back(pBTagVar);} // declare array of 60 vars ( L0,L1,Lminus1,L2, M0,M1,Mminus1,M2 T0,T1,Tminus1,T2) for (CENT,MISTAGUP,MISTAGDO,BTAGUP,BTAGDO)
   int i1 = 0;
   for(auto iwptype : wpTypes) { 
@@ -85,24 +81,29 @@ void JetLoader::load(int iEvent) {
   fJets   ->Clear();
   fJetBr ->GetEntry(iEvent);
 }
-void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double iMetPhi,double iRho) {
+void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,float iMetPhi,float iFMetPhi){ //,float iRho) {
   reset(); 
-  int lCount = 0,lNBTag = 0,lNFwd = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0;
+  int lCount = 0,lNBTag = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0; // lNFwd = 0;
   fMinDPhi   = 1000; 
+  fMinDFPhi  = 1000;
   for  (int i0 = 0; i0 < fJets->GetEntriesFast(); i0++) { 
     TJet *pJet = (TJet*)((*fJets)[i0]);
     if(pJet->csv > 0.89 && fabs(pJet->eta) < 2.5 && pJet->pt  > 15 && passJet04Sel(pJet) && !passVeto(pJet->eta,pJet->phi,0.4,iVetoes)) lNBTag++;
-    if(pJet->pt        <  30)                 continue;
+    if(pJet->pt        <  30)                     continue;
     if(passVeto(pJet->eta,pJet->phi,0.4,iVetoes)) continue;
-    if(fabs(pJet->eta) > 3.0) lNFwd++; 
-    if(!passJetLooseSel(pJet) )  continue;
-    fHT += pJet->pt;
-    double pDPhi = TMath::Min(fabs(pJet->phi-iMetPhi),2.*TMath::Pi()-fabs(pJet->phi-iMetPhi));
-    if(pDPhi < fMinDPhi && lCount < 4) fMinDPhi = pDPhi;
+    // if(fabs(pJet->eta) > 3.0) lNFwd++; 
+    if(!passJetLooseSel(pJet))                    continue;
+    // fHT += pJet->pt;
+    double pDPhi  = acos(cos(iMetPhi-pJet->phi));
+    double pDFPhi = acos(cos(iFMetPhi-pJet->phi));
+    //double pDPhi = TMath::Min(fabs(pJet->phi-iMetPhi),2.*TMath::Pi()-fabs(pJet->phi-iMetPhi));
+    if(pDPhi < fMinDPhi)   fMinDPhi  = pDPhi; //&& lCount < 4)
+    if(pDFPhi < fMinDFPhi) fMinDFPhi = pDFPhi; 
     lCount++;
-    if(fabs(pJet->eta) > 2.5) continue;          
+    if(fabs(pJet->eta) > 2.5)                     continue;          
     addJet(pJet,fSelJets);
     fGoodJets.push_back(pJet);
+
     // jet and b-tag multiplicity
     if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVL){
       lNBTagL++;
@@ -115,13 +116,13 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
   }
   fNJets  = lCount;
   fNBTags = lNBTag;
-  fNFwd   = lNFwd;
+  // fNFwd   = lNFwd;
   fNBTagsL = lNBTagL;
   fNBTagsM = lNBTagM;
   fNBTagsT = lNBTagT;
   fNBTagsLdR2 = lNBTagLdR2;
   fillJet(fN,fSelJets,fVars);
-  fillOthers(fN,fSelJets,fVars,iMetPhi,iRho);
+  fillOthers(fN,fSelJets,fVars); //,iMetPhi,iRho);
   fillDiJet();
   fillBTag(fGoodJets);
 }
@@ -135,19 +136,19 @@ void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<do
     pSCHF   << iHeader << i0 << "_CHF";
     pSNHF   << iHeader << i0 << "_NHF";
     pSEMF   << iHeader << i0 << "_NEMF";
-    pSDPhi  << iHeader << i0 << "_dphi";
-    pSPtT   << iHeader << i0 << "_pttrue";
+    // pSDPhi  << iHeader << i0 << "_dphi";
+    // pSPtT   << iHeader << i0 << "_pttrue";
     iTree->Branch(pSMass .str().c_str(),&iVals[lBase+0],(pSMass .str()+"/D").c_str());
     iTree->Branch(pSCSV .str().c_str() ,&iVals[lBase+1],(pSCSV  .str()+"/D").c_str());
     iTree->Branch(pSQGID.str().c_str() ,&iVals[lBase+2],(pSQGID .str()+"/D").c_str());
     iTree->Branch(pSCHF .str().c_str() ,&iVals[lBase+3],(pSCHF  .str()+"/D").c_str());
     iTree->Branch(pSNHF .str().c_str() ,&iVals[lBase+4],(pSNHF  .str()+"/D").c_str());
     iTree->Branch(pSEMF .str().c_str() ,&iVals[lBase+5],(pSEMF  .str()+"/D").c_str());
-    iTree->Branch(pSDPhi.str().c_str() ,&iVals[lBase+6],(pSDPhi .str()+"/D").c_str());
-    iTree->Branch(pSPtT .str().c_str() ,&iVals[lBase+7],(pSPtT  .str()+"/D").c_str());
+    // iTree->Branch(pSDPhi.str().c_str() ,&iVals[lBase+6],(pSDPhi .str()+"/D").c_str());
+    // iTree->Branch(pSPtT .str().c_str() ,&iVals[lBase+7],(pSPtT  .str()+"/D").c_str());
   }
 }
-void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,double iMetPhi,double iRho) { 
+void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){ //,float iMetPhi,float iRho) { 
   int lBase = 3.*fN;
   int lMin = iObjects.size();
   if(iN < lMin) lMin = iN;
@@ -159,10 +160,10 @@ void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<doubl
     iVals[lBase+i0*8+3] = iObjects[i0]->chHadFrac;
     iVals[lBase+i0*8+4] = iObjects[i0]->neuHadFrac;
     iVals[lBase+i0*8+5] = iObjects[i0]->neuEmFrac;
-    double pDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
-    iVals[lBase+i0*8+6] = pDPhi;
-    iVals[lBase+i0*8+7] = correction(*(iObjects[i0]),iRho);
-    //if(pDPhi < fMinDPhi) fMinDPhi = pDPhi;
+    // double pDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
+    // iVals[lBase+i0*8+6] = pDPhi;
+    // iVals[lBase+i0*8+7] = correction(*(iObjects[i0]),iRho);
+    // if(pDPhi < fMinDPhi) fMinDPhi = pDPhi;
   }
 }
 void JetLoader::addDijet(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 

@@ -41,7 +41,7 @@ public:
 		   std::string iHist0,
 		   std::string iHist1,
 		   std::string iHist2,
-		   std::string iSFactor4="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconAna/DataFormats/data/kfactors.root");
+		   std::string ikfactor="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconAna/DataFormats/data/kfactors.root");
   //MET
   void         correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr);
   void         fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes);
@@ -62,7 +62,6 @@ public:
   float fFPuppEt;
 
   float fMt;
-  float fPuppEtMt;
 
   unsigned int fRun;
   unsigned int fEvtV;
@@ -74,6 +73,7 @@ public:
 
   float fkFactor_CENT;
   float fEwkCorr_CENT;
+  float fkfactor;
 
   double fEffTrigger;
   double fLepWeight;

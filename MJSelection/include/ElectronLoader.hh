@@ -19,10 +19,10 @@ public:
   void setupTree(TTree *iTree);
   void load(int iEvent);
   void selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes);
-  std::vector<TElectron*> fSelElectrons;
   void addDiElectron(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase);
   void fillDiElectron(double iRho,std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes);
-  std::vector<double> feleSFVars;
+  std::vector<TElectron*> fSelElectrons;
+  std::vector<double>     feleSFVars;
   TH2D         *fhEleVeto;
   TH2D         *fhEleTight;
   int           fNElectrons;
@@ -32,10 +32,9 @@ protected:
   TClonesArray *fElectrons;
   TBranch      *fElectronBr;
   TTree        *fTree;
-  std::vector<double> fVars;
+  std::vector<double>     fVars;
   int           fN;
   double        fIso1;
   double        fIso2;
-
 };
 #endif

@@ -44,8 +44,8 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("phil");
   fLabels.push_back("minsubcsv");
   fLabels.push_back("maxsubcsv");
-  fLabels.push_back("mindPhi");
-  fLabels.push_back("mindFPhi");
+  //fLabels.push_back("mindPhi");
+  //fLabels.push_back("mindFPhi");
   fTree = iTree;
   std::stringstream nVJet,pfTS;
   nVJet << "nf" << iJetLabel;
@@ -53,7 +53,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch(nVJet.str().c_str(),&fNVJets,"fNVJets/I");
   for(int i0 = 0; i0 < fN*4.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
   for(int i0 = 0; i0 < fN*(int(fLabels.size())); i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,1); // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi,*_mass for vjet0 (4*1=4)
+  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,1);                                               // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi,*_mass for vjet0 (4*1=4)
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,fN*3,fLabels);
   fTree->Branch(pfTS.str().c_str(),&ftopSize,"ftopSize/D"); 
 }
@@ -63,7 +63,7 @@ void VJetLoader::load(int iEvent) {
   fVAddJets    ->Clear();
   fVAddJetBr   ->GetEntry(iEvent);
 }
-void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR,double iMetPhi,double iRho) {
+void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR){ //,double iMetPhi,double iRho) {
   reset(); 
   int lCount = 0; 
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
@@ -78,14 +78,14 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
   }
   fNVJets = lCount;
   fillJet( fN,fSelVJets,fVars);
-  fillVJet(fN,fSelVJets,fVars,iMetPhi,iRho);
+  fillVJet(fN,fSelVJets,fVars); //,iMetPhi,iRho);
 }
-void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,double iMetPhi,double iRho) { 
+void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){ //,double iMetPhi,double iRho) { 
   int lBase = 3.*fN;
   int lMin = iObjects.size();
   int lNLabel = int(fLabels.size());
   if(iN < lMin) lMin = iN;
-  double fMinDPhi = 1000; double fFMinDPhi = 1000;
+  //double fMinDPhi = 1000; double fFMinDPhi = 1000;
   for(int i0 = 0; i0 < lMin; i0++) { 
     TAddJet *pAddJet = getAddJet(iObjects[i0]);
     iVals[lBase+i0*lNLabel+0]  = iObjects[i0]->mass;
@@ -100,18 +100,18 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
     iVals[lBase+i0*lNLabel+9]  = pAddJet->mass_sd0/log(iObjects[i0]->pt);
     iVals[lBase+i0*lNLabel+10] = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
     iVals[lBase+i0*lNLabel+11] = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
-    double pDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
-    if(pDPhi < fMinDPhi){
-      iVals[lBase+i0*lNLabel+12]  = pDPhi;
-      fMinDPhi = pDPhi;
-    }
-    else iVals[lBase+i0*lNLabel+12]  = fMinDPhi;
-    double pFDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
-    if(pDPhi < fFMinDPhi){
-      iVals[lBase+i0*lNLabel+13]  = pFDPhi;
-      fFMinDPhi = pFDPhi;
-    }
-    else iVals[lBase+i0*lNLabel+13]  = fFMinDPhi;
+    // double pDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
+    // if(pDPhi < fMinDPhi){
+    //   iVals[lBase+i0*lNLabel+12]  = pDPhi;
+    //   fMinDPhi = pDPhi;
+    // }
+    // else iVals[lBase+i0*lNLabel+12]  = fMinDPhi;
+    // double pFDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
+    // if(pDPhi < fFMinDPhi){
+    //   iVals[lBase+i0*lNLabel+13]  = pFDPhi;
+    //   fFMinDPhi = pFDPhi;
+    // }
+    // else iVals[lBase+i0*lNLabel+13]  = fFMinDPhi;
   }
 }
 void VJetLoader::addBoson(TGenParticle *iBoson) { 

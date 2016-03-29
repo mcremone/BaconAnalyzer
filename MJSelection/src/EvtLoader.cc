@@ -45,8 +45,7 @@ void EvtLoader::reset() {
   fPUWeight     = 0; 
   fevtWeight    = 0;
 
-  fkFactor_CENT = 0;
-  fEwkCorr_CENT = 0;
+  fkfactor      = 0;
 
   fMet          = 0; 
   fMetPhi       = 0; 
@@ -58,8 +57,7 @@ void EvtLoader::reset() {
   fFPuppEt      = 0;
   fFPuppEtPhi   = 0;
 
-  fMt           = 0;
-  fPuppEtMt     = 0;
+  fMt           = -999;
 }
 void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   reset();
@@ -79,8 +77,7 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   fTree->Branch("evtWeight"       ,&fevtWeight      ,"fevtWeight/F");
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
 
-  fTree->Branch("nloKfactor_CENT" ,&fkFactor_CENT   ,"fKfactor_CENT/F");
-  fTree->Branch("ewkCorr_CENT"    ,&fEwkCorr_CENT   ,"fEwkCorr_CENT/F");
+  fTree->Branch("kfactor"         ,&fkfactor        ,"fkfactor/F");
 
   fTree->Branch("pfmet"           ,&fMet            ,"fMet/F");
   fTree->Branch("pfmetphi"        ,&fMetPhi         ,"fMetPhi/F");
@@ -92,8 +89,7 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   fTree->Branch("fakepuppet"      ,&fFPuppEt        ,"fFPuppEt/F");
   fTree->Branch("fakepuppetphi"   ,&fFPuppEtPhi     ,"fFPuppEtPhi/F");
 
-  fTree->Branch("pfmT"            ,&fMt             ,"fMt/F");
-  fTree->Branch("puppetmT"        ,&fPuppEtMt       ,"fPuppEtMt/F");
+  fTree->Branch("mT"              ,&fMt             ,"fMt/F");
 
   fScale = iWeight;
 }
@@ -123,8 +119,7 @@ void EvtLoader::fillEvent(unsigned int trigBit) {
   fMetFilters   = fEvt->metFilterFailBits;
   fEvtV         = fEvt->evtNum;
   fRho          = fEvt->rhoIso;
-  fkFactor_CENT = 1;
-  fEwkCorr_CENT = 1;
+  fkfactor      = 1;
   fMet          = fEvt->pfMETC;
   fMetPhi       = fEvt->pfMETCphi;
   fPuppEt       = fEvt->puppETC;
@@ -153,12 +148,6 @@ void  EvtLoader::fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vect
     correctMet(fFMet        ,fFMetPhi,        lCorr1);
   }
 }
-void  EvtLoader::fillmT(std::vector<TLorentzVector> &lCorr) {
-  if(lCorr.size()>0){
-    //fMt                = mT(fFMet,        fFMetPhi,        lCorr[0]);
-    fPuppEtMt          = mT(fFPuppEt,     fFPuppEtPhi,     lCorr[0]);
-  }
-}
 void  EvtLoader::correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr) { 
   TLorentzVector lVec;  lVec.SetPtEtaPhiM(iMet,0,iMetPhi,0);
   //Add back the correction vector
@@ -174,7 +163,7 @@ float EvtLoader::metSig(float iMet,float iMetPhi,float iCov00,float iCov01,float
   double lSignificance = TMath::Sqrt(lUVec.Px()*lUVec.Px()*(lInv)(0,0) + 2.*lUVec.Px()*lUVec.Py()*(lInv)(1,0) + lUVec.Py()*lUVec.Py()*(lInv)(1,1));
   return lSignificance;
 }
-//Met Filter
+// Met Filter
 bool EvtLoader::passFilter() { 
   return (fEvt->metFilterFailBits == 0);
 }
@@ -196,14 +185,11 @@ unsigned int EvtLoader::nVtx() {
 bool EvtLoader::PV(){
   return fEvt->hasGoodPV;
 }
-// Trigger
+// Trigger Efficiency
 void EvtLoader::triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<TLorentzVector> iPhotons) {
   fEffTrigger = ((0.975+(fEvt->pfMETC-200)*0.025*0.025)*(fEvt->pfMETC<240)+1*(fEvt->pfMETC>=240));
   if(iElectrons.size() > 0){
-    if(fITrigger & 4){ 
-      //std::cout << "sf " << iElectrons[0].Pt() << " " << iElectrons[0].Eta() << std::endl;    
-      fEffTrigger = getEleTriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
-    }
+    if(fITrigger & 4)                       fEffTrigger = getEleTriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
     if(!(fITrigger & 4) && (fITrigger & 8)) fEffTrigger = 1;
   }
   if(iPhotons.size()   > 0)                 fEffTrigger = 1;
@@ -215,26 +201,34 @@ float EvtLoader::puWeight(float iNPU) {
   if(iNPU <  1) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(0)));
   return lNPVW;
 }
+// mT
 float  EvtLoader::mT(float &iMet,float &iMetPhi,TLorentzVector &iVec) { 
   float lDPhi = fabs(iMetPhi-iVec.Phi());
   if(fabs(lDPhi) > TMath::Pi()*2.-lDPhi) lDPhi = TMath::Pi()*2.-lDPhi;
   float lMt = sqrt(2.0*(iVec.Pt()*iMet*(1.0-cos(lDPhi))));
   return lMt;
 }
+void  EvtLoader::fillmT(std::vector<TLorentzVector> &lCorr) {
+  if(lCorr.size()>0){
+    if(fFPuppEt>0)     fMt = mT(fFPuppEt,     fFPuppEtPhi,     lCorr[0]);
+    else               fMt = mT(fFMet,        fFMetPhi,        lCorr[0]);
+  }
+}
 void EvtLoader::fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes){
   for(unsigned int i0 = 0; i0 < iVetoes.size(); i0++)   lVetoes.push_back(iVetoes[i0]);
 }
 // kFactor and EWK
-void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std::string iHist2,std::string iSFactor4){
-  TFile *lFile = new TFile(iSFactor4.c_str());
-  fHist0 =  (TH1F*) lFile->Get(iHist0.c_str());
+void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std::string iHist2,std::string ikfactor){
+  TFile *lFile = new TFile(ikfactor.c_str());
+  fHist0 =  (TH1F*) lFile->Get(iHist0.c_str()); // NLO
   fHist0->SetDirectory(0);
-  fHist1 =  (TH1F*) lFile->Get(iHist1.c_str());
+  fHist1 =  (TH1F*) lFile->Get(iHist1.c_str()); // LO
   fHist1->SetDirectory(0);
-  fHist2 =  (TH1F*) lFile->Get(iHist2.c_str());
+  fHist2 =  (TH1F*) lFile->Get(iHist2.c_str()); // EWK
   fHist2->SetDirectory(0);
   lFile->Close();
 
+  fHist2->Divide(fHist0);
   fHist0->Divide(fHist1);
 
   fkFactor_CENT = Float_t(fHist0->GetBinContent(fHist0->FindBin(iPt)));
@@ -244,4 +238,6 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
   fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(iPt)));
   if(iPt > 700) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(700)));
   if(iPt < 100) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(100)));
+
+  fkfactor = fkFactor_CENT*fEwkCorr_CENT; //(NLO/LO)*(NLO*ewk/NLO)
 }

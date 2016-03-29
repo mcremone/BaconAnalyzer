@@ -23,10 +23,9 @@ public:
   std::vector<TMuon*> fSelMuons;
   std::vector<double> fmuoSFVars;
   int           fNMuons;
-  const double MUON_MASS = 0.105658369;
-
   TH2D         *fhMuLoose;
   TH2D         *fhMuTight;
+  const double MUON_MASS = 0.105658369;
 
 protected: 
   TClonesArray *fMuons;

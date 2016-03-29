@@ -24,17 +24,17 @@ public:
   void reset();
   void setupTree(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
-  void selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double iMetPhi,double iRho);
+  void selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,float iMetPhi,float iFMetPhi); //,float iRho);
   std::vector<TJet*> fSelJets;
   std::vector<const TJet*> fGoodJets;
   //Fillers
   void addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
-  void fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,double iMetPhi,double iRho);
+  void fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals); //,float iMetPhi,float iRho);
   void addDijet(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
   void fillDiJet();
   void addBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> &iLabels,int iN,std::vector<float> &iVals);
   void fillBTag(std::vector<const TJet*> iObjects);
-  double correction(TJet &iJet,double iRho);
+  double correction(TJet &iJet,float iRho);
   //Constants
   const double CSVL = 0.605;
   const double CSVM = 0.89;
@@ -44,8 +44,9 @@ protected:
   TClonesArray *fJets;
   TBranch      *fJetBr;
   TTree        *fTree;
-  double        fMinDPhi;
-  int           fNFwd;
+  float         fMinDPhi;
+  float         fMinDFPhi;
+  // int           fNFwd;
   int           fNBTags;
   int           fNBTagsL;
   int           fNBTagsM;
@@ -59,7 +60,7 @@ protected:
   std::vector<double>      fVars;
   std::vector<float>       fBTagVars;
   int           fN;
-  double        fHT;
+  // double        fHT;
   FactorizedJetCorrector   *fJetCorr;
   BTagCalibration          *fJetCalib;
   std::vector<BTagCalibrationReader*> freadersL;
