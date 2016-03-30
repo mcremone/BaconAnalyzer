@@ -26,6 +26,7 @@ VJetLoader::~VJetLoader() {
 }
 void VJetLoader::reset() { 
   fNVJets = 0; 
+  fVMT    = 0;
   fSelVJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
 }
@@ -46,16 +47,15 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("maxsubcsv");
   //fLabels.push_back("mindPhi");
   //fLabels.push_back("mindFPhi");
+  std::stringstream pSMT;   pSMT << iJetLabel << "mT";
   fTree = iTree;
-  std::stringstream nVJet,pfTS;
-  nVJet << "nf" << iJetLabel;
-  pfTS << "topSize" << iJetLabel;
-  fTree->Branch(nVJet.str().c_str(),&fNVJets,"fNVJets/I");
+  fTree->Branch("nf15PUPPIjets"    ,&fNVJets ,"fNVJets/I");
+  fTree->Branch(pSMT.str().c_str() ,&fVMT    ,(pSMT.str()+"/F").c_str());
   for(int i0 = 0; i0 < fN*4.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
   for(int i0 = 0; i0 < fN*(int(fLabels.size())); i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,1);                                               // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi,*_mass for vjet0 (4*1=4)
+  setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);                                                 // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi for vjet0 (3*1=3)
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,fN*3,fLabels);
-  fTree->Branch(pfTS.str().c_str(),&ftopSize,"ftopSize/D"); 
+  fTree->Branch("topSize"          ,&ftopSize ,"ftopSize/D"); 
 }
 void VJetLoader::load(int iEvent) { 
   fVJets       ->Clear();
@@ -63,7 +63,7 @@ void VJetLoader::load(int iEvent) {
   fVAddJets    ->Clear();
   fVAddJetBr   ->GetEntry(iEvent);
 }
-void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR){ //,double iMetPhi,double iRho) {
+void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR){
   reset(); 
   int lCount = 0; 
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
@@ -72,15 +72,15 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
     if(fabs(pVJet->eta) >=  2.4)                    continue;
     if(passVeto(pVJet->eta,pVJet->phi,dR,iVetoes))  continue;
     if(!passJetLooseSel(pVJet))                     continue;
-    addVJet(pVJet,iJets,pVJet->mass); // ask Matteo
+    addVJet(pVJet,iJets,pVJet->mass);
     addJet(pVJet,fSelVJets);
     lCount++;
   }
   fNVJets = lCount;
   fillJet( fN,fSelVJets,fVars);
-  fillVJet(fN,fSelVJets,fVars); //,iMetPhi,iRho);
+  fillVJet(fN,fSelVJets,fVars); 
 }
-void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){ //,double iMetPhi,double iRho) { 
+void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){ 
   int lBase = 3.*fN;
   int lMin = iObjects.size();
   int lNLabel = int(fLabels.size());

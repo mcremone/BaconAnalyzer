@@ -264,8 +264,8 @@ void plotMonoX(const string preselection, const string selection, const string s
 	  // }
 	  
 	  if(sample->label=="W+jets" || sample->label=="Z+jets" || sample->label=="#gamma+jets"){
-	    if( fBits->ewkCorr*fBits->nloKfactor ==0) wgt *= 1;
-	    else wgt *= fBits->ewkCorr*fBits->nloKfactor;
+	    if( fBits->kfactor ==0) wgt *= 1;
+	    else wgt *= fBits->kfactor;
 	    if(subsample=="SR" || subsample=="TopCR" || subsample=="minusMass" || subsample=="minusTau32"){
 	      if(ifile==0 || ifile==2) {
 		wgt *= fBits->btagSF;

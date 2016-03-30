@@ -84,8 +84,8 @@ void GenLoader::setupTree(TTree *iTree,float iXSIn) {
   iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); fWeight = fGenInfo->weight;
   iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F");   fXSIn = iXSIn;
 
-  fTree->Branch("genPt"      ,&fBosonPt   ,"fBosonPt/F");
-  fTree->Branch("genPhi"     ,&fBosonPhi  ,"fBosonPhi/F");
+  fTree->Branch("genVPt"     ,&fBosonPt   ,"fBosonPt/F");
+  fTree->Branch("genVPhi"    ,&fBosonPhi  ,"fBosonPhi/F");
 
   /*
   iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F");
@@ -491,7 +491,7 @@ void GenLoader::findBoson(int iId, int lOption){
 
     // find highest Pt boson G(22),Z(23),W(24)
     if(lOption == 0){
-      if(genp0->pdgId==iId){ //&& genp0->pt > fBosonPt){
+      if(genp0->pdgId==iId && genp0->pt > fBosonPt){
 	  fBosonPt = genp0->pt;
 	  fBosonPhi = genp0->phi;
 	  break;

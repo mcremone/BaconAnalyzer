@@ -150,10 +150,10 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then
     ./sub.sh mc $eos Spring15_a25ns_ZZ_MINIAOD                                          31.8  $option1 $option2; 
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then 
-#     ./sub.sh data $eos MET_Run2015D_PrReco_05Oct_MINIAOD                                   1  $option1 $option2
+if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then 
+    ./sub.sh data $eos MET_Run2015D_PrReco_05Oct_MINIAOD                                   1  $option1 $option2
 #     ./sub.sh data $eos MET_Run2015D_PrReco_v4_MINIAOD                                      1  $option1 $option2
-# fi
+fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "G") ]]; then 
 #     ./sub.sh mcgjets $eos Spring15_a25ns_GJets_HT-100To200_MINIAOD                      9235  $option1 $option2
 #     ./sub.sh mcgjets $eos Spring15_a25ns_GJets_HT-200To400_MINIAOD                      2298  $option1 $option2
@@ -198,10 +198,10 @@ fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop_res") ]]; then
 #     ./sub.sh mc $eos Spring15_a25ns_monotop_resonant-Med1100_Chi1100_MINIAOD               1  $option1 $option2
 # fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
-#     ./sub.sh data $eos SingleElectron_Run2015D_PrReco_v4_MINIAOD                           1  $option1 $option2   
-#     ./sub.sh data $eos SingleElectron_Run2015D_PrReco_05Oct_MINIAOD                        1  $option1 $option2
-# fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
+    ./sub.sh data $eos SingleElectron_Run2015D_PrReco_v4_MINIAOD                           1  $option1 $option2   
+    ./sub.sh data $eos SingleElectron_Run2015D_PrReco_05Oct_MINIAOD                        1  $option1 $option2
+fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then
 #     ./sub.sh data $eos SingleMuon_Run2015D_PrReco_05Oct_MINIAOD                            1  $option1 $option2
 #     ./sub.sh data $eos SingleMuon_Run2015D_PrReco_v4_MINIAOD                               1  $option1 $option2

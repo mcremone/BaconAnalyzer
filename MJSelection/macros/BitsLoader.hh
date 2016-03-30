@@ -100,7 +100,7 @@ public:
   int njets, nfjets, nf15jets;                                                     // jet multiplicity 
   int nbtags, nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2;                   // b-jet multiplicity
   float scale1fb;                                                                  // cross section scale factor per 1/fb
-  float nloKfactor, ewkCorr;                                                       // kFactor and EWK correction
+  float kfactor;                                                                   // kFactor and EWK correction
   float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2;                   // btag SF
   float res_btagwM0, res_btagwM1, res_btagwMminus1, res_btagwM2 ;
   float res_btagwT0, res_btagwT1, res_btagwTminus1, res_btagwT2;

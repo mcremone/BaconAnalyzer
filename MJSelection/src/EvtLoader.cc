@@ -56,8 +56,6 @@ void EvtLoader::reset() {
   fFMetPhi      = 0;
   fFPuppEt      = 0;
   fFPuppEtPhi   = 0;
-
-  fMt           = -999;
 }
 void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   reset();
@@ -89,8 +87,6 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   fTree->Branch("fakepuppet"      ,&fFPuppEt        ,"fFPuppEt/F");
   fTree->Branch("fakepuppetphi"   ,&fFPuppEtPhi     ,"fFPuppEtPhi/F");
 
-  fTree->Branch("mT"              ,&fMt             ,"fMt/F");
-
   fScale = iWeight;
 }
 void EvtLoader::load(int iEvent) { 
@@ -110,6 +106,8 @@ bool EvtLoader::passSkim() {
 }
 void EvtLoader::fillEvent(unsigned int trigBit) { 
   reset();
+  fRun          = fEvt->runNum;
+  fLumi         = fEvt->lumiSec;
   fNPU          = fEvt->nPUmean;
   fNVtx         = nVtx();
   fITrigger     = trigBit;
@@ -131,21 +129,19 @@ void  EvtLoader::fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vect
   if(iVecCorr.size() > 0){
     TLorentzVector lCorr0;
     for(unsigned int i0 =0; i0 < iVecCorr.size(); i0++) lCorr0 += iVecCorr[i0];
-    fFMet        = fEvt->pfMETC;
-    fFMetPhi     = fEvt->pfMETCphi;
+    fFMet         = fEvt->pfMETC;
+    fFMetPhi      = fEvt->pfMETCphi;
     fFPuppEt      = fEvt->puppETC;
     fFPuppEtPhi   = fEvt->puppETCphi;
     correctMet(fFPuppEt     ,fFPuppEtPhi,     lCorr0);
     correctMet(fFMet        ,fFMetPhi,        lCorr0);
   }
   if(iPhotons.size() > 0){
-    TLorentzVector lCorr1;
-    fFMet        = fEvt->pfMETC;
-    fFMetPhi     = fEvt->pfMETCphi;
+    fFMet         = fEvt->pfMETC;
+    fFMetPhi      = fEvt->pfMETCphi;
     fFPuppEt      = fEvt->puppETC;
     fFPuppEtPhi   = fEvt->puppETCphi;
-    lCorr1 = iPhotons[0];
-    correctMet(fFMet        ,fFMetPhi,        lCorr1);
+    correctMet(fFMet        ,fFMetPhi,        iPhotons[0]);
   }
 }
 void  EvtLoader::correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr) { 
@@ -204,14 +200,16 @@ float EvtLoader::puWeight(float iNPU) {
 // mT
 float  EvtLoader::mT(float &iMet,float &iMetPhi,TLorentzVector &iVec) { 
   float lDPhi = fabs(iMetPhi-iVec.Phi());
-  if(fabs(lDPhi) > TMath::Pi()*2.-lDPhi) lDPhi = TMath::Pi()*2.-lDPhi;
+  // if(fabs(lDPhi) > TMath::Pi()*2.-lDPhi) lDPhi = TMath::Pi()*2.-lDPhi;
   float lMt = sqrt(2.0*(iVec.Pt()*iMet*(1.0-cos(lDPhi))));
   return lMt;
 }
-void  EvtLoader::fillmT(std::vector<TLorentzVector> &lCorr) {
+void  EvtLoader::fillmT(std::vector<TLorentzVector> &lCorr,float &fmT) {
   if(lCorr.size()>0){
-    if(fFPuppEt>0)     fMt = mT(fFPuppEt,     fFPuppEtPhi,     lCorr[0]);
-    else               fMt = mT(fFMet,        fFMetPhi,        lCorr[0]);
+    TLorentzVector lVecCorr;
+    for(unsigned int i0 =0; i0 < lCorr.size(); i0++) lVecCorr += lCorr[i0];
+    if(fFPuppEt>0)     fmT = mT(fFPuppEt,     fFPuppEtPhi,     lVecCorr);
+    else               fmT = mT(fFMet,        fFMetPhi,        lVecCorr);
   }
 }
 void EvtLoader::fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes){

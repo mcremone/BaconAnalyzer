@@ -22,8 +22,7 @@ BitsLoader::BitsLoader(TTree *iTree,TString jet, TString algo,TString syst, stri
     iTree->SetBranchAddress("puWeight",                          &puWeight);
     iTree->SetBranchAddress("scale1fb",                          &scale1fb);
     iTree->SetBranchAddress("evtWeight",                         &evtWeight);
-    iTree->SetBranchAddress("nloKfactor_CENT",                   &nloKfactor);
-    iTree->SetBranchAddress("ewkCorr_CENT",                      &ewkCorr);
+    iTree->SetBranchAddress("kfactor",                           &kfactor);
     iTree->SetBranchAddress(met,                                 &vmetpt);
     iTree->SetBranchAddress(met+"phi",                           &vmetphi);
     iTree->SetBranchAddress("fake"+met,                          &vfakemetpt);
@@ -430,7 +429,7 @@ bool BitsLoader::passSelection(string preselection, string selection, string sub
 double BitsLoader::getWgt(bool isData, TString algo, double LUMI, float btagw){
   float wgt = 1;
   if(!isData) {     
-    wgt *= LUMI*scale1fb*nloKfactor*ewkCorr*btagw*triggerEff*evtWeight;
+    wgt *= LUMI*scale1fb*kfactor*btagw*triggerEff*evtWeight;
     if (algo == "CHS") wgt *= puWeight;
   }
   return wgt;

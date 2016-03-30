@@ -28,6 +28,7 @@ public:
   TJet* getLargeJet(TJet *iMatch);
   std::vector<TJet*> fSelVJets;
   double ftopSize;
+  float fVMT;
 protected: 
   TClonesArray *fVJets;
   TBranch      *fVJetBr;

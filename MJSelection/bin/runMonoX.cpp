@@ -9,7 +9,7 @@
 //                            "mczjets",  "mczplushf",  "mczpluslf",
 //                            "mcdyjets", "mcdyplushf", "mcdypluslf",
 //                            "mcgjets",  "mcgplushf",  "mcgpluslf",
-//                            "mcbst",    "mccom",
+//                            "mcttbst",  "mcttcom",
 //                            "mctt1l",   "mctt2l",     "mctthad",
 //                            "data"
 //   argv[3] => lJSON = JSON file for run-lumi filtering of data, specify "none" for MC or no filtering
@@ -85,14 +85,14 @@ int main( int argc, char **argv ) {
   fElectron = new ElectronLoader(lTree);                                                 // fElectrons and fElectronBr, fN = 2
   fTau      = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
-  fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4CHS, fN = 4 - includes jet corrections (corrParams), fN = 4, Implement AK4CHS?
+  fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fVJet     = new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
 
-  // Setup Tree - Set branch address depends on object processor, see src/*Loader.cc
+  // Setup Tree
   fEvt     ->setupTree      (lOut,lWeight); 
   fJet     ->setupTree      (lOut,"res_PUPPIjet"); 
   fVJet    ->setupTree      (lOut,"bst15_PUPPIjet"); 
@@ -107,10 +107,10 @@ int main( int argc, char **argv ) {
   //
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  //for(int i0 = 0; i0 < int(50000); i0++){ // for testing
+  // for(int i0 = 0; i0 < int(50000); i0++){ // for testing
     // if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
-    // check json and GenInfo
+    // Check json and GenInfo
     fEvt->load(i0);
     if(lOption.find("data")!=std::string::npos){
       if(!passEvent(fEvt->fRun,fEvt->fLumi))                                                              continue;
@@ -124,15 +124,15 @@ int main( int argc, char **argv ) {
 	if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
 	if(lOption.find("tt1l")!=std::string::npos && nlep!=1)                                            continue;
 	if(lOption.find("tthad")!=std::string::npos && nlep!=0)                                           continue;
-      if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                       continue;
-      if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                       continue;
+	if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
+	if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
       }
     }
 
-    // primary vertex requirement
+    // Primary vertex requirement
     if(!fEvt->PV()) continue;
     
-    // triggerbits for MET, Electrons, Photons and Muons
+    // Triggerbits for MET, Electrons, Photons and Muons
     unsigned int trigbits=1;    
     if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
@@ -142,8 +142,8 @@ int main( int argc, char **argv ) {
        fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2; 
     if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
        fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*") ||
-       fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*"))  trigbits = trigbits | 4;
-    if(lName.find("Electron")!=std::string::npos && fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
+       fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
+       fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
     if(fEvt ->passTrigger("HLT_Photon175_v*") ||
        fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 8;
     //if(fEvt ->passTrigger("HLT_IsoMu20_v*") ||
@@ -153,11 +153,11 @@ int main( int argc, char **argv ) {
     if(trigbits==1) continue;
     
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVetoes;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJet, lVJets, lVetoes;
 
     // Muons
-    fMuon    ->load(i0);
-    fMuon    ->selectMuons(lMuons);
+    fMuon     ->load(i0);
+    fMuon     ->selectMuons(lMuons);
     
     fEvt      ->load(i0);
     fEvt      ->fillEvent(trigbits);
@@ -174,7 +174,7 @@ int main( int argc, char **argv ) {
     
     // Fill Vetoes
     fEvt->fillVetoes(lElectrons,lVetoes);
-    fEvt->fillVetoes(lMuons,lVetoes);        // In principle this will produce a different output from Matteo
+    fEvt->fillVetoes(lMuons,lVetoes);
 
     // Taus
     fTau     ->load(i0);
@@ -193,27 +193,36 @@ int main( int argc, char **argv ) {
     
     // CA15Puppi Jets
     fVJet->load(i0);
-    fVJet->selectVJets(lVetoes,lJets,1.5);  //,fEvt->fPuppEtPhi,fEvt->fRho);
-    
-    // TopSize FIXME
-    if(lJets.size()>0){ if((lOption.compare("mcttbst")==0 && fGen->ismatchedJet(lJets[0],1.5,fVJet->ftopSize))
-			   || (lOption.compare("mcttcom")==0 && !fGen->ismatchedJet(lJets[0],1.5,fVJet->ftopSize))){
+    fVJet->selectVJets(lVetoes,lVJets,1.5);
+    if(lVJets.size()>0) { 
+      if((lOption.compare("mcttbst")==0 && fGen->ismatchedJet(lVJets[0],1.5,fVJet->ftopSize)) || 
+	 (lOption.compare("mcttcom")==0 && !fGen->ismatchedJet(lVJets[0],1.5,fVJet->ftopSize))) {
 	fEvt->fselectBits =  fEvt->fselectBits | 2; 
       }
+      fEvt->fselectBits =  fEvt->fselectBits | 2;
+      lVJet.push_back(lVJets[0]);
+      fEvt->fillmT(lVJet,fVJet->fVMT);
     }
     
-    // AK4PUPPI Jets
+    // AK4Puppi Jets
     fJet->load(i0); 
-    fJet->selectJets(lVetoes,lJets,fEvt->fPuppEtPhi,fEvt->fFPuppEtPhi);
-    if(fJet->fNJets < 1) continue;
+    fJet->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
+    if(lJets.size()>0){
+      fEvt->fselectBits =  fEvt->fselectBits | 4;
+      fEvt->fillmT(lJets,fJet->fMT);
+    }
 
-    // mT FIXME
-    fEvt->fillmT(lJets);
+    // Select only Puppi Jets
+    if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4)) continue;
 
     // ttbar, EWK and kFactor correction
-    if(lOption.find("data")==std::string::npos) fGen->load(i0);
+    if(lOption.find("data")==std::string::npos){
+      fGen->load(i0);
+      if(lJets.size()>0)        fJet->fillBTag(fJet->fGoodJets);
+    }
+
     if(lOption.find("mcg")!=std::string::npos){
-      fGen->findBoson(22,0); // no matching included
+      fGen->findBoson(22,0); 
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"GJets_1j_NLO/nominal_G","GJets_LO/inv_pt_G","EWKcorr/photon");
     }
     if(lOption.find("mcz")!=std::string::npos || lOption.find("mcdy")!=std::string::npos){
@@ -225,7 +234,7 @@ int main( int argc, char **argv ) {
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W"); 
     }
     if(lOption.find("tt")!=std::string::npos){
-      fEvt->fevtWeight = fEvt->fevtWeight * fGen->computeTTbarCorr();
+      fEvt->fevtWeight *= fGen->computeTTbarCorr();
       if(lOption.find("tt1l")!=std::string::npos) fGen->findBoson(24,1);
       if(lOption.find("tt2l")!=std::string::npos) fGen->findBoson(6,1);
     }
