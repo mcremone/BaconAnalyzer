@@ -112,8 +112,9 @@ int main( int argc, char **argv ) {
     // triggerbits for PFJet
     unsigned int trigbits=1;   
     if(fEvt ->passTrigger("HLT_AK8PFJet360_TrimMass30_v*") ||
-       fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*") ||
-       fEvt ->passTrigger("HLT_PFHT800_v*")) trigbits = trigbits | 2; 
+       fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*") //||
+       // fEvt ->passTrigger("HLT_PFHT800_v*")
+       ) trigbits = trigbits | 2; 
     if(trigbits==1) continue;
     
     // Objects

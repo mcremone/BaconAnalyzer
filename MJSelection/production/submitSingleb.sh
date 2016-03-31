@@ -5,6 +5,7 @@ option1=$2
 option2=$3
 dir="singlebbits"
 eos="/store/cmst3/group/monojet/production/singleb/"
+exec="runSingleb"
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then
     ./sub.sh mcbkg $eos Fall15_QCD_HT100to200_MINIAOD                    27500000  $dir $exec $option1 $option2
     ./sub.sh mcbkg $eos Fall15_QCD_HT200to300_MINIAOD                     1735000  $dir $exec $option1 $option2
