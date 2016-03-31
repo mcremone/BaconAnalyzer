@@ -10,8 +10,9 @@ ismc=$1
 dir=$2
 label=$3
 xs=$4
-option1=$5
-option2=$6
+xdir=$5
+option1=$6
+option2=$7
 
 options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q 2nd"
 #options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q cmscaf1nd"
@@ -36,8 +37,7 @@ function scan {
         hasroot=`echo $x | grep -c .root`
         if [ "$hasroot" -ne 0 ]; then
             if [ "$submitted" -eq 0 ]; then
-		python baconBatch.py runMonoX  $options1 -a "4:"$xs -d "1:"$scandir  -o $PWD/../baconbits/${label}_${ismc}   $option1 $option2
-		#echo $scandir
+		python baconBatch.py runMonoX  $options1 -a "4:"$xs -d "1:"$scandir  -o $PWD/../${xdir}/${label}_${ismc}   $option1 $option2
 		submitted=$((submitted+1))
 		total=$((total+1))
             fi
@@ -54,8 +54,7 @@ done
 if [ "$hasrootdir" -ne 0 ]; then
     submitted=0	
     if [ "$submitted" -eq 0 ]; then
-	python baconBatch.py runMonoX  $options1 -a "4:"$xs -d "1:"$scandir  -o $PWD/../baconbits/${label}_${ismc}   $option1 $option2
-	#echo $scandir
+	python baconBatch.py runMonoX  $options1 -a "4:"$xs -d "1:"$scandir  -o $PWD/../${xdir}/${label}_${ismc}   $option1 $option2
 	submitted=$((submitted+1))
         total=$((total+1))	
     fi

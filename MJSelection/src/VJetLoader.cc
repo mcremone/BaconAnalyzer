@@ -85,7 +85,6 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
   int lMin = iObjects.size();
   int lNLabel = int(fLabels.size());
   if(iN < lMin) lMin = iN;
-  //double fMinDPhi = 1000; double fFMinDPhi = 1000;
   for(int i0 = 0; i0 < lMin; i0++) { 
     TAddJet *pAddJet = getAddJet(iObjects[i0]);
     iVals[lBase+i0*lNLabel+0]  = iObjects[i0]->mass;
@@ -100,18 +99,6 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
     iVals[lBase+i0*lNLabel+9]  = pAddJet->mass_sd0/log(iObjects[i0]->pt);
     iVals[lBase+i0*lNLabel+10] = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
     iVals[lBase+i0*lNLabel+11] = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
-    // double pDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
-    // if(pDPhi < fMinDPhi){
-    //   iVals[lBase+i0*lNLabel+12]  = pDPhi;
-    //   fMinDPhi = pDPhi;
-    // }
-    // else iVals[lBase+i0*lNLabel+12]  = fMinDPhi;
-    // double pFDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
-    // if(pDPhi < fFMinDPhi){
-    //   iVals[lBase+i0*lNLabel+13]  = pFDPhi;
-    //   fFMinDPhi = pFDPhi;
-    // }
-    // else iVals[lBase+i0*lNLabel+13]  = fFMinDPhi;
   }
 }
 void VJetLoader::addBoson(TGenParticle *iBoson) { 
