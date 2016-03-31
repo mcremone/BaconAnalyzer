@@ -42,12 +42,12 @@ public:
   const double CSVT = 0.97;
   int           fNJets;
   float         fMT;
+  double        fMinDPhi;
+  double        fMinDFPhi;
 protected: 
   TClonesArray *fJets;
   TBranch      *fJetBr;
   TTree        *fTree;
-  float         fMinDPhi;
-  float         fMinDFPhi;
   int           fNBTags;
   int           fNBTagsL;
   int           fNBTagsM;

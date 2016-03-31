@@ -13,11 +13,11 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DY") ]]; then rm ../baconbits/DY.root;    hadd  ../baconbits/DY.root     ../baconbits/*DYJets*_HT*jets/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYHF") ]]; then rm ../baconbits/DYHF.root;    hadd  ../baconbits/DYHF.root     ../baconbits/*DYJets*_HT*mcdyplushf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYLF") ]]; then rm ../baconbits/DYLF.root;    hadd  ../baconbits/DYLF.root     ../baconbits/*DYJets*_HT*mcdypluslf/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "DYNLO") ]]; then rm ../baconbits/DYNLO.root;  hadd  ../baconbits/DYNLO.root   ../baconbits/*DYJetsToLL_M-50_MINIAOD*/*.root; fi
+# if [[ ($sample = "All") || ($sample != "All" && $sample = "DYNLO") ]]; then rm ../baconbits/DYNLO.root;  hadd  ../baconbits/DYNLO.root   ../baconbits/*DYJetsToLL_M-50_MINIAOD*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "Z") ]]; then rm ../baconbits/Z.root;    hadd  ../baconbits/Z.root     ../baconbits/*ZJetsToNuNu*jets/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZHF") ]]; then rm ../baconbits/ZHF.root;    hadd  ../baconbits/ZHF.root     ../baconbits/*ZJets*_HT*mczplushf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZLF") ]]; then rm ../baconbits/ZLF.root;    hadd  ../baconbits/ZLF.root     ../baconbits/*ZJets*_HT*mczpluslf/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "ZNLO") ]]; then rm ../baconbits/ZNLO.root;    hadd  ../baconbits/ZNLO.root     ../baconbits/*DYJetsToNuNu*/*.root; fi
+# if [[ ($sample = "All") || ($sample != "All" && $sample = "ZNLO") ]]; then rm ../baconbits/ZNLO.root;    hadd  ../baconbits/ZNLO.root     ../baconbits/*DYJetsToNuNu*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "W") ]]; then rm ../baconbits/W.root;    hadd  ../baconbits/W.root     ../baconbits/*WJets*_HT*mcwjets/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WHF") ]]; then rm ../baconbits/WHF.root;    hadd  ../baconbits/WHF.root     ../baconbits/*WJets*_HT*mcwplushf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WLF") ]]; then rm ../baconbits/WLF.root;    hadd  ../baconbits/WLF.root     ../baconbits/*WJets*_HT*mcwpluslf/*.root; fi

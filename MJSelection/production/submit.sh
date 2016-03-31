@@ -123,9 +123,9 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTG") ]]; then
     ./sub.sh mc $eos Spring15_a25ns_TTGJets_MINIAOD                                    3.697  $option1 $option2;
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "THQ") ]]; then
-#     ./sub.sh mc $eos Spring15_a25ns_tHq_invisible_MINIAOD                           0.070940  $option1 $option2;
-# fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "THQ") ]]; then
+    ./sub.sh mc $eos Spring15_a25ns_tHq_invisible_MINIAOD                           0.070940  $option1 $option2;
+fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TT1L") ]]; then
     ./sub.sh mctt1l $eos Spring15_a25ns_TTJets_madgraph_MINIAOD                       831.76  $option1 $option2; 
 fi
@@ -135,12 +135,12 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTHAD") ]]; then
     ./sub.sh mctthad $eos Spring15_a25ns_TTJets_madgraph_MINIAOD                      831.76  $option1 $option2; 
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "TTBST") ]]; then
-#     ./sub.sh mcttbst $eos Spring15_a25ns_TTJets_madgraph_MINIAOD                      831.76  $option1 $option2; 
-# fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "TTCOM") ]]; then
-#     ./sub.sh mcttcom $eos Spring15_a25ns_TTJets_madgraph_MINIAOD                      831.76  $option1 $option2; 
-# fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "TTBST") ]]; then
+    ./sub.sh mcttbst $eos Spring15_a25ns_TTJets_madgraph_MINIAOD                      831.76  $option1 $option2; 
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "TTCOM") ]]; then
+    ./sub.sh mcttcom $eos Spring15_a25ns_TTJets_madgraph_MINIAOD                      831.76  $option1 $option2; 
+fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WW") ]]; then
     ./sub.sh mc $eos Spring15_a25ns_WW_MINIAOD                                         118.7  $option1 $option2; 
 fi
@@ -152,7 +152,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then 
     ./sub.sh data $eos MET_Run2015D_PrReco_05Oct_MINIAOD                                   1  $option1 $option2
-#     ./sub.sh data $eos MET_Run2015D_PrReco_v4_MINIAOD                                      1  $option1 $option2
+    ./sub.sh data $eos MET_Run2015D_PrReco_v4_MINIAOD                                      1  $option1 $option2
 fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "G") ]]; then 
 #     ./sub.sh mcgjets $eos Spring15_a25ns_GJets_HT-100To200_MINIAOD                      9235  $option1 $option2
@@ -160,44 +160,41 @@ fi
 #     ./sub.sh mcgjets $eos Spring15_a25ns_GJets_HT-400To600_MINIAOD                     277.6  $option1 $option2
 #     ./sub.sh mcgjets $eos Spring15_a25ns_GJets_HT-600ToInf_MINIAOD                     93.47  $option1 $option2
 # fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "GHF") ]]; then 
-#     ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-100To200_MINIAOD                    9235  $option1 $option2
-#     ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-200To400_MINIAOD                    2298  $option1 $option2
-#     ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-400To600_MINIAOD                   277.6  $option1 $option2
-#     ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-600ToInf_MINIAOD                   93.47  $option1 $option2
-# fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then 
-#     ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-100To200_MINIAOD                    9235  $option1 $option2
-#     ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-200To400_MINIAOD                    2298  $option1 $option2
-#     ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-400To600_MINIAOD                   277.6  $option1 $option2
-#     ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-600ToInf_MINIAOD                   93.47  $option1 $option2
-# fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then
-#     ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_05Oct_MINIAOD                          1  $option1 $option2
-#     ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_v4_MINIAOD                             1  $option1 $option2
-# fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "GHF") ]]; then 
+    ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-100To200_MINIAOD                    9235  $option1 $option2
+    ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-200To400_MINIAOD                    2298  $option1 $option2
+    ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-400To600_MINIAOD                   277.6  $option1 $option2
+    ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-600ToInf_MINIAOD                   93.47  $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then 
+    ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-100To200_MINIAOD                    9235  $option1 $option2
+    ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-200To400_MINIAOD                    2298  $option1 $option2
+    ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-400To600_MINIAOD                   277.6  $option1 $option2
+    ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-600ToInf_MINIAOD                   93.47  $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then
+    ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_05Oct_MINIAOD                          1  $option1 $option2
+    ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_v4_MINIAOD                             1  $option1 $option2
+fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "TTDM") ]]; then
 #     ./sub.sh mc $eos Spring15_a25ns_TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_MINIAOD       1  $option1 $option2; 
 # fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
     ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1100_Mchi-100_MINIAOD                  1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1300_Mchi-100_MINIAOD                  1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1500_Mchi-100_MINIAOD                  1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1700_Mchi-100_MINIAOD                  1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1900_Mchi-100_MINIAOD                  1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-2100_Mchi-100_MINIAOD                  1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-900_Mchi-100_MINIAOD                   1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-1100_MINIAOD                           1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-1300_MINIAOD                           1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-1500_MINIAOD                           1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1300_Mchi-100_MINIAOD                  1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1500_Mchi-100_MINIAOD                  1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1700_Mchi-100_MINIAOD                  1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1900_Mchi-100_MINIAOD                  1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-2100_Mchi-100_MINIAOD                  1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-900_Mchi-100_MINIAOD                   1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-1100_MINIAOD                           1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-1300_MINIAOD                           1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-1500_MINIAOD                           1  $option1 $option2
     ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-300_MINIAOD                            1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-500_MINIAOD                            1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-700_MINIAOD                            1  $option1 $option2
-    # ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-900_MINIAOD                            1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-500_MINIAOD                            1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-700_MINIAOD                            1  $option1 $option2
+    ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-900_MINIAOD                            1  $option1 $option2
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop_res") ]]; then
-#     ./sub.sh mc $eos Spring15_a25ns_monotop_resonant-Med1100_Chi1100_MINIAOD               1  $option1 $option2
-# fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
     ./sub.sh data $eos SingleElectron_Run2015D_PrReco_v4_MINIAOD                           1  $option1 $option2   
     ./sub.sh data $eos SingleElectron_Run2015D_PrReco_05Oct_MINIAOD                        1  $option1 $option2

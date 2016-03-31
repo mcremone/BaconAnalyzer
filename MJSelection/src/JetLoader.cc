@@ -48,8 +48,8 @@ double JetLoader::correction(TJet &iJet,float iRho) {
 void JetLoader::reset() { 
   fNJets      = 0;
   fMT         = 0;
-  fMinDPhi    = 0;
-  fMinDFPhi   = 0; 
+  fMinDPhi    = 1000;
+  fMinDFPhi   = 1000; 
   fNBTags     = 0;
   fNBTagsL    = 0;
   fNBTagsM    = 0;

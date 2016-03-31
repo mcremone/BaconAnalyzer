@@ -29,7 +29,7 @@ BitsLoader::BitsLoader(TTree *iTree,TString jet, TString algo,TString syst, stri
     iTree->SetBranchAddress("fake"+met+"phi",                    &vfakemetphi);
     //iTree->SetBranchAddress("mT",                                &bst_mt);
     iTree->SetBranchAddress("n"+algo+"jets",                     &njets);
-    iTree->SetBranchAddress("nfbst"+jet+"_"+algo+"jet",          &nfjets);
+    iTree->SetBranchAddress("nf15"+algo+"jets",                  &nfjets);
     iTree->SetBranchAddress("nbtags",                            &nbtags);
     iTree->SetBranchAddress("nb"+algo+"jetsL",                   &nbjetsL);
     iTree->SetBranchAddress("nb"+algo+"jetsM",                   &nbjetsM);
@@ -59,7 +59,7 @@ BitsLoader::BitsLoader(TTree *iTree,TString jet, TString algo,TString syst, stri
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL1_"+syst,      &res_btagwL1);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwLminus1_"+syst, &res_btagwLminus1);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL2_"+syst,      &res_btagwL2);
-    iTree->SetBranchAddress("topSizebst"+jet+"_"+algo+"jet",     &topSize);
+    iTree->SetBranchAddress("topSize",                           &topSize);
     iTree->SetBranchAddress("nmu",                               &nmu);
     iTree->SetBranchAddress("nele",                              &nele);
     iTree->SetBranchAddress("ntau",                              &ntau);
@@ -87,7 +87,7 @@ BitsLoader::~BitsLoader(){}
 bool BitsLoader::selectJetAlgoAndSize(string selection, TString algo){
   bool lPass = false;
   // std::cout << nfjets << std::endl;
-  if(nfjets > 0 && selection.find("Bst")==0 && selection.compare("BstMonoZbb")!=0 && algo=="PUPPI") lPass = true;
+  if((selectBits & kBOOSTED15CHS) && selection.find("Bst")==0 && selection.compare("BstMonoZbb")!=0 && algo=="PUPPI") lPass = true;
   else if((selectBits & kBOOSTED15CHS) && selection.find("Bst")==0 && selection.compare("BstMonoZbb")!=0 && algo=="CHS") lPass = true;
   else if((selectBits & kBOOSTED8PUPPI) && selection.find("Bst")==0 && selection.compare("BstMonoZbb")==0 && algo=="PUPPI") lPass = true;
   else if((selectBits & kBOOSTED8CHS) && selection.find("Bst")==0 && selection.compare("BstMonoZbb")==0 && algo=="CHS") lPass = true;
@@ -201,8 +201,7 @@ bool BitsLoader::passResolvedMonoXbb(string preselection){
 }
 bool BitsLoader::passBoostedMonoTopSR(string preselection){ 
   //  return passBoosted15MonoX(preselection) & (bst_jet0_tau32<0.69) & (bst_jet0_msd>110) & (bst_jet0_msd<210) & (bst_jet0_maxsubcsv>0.66);// & (nbjetsM>0); 
-  return passBoostedMonoTopPreselection(preselection) //& (min_dphijetsmet>1.1) 
-    & (bst_jet0_maxsubcsv>0.76) & (nbjetsLdR2==0);
+  return passBoostedMonoTopPreselection(preselection) & (min_dphijetsmet>1.1) & (bst_jet0_maxsubcsv>0.76) & (nbjetsLdR2==0);
 }
 bool BitsLoader::passBoostedMonoTopZnunuHFCR(string preselection){
   return passBoosted15MonoX(preselection) & (bst_jet0_tau32<0.78) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsL>0) & (nbjetsM==0);
