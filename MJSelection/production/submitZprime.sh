@@ -46,14 +46,14 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DY") ]]; then
     ./sub.sh mc $eos DYJetsToQQ_HT180_13TeVRunIIFall15MiniAODv2_PU25nsData2015v1_76X_mcRun2_asymptotic_v12_v1      1187.0  $dir $exec $option1 $option2
 fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then 
+if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
+    ./sub.sh mc $eos ZPrimeToQQ_100GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZPrimeToQQ_150GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZPrimeToQQ_200GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZPrimeToQQ_250GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZPrimeToQQ_300GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZPrimeToQQ_50GeV_v4                                                                                1  $dir $exec $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then
     ./sub.sh data $eos JetHTRun2015D_16Dec2015_v1_2                                                                     1  $dir $exec $option1 $option2
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
-#     ./sub.sh data $eos ZPrimeToQQ_100GeV_v4                                                                             1  $dir $exec $option1 $option2
-#     ./sub.sh data $eos ZPrimeToQQ_150GeV_v4                                                                             1  $dir $exec $option1 $option2
-#     ./sub.sh data $eos ZPrimeToQQ_200GeV_v4                                                                             1  $dir $exec $option1 $option2
-#     ./sub.sh data $eos ZPrimeToQQ_250GeV_v4                                                                             1  $dir $exec $option1 $option2
-#     ./sub.sh data $eos ZPrimeToQQ_300GeV_v4                                                                             1  $dir $exec $option1 $option2
-#     ./sub.sh data $eos ZPrimeToQQ_50GeV_v4                                                                              1  $dir $exec $option1 $option2
-# fi
