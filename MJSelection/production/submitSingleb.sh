@@ -15,7 +15,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then
     ./sub.sh mcbkg $eos Fall15_QCD_HT1500to2000_MINIAOD                     121.5  $dir $exec $option1 $option2
     ./sub.sh mcbkg $eos Fall15_QCD_HT2000toInf_MINIAOD                      25.42  $dir $exec $option1 $option2
 fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "Signal") ]]; then
+if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
     ./sub.sh mcsig $eos Fall15_ZprimeToTT_M-1000_W-100_MINIAOD                  1  $dir $exec $option1 $option2
     ./sub.sh mcsig $eos Fall15_ZprimeToTT_M-1000_W-10_MINIAOD                   1  $dir $exec $option1 $option2
     ./sub.sh mcsig $eos Fall15_ZprimeToTT_M-1000_W-300_MINIAOD                  1  $dir $exec $option1 $option2

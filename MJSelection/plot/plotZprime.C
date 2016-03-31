@@ -23,7 +23,7 @@
 #include "../macros/CPlot.hh"         // helper class for plots
 #include "../macros/KStyle.hh"        // style settings for drawing
 #include "../macros/CSample.hh"       // helper class to manage samples
-#include "../macros/BitsLoader.hh"    // helper to load monoxbits
+#include "../macros/BitsLoader.hh"    // helper to load baconbits
 //#endif
 
 using namespace std;
@@ -43,7 +43,7 @@ float CalcSig(TH1D*sig, TH1D*bkg);
 
 //=== MAIN MACRO =================================================================================================
 
-void plotMonoX(const string preselection, const string selection, const string subsample, const string combo, TString algo, TString syst)
+void plotZprime(const string preselection, const string selection, const string subsample, const string combo, TString algo, TString syst)
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -52,7 +52,7 @@ void plotMonoX(const string preselection, const string selection, const string s
   const bool doBlind = false;
 
   // Create output directory 
-  const string outputDir("monoxplots/"+preselection+"_"+selection+"_"+subsample+"_"+combo+"_"+algo);
+  const string outputDir("zprimeplots/"+preselection+"_"+selection+"_"+subsample+"_"+combo+"_"+algo);
   gSystem->mkdir(outputDir.c_str(), true);
   CPlot::sOutDir = outputDir;
 
@@ -63,73 +63,24 @@ void plotMonoX(const string preselection, const string selection, const string s
   vector<CSample*> samplev;
 
   samplev.push_back(new CSample("data",0,0));
-  if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("../monoxbits/MET.root");
-  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("../monoxbits/SingleElectron.root");
-  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("../monoxbits/SinglePhoton.root");
+  samplev.back()->fnamev.push_back("../zprimebits/JetHT.root");
   samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-  samplev.back()->fnamev.push_back("../monoxbits/QCD.root");
-  if (preselection.compare("Pho")!=0) {
-    samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
-    samplev.back()->fnamev.push_back("../monoxbits/T.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TZ.root");
-    samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
-    samplev.back()->fnamev.push_back("../monoxbits/TT1L.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TT2L.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TTHAD.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TTZ.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TTG.root");
-    samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
-    samplev.back()->fnamev.push_back("../monoxbits/WW.root");
-    samplev.back()->fnamev.push_back("../monoxbits/WZ.root");
-    samplev.back()->fnamev.push_back("../monoxbits/ZZ.root");
-    samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
-    // samplev.back()->fnamev.push_back("../monoxbits/W.root");
-    samplev.back()->fnamev.push_back("../monoxbits/WHF.root");
-    // samplev.push_back(new CSample("W+LF",kGreen - 7,kGreen - 7));
-    samplev.back()->fnamev.push_back("../monoxbits/WLF.root");
-    samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
-    // samplev.back()->fnamev.push_back("../monoxbits/Z.root");
-    samplev.back()->fnamev.push_back("../monoxbits/ZHF.root");   
-    samplev.back()->fnamev.push_back("../monoxbits/ZLF.root");
-    samplev.back()->fnamev.push_back("../monoxbits/DYHF.root");
-    samplev.back()->fnamev.push_back("../monoxbits/DYLF.root");
-    // samplev.push_back(new CSample("t#bar{t} comb.",kOrange - 3,kOrange - 3));
-    // samplev.back()->fnamev.push_back("../monoxbits/TT1L.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TT2L.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TTHAD.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TTBST.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TTCOM.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TTZ.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TTG.root");
-    // samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
-    // samplev.back()->fnamev.push_back("../monoxbits/T.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TZ.root");
-    // samplev.push_back(new CSample("t#bar{t} merged",kOrange - 4,kOrange - 4));
-    // samplev.back()->fnamev.push_back("../monoxbits/TTBST.root");
-  }
-  if (preselection.compare("Pho")==0){
-    samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
-    //    samplev.back()->fnamev.push_back("../monoxbits/G.root");
-    samplev.back()->fnamev.push_back("../monoxbits/GHF.root");
-    samplev.back()->fnamev.push_back("../monoxbits/GLF.root");
-  }
-  if (subsample.compare("SR")==0){   
-    samplev.push_back(new CSample("M_{S} 1100, M#chi 100", kBlue, kBlue));
-    samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_Monotop_S1_Mres-1100_Mchi-100_MINIAOD_mc.root");
-    samplev.push_back(new CSample("M_{V} 300 X 5", kRed, kRed));
-    samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-300_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mres-1300_Mchi-100", kBlack, kBlack));
-    // samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-1300_Mchi-100_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mchi-500", kGreen, kGreen));
-    // samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-500_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mres-900_Mchi-100", kMagenta, kMagenta));
-    // samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-900_Mchi-100_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mchi-900", kCyan, kCyan));
-    // samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-900_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("TTDM", kMagenta - 10, kMagenta - 10));
-    // samplev.back()->fnamev.push_back("../monoxbits/TTDM.root");  
-  }
-
+  samplev.back()->fnamev.push_back("../zprimebits/QCD.root");
+  samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
+  samplev.back()->fnamev.push_back("../zprimebits/T.root");
+  samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
+  samplev.back()->fnamev.push_back("../zprimebits/TT.root");
+  samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
+  samplev.back()->fnamev.push_back("../zprimebits/WW.root");
+  samplev.back()->fnamev.push_back("../zprimebits/WZ.root");
+  samplev.back()->fnamev.push_back("../zprimebits/ZZ.root");
+  samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
+  samplev.back()->fnamev.push_back("../zprimebits/W.root");
+  samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
+  samplev.back()->fnamev.push_back("../zprimebits/DY.root");
+  samplev.push_back(new CSample("Zprime",kOrange - 3,kOrange - 3));
+  samplev.back()->fnamev.push_back("../zprimebits/ZPrimetoQQ.root");
+  
   // integrated luminosity to scale MC
   const double LUMI = 2.26;
   

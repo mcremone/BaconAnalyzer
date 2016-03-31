@@ -4,7 +4,7 @@
 //
 // Input arguments
 //   argv[1] => lName = input bacon file name
-//   argv[2] => lOption = dataset type: "mc", "mczbb", "mczcc", "mcwcs", "mcvlf", "data"
+//   argv[2] => lOption = dataset type: "mc", "data"
 //   argv[3] => lJSON = JSON file for run-lumi filtering of data, specify "none" for MC or no filtering
 //   argv[4] => lXS = cross section (pb), ignored for data 
 //   argv[5] => weight = total weight, ignored for data
@@ -34,7 +34,8 @@ ElectronLoader  *fElectron = 0;
 TauLoader       *fTau      = 0; 
 PhotonLoader    *fPhoton   = 0; 
 JetLoader       *fJet      = 0; 
-VJetLoader      *fVJet     = 0;
+VJetLoader      *fVJetPuppi= 0;
+VJetLoader      *fVJetCHS  = 0;
 RunLumiRangeMap *fRangeMap = 0; 
 
 TH1F *fHist                = 0; 
@@ -81,15 +82,15 @@ int main( int argc, char **argv ) {
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
 
-  // Setup Tree - Set branch address depends on object processor, see src/*Loader.cc
+  // Setup Tree
   fEvt      ->setupTree      (lOut,lWeight); 
   fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
   fVJetCHS  ->setupTree      (lOut,"bst8_CHSjet"); 
-  fMuon     ->setupTree      (lOut); 
-  fElectron ->setupTree      (lOut); 
-  fTau      ->setupTree      (lOut); 
-  fPhoton   ->setupTree      (lOut); 
-  if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
+  // fMuon     ->setupTree      (lOut); 
+  // fElectron ->setupTree      (lOut); 
+  // fTau      ->setupTree      (lOut); 
+  // fPhoton   ->setupTree      (lOut); 
+  // if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
   //
   // Loop over events i0 = iEvent
@@ -101,10 +102,6 @@ int main( int argc, char **argv ) {
     
     // check GenInfo
     if(lOption.find("data")==std::string::npos)    fGen->load(i0);
-    else if(lOption.find("zbb")!=std::string::npos && !fGen->isZbb()) continue;
-    else if(lOption.find("zcc")!=std::string::npos && !fGen->isZcc()) continue;
-    else if(lOption.find("wcs")!=std::string::npos && !fGen->isWcs()) continue;
-    else if(lOption.find("wcs")!=std::string::npos && (fGen->isZbb() || fGen->isZcc() || fGen->isWcs())) continue;
     else{
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
     }
@@ -113,19 +110,22 @@ int main( int argc, char **argv ) {
     fEvt->load(i0);           if(!fEvt->PV()) continue;
     
     // triggerbits for PFJet
-    // unsigned int trigbits=1;   
-    // if(fEvt ->passTrigger("HLT_AK8PFJet360_TrimMass30_v*") ||
-    //    fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*")) trigbits = trigbits | 2; 
-    // if(trigbits==1) continue;
+    unsigned int trigbits=1;   
+    if(fEvt ->passTrigger("HLT_AK8PFJet360_TrimMass30_v*") ||
+       fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*") ||
+       fEvt ->passTrigger("HLT_PFHT800_v*")) trigbits = trigbits | 2; 
+    if(trigbits==1) continue;
     
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lVJets, lVetoes;
     fEvt      ->load(i0);
     fEvt      ->fillEvent(trigbits);
     fMuon     ->load(i0);
     fMuon     ->selectMuons(lMuons);
     fElectron ->load(i0);
     fElectron ->selectElectrons(fEvt->fRho,lElectrons);
+    fEvt      ->fillVetoes(lElectrons,lVetoes);
+    fEvt      ->fillVetoes(lMuons,lVetoes);
     fTau      ->load(i0);
     fTau      ->selectTaus(lVetoes);
     fPhoton   ->load(i0);
@@ -133,11 +133,11 @@ int main( int argc, char **argv ) {
         
     // CA8Puppi Jets
     fVJetPuppi->load(i0);
-    fVJetPuppi->selectVJets(lVetoes,lJets,1.5,fEvt->fPuppEtPhi,fEvt->fRho);
+    fVJetPuppi->selectVJets(lVetoes,lVJets,1.5);
     
     // AK8CHS Jets
     fVJetCHS  ->load(i0); 
-    fVJetCHS  ->selectVJets(lVetoes,lJets,fEvt->fMetPhi,fEvt->fRho);
+    fVJetCHS  ->selectVJets(lVetoes,lVJets,0.8);
     
     lOut->Fill();
     neventstest++;

@@ -19,8 +19,8 @@ public:
   void reset();
   void setupTree(TTree *iTree,std::string iJetLabel);
   void load(int iEvent);
-  void selectSbJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR); //,double iMetPhi,double iRho);
-  void fillSbJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals); //,double iMetPhi,double iRho);
+  void selectSbJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR);
+  void fillSbJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals);
   TAddJet *getAddJet(TJet *iJet);
   std::vector<TJet*> fSelSbJets;
   double ftopSize;

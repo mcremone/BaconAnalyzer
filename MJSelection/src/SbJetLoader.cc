@@ -99,6 +99,7 @@ void SbJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch("hadronFlavor"    ,&fhadronFlavor     ,"fhadronFlavor/I");
   fTree->Branch("nbHadrons"       ,&fnbHadrons        ,"fnbHadrons/I");
   fTree->Branch("ncHadrons"       ,&fncHadrons        ,"fncHadrons/I");
+  fTree->Branch("topSize"         ,&ftopSize          ,"ftopSize/D");
 }
 void SbJetLoader::load(int iEvent) { 
   fSbJets       ->Clear();

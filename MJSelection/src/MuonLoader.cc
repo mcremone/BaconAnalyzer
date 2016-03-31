@@ -66,17 +66,13 @@ void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
     addMuon(pMuon,fSelMuons);
   }
   fNMuons = lCount; 
-
-  // Fill Muons fSelMuons->pt,eta,phi from fVars value
-  if(fVars.size() > 0) fillMuon(fN,fSelMuons,fVars);
-  // Add selected tight Muons to iVetoes 
+  
+  // Add selected tight muons to iVetoes
   if(fNMuons <= 1 && lVeto.size()==1){
     if(passMuonTightSel(lVeto[0]) && lVeto[0]->pt > 20) addVMuon(lVeto[0],iVetoes,MUON_MASS);
   }
-  // Fill di Muon variables
-  if(fNMuons <= 2 && lVeto.size()==2) {
-    fillDiMuon(lVeto,iVetoes);
-  }
+  if(fVars.size() > 0)                fillMuon(fN,fSelMuons,fVars);
+  if(fNMuons <= 2 && lVeto.size()==2) fillDiMuon(lVeto,iVetoes);
 }
 // DIMUON
 void MuonLoader::addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase) { 
