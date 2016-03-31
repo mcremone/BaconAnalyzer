@@ -437,10 +437,10 @@ bool GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double
     TGenParticle *mcB = findDaughter(j,5); //
     if(mcB){
       vB.SetPtEtaPhiM(mcB->pt, mcB->eta, mcB->phi, mcB->mass);
-      if (vB.DeltaR(jet) > dR) return false; // all decay products fall into jet cone
     }
     TGenParticle *mcW = findDaughter(j,24); //
     if (!mcW || !mcB) return false;     // this shouldn't happen
+    if (vB.DeltaR(jet) > dR) return false; // all decay products fall into jet cone 
     tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vB));
     Bool_t foundFinalW = kFALSE;
     int iW = j;

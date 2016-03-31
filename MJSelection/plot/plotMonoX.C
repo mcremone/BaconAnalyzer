@@ -71,13 +71,13 @@ void plotMonoX(const string preselection, const string selection, const string s
   if (preselection.compare("Pho")!=0) {
     samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
     samplev.back()->fnamev.push_back("../baconbits/T.root");
-    // samplev.back()->fnamev.push_back("../baconbits/TZ.root");
+    samplev.back()->fnamev.push_back("../baconbits/TZ.root");
     samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
     samplev.back()->fnamev.push_back("../baconbits/TT1L.root");
     samplev.back()->fnamev.push_back("../baconbits/TT2L.root");
     samplev.back()->fnamev.push_back("../baconbits/TTHAD.root");
-    // samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
-    // samplev.back()->fnamev.push_back("../baconbits/TTG.root");
+    samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
+    samplev.back()->fnamev.push_back("../baconbits/TTG.root");
     samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
     samplev.back()->fnamev.push_back("../baconbits/WW.root");
     samplev.back()->fnamev.push_back("../baconbits/WZ.root");
@@ -86,11 +86,11 @@ void plotMonoX(const string preselection, const string selection, const string s
     // samplev.back()->fnamev.push_back("../baconbits/W.root");
     samplev.back()->fnamev.push_back("../baconbits/WHF.root");
     // samplev.push_back(new CSample("W+LF",kGreen - 7,kGreen - 7));
-    samplev.back()->fnamev.push_back("../baconbits/WLF.root");
+    //samplev.back()->fnamev.push_back("../baconbits/WLF.root");
     samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
     // samplev.back()->fnamev.push_back("../baconbits/Z.root");
     samplev.back()->fnamev.push_back("../baconbits/ZHF.root");   
-    samplev.back()->fnamev.push_back("../baconbits/ZLF.root");
+    ///samplev.back()->fnamev.push_back("../baconbits/ZLF.root");
     samplev.back()->fnamev.push_back("../baconbits/DYHF.root");
     samplev.back()->fnamev.push_back("../baconbits/DYLF.root");
     // samplev.push_back(new CSample("t#bar{t} comb.",kOrange - 3,kOrange - 3));
