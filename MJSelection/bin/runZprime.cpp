@@ -98,16 +98,17 @@ int main( int argc, char **argv ) {
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
   //for(int i0 = 0; i0 < int(10); i0++){ // for testing
-    if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
+    if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // check GenInfo
+    fEvt->load(i0);
     if(lOption.find("data")==std::string::npos)    fGen->load(i0);
     else{
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
     }
 
     // primary vertex requirement
-    fEvt->load(i0);           if(!fEvt->PV()) continue;
+    if(!fEvt->PV()) continue;
     
     // triggerbits for PFJet
     unsigned int trigbits=1;   

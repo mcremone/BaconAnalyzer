@@ -18,7 +18,7 @@ using namespace baconhep;
 class EvtLoader { 
 public:
   EvtLoader(TTree *iTree,std::string iName,
-            std::string iHLTFile="/src/BaconAna/DataFormats/data/HLTFile_25ns_new",
+            std::string iHLTFile="/src/BaconAna/DataFormats/data/HLTFile_25ns",
 	    std::string iPUWeight="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAnalyzer/MJSelection/Json/puWeights_13TeV_25ns.root");
   ~EvtLoader(); 
   void reset();

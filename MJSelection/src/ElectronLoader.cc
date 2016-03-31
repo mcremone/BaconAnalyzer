@@ -18,6 +18,10 @@ ElectronLoader::ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename)
   fhEleTight = (TH2D*) fEleSF->Get("scalefactors_Tight_ele");
   fhEleTight->SetDirectory(0);
   fEleSF->Close();
+
+  for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);}
+  for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);}
+  for(int i0 = 0; i0 <     3; i0++) {double pVar = 1; feleSFVars.push_back(pVar);}
 }
 ElectronLoader::~ElectronLoader() { 
   delete fElectrons;
@@ -39,9 +43,6 @@ void ElectronLoader::setupTree(TTree *iTree) {
   fTree->Branch("neleTight",&fNElectrons,"fNElectronsTight/I");
   // fTree->Branch("vele0_iso",&fIso1,"fIso1/D");
   // fTree->Branch("vele1_iso",&fIso2,"fIso2/D");
-  for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  for(int i0 = 0; i0 <     3; i0++) {double pVar = 1; feleSFVars.push_back(pVar);}
   setupNtuple("vele",iTree,fN,fVars);          // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
   addDiElectron("vdiele",iTree,1, fVars,fN*3); // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
   addLepSF("eleSF",iTree,feleSFVars);          // eleSF0,eleSF1,eleSF2
@@ -65,7 +66,7 @@ void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iV
     if(pElectron->pt        <=  10)                                            continue;
     if(fabs(pElectron->eta) >=  2.5)                                           continue;
     if(fabs(pElectron->eta) > 1.4442 && fabs(pElectron->eta) < 1.566)          continue;
-    if(!passEleSel(pElectron, iRho))         continue;
+    if(!passEleSel(pElectron, iRho))                                           continue;
     lCount++;
 
     lVeto.push_back(pElectron);
@@ -123,11 +124,11 @@ void ElectronLoader::fillDiElectron(double iRho, std::vector<TElectron*> lVeto, 
         //addVElectron(vEle1,iVetoes,0.000510998910);
         //addVElectron(vEle2,iVetoes,0.000510998910);
       }
+      int lBase = 3.*fN;
+      fVars[lBase+0] = lVec.Pt();
+      fVars[lBase+1] = lVec.M();
+      fVars[lBase+2] = lVec.Phi();
+      fVars[lBase+3] = lVec.Rapidity();
     }
   }
-  int lBase = 3.*fN; 
-  fVars[lBase+0] = lVec.Pt();
-  fVars[lBase+1] = lVec.M();
-  fVars[lBase+2] = lVec.Phi();
-  fVars[lBase+3] = lVec.Rapidity();
 }

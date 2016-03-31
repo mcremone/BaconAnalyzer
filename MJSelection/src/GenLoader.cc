@@ -455,31 +455,39 @@ bool GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double
     for (; iQ<fGens->GetEntriesFast(); ++iQ) {
       TGenParticle *dau1 = (TGenParticle*)((*fGens)[iQ]);
       if(dau1->parent==iW && abs(dau1->pdgId)<6) {
-	vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
-	if (vDau1.DeltaR(jet) > dR) return false;
-        tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau1));
-        break; // found the first quark
+	if(dau1){
+	  vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
+	  if (vDau1.DeltaR(jet) > dR) return false;
+	  tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau1));
+	  break; // found the first quark
+	}
       }
     }
     for (jQ=iQ+1; jQ<fGens->GetEntriesFast(); ++jQ) {
       TGenParticle *dau2 = (TGenParticle*)((*fGens)[jQ]);
       if(dau2->parent==iW && abs(dau2->pdgId)<6) {
-	vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
-	if (vDau2.DeltaR(jet) > dR) return false;
-        tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau2));
-        topSize = TMath::Sqrt(tmpTopSize);
-	return true;
+	if(dau2){
+	  vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
+	  if (vDau2.DeltaR(jet) > dR) return false;
+	  tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau2));
+	  topSize = TMath::Sqrt(tmpTopSize);
+	  return true;
+	}
       }
     }
   }
   return false;
 }
 bool GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_size){
-  for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
-    TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
-    TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
-    if (mcMom.DeltaR(jet0) < dR) {
-      if (isHadronicTop(genp0,i0,jet0,dR,top_size)) return true;
+  if(jet0.Pt()>0) {
+    for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+     TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
+     TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
+     if (mcMom.Pt()!=0 && jet0.Pt()!=0) {
+       if (mcMom.DeltaR(jet0) < dR) {
+	 if (isHadronicTop(genp0,i0,jet0,dR,top_size)) return true;
+       }
+     }
     }
   }
   return false;

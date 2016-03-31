@@ -104,7 +104,7 @@ int main( int argc, char **argv ) {
     }
 
     // Primary vertex requirement
-    fEvt->load(i0);           if(!fEvt->PV()) continue;
+    if(!fEvt->PV()) continue;
     
     // Triggerbits for MET, Electrons and Photons
     unsigned int trigbits=1;    
@@ -137,7 +137,7 @@ int main( int argc, char **argv ) {
     fTau      ->selectTaus(lVetoes);
     fPhoton   ->load(i0);
     fPhoton   ->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
-    
+
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
     
@@ -150,7 +150,6 @@ int main( int argc, char **argv ) {
       if(lOption.compare("mcbkg")==0 || lOption.compare("data")==0)                        select = true;
     }
     if(!select) continue;
-    
     lOut->Fill();
     neventstest++;
   }
