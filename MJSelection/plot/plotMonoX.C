@@ -23,13 +23,13 @@
 #include "../macros/CPlot.hh"         // helper class for plots
 #include "../macros/KStyle.hh"        // style settings for drawing
 #include "../macros/CSample.hh"       // helper class to manage samples
-#include "../macros/BitsLoader.hh"    // helper to load monoxbits
+#include "../macros/MonoXBitsLoader.hh"    // helper to load monoxbits
 //#endif
 
 using namespace std;
 
 //Object Processors                                                                                                                                                                                      
-BitsLoader       *fBits      = 0;
+MonoXBitsLoader       *fBits      = 0;
 
 //=== FUNCTION DECLARATIONS ======================================================================================
 
@@ -222,7 +222,7 @@ void plotMonoX(const string preselection, const string selection, const string s
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits  = new BitsLoader(intree,"15",algo,syst,preselection);
+      fBits  = new MonoXBitsLoader(intree,"15",algo,syst,preselection);
       double nevts=0;
       int noweight=0;
 

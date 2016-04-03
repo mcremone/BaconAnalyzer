@@ -1,0 +1,14 @@
+@(#)CERN job starter $Date: 2010/06/23 14:22:16 $
+Working directory is </pool/lsf/mcremone/780972368> on <b629811686.cern.ch>
+
+/pool/lsf/mcremone/780972368
+===> Processed 0 - Done : 0 -- mc
+===> Processed 1000 - Done : 99.3049 -- mc
+1007
+1007
+
+Job finished at Fri Apr  1 05:45:53 CEST 2016 on node 
+ under linux version Scientific Linux CERN SLC release 6.7 (Carbon)
+
+CERN statistics: This process used approximately : 0:00:14 KSI2K hours (14 KSI2K seconds)
+                 This process corresponds to     : 0:00:54 HS06  hours (54 HS06  seconds)
