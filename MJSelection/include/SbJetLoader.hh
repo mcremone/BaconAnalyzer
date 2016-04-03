@@ -20,7 +20,8 @@ public:
   void setupTree(TTree *iTree,std::string iJetLabel);
   void load(int iEvent);
   void selectSbJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR);
-  void fillSbJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals);
+  void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals);
+  void fillSbJet(std::vector<TJet*> &iObjects,std::vector<float> &iVals);
   TAddJet *getAddJet(TJet *iJet);
   std::vector<TJet*> fSelSbJets;
   double ftopSize;
@@ -36,7 +37,9 @@ protected:
   TTree        *fTree;
   int           fNSbJets;
   std::vector<double> fVars;
+  std::vector<float> fSbVars;
   std::vector<std::string> fLabels;
+  std::vector<std::string> fSbLabels;
   std::vector<std::string> fTrigString;
   std::vector<std::string> tauTypes = {"mass","fd"}; 
   std::vector<std::string> varTypes = {"0","1"};

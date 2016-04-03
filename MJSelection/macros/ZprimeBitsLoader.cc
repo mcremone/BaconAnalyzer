@@ -1,7 +1,7 @@
 #include "MonoXBitsLoader.hh"  
 using namespace std;
 
-BitsLoader::BitsLoader(TTree *iTree,TString jet, TString algo,TString syst, string preselection) {
+MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString algo,TString syst, string preselection) {
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0){
@@ -83,8 +83,8 @@ BitsLoader::BitsLoader(TTree *iTree,TString jet, TString algo,TString syst, stri
     iTree->SetBranchAddress("muoSF2",                            &muoSF2);
   }
 }
-BitsLoader::~BitsLoader(){}
-bool BitsLoader::selectJetAlgoAndSize(string selection, TString algo){
+MonoXBitsLoader::~MonoXBitsLoader(){}
+bool MonoXBitsLoader::selectJetAlgoAndSize(string selection, TString algo){
   bool lPass = false;
   // std::cout << nfjets << std::endl;
   if(nfjets > 0 && selection.find("Bst")==0 && selection.compare("BstMonoZbb")!=0 && algo=="PUPPI") lPass = true;
@@ -95,37 +95,37 @@ bool BitsLoader::selectJetAlgoAndSize(string selection, TString algo){
   else if((selectBits & kRESOLVEDCHS) && selection.find("Res")==0 && algo=="CHS") lPass = true;
   return lPass;
 }
-bool BitsLoader::isHad(){
+bool MonoXBitsLoader::isHad(){
   bool lPass = false;
   if((triggerBits & kMET) && nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true;
   return lPass;
 }
-bool BitsLoader::isMuo(){
+bool MonoXBitsLoader::isMuo(){
   bool lPass = false;
   if((triggerBits & kMET) && nmu==1 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
   return lPass;
 }
-bool BitsLoader::isZmm(){
+bool MonoXBitsLoader::isZmm(){
   bool lPass = false;
   if((triggerBits & kMET) && nmu==2 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
   return lPass;
 }
-bool BitsLoader::isEle(){
+bool MonoXBitsLoader::isEle(){
   bool lPass = false;
   if(((triggerBits & kSingleElectron) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==1 && npho==0 && ntau==0 && vmetpt>50 && (vfakemetpt!=0)) lPass = true;
   return lPass;
 }
-bool BitsLoader::isZee(){
+bool MonoXBitsLoader::isZee(){
   bool lPass = false;
   if(((triggerBits & kSingleElectron) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==2 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
   return lPass;
 }
-bool BitsLoader::isPho(){
+bool MonoXBitsLoader::isPho(){
   bool lPass = false;
   if((triggerBits & kSinglePhoton) && nmu==0 && nele==0 && npho==1 && ntau==0 && (vfakemetpt!=0)) lPass = true;
   return lPass;
 }
-bool BitsLoader::passPreSelection(string preselection){
+bool MonoXBitsLoader::passPreSelection(string preselection){
   bool lPass = false;
   if(preselection.compare("Had")==0 && isHad()) lPass = true;
   if(preselection.compare("Muo")==0 && isMuo()) lPass = true;
@@ -135,18 +135,18 @@ bool BitsLoader::passPreSelection(string preselection){
   if(preselection.compare("Pho")==0 && isPho()) lPass = true;
   return lPass;
 }
-TLorentzVector BitsLoader::getMET(string preselection){
+TLorentzVector MonoXBitsLoader::getMET(string preselection){
   TLorentzVector v;
   v.SetPtEtaPhiM(vfakemetpt,0,vfakemetphi,0);
   if(preselection.compare("Had")==0){v.SetPtEtaPhiM(vmetpt,0,vmetphi,0);};
   return v;
 }
-TLorentzVector BitsLoader::getTop(){
+TLorentzVector MonoXBitsLoader::getTop(){
   TLorentzVector v;
   v.SetPtEtaPhiM(res_jet0_pt+res_jet1_pt+res_jet2_pt,res_jet0_eta+res_jet1_eta+res_jet2_eta,res_jet0_phi+res_jet1_phi+res_jet2_phi,res_jet0_mass+res_jet1_mass+res_jet2_mass);
   return v;
 }
-bool BitsLoader::passBoostedMonoTopPreselection(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopPreselection(string preselection){
   TLorentzVector vMET = getMET(preselection);
   bool lPass = false;
   if(vMET.Pt()>250 &&
@@ -159,7 +159,7 @@ bool BitsLoader::passBoostedMonoTopPreselection(string preselection){
   }
   return lPass;
 }
-bool BitsLoader::passBoosted15MonoX(string preselection){
+bool MonoXBitsLoader::passBoosted15MonoX(string preselection){
   TLorentzVector vMET = getMET(preselection);
   bool lPass = false;
   if(vMET.Pt()>250 &&
@@ -169,7 +169,7 @@ bool BitsLoader::passBoosted15MonoX(string preselection){
      // bst_jet0_CHF>0.4 && bst_jet0_NHF<0.26 && bst_jet0_NEMF<0.57) lPass=true;
   return lPass;
 }
-bool BitsLoader::passBoosted8MonoX(string preselection){
+bool MonoXBitsLoader::passBoosted8MonoX(string preselection){
   TLorentzVector vMET = getMET(preselection);
   bool lPass = false;
   if(vMET.Pt()>250 &&
@@ -179,7 +179,7 @@ bool BitsLoader::passBoosted8MonoX(string preselection){
      bst_jet0_pt>250) lPass=true;
   return lPass;
 }
-bool BitsLoader::passResolvedMonoTop(string preselection){
+bool MonoXBitsLoader::passResolvedMonoTop(string preselection){
   TLorentzVector vMET = getMET(preselection);
   bool lPass = false;
   if(vMET.Pt() > 200 &&
@@ -190,7 +190,7 @@ bool BitsLoader::passResolvedMonoTop(string preselection){
      res_jet2_pt > 40) lPass=true;
   return lPass;
 }
-bool BitsLoader::passResolvedMonoXbb(string preselection){
+bool MonoXBitsLoader::passResolvedMonoXbb(string preselection){
   TLorentzVector vMET = getMET(preselection);
   bool lPass = false;
   if(vMET.Pt() > 200 &&
@@ -199,18 +199,18 @@ bool BitsLoader::passResolvedMonoXbb(string preselection){
      res_jet0_pt>30 && res_jet1_pt>30) lPass = true;
   return lPass;
 }
-bool BitsLoader::passBoostedMonoTopSR(string preselection){ 
+bool MonoXBitsLoader::passBoostedMonoTopSR(string preselection){ 
   //  return passBoosted15MonoX(preselection) & (bst_jet0_tau32<0.69) & (bst_jet0_msd>110) & (bst_jet0_msd<210) & (bst_jet0_maxsubcsv>0.66);// & (nbjetsM>0); 
   return passBoostedMonoTopPreselection(preselection) //& (min_dphijetsmet>1.1) 
     & (bst_jet0_maxsubcsv>0.76) & (nbjetsLdR2==0);
 }
-bool BitsLoader::passBoostedMonoTopZnunuHFCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopZnunuHFCR(string preselection){
   return passBoosted15MonoX(preselection) & (bst_jet0_tau32<0.78) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsL>0) & (nbjetsM==0);
 }
-bool BitsLoader::passBoostedMonoTopZnunuLFCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopZnunuLFCR(string preselection){
   return passBoosted15MonoX(preselection) & (bst_jet0_tau32<0.78) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsL==0);// & (bst_jet0_minsubcsv<=0.605);
 }
-bool BitsLoader::passBoostedMonoTopTopCR(string preselection){ 
+bool MonoXBitsLoader::passBoostedMonoTopTopCR(string preselection){ 
   //  TLorentzVector vMET = getMET(preselection);
   //  return (vMET.Pt()>250) & (bst_jet0_tau32<0.78)& (bst_jet0_maxsubcsv>0.89) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsM>0);
   //  return passBoosted15MonoX(preselection) & (bst_jet0_tau32<0.78) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsM>0) & (nbjetsT==1); 
@@ -218,119 +218,119 @@ bool BitsLoader::passBoostedMonoTopTopCR(string preselection){
   //  return (vMET.Pt()>250) & (bst_jet0_tau32<0.69) & (bst_jet0_msd>110) & (bst_jet0_msd<210) & (bst_jet0_maxsubcsv>0.66) & (nbjetsM>0);
   return passBoostedMonoTopPreselection(preselection) & (bst_jet0_maxsubcsv>0.76) & (nbjetsLdR2>0);
 }
-bool BitsLoader::passBoostedMonoTopTopCRminusTau32(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopTopCRminusTau32(string preselection){
   TLorentzVector vMET = getMET(preselection);
   return (vMET.Pt()>250 &&
 	  nf15jets==1 && bst_jet0_pt>250 &&
 	  bst_jet0_msd>110 && bst_jet0_msd<210) & (bst_jet0_maxsubcsv>0.76) & (nbjetsLdR2==0);
 }
-bool BitsLoader::passBoostedMonoTopTopCRminusMass(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopTopCRminusMass(string preselection){
   TLorentzVector vMET = getMET(preselection);
   return (vMET.Pt()>250 &&
 	  nf15jets==1 && bst_jet0_pt>250 &&
 	  bst_jet0_tau32<0.61 && bst_jet0_msd>40) & (bst_jet0_maxsubcsv>0.76) & (nbjetsLdR2==0);
 }
-bool BitsLoader::passBoostedMonoTopTopCRminusBtag(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopTopCRminusBtag(string preselection){
   return passBoostedMonoTopPreselection(preselection) & (nbjetsLdR2>0);
 }
-bool BitsLoader::passBoostedMonoTopWCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopWCR(string preselection){
   // TLorentzVector vMET = getMET(preselection);
   // return (vMET.Pt()>250) & (bst_jet0_tau32<0.69) & (bst_jet0_msd>110) & (bst_jet0_msd<210) & (bst_jet0_maxsubcsv>0.66) & (nbjetsM==0);
   //  return (bst_jet0_msd>150) & (bst_jet0_msd<240) & (bst_jet0_tau32<0.78) & (bst_jet0_maxsubcsv<=0.89);
   return passBoostedMonoTopPreselection(preselection) & (bst_jet0_maxsubcsv<0.76) & (nbjetsLdR2==0);
 }
-bool BitsLoader::passBoostedMonoTopWHFCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopWHFCR(string preselection){
   TLorentzVector vMET = getMET(preselection);
   //  return passBoosted15MonoX(preselection) & (bst_jet0_tau32<0.78)& (bst_jet0_maxsubcsv>0.605) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsM==0); 
   return (vMET.Pt()>250) & (bst_jet0_tau32<0.78) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsM>0) & (nbjetsT==0);
   //  return passBoosted15MonoX(preselection) & (bst_jet0_tau32<0.78) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsT==1) & (nbjetsM==0);
 }
-bool BitsLoader::passBoostedMonoTopWLFCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopWLFCR(string preselection){
   TLorentzVector vMET = getMET(preselection);
   //  return passBoosted15MonoX(preselection) & (bst_jet0_tau32<0.78)& (bst_jet0_maxsubcsv<=0.605) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsM==0);
   return (vMET.Pt()>250) & (bst_jet0_tau32<0.78) & (bst_jet0_msd>150) & (bst_jet0_msd<250) & (nbjetsM==0);  
 }
-bool BitsLoader::passBoostedMonoTopZCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopZCR(string preselection){
   //  return passBoosted15MonoX(preselection) & (bst_jet0_msd>150) & (bst_jet0_msd<240) & (bst_jet0_tau32<0.78);
   // TLorentzVector vMET = getMET(preselection);
   // return (vMET.Pt()>250) & (bst_jet0_tau32<0.69) & (bst_jet0_msd>110) & (bst_jet0_msd<210) & (bst_jet0_maxsubcsv>0.66);
   return passBoostedMonoTopPreselection(preselection);
 }
-bool BitsLoader::passBoostedMonoTopZHFCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopZHFCR(string preselection){
   TLorentzVector vMET = getMET(preselection);
   return (vMET.Pt()>250) & (bst_jet0_msd>150) & (bst_jet0_msd<240) & (bst_jet0_tau32<0.78) & (nbjetsM>0);
   //  return passBoosted15MonoX(preselection) & (bst_jet0_msd>150) & (bst_jet0_msd<240) & (bst_jet0_tau32<0.78) & (bst_jet0_maxsubcsv>0.89);
 }
-bool BitsLoader::passBoostedMonoTopZLFCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoTopZLFCR(string preselection){
   TLorentzVector vMET = getMET(preselection);
   return (vMET.Pt()>250) & (bst_jet0_msd>150) & (bst_jet0_msd<240) & (bst_jet0_tau32<0.78) & (nbjetsM==0);
   //  return passBoosted15MonoX(preselection) & (bst_jet0_msd>150) & (bst_jet0_msd<240) & (bst_jet0_tau32<0.78) & (bst_jet0_maxsubcsv<=0.89);
 }
-bool BitsLoader::passBoostedMonoHbbSR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoHbbSR(string preselection){
   return passBoosted15MonoX(preselection) & (bst_jet0_msd>105) & (bst_jet0_msd<150) & (bst_jet0_tau21<(-0.07*bst_jet0_rho+0.35)) & (bst_jet0_minsubcsv>0.605);
 }
-bool BitsLoader::passBoostedMonoHbbTopCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoHbbTopCR(string preselection){
   return passBoosted15MonoX(preselection) & (bst_jet0_msd>105) & (bst_jet0_msd<150) & (bst_jet0_tau21<(-0.07*bst_jet0_rho+0.35)) & (bst_jet0_minsubcsv>0.605);
 }
-bool BitsLoader::passBoostedMonoHbbWCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoHbbWCR(string preselection){
   return passBoosted15MonoX(preselection) & (bst_jet0_msd>105) & (bst_jet0_msd<150) & (bst_jet0_tau21<(-0.07*bst_jet0_rho+0.35)) & (bst_jet0_minsubcsv<=0.605);
 }
-bool BitsLoader::passBoostedMonoHbbZCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoHbbZCR(string preselection){
   return passBoosted15MonoX(preselection) & (bst_jet0_msd>105) & (bst_jet0_msd<150) & (bst_jet0_tau21<(-0.07*bst_jet0_rho+0.35));
 }
-bool BitsLoader::passBoostedMonoZbbSR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoZbbSR(string preselection){
   return passBoosted8MonoX(preselection) & (bst_jet0_msd>60) & (bst_jet0_msd<105) & (bst_jet0_tau21<(-0.07*bst_jet0_rho+0.35)) & (bst_jet0_minsubcsv>0.605);
 }
-bool BitsLoader::passBoostedMonoZbbTopCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoZbbTopCR(string preselection){
   return passBoosted8MonoX(preselection) & (bst_jet0_msd>60) & (bst_jet0_msd<105) & (bst_jet0_tau21<(-0.07*bst_jet0_rho+0.35)) & (bst_jet0_minsubcsv>0.605);
 }
-bool BitsLoader::passBoostedMonoZbbWCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoZbbWCR(string preselection){
   return passBoosted8MonoX(preselection) & (bst_jet0_msd>60) & (bst_jet0_msd<105) & (bst_jet0_tau21<(-0.07*bst_jet0_rho+0.35)) & (bst_jet0_minsubcsv<=0.605);
 }
-bool BitsLoader::passBoostedMonoZbbZCR(string preselection){
+bool MonoXBitsLoader::passBoostedMonoZbbZCR(string preselection){
   return passBoosted8MonoX(preselection) & (bst_jet0_msd>60) & (bst_jet0_msd<105) & (bst_jet0_tau21<(-0.07*bst_jet0_rho+0.35));
 }	
-bool BitsLoader::passResolvedMonoHbbSR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoHbbSR(string preselection){
   return passResolvedMonoXbb(preselection) & (res_jet0_mass > 105) & (res_jet0_mass < 150) & (nbjetsM==2);
 }
-bool BitsLoader::passResolvedMonoHbbTopCR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoHbbTopCR(string preselection){
   return passResolvedMonoXbb(preselection) & (res_jet0_mass > 105) & (res_jet0_mass < 150) & (nbjetsT==1);
 }
-bool BitsLoader::passResolvedMonoHbbWCR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoHbbWCR(string preselection){
   return passResolvedMonoXbb(preselection) & (res_jet0_mass > 105) & (res_jet0_mass < 150) & (nbjetsT==0) & (nbjetsM==2);
 }
-bool BitsLoader::passResolvedMonoHbbZCR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoHbbZCR(string preselection){
   return passResolvedMonoXbb(preselection) & (res_jet0_mass > 105) & (res_jet0_mass < 150);
 }
-bool BitsLoader::passResolvedMonoZbbSR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoZbbSR(string preselection){
   return passResolvedMonoXbb(preselection) & (res_jet0_mass > 60) & (res_jet0_mass < 105) & (nbjetsL==2);
 }
-bool BitsLoader::passResolvedMonoZbbTopCR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoZbbTopCR(string preselection){
   return passResolvedMonoXbb(preselection) & (res_jet0_mass > 60) & (res_jet0_mass < 105) & (nbjetsT==1);
 }
-bool BitsLoader::passResolvedMonoZbbWCR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoZbbWCR(string preselection){
   return passResolvedMonoXbb(preselection) & (res_jet0_mass > 60) & (res_jet0_mass < 105) & (nbjetsT==0);
 }
-bool BitsLoader::passResolvedMonoZbbZCR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoZbbZCR(string preselection){
   return passResolvedMonoXbb(preselection) & (res_jet0_mass > 60) & (res_jet0_mass < 105);
 }
-bool BitsLoader::passResolvedMonoTopSR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoTopSR(string preselection){
   TLorentzVector vTop = getTop();
   return passResolvedMonoTop(preselection) & (nbjetsM==1) & (vTop.M() < 250);
 }
-bool BitsLoader::passResolvedMonoTopTopCR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoTopTopCR(string preselection){
   TLorentzVector vTop = getTop();
   return passResolvedMonoTop(preselection) & (vTop.M() < 250) & (nbjetsM==1);
 }
-bool BitsLoader::passResolvedMonoTopWCR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoTopWCR(string preselection){
   TLorentzVector vTop = getTop();
   return passResolvedMonoTop(preselection) & (vTop.M() >= 250);
 }
-bool BitsLoader::passResolvedMonoTopZCR(string preselection){
+bool MonoXBitsLoader::passResolvedMonoTopZCR(string preselection){
   TLorentzVector vTop = getTop();
   return passResolvedMonoTop(preselection) & (vTop.M() < 250);
 }
-bool BitsLoader::passSelection(string preselection, string selection, string subsample, string combo, float &btagw){
+bool MonoXBitsLoader::passSelection(string preselection, string selection, string subsample, string combo, float &btagw){
   bool lPass = false;	
   btagw = 1;
   if (selection == "BstMonoTop")
@@ -426,7 +426,7 @@ bool BitsLoader::passSelection(string preselection, string selection, string sub
     }
   return lPass;
 }
-double BitsLoader::getWgt(bool isData, TString algo, double LUMI, float btagw){
+double MonoXBitsLoader::getWgt(bool isData, TString algo, double LUMI, float btagw){
   float wgt = 1;
   if(!isData) {     
     wgt *= LUMI*scale1fb*kfactor*btagw*triggerEff*evtWeight;
@@ -434,43 +434,43 @@ double BitsLoader::getWgt(bool isData, TString algo, double LUMI, float btagw){
   }
   return wgt;
 }
-// float BitsLoader::transverse_mass(string selection){
+// float MonoXBitsLoader::transverse_mass(string selection){
 //   if(selection == "BstMonoTop" || selection == "BstMonoHbb") return bst_mt; 
 //   else if(selection == "BstMonoZbb") return bst_mt;
 //   else return bst_mt;
 // }
-float BitsLoader::fjet_mass(string selection){
+float MonoXBitsLoader::fjet_mass(string selection){
   return bst_jet0_msd;
 }
-float BitsLoader::nsubjet(string selection){
+float MonoXBitsLoader::nsubjet(string selection){
   if(selection == "BstMonoTop" || selection == "ResMonoTop") return bst_jet0_tau32;
   else if(selection == "BstMonoHbb" || selection == "ResMonoHbb") return bst_jet0_tau21;
   else return bst_jet0_tau21;
 }
-float BitsLoader::btag(string selection){
+float MonoXBitsLoader::btag(string selection){
   return bst_jet0_maxsubcsv;
 }
-float BitsLoader::chf(string selection){
+float MonoXBitsLoader::chf(string selection){
   if(selection == "BstMonoTop" || selection == "BstMonoHbb") return bst_jet0_CHF;
   else if(selection == "BstMonoZHbb") return bst_jet0_CHF;
   else return res_jet0_CHF; 
 }
-float BitsLoader::nhf(string selection){
+float MonoXBitsLoader::nhf(string selection){
   if(selection == "BstMonoTop" || selection == "BstMonoHbb") return bst_jet0_NHF;
   else if(selection == "BstMonoZHbb") return bst_jet0_NHF;
   else return res_jet0_NHF;
 }
-float BitsLoader::nemf(string selection){
+float MonoXBitsLoader::nemf(string selection){
   if(selection == "BstMonoTop" || selection == "BstMonoHbb") return bst_jet0_NEMF;
   else if(selection == "BstMonoZHbb") return bst_jet0_NEMF;
   else return res_jet0_NEMF;
 }
-float BitsLoader::genvpt(string selection){
+float MonoXBitsLoader::genvpt(string selection){
   if(selection == "BstMonoTop" || selection == "BstMonoHbb") return bst_genVpt;
   else if (selection == "BstMonoZHbb") return bst_genVpt;
   else return res_genVpt;
 }
-float BitsLoader::genvphi(string selection){
+float MonoXBitsLoader::genvphi(string selection){
   if(selection == "BstMonoTop" || selection == "BstMonoHbb") return bst_genVphi;
   else if (selection == "BstMonoZHbb") return bst_genVphi;
   else return res_genVphi;

@@ -327,6 +327,18 @@ void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iV
   }
 }
 //--------------------------------------------------------------------------------------------------
+void setupNtuple(std::string iHeader,TTree *iTree,int iN,std::vector<float> &iVals,std::vector<std::string> &iLabels) {
+  int lBase  = 0;
+  int lCount = 0;
+  for(int i0 = 0; i0 < iN*(int(iLabels.size())); i0++) {
+    std::stringstream pVal;
+    pVal  << iHeader << lCount  << "_" << iLabels[i0 % iLabels.size()];
+    iTree->Branch(pVal .str().c_str(),&iVals[lBase],(pVal .str()+"/F").c_str());
+    if(i0 % int(iLabels.size()) == 0 && i0 > 0) lCount++;
+    lBase++;
+  }
+}
+//--------------------------------------------------------------------------------------------------
 double getVal(TH1D*h,double val) {
   return h->GetBinContent(h->FindBin(val));
 }

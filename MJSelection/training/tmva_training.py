@@ -22,85 +22,91 @@ vars = [
  
 # tracks
 training_vars_tracks = [
-  "bst15_PUPPIjet0_nTracks".
-  "bst15_PUPPIjet0_nSV".
+#  "bst15_PUPPIjet0_nTracks",
+  "bst15_PUPPIjet0_nSV",
   "bst15_PUPPIjet0_trackSip2dSigAboveCharm_0",
-  "bst15_PUPPIjet0_trackSip2dSigAboveCharm_1",
+#  "bst15_PUPPIjet0_trackSip2dSigAboveCharm_1",
   "bst15_PUPPIjet0_trackSip2dSigAboveBottom_0",
-  "bst15_PUPPIjet0_trackSip2dSigAboveBottom_1",
+#  "bst15_PUPPIjet0_trackSip2dSigAboveBottom_1",
   "bst15_PUPPIjet0_trackSip3dSig_3",
   "bst15_PUPPIjet0_trackSip3dSig_2",
   "bst15_PUPPIjet0_trackSip3dSig_1", 
   "bst15_PUPPIjet0_trackSip3dSig_0",
-  "bst15_PUPPIjet0_trackSip3dSig_3_1",
-  "bst15_PUPPIjet0_trackSip3dSig_2_1",
-  "bst15_PUPPIjet0_trackSip3dSig_1_1",
-  "bst15_PUPPIjet0_trackSip3dSig_0_1"
-  "bst15_PUPPIjet0_trackSip3dSig_3_2",
-  "bst15_PUPPIjet0_trackSip3dSig_2_2",
-  "bst15_PUPPIjet0_trackSip3dSig_1_2",
-  "bst15_PUPPIjet0_trackSip3dSig_0_2"
-  "bst15_PUPPIjet0_trackSip3dSig_3_3",
-  "bst15_PUPPIjet0_trackSip3dSig_2_3",
-  "bst15_PUPPIjet0_trackSip3dSig_1_3",
-  "bst15_PUPPIjet0_trackSip3dSig_0_3"
+  # "bst15_PUPPIjet0_trackSip3dSig_3_1",
+  # "bst15_PUPPIjet0_trackSip3dSig_2_1",
+  # "bst15_PUPPIjet0_trackSip3dSig_1_1",
+  # "bst15_PUPPIjet0_trackSip3dSig_0_1",
+  # "bst15_PUPPIjet0_trackSip3dSig_3_2",
+  # "bst15_PUPPIjet0_trackSip3dSig_2_2",
+  # "bst15_PUPPIjet0_trackSip3dSig_1_2",
+  # "bst15_PUPPIjet0_trackSip3dSig_0_2",
+  # "bst15_PUPPIjet0_trackSip3dSig_3_3",
+  # "bst15_PUPPIjet0_trackSip3dSig_2_3",
+  # "bst15_PUPPIjet0_trackSip3dSig_1_3",
+  # "bst15_PUPPIjet0_trackSip3dSig_0_3"
 ]
 
 training_vars_svmass = [
   "bst15_PUPPIjet0_tau_SVmass0_nSecondaryVertices", 
-  "bst15_PUPPIjet0_tau_SVmass0_flightDistance2dSig",
-  "bst15_PUPPIjet0_tau_SVmass0_vertexDeltaR", 
-  "bst15_PUPPIjet0_tau_SVmass0_vertexNTracks",
-  "bst15_PUPPIjet0_tau_SVmass0_trackEtaRel_2", 
-  "bst15_PUPPIjet0_tau_SVmass0_trackEtaRel_1", 
-  "bst15_PUPPIjet0_tau_SVmass0_trackEtaRel_0",
-  "bst15_PUPPIjet0_tau_SVmass0_vertexEnergyRatio", 
-  "bst15_PUPPIjet0_tau_SVmass0_vertexMass", 
-  "bst15_PUPPIjet0_tau_SVmass0_vertexMass_corrected",
-  "bst15_PUPPIjet0_tau_SVmass0_zratio"
+  "bst15_PUPPIjet0_tau_SVmass0flightDistance2dSig",
+  "bst15_PUPPIjet0_tau_SVmass0vertexDeltaR", 
+  "bst15_PUPPIjet0_tau_SVmass0vertexNTracks",
+  "bst15_PUPPIjet0_tau_SVmass0trackEtaRel_2", 
+  "bst15_PUPPIjet0_tau_SVmass0trackEtaRel_1", 
+  "bst15_PUPPIjet0_tau_SVmass0trackEtaRel_0",
+  "bst15_PUPPIjet0_tau_SVmass0vertexEnergyRatio", 
+  "bst15_PUPPIjet0_tau_SVmass0vertexMass", 
+  "bst15_PUPPIjet0_tau_SVmass0vertexMass_corrected",
+  "bst15_PUPPIjet0_tau_SVmass0zratio",
   "bst15_PUPPIjet0_tau_SVmass1_nSecondaryVertices",
-  "bst15_PUPPIjet0_tau_SVmass1_flightDistance2dSig",
-  "bst15_PUPPIjet0_tau_SVmass1_vertexDeltaR",
-  "bst15_PUPPIjet0_tau_SVmass1_vertexNTracks",
-  "bst15_PUPPIjet0_tau_SVmass1_trackEtaRel_2",
-  "bst15_PUPPIjet0_tau_SVmass1_trackEtaRel_1",
-  "bst15_PUPPIjet0_tau_SVmass1_trackEtaRel_0",
-  "bst15_PUPPIjet0_tau_SVmass1_vertexEnergyRatio",
-  "bst15_PUPPIjet0_tau_SVmass1_vertexMass",
-  "bst15_PUPPIjet0_tau_SVmass1_vertexMass_corrected",
-  "bst15_PUPPIjet0_tau_SVmass1_zratio"
+  "bst15_PUPPIjet0_tau_SVmass1flightDistance2dSig",
+  "bst15_PUPPIjet0_tau_SVmass1vertexDeltaR",
+  "bst15_PUPPIjet0_tau_SVmass1vertexNTracks",
+  "bst15_PUPPIjet0_tau_SVmass1trackEtaRel_2",
+  "bst15_PUPPIjet0_tau_SVmass1trackEtaRel_1",
+  "bst15_PUPPIjet0_tau_SVmass1trackEtaRel_0",
+  "bst15_PUPPIjet0_tau_SVmass1vertexEnergyRatio",
+  "bst15_PUPPIjet0_tau_SVmass1vertexMass",
+  "bst15_PUPPIjet0_tau_SVmass1vertexMass_corrected",
+  "bst15_PUPPIjet0_tau_SVmass1zratio"
 ]
 
 training_vars_svfd = [
   "bst15_PUPPIjet0_tau_SVfd0_nSecondaryVertices",
-  "bst15_PUPPIjet0_tau_SVfd0_flightDistance2dSig",
-  "bst15_PUPPIjet0_tau_SVfd0_vertexDeltaR",
-  "bst15_PUPPIjet0_tau_SVfd0_vertexNTracks",
-  "bst15_PUPPIjet0_tau_SVfd0_trackEtaRel_2",
-  "bst15_PUPPIjet0_tau_SVfd0_trackEtaRel_1",
-  "bst15_PUPPIjet0_tau_SVfd0_trackEtaRel_0",
-  "bst15_PUPPIjet0_tau_SVfd0_vertexEnergyRatio",
-  "bst15_PUPPIjet0_tau_SVfd0_vertexMass",
-  "bst15_PUPPIjet0_tau_SVfd0_vertexMass_corrected",
-  "bst15_PUPPIjet0_tau_SVfd0_zratio"
+  "bst15_PUPPIjet0_tau_SVfd0flightDistance2dSig",
+  "bst15_PUPPIjet0_tau_SVfd0vertexDeltaR",
+  "bst15_PUPPIjet0_tau_SVfd0vertexNTracks",
+  "bst15_PUPPIjet0_tau_SVfd0trackEtaRel_2",
+  "bst15_PUPPIjet0_tau_SVfd0trackEtaRel_1",
+  "bst15_PUPPIjet0_tau_SVfd0trackEtaRel_0",
+  "bst15_PUPPIjet0_tau_SVfd0vertexEnergyRatio",
+  "bst15_PUPPIjet0_tau_SVfd0vertexMass",
+  "bst15_PUPPIjet0_tau_SVfd0vertexMass_corrected",
+#  "bst15_PUPPIjet0_tau_SVfd0zratio"
   "bst15_PUPPIjet0_tau_SVfd1_nSecondaryVertices",
-  "bst15_PUPPIjet0_tau_SVfd1_flightDistance2dSig",
-  "bst15_PUPPIjet0_tau_SVfd1_vertexDeltaR",
-  "bst15_PUPPIjet0_tau_SVfd1_vertexNTracks",
-  "bst15_PUPPIjet0_tau_SVfd1_trackEtaRel_2",
-  "bst15_PUPPIjet0_tau_SVfd1_trackEtaRel_1",
-  "bst15_PUPPIjet0_tau_SVfd1_trackEtaRel_0",
-  "bst15_PUPPIjet0_tau_SVfd1_vertexEnergyRatio",
-  "bst15_PUPPIjet0_tau_SVfd1_vertexMass",
-  "bst15_PUPPIjet0_tau_SVfd1_vertexMass_corrected",
-  "bst15_PUPPIjet0_tau_SVfd1_zratio"
+  "bst15_PUPPIjet0_tau_SVfd1flightDistance2dSig",
+  "bst15_PUPPIjet0_tau_SVfd1vertexDeltaR",
+  "bst15_PUPPIjet0_tau_SVfd1vertexNTracks",
+  "bst15_PUPPIjet0_tau_SVfd1trackEtaRel_2",
+  "bst15_PUPPIjet0_tau_SVfd1trackEtaRel_1",
+  "bst15_PUPPIjet0_tau_SVfd1trackEtaRel_0",
+  "bst15_PUPPIjet0_tau_SVfd1vertexEnergyRatio",
+  "bst15_PUPPIjet0_tau_SVfd1vertexMass",
+  "bst15_PUPPIjet0_tau_SVfd1vertexMass_corrected"
+#  "bst15_PUPPIjet0_tau_SVfd1zratio"
 ]
 
 argv = sys.argv
 parser = OptionParser()
-parser.add_option("-d", "--dstype", dest="dstype", default="mcsig15PUPPI", 
-                              help="type of signal sample: mcsig15PUPPI,mcsig8PUPPI,mcsig15CHS,mcsig8CHS")                       
-parser.add_option("-f", "--file", dest="filename", default="mcsig15PUPPI",
+parser.add_option("-g", "--gluonsplitting", dest="gluonsplitting", default=False, action="store_true",
+                              help="train b vs. gsp")
+parser.add_option("-C", "--charm", dest="charm", default=False, action="store_true",
+                              help="train b vs. charm")
+parser.add_option("-m", "--svmass", dest="svmass", default=True, action="store_true", 
+                              help="svmass vars")
+parser.add_option("-s", "--svfd", dest="svfd", default=False, action="store_true",
+                              help="svmd vars")                       
+parser.add_option("-f", "--file", dest="filename", default="PUPPI",
                   help="write to FILE", metavar="FILE")                                                                                                                                                                               			      			      			      			      
 (opts, args) = parser.parse_args(argv)  
 
@@ -127,18 +133,31 @@ def train():
   treeB.Add('../singlebbits/QCD.root')
   
   # Signal and Background selection
-  tag ='bst15_PUPPI'
-  training_vars = training_vars_mcsig15PUPPI
+  tag ='bst15_PUPPIjet0_'
+  if(opts.svmass):
+    training_vars = training_vars_tracks + training_vars_svmass
+  elif(opts.svfd):
+    training_vars = training_vars_tracks + training_vars_svfd
+  else:
+    training_vars = training_vars_tracks 
 
-    #signal_selection = '%sjet1sumsjqg>0 && %sjet1sumsjqg<1'%(tag,tag)
-    #background_selection = '%sjet1sumsjqg>0 && %sjet1sumsjqg<1'%(tag,tag) # abs(flavour)!=5 no b? Ask Matteo                   
-  signal_selection = '%sjet1nSV>-1 && %sjet1tau_SVfd_nSecondaryVertices>-1. && %sjet1tau_SVmass_nSecondaryVertices>-1. && %sjet1tau_SVfd_trackEtaRel_0 >-1. && %sjet1tau_SVfd_trackEtaRel_1 >-1. && %sjet1tau_SVfd_trackEtaRel_2>-1. && %sjet1tau_SVmass_trackEtaRel_0 >-1. && %sjet1tau_SVmass_trackEtaRel_1 >-1. && %sjet1tau_SVmass_trackEtaRel_2>-1. && %sjet1tau_SVfd_vertexNTracks>-1. && %sjet1tau_SVmass_vertexNTracks >-1. && %sjet1tau_SVfd_vertexDeltaR >-1. && %sjet1tau_SVmass_vertexDeltaR >-1. && %sjet1tau_SVfd_zratio > -1. && %sjet1tau_SVmass_zratio > -1. && %sjet1nTracks > -1. && %sjet1tau_SVfd_vertexEnergyRatio>-1. && %sjet1tau_SVmass_vertexEnergyRatio>-1. && %sjet1tau_SVfd_vertexEnergyRatio<20. && %sjet1tau_SVmass_vertexEnergyRatio<20. && %sjet1trackSip2dSigAboveBottom>-1 && %sjet1trackSip2dSigAboveCharm >-1. && %sjet1trackSip3dSig_0>-1. && %sjet1trackSip3dSig_1>-1. && %sjet1trackSip3dSig_2>-1. && %sjet1trackSip3dSig_3>-1. && %sjet1tau1_trackSip3dSig_0>-1. && %sjet1tau1_trackSip3dSig_1>-1. && %sjet1tau_SVfd_flightDistance2dSig>-1. && %sjet1tau_SVmass_flightDistance2dSig>-1.'%(tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag,tag)
-  background_selection = signal_selection
+  selection = ' '
+  for i in training_vars:
+    selection += i+' >-1 && '+ i+'<1000 &&'
 
+  signal_selection = selection+'(partonFlavor==5||partonFlavor==-5) && nbHadrons>1'
   print "Signal selection = %s" %signal_selection
-  print "Bkg selection = %s" %background_selection
 
-  # Number of entries
+  if(opts.gluonsplitting):
+    background_selection = selection+'abs(partonFlavor==5) && nbHadrons>1' 
+  elif(opts.charm):
+    background_selection = selection+'abs(partonFlavor==4)'
+  else:
+    background_selection = selection+'(partonFlavor==5||partonFlavor==-5) && nbHadrons<2' # no b  abs(partonFlavor)!=5
+
+  print "Bkg selection = %s" %background_selection
+  
+  #Number of entries
   num_pass = treeS.GetEntries(signal_selection)
   num_fail = treeB.GetEntries(background_selection)
   print 'N events signal', num_pass
@@ -148,21 +167,18 @@ def train():
   for var in training_vars:
     print "Adding variable: %s" %var
     factory.AddVariable(var, 'F')
+
+  factory.AddSpectator("partonFlavor")
+  factory.AddSpectator("nbHadrons")
   
   # Add Signal + Background
   factory.SetWeightExpression('1.')
-  #factory.SetBackgroundWeightExpression("%sjet1weight"%tag)
   factory.AddSignalTree(treeS, 1.)
   factory.AddBackgroundTree(treeB, 1.)
 
   # Training
   factory.PrepareTrainingAndTestTree( ROOT.TCut(signal_selection), ROOT.TCut(background_selection), 
       "nTrain_Signal=0::nTest_Signal=0:nTrain_Background=0:nTest_Background=0:SplitMode=Random:!V" )
-      # "nTrain_Signal=30000:nTest_Signal=12000:nTrain_Background=30000:nTest_Background=50000:SplitMode=Random:!V" )
-  #factory.BookMethod( ROOT.TMVA.Types.kBDT,
-  #                    "BDTG","!H:!V:NTrees=400:MinNodeSize=2.5%:BoostType=Grad:Shrinkage=0.2:UseBaggedBoost:BaggedSampleFraction=0.5:nCuts=30:MaxDepth=3:PruneMethod=CostComplexity:PruneStrength=3")
-  #factory.BookMethod( ROOT.TMVA.Types.kBDT,
-  #                    "BDTG","!H:!V:NTrees=400:MinNodeSize=2.5%:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:UseBaggedBoost:BaggedSampleFraction=0.5:SeparationType=GiniIndex:nCuts=30")
   factory.BookMethod( ROOT.TMVA.Types.kBDT,
                       "BDTG","!H:!V:NTrees=400:MinNodeSize=2.5%:BoostType=Grad:Shrinkage=0.2:UseBaggedBoost:BaggedSampleFraction=0.5:nCuts=30:MaxDepth=3:PruneMethod=CostComplexity:PruneStrength=3")
   factory.TrainAllMethods()
@@ -191,17 +207,19 @@ def read(inDirName, inFileName):
   print "################################"
   print "################################"
   reader = ROOT.TMVA.Reader('TMVAClassification_BDTG')
+  partonFlavor = array.array('f',[0])
+  nbHadrons = array.array('f',[0])
+  reader.AddSpectator("partonFlavor", partonFlavor)
+  reader.AddSpectator("nbHadrons", nbHadrons)
 
   # select variables to add
   training_vars = []
-  if opts.dstype == 'mcsig8CHS':
-    training_vars = training_vars_mcsig8CHS
-  if opts.dstype == 'mcsig8PUPPI':
-    training_vars = training_vars_mcsig8PUPPI
-  if opts.dstype == 'mcsig15CHS':
-    training_vars = training_vars_mcsig15CHS
-  if opts.dstype == 'mcsig15PUPPI':
-    training_vars = training_vars_mcsig15PUPPI
+  if(opts.svmass):
+    training_vars = training_vars_tracks + training_vars_svmass
+  elif(opts.svfd):
+    training_vars = training_vars_tracks + training_vars_svfd
+  else:
+    training_vars = training_vars_tracks 
 
   varDict = {}
   for var in training_vars:
@@ -210,8 +228,9 @@ def read(inDirName, inFileName):
     
   reader.BookMVA("BDTG","weights/TMVAClassification_BDTG.weights.xml")
 
-  bdtOuts = []
+  bdtOuts       = []
   maxsubjetcsvs = []
+  doublecsvs    = []
 
   hBDTGDisc = ROOT.TH1F("hBDTGDisc","",1000,-5,5)
 
@@ -222,36 +241,31 @@ def read(inDirName, inFileName):
       varDict[var][0] = getattr(tree, var)
     bdtOutput = reader.EvaluateMVA("BDTG")
     bdtOuts.append(bdtOutput)
-    if opts.dstype == 'mcsig8CHS':
-      maxsubjetcsvs.append(tree.bst8_CHSjet1maxsubcsv)
-    elif opts.dstype == 'mcsig8PUPPI':
-      maxsubjetcsvs.append(tree.bst8_PUPPIjet1maxsubcsv)
-    elif opts.dstype == 'mcsig15CHS':
-      maxsubjetcsvs.append(tree.bst15_CHSjet1maxsubcsv)
-    elif opts.dstype == 'mcsig15PUPPI':
-      maxsubjetcsvs.append(tree.bst15_PUPPIjet1maxsubcsv)
+    maxsubjetcsvs.append(tree.bst15_PUPPIjet0_maxsubcsv)
+    doublecsvs.append(tree.bst15_PUPPIjet0_doublecsv)
     hBDTGDisc.Fill(bdtOutput)
 
-    if jentry%10000 == 0:
-      print jentry, bdtOutput
+    # if jentry%10000 == 0:
+    #   print jentry, bdtOutput
 
   writeSmallTree = True
 
   if writeSmallTree:
     print "Writing small tree"
-    BDTG = array.array('f',[0])
+    BDTG         = array.array('f',[0])
     maxsubjetcsv = array.array('f',[0])
+    doublecsv    = array.array('f',[0])
 
     fout = ROOT.TFile('validation/validation_%s_%s.root'%(inFileName.replace(".root",""),opts.filename), 'RECREATE')
     outTree = ROOT.TTree( 'tree', 'b-tagging training tree' )
     outTree.Branch('BDTG', BDTG, 'BDTG/F')
     outTree.Branch('maxsubjetcsv', maxsubjetcsv, 'maxsubjetcsv/F')
+    outTree.Branch('doublecsv', doublecsv, 'doublecsv/F')
 
     for i in range(len((bdtOuts))):
       BDTG[0] = bdtOuts[i]
       maxsubjetcsv[0] = maxsubjetcsvs[i]
-      if i%10000==0:
-        print i, bdtOuts[i],maxsubjetcsvs[i]
+      doublecsv[0]    = doublecsvs[i]
       outTree.Fill()
       
     fout.Write()
@@ -266,8 +280,8 @@ def readParallel():
   ROOT.gROOT.SetBatch(True)
   parallelProcesses = multiprocessing.cpu_count()
 
-  inDirName="trainingbits/rootfiles/"
-  files = ['qcd_forTraining.root']
+  inDirName="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/singlebbits/"
+  files = ['QCD.root','Zprime.root']
 
   # create Pool
   p = multiprocessing.Pool(parallelProcesses)
@@ -283,9 +297,9 @@ def readParallel():
 
 if __name__ == '__main__':
     train()
-    inDirName="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconSkim/BDTSelection/training/"
+    inDirName="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/singlebbits/"
     files = ['QCD.root','Zprime.root']
-    for f in files:
-      read(inDirName, f)
-# readParallel()
+    #for f in files:
+    #  read(inDirName, f)
+    readParallel()
 

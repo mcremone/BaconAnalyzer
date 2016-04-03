@@ -145,19 +145,13 @@ def makePlots():
    ordering = [] # vectors storing the order of legend entries
    mg = [] # maps to hold legend entries and TGraph*s
 
-   mg15PUPPI = getPerformanceCurve("validation_fd/validation_mcsig15PUPPI_mcsig15PUPPI.root","validation_fd/validation_QCD_mcsig15PUPPI_mcsig15PUPPI.root",300.,2000.)
-   #mg15CHS = getPerformanceCurve("validation/validation_mcsig15CHS_mcsig15CHS.root","validation/validation_QCD_mcsig15CHS_mcsig15CHS.root",300.,2000.)
-   #mg8PUPPI = getPerformanceCurve("validation/validation_mcsig8PUPPI_mcsig8PUPPI.root","validation/validation_QCD_mcsig8PUPPI_mcsig8PUPPI.root",300.,2000.)
-   #mg8CHS = getPerformanceCurve("validation/validation_mcsig8CHS_mcsig8CHS.root","validation/validation_QCD_mcsig8CHS_mcsig8CHS.root",300.,2000.)
+   mg15PUPPI = getPerformanceCurve("validation/validation_Zprime_svmass.root","validation/validation_QCD_svmass.root",300.,2000.)
    
    ordering.append("single-b-tag ")
-   ordering.append("Subjet CSVv2")
+   # ordering.append("double CSV")
+   ordering.append("Subjet CSVb")
 
-   plotPerformanceCurves(mg15PUPPI,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","CA15 PUPPI","singleb_subjet_bst15PUPPI.pdf",0, 1, 1E-3, 1, 1)
-   #plotPerformanceCurves(mg15CHS,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","CA15 CHS","singleb_subjet_bst15CHS.pdf",0, 1, 1E-3, 1, 1)
-   #plotPerformanceCurves(mg8PUPPI,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","AK8 PUPPI","singleb_subjet_bst8PUPPI.pdf",0, 1, 1E-3, 1, 1)
-   #plotPerformanceCurves(mg8CHS,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","AK8 CHS","singleb_subjet_bst8CHS.pdf",0, 1, 1E-3, 1, 1)
-
+   plotPerformanceCurves(mg15PUPPI,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","CA15 PUPPI","singleb_subjet_bst15PUPPI_svmass.pdf",0, 1, 1E-3, 1, 1)
 
 if __name__ == "__main__":
     makePlots()

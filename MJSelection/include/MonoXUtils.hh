@@ -49,6 +49,7 @@ void   fillLepSF           (int nLep,std::vector<TLorentzVector> iLeptons,TH2D *
 double getLepEventReweight (int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose);
 void   setupNtuple         (std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
 void   setupNtuple         (std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead,std::vector<std::string> &iLabels);
+void   setupNtuple         (std::string iHeader,TTree *iTree,int iN,std::vector<float> &iVals,std::vector<std::string> &iLabels);
 template<class T> void addObject(T *iObject,std::vector<T*> &iObjects) {
   bool lFill = false;
   for(typename std::vector<T*>::iterator pIter = iObjects.begin(); pIter != iObjects.end(); pIter++) {

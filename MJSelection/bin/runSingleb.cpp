@@ -33,7 +33,6 @@ MuonLoader      *fMuon     = 0;
 ElectronLoader  *fElectron = 0; 
 TauLoader       *fTau      = 0; 
 PhotonLoader    *fPhoton   = 0; 
-JetLoader       *fJet      = 0; 
 SbJetLoader     *fSbJet    = 0;
 RunLumiRangeMap *fRangeMap = 0; 
 
@@ -74,7 +73,6 @@ int main( int argc, char **argv ) {
   fElectron = new ElectronLoader(lTree);                                                 // fElectrons and fElectronBr, fN = 2
   fTau      = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
-  fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4CHS, fN = 4 - includes jet corrections (corrParams), fN = 4, Implement AK4CHS?
   fSbJet    = new SbJetLoader   (lTree,"CA15Puppi","AddCA15Puppi");                      // fSbJets, fSbJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
@@ -83,7 +81,6 @@ int main( int argc, char **argv ) {
 
   // Setup Tree
   fEvt     ->setupTree      (lOut,lWeight); 
-  fJet     ->setupTree      (lOut,"res_PUPPIjet"); 
   fSbJet   ->setupTree      (lOut,"bst15_PUPPIjet"); 
 
   //
@@ -139,14 +136,15 @@ int main( int argc, char **argv ) {
     fPhoton   ->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
 
     // Trigger Efficiencies
-    fEvt->triggerEff(lElectrons, lPhotons);
+    fEvt      ->triggerEff(lElectrons, lPhotons);
     
     // CA15Puppi Jets
     bool select = false;
     fSbJet->load(i0);
     fSbJet->selectSbJets(lVetoes,lJets,1.5);
     if(lJets.size()>0){ 
-      if(lOption.compare("mcsig")==0 && fGen->ismatchedJet(lJets[0],1.5,fSbJet->ftopSize)) select = true;
+      //if(lOption.compare("mcsig")==0 && fGen->ismatchedJet(lJets[0],1.5,fSbJet->ftopSize)) select = true;
+      select = true;
       if(lOption.compare("mcbkg")==0 || lOption.compare("data")==0)                        select = true;
     }
     if(!select) continue;

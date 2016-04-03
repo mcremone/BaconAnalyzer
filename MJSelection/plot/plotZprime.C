@@ -95,59 +95,28 @@ void plotZprime(const string preselection, const string selection, const string 
   // Declare histograms
   //
   char hname[100];
-  vector<TH1D*> hMETv, hMETLogv;
-  // vector<TH1D*> hTransverseMassv;
-  vector<TH1D*> hFatJetMassv, hFatJetPtv, hFatJetTau32v, hBtagv;
-  vector<TH1D*> hMinDPhiJetsMetv, hMinDPhiFatJetMetv, hNJetsv, hNBJetsv;
-  vector<TH1D*> hJet1CHFv, hJet1NHFv, hJet1NEMFv;
-  vector<TH1D*> hJet1Etav, hJet2Etav, hJet3Etav, hJet4Etav;
+  vector<TH1D*> hFatJetPtv;
+  vector<TH1D*> hFatJetMassv, hNSubjetinessv;                                                                                                                                                                                    
+  vector<TH1D*> hSubjetBtagv; 
+  vector<double> neventsv;
+
   vector<double> neventsv;
   const Int_t NBINS = 5;
   Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
-    sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",NBINS,edges));            hMETv[isam]->Sumw2();
-    sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",NBINS,edges));         hMETLogv[isam]->Sumw2();
-    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,0,300));        hFatJetMassv[isam]->Sumw2();
-    sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",20,250,1000));       hFatJetPtv[isam]->Sumw2();
-    // sprintf(hname,"hTransverseMass_%i",isam); hTransverseMassv.push_back(new TH1D(hname,"",30,300,2000)); hTransverseMassv[isam]->Sumw2();
-    sprintf(hname,"hFatJetTau32_%i",isam);    hFatJetTau32v.push_back(new TH1D(hname,"",15,0.2,1));       hFatJetTau32v[isam]->Sumw2();
-    sprintf(hname,"hBtag_%i",isam);           hBtagv.push_back(new TH1D(hname,"",15,0.1,1.));             hBtagv[isam]->Sumw2();
-    sprintf(hname,"hMinDPhiJetsMet_%i",isam); hMinDPhiJetsMetv.push_back(new TH1D(hname,"",20,0,3.14));   hMinDPhiJetsMetv[isam]->Sumw2();
-    sprintf(hname,"hNJets_%i",isam);          hNJetsv.push_back(new TH1D(hname,"",10,0,10));              hNJetsv[isam]->Sumw2();
-    sprintf(hname,"hNBJets_%i",isam);         hNBJetsv.push_back(new TH1D(hname,"",10,0,10));             hNBJetsv[isam]->Sumw2();
-    sprintf(hname,"hJet1CHF_%i",isam);        hJet1CHFv.push_back(new TH1D(hname,"",30,0,1));             hJet1CHFv[isam]->Sumw2();
-    sprintf(hname,"hJet1NHF_%i",isam);        hJet1NHFv.push_back(new TH1D(hname,"",30,0,1));             hJet1NHFv[isam]->Sumw2();
-    sprintf(hname,"hJet1NEMF_%i",isam);       hJet1NEMFv.push_back(new TH1D(hname,"",30,0,1));            hJet1NEMFv[isam]->Sumw2();
-    sprintf(hname,"hJet1Eta_%i",isam);        hJet1Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet1Etav[isam]->Sumw2();
-    sprintf(hname,"hJet2Eta_%i",isam);        hJet2Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet2Etav[isam]->Sumw2();
-    sprintf(hname,"hJet3Eta_%i",isam);        hJet3Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet3Etav[isam]->Sumw2();
-    sprintf(hname,"hJet4Eta_%i",isam);        hJet4Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet4Etav[isam]->Sumw2();
+    sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",20,360,1000));        hFatJetPtv[isam]->Sumw2();
+    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,30,120));        hFatJetMassv[isam]->Sumw2();
+    sprintf(hname,"hNSubjetiness_%i",isam);   hNSubjetinessv.push_back(new TH1D(hname,"",15,0.2,1));       hNSubjetinessv[isam]->Sumw2();
+    sprintf(hname,"hSubjetBtag_%i",isam);     hSubjetBtagv.push_back(new TH1D(hname,"",15,0,1));           hSubjetBtagv[isam]->Sumw2();
     neventsv.push_back(0);
   }
 
-  TH1D *hMETMC             = (TH1D*)hMETv[0]->Clone("hMETMC");
-  TH1D *hMETLogMC          = (TH1D*)hMETLogv[0]->Clone("hMETLogMC");
-  TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0]->Clone("hFatJetMassMC");
   TH1D *hFatJetPtMC        = (TH1D*)hFatJetPtv[0]->Clone("hFatJetPtMC");
-  // TH1D *hTransverseMassMC  = (TH1D*)hTransverseMassv[0]->Clone("hTransverseMassMC");
-  TH1D *hFatJetTau32MC     = (TH1D*)hFatJetTau32v[0]->Clone("hFatJetTau32MC");
-  TH1D *hBtagMC            = (TH1D*)hBtagv[0]->Clone("hBtagMC");
-  TH1D *hMinDPhiJetsMetMC  = (TH1D*)hMinDPhiJetsMetv[0]->Clone("hMinDPhiJetsMetMC");
-  TH1D *hNJetsMC           = (TH1D*)hNJetsv[0]->Clone("hNJetsMC");
-  TH1D *hNBJetsMC          = (TH1D*)hNBJetsv[0]->Clone("hNBJetsMC");
-  TH1D *hJet1CHFMC         = (TH1D*)hJet1CHFv[0]->Clone("hJet1CHFMC");
-  TH1D *hJet1NHFMC         = (TH1D*)hJet1NHFv[0]->Clone("hJet1NHFMC");
-  TH1D *hJet1NEMFMC        = (TH1D*)hJet1NEMFv[0]->Clone("hJet1NEMFMC");
-  TH1D *hJet1EtaMC         = (TH1D*)hJet1Etav[0]->Clone("hJet1EtaMC");
-  TH1D *hJet2EtaMC         = (TH1D*)hJet2Etav[0]->Clone("hJet2EtaMC");
-  TH1D *hJet3EtaMC         = (TH1D*)hJet3Etav[0]->Clone("hJet3EtaMC");
-  TH1D *hJet4EtaMC         = (TH1D*)hJet4Etav[0]->Clone("hJet4EtaMC");
-  TH1D *hMETSig1           = (TH1D*)hMETv[0]->Clone("hMETSig1");
-  TH1D *hMETSig2           = (TH1D*)hMETv[0]->Clone("hMETSig2");
-  // TH1D *hMETSig3           = (TH1D*)hMETv[0]->Clone("hMETSig3");
-  // TH1D *hMETSig4           = (TH1D*)hMETv[0]->Clone("hMETSig4");                                                                                                                                                 
-  // TH1D *hMETSig5           = (TH1D*)hMETv[0]->Clone("hMETSig5");                                                                                                                                      
-  // TH1D *hMETSig6           = (TH1D*)hMETv[0]->Clone("hMETSig6"); 
+  TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0]->Clone("hFatJetMassMC");
+  TH1D *hNSubjetinessMC    = (TH1D*)hNSubjetinessv[0]->Clone("hNSubjetinessMC");
+  TH1D *hSubjetBtagMC      = (TH1D*)hSubjetBtagv[0]->Clone("hSubjetBtagMC"); 
+
+  TH1D *hFatJetPtSig       = (TH1D*)hFatJetPtv[0]->Clone("hFatJetPtSig");
 
   double neventsMC = 0;
 
