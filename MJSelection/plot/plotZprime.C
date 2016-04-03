@@ -23,7 +23,7 @@
 #include "../macros/CPlot.hh"         // helper class for plots
 #include "../macros/KStyle.hh"        // style settings for drawing
 #include "../macros/CSample.hh"       // helper class to manage samples
-#include "../macros/BitsLoader.hh"    // helper to load baconbits
+#include "../macros/ZprimeBitsLoader.hh"    // helper to load baconbits
 //#endif
 
 using namespace std;

@@ -55,7 +55,7 @@ done
 if [ "$hasrootdir" -ne 0 ]; then
     submitted=0	
     if [ "$submitted" -eq 0 ]; then
-	python baconBatch.py runMonoX  $options1 -a "4:"$xs -d "1:"$scandir  -o $PWD/../${xdir}/${label}_${ismc}   $option1 $option2
+	python baconBatch.py $exec  $options1 -a "4:"$xs -d "1:"$scandir  -o $PWD/../${xdir}/${label}_${ismc}   $option1 $option2
 	submitted=$((submitted+1))
         total=$((total+1))	
     fi
