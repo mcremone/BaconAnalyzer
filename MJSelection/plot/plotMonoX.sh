@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#void plotMonoX(const string preselection, const string selection, const string subsample, const string combo, const string algo)
 preselection=$1
 selection=$2
 subsample=$3

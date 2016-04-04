@@ -35,12 +35,14 @@ public:
   bool passPreSelection(string preselection);
   TLorentzVector getMET(string preselection);
   TLorentzVector getTop();
+  bool passMetPreselection(string preselection);
   bool passBoostedMonoTopPreselection(string preselection);
   bool passBoosted15MonoX(string preselection);
   bool passBoosted8MonoX(string preselection);
   bool passResolvedMonoTop(string preselection);
   bool passResolvedMonoXbb(string preselection);
   bool passBoostedMonoTopSR(string preselection); 
+  bool passBoostedMonoTopQCDCR(string preselection);
   bool passBoostedMonoTopZnunuHFCR(string preselection);
   bool passBoostedMonoTopZnunuLFCR(string preselection);
   bool passBoostedMonoTopTopCR(string preselection); 
@@ -75,15 +77,15 @@ public:
   bool passBoostedMonoTopTopCRminusBtag(string preselection);
   bool passSelection(string preselection, string selection, string subsample, string combo, float &btagw);
   double getWgt(bool isData, TString algo, double LUMI, float btagw);
-  //float transverse_mass(string selection);
+  float transverse_mass(string selection);
   float fjet_mass(string selection);
   float nsubjet(string selection);
   float btag(string selection);
   float chf(string selection);
   float nhf(string selection);
   float nemf(string selection);
-  float genvpt(string selection);
-  float genvphi(string selection);
+  // float genvpt(string selection);
+  // float genvphi(string selection);
 
   //
   // variables to read in bacon bits
@@ -114,16 +116,17 @@ public:
   double           res_jet1_pt, res_jet1_eta, res_jet1_phi, res_jet1_mass; 
   double           res_jet2_pt, res_jet2_eta, res_jet2_phi, res_jet2_mass;
   double           res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet3_mass;
-  float            res_genVpt, res_genVphi;                                        // jet at gen level
-  double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF; // , res_jet0_dphi;      // res jet variables
+  double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF;                      // res jet variables
+  float            res_mt;                                                         // res jet mT
 
   double           bst_jet0_pt,bst_jet0_eta,bst_jet0_phi,bst_jet0_mass;            // leading boosted jet
   double           bst_jet0_msd, bst_jet0_tau32, bst_jet0_tau21;                   // boosted tagger variables                                                                                            
   double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                         // subjet btag                                                                                            
-  float            bst_genVpt, bst_genVphi;                                        // jet at gen level
   float            bst_jet0_rho, bst_jet0_phil;                                    // msd and pt dependent variables
   double           bst_jet0_CHF, bst_jet0_NHF, bst_jet0_NEMF;                      // boosted jet variables
-  float            bst_mt;                                                         // mT
+  float            bst_mt;                                                         // bst jet mT
+
+  // float            genVpt, genVphi;                                                // jet at gen level
 
   const float ToptagSF     = 1.1318;                                               // ToptagSF
   const float TopmistagSF  = 1.1639;                                               // TopmistagSF 
@@ -135,7 +138,7 @@ protected:
   const unsigned int kMET  = 2;
   const unsigned int kSingleElectron = 4;
   const unsigned int kSinglePhoton  = 8;
-  const unsigned int kBOOSTED15PUPPI = 1;
+  const unsigned int kBOOSTED15PUPPI = 2;
   const unsigned int kBOOSTED15CHS = 4;
   const unsigned int kBOOSTED8PUPPI = 8;
   const unsigned int kBOOSTED8CHS = 16;
