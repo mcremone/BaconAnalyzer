@@ -9,20 +9,20 @@ using namespace baconhep;
 
 SbJetLoader::SbJetLoader(TTree *iTree,std::string iJet,std::string iAddJet) { 
   fSbJets         = new TClonesArray("baconhep::TJet");
-  fVAddJets      = new TClonesArray("baconhep::TAddJet");
+  fSbAddJets      = new TClonesArray("baconhep::TAddJet");
 
   iTree->SetBranchAddress(iJet.c_str(),       &fSbJets);
-  iTree->SetBranchAddress(iAddJet.c_str(),    &fVAddJets);
+  iTree->SetBranchAddress(iAddJet.c_str(),    &fSbAddJets);
   fSbJetBr        = iTree->GetBranch(iJet.c_str());
-  fVAddJetBr     = iTree->GetBranch(iAddJet.c_str());
+  fSbAddJetBr     = iTree->GetBranch(iAddJet.c_str());
 
   fN = 1;
 }
 SbJetLoader::~SbJetLoader() { 
   delete fSbJets;
   delete fSbJetBr;
-  delete fVAddJets;
-  delete fVAddJetBr;
+  delete fSbAddJets;
+  delete fSbAddJetBr;
 }
 void SbJetLoader::reset() { 
   fNSbJets = 0; 
@@ -53,31 +53,27 @@ void SbJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fSbLabels.push_back("trackSip3dSig_2");
   fSbLabels.push_back("trackSip3dSig_1");
   fSbLabels.push_back("trackSip3dSig_0");
-  fSbLabels.push_back("tau1_trackSip3dSig_0");
-  fSbLabels.push_back("tau1_trackSip3dSig_1");
   for(auto i0 : trackTypes){
     fSbLabels.push_back("trackSip3dSig_3_"+i0);
     fSbLabels.push_back("trackSip3dSig_2_"+i0);
     fSbLabels.push_back("trackSip3dSig_1_"+i0);
     fSbLabels.push_back("trackSip3dSig_0_"+i0);
-    fSbLabels.push_back("tau1_trackSip3dSig_0_"+i0);
-    fSbLabels.push_back("tau1_trackSip3dSig_1_"+i0);
   }
   for(auto i0 : varTypes){
     fSbLabels.push_back("trackSip2dSigAboveCharm_"+i0);
     fSbLabels.push_back("trackSip2dSigAboveBottom_"+i0);
     for(auto itype : tauTypes){
       fSbLabels.push_back("tau_SV"+itype+i0+"_nSecondaryVertices");
-      fSbLabels.push_back("tau_SV"+itype+i0+"flightDistance2dSig");
-      fSbLabels.push_back("tau_SV"+itype+i0+"vertexDeltaR");
-      fSbLabels.push_back("tau_SV"+itype+i0+"vertexNTracks");
-      fSbLabels.push_back("tau_SV"+itype+i0+"trackEtaRel_2");
-      fSbLabels.push_back("tau_SV"+itype+i0+"trackEtaRel_1");
-      fSbLabels.push_back("tau_SV"+itype+i0+"trackEtaRel_0");
-      fSbLabels.push_back("tau_SV"+itype+i0+"vertexEnergyRatio");
-      fSbLabels.push_back("tau_SV"+itype+i0+"vertexMass");
-      fSbLabels.push_back("tau_SV"+itype+i0+"vertexMass_corrected");
-      fSbLabels.push_back("tau_SV"+itype+i0+"zratio");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_flightDistance2dSig");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_vertexDeltaR");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_vertexNTracks");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_trackEtaRel_2");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_trackEtaRel_1");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_trackEtaRel_0");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_vertexEnergyRatio");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_vertexMass");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_vertexMass_corrected");
+      fSbLabels.push_back("tau_SV"+itype+i0+"_zratio");
     }
   }
   fSbLabels.push_back("nSM");
@@ -110,8 +106,8 @@ void SbJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
 void SbJetLoader::load(int iEvent) { 
   fSbJets       ->Clear();
   fSbJetBr      ->GetEntry(iEvent);
-  fVAddJets    ->Clear();
-  fVAddJetBr   ->GetEntry(iEvent);
+  fSbAddJets    ->Clear();
+  fSbAddJetBr   ->GetEntry(iEvent);
 }
 void SbJetLoader::selectSbJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR){
   reset(); 
@@ -138,132 +134,111 @@ void SbJetLoader::selectSbJets(std::vector<TLorentzVector> &iVetoes,std::vector<
     // fnNeutrals      = fSelSbJets[0]->nNeutrals;
     // fnParticles     = fSelSbJets[0]->nParticles;
     fillJet(fN,fSelSbJets,fVars);
-    fillVJet(fN,fSelSbJets,fVars);
-    fillSbJet(fSelSbJets,fSbVars); 
-    for (unsigned int i0 = 0; i0 < fSbVars.size(); i0++) {
-      std::cout << fSbVars[i0] << std::endl;
-    }
+    fillVJet(fN,fSelSbJets,fVars,fSbVars); 
   }
 }                  
-void SbJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){
+void SbJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,std::vector<float> &iSbVals){
   int lBase = 3.*fN;
   int lMin = iObjects.size();
   int lNLabel = int(fLabels.size());
   if(iN < lMin) lMin = iN;
   for(int i0 = 0; i0 < lMin; i0++) {
     TAddJet *pAddJet = getAddJet(iObjects[i0]);
-    iVals[lBase+i0*lNLabel+0]  = iObjects[i0]->mass;
-    iVals[lBase+i0*lNLabel+1]  = iObjects[i0]->csv;
-    iVals[lBase+i0*lNLabel+2]  = iObjects[i0]->chHadFrac;
-    iVals[lBase+i0*lNLabel+3]  = iObjects[i0]->neuHadFrac;
-    iVals[lBase+i0*lNLabel+4]  = iObjects[i0]->neuEmFrac;
-    iVals[lBase+i0*lNLabel+5]  = (pAddJet->tau2/pAddJet->tau1);
-    iVals[lBase+i0*lNLabel+6]  = (pAddJet->tau3/pAddJet->tau2);
-    iVals[lBase+i0*lNLabel+7]  = pAddJet     ->mass_sd0;
-    iVals[lBase+i0*lNLabel+8]  = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
-    iVals[lBase+i0*lNLabel+9]  = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
-    iVals[lBase+i0*lNLabel+10] = pAddJet     ->doublecsv;
-  }
-}
-void SbJetLoader::fillSbJet(std::vector<TJet*> &iObjects,std::vector<float> &iVals){ 
-  int iN = 1;
-  int lMin = iObjects.size();
-  if(iN < lMin) lMin = iN;
-  for(int i0 = 0; i0 < lMin; i0++) {
-    TAddJet *pAddSbJet = getAddJet(iObjects[i0]);
-    iVals[0]=pAddSbJet->nTracks;
-    iVals[1]=pAddSbJet->nSV;
-    std::cout << iVals[1] << std::endl;
-    iVals.push_back(pAddSbJet->trackSip3dSig_3);
-    iVals.push_back(pAddSbJet->trackSip3dSig_2);
-    iVals.push_back(pAddSbJet->trackSip3dSig_1);
-    iVals.push_back(pAddSbJet->trackSip3dSig_0);
-    iVals.push_back(pAddSbJet->tau1_trackSip3dSig_0);
-    iVals.push_back(pAddSbJet->tau1_trackSip3dSig_1);
-    iVals.push_back(pAddSbJet->trackSip3dSig_3_1);
-    iVals.push_back(pAddSbJet->trackSip3dSig_2_1);
-    iVals.push_back(pAddSbJet->trackSip3dSig_1_1);
-    iVals.push_back(pAddSbJet->trackSip3dSig_0_1);
-    iVals.push_back(pAddSbJet->tau1_trackSip3dSig_0_1);
-    iVals.push_back(pAddSbJet->tau1_trackSip3dSig_1_1);
-    iVals.push_back(pAddSbJet->trackSip3dSig_3_2);
-    iVals.push_back(pAddSbJet->trackSip3dSig_2_2);
-    iVals.push_back(pAddSbJet->trackSip3dSig_1_2);
-    iVals.push_back(pAddSbJet->trackSip3dSig_0_2);
-    iVals.push_back(pAddSbJet->tau1_trackSip3dSig_0_2);
-    iVals.push_back(pAddSbJet->tau1_trackSip3dSig_1_2);
-    iVals.push_back(pAddSbJet->trackSip3dSig_3_3);
-    iVals.push_back(pAddSbJet->trackSip3dSig_2_3);
-    iVals.push_back(pAddSbJet->trackSip3dSig_1_3);
-    iVals.push_back(pAddSbJet->trackSip3dSig_0_3);
-    iVals.push_back(pAddSbJet->tau1_trackSip3dSig_0_3);
-    iVals.push_back(pAddSbJet->tau1_trackSip3dSig_1_3);
-    iVals.push_back(pAddSbJet->trackSip2dSigAboveCharm_0);
-    iVals.push_back(pAddSbJet->trackSip2dSigAboveBottom_0);
-    iVals.push_back(pAddSbJet->tau_SVmass0_nSecondaryVertices);
-    iVals.push_back(pAddSbJet->tau_SVmass0_flightDistance2dSig);
-    iVals.push_back(pAddSbJet->tau_SVmass0_vertexDeltaR);
-    iVals.push_back(pAddSbJet->tau_SVmass0_vertexNTracks);
-    iVals.push_back(pAddSbJet->tau_SVmass0_trackEtaRel_2);
-    iVals.push_back(pAddSbJet->tau_SVmass0_trackEtaRel_1);
-    iVals.push_back(pAddSbJet->tau_SVmass0_trackEtaRel_0);
-    iVals.push_back(pAddSbJet->tau_SVmass0_vertexEnergyRatio);
-    iVals.push_back(pAddSbJet->tau_SVmass0_vertexMass);
-    iVals.push_back(pAddSbJet->tau_SVmass0_vertexMass_corrected);
-    iVals.push_back(pAddSbJet->tau_SVmass0_zratio);
-    iVals.push_back(pAddSbJet->tau_SVfd0_nSecondaryVertices);
-    iVals.push_back(pAddSbJet->tau_SVfd0_flightDistance2dSig);
-    iVals.push_back(pAddSbJet->tau_SVfd0_vertexDeltaR);
-    iVals.push_back(pAddSbJet->tau_SVfd0_vertexNTracks);
-    iVals.push_back(pAddSbJet->tau_SVfd0_trackEtaRel_2);
-    iVals.push_back(pAddSbJet->tau_SVfd0_trackEtaRel_1);
-    iVals.push_back(pAddSbJet->tau_SVfd0_trackEtaRel_0);
-    iVals.push_back(pAddSbJet->tau_SVfd0_vertexEnergyRatio);
-    iVals.push_back(pAddSbJet->tau_SVfd0_vertexMass);
-    iVals.push_back(pAddSbJet->tau_SVfd0_vertexMass_corrected);
-    iVals.push_back(pAddSbJet->tau_SVfd0_zratio);
-    iVals.push_back(pAddSbJet->trackSip2dSigAboveCharm_1);
-    iVals.push_back(pAddSbJet->trackSip2dSigAboveBottom_1);
-    iVals.push_back(pAddSbJet->tau_SVmass1_nSecondaryVertices);
-    iVals.push_back(pAddSbJet->tau_SVmass1_flightDistance2dSig);
-    iVals.push_back(pAddSbJet->tau_SVmass1_vertexDeltaR);
-    iVals.push_back(pAddSbJet->tau_SVmass1_vertexNTracks);
-    iVals.push_back(pAddSbJet->tau_SVmass1_trackEtaRel_2);
-    iVals.push_back(pAddSbJet->tau_SVmass1_trackEtaRel_1);
-    iVals.push_back(pAddSbJet->tau_SVmass1_trackEtaRel_0);
-    iVals.push_back(pAddSbJet->tau_SVmass1_vertexEnergyRatio);
-    iVals.push_back(pAddSbJet->tau_SVmass1_vertexMass);
-    iVals.push_back(pAddSbJet->tau_SVmass1_vertexMass_corrected);
-    iVals.push_back(pAddSbJet->tau_SVmass1_zratio);
-    iVals.push_back(pAddSbJet->tau_SVfd1_nSecondaryVertices);
-    iVals.push_back(pAddSbJet->tau_SVfd1_flightDistance2dSig);
-    iVals.push_back(pAddSbJet->tau_SVfd1_vertexDeltaR);
-    iVals.push_back(pAddSbJet->tau_SVfd1_vertexNTracks);
-    iVals.push_back(pAddSbJet->tau_SVfd1_trackEtaRel_2);
-    iVals.push_back(pAddSbJet->tau_SVfd1_trackEtaRel_1);
-    iVals.push_back(pAddSbJet->tau_SVfd1_trackEtaRel_0);
-    iVals.push_back(pAddSbJet->tau_SVfd1_vertexEnergyRatio);
-    iVals.push_back(pAddSbJet->tau_SVfd1_vertexMass);
-    iVals.push_back(pAddSbJet->tau_SVfd1_vertexMass_corrected);
-    iVals.push_back(pAddSbJet->tau_SVfd1_zratio);
-    iVals.push_back(pAddSbJet->nSM);
-    iVals.push_back(pAddSbJet->nSE);
-    iVals.push_back(pAddSbJet->PFMuon_pt);
-    iVals.push_back(pAddSbJet->PFMuon_eta);
-    iVals.push_back(pAddSbJet->PFMuon_phi);
-    iVals.push_back(pAddSbJet->PFMuon_ptRel);
-    iVals.push_back(pAddSbJet->PFMuon_ratio);
-    iVals.push_back(pAddSbJet->PFMuon_ratioRel);
-    iVals.push_back(pAddSbJet->PFMuon_IP);
-    iVals.push_back(pAddSbJet->PFMuon_IP2D);
-    iVals.push_back(pAddSbJet->PFElectron_pt);
-    iVals.push_back(pAddSbJet->PFElectron_eta);
-    iVals.push_back(pAddSbJet->PFElectron_phi);
-    iVals.push_back(pAddSbJet->PFElectron_ptRel);
-    iVals.push_back(pAddSbJet->PFElectron_ratio);
-    iVals.push_back(pAddSbJet->PFElectron_ratioRel);
-    iVals.push_back(pAddSbJet->PFElectron_IP);
-    iVals.push_back(pAddSbJet->PFElectron_IP2D);
+    iVals[lBase+i0*lNLabel+0]   = iObjects[i0]->mass;
+    iVals[lBase+i0*lNLabel+1]   = iObjects[i0]->csv;
+    iVals[lBase+i0*lNLabel+2]   = iObjects[i0]->chHadFrac;
+    iVals[lBase+i0*lNLabel+3]   = iObjects[i0]->neuHadFrac;
+    iVals[lBase+i0*lNLabel+4]   = iObjects[i0]->neuEmFrac;
+    iVals[lBase+i0*lNLabel+5]   = (pAddJet->tau2/pAddJet->tau1);
+    iVals[lBase+i0*lNLabel+6]   = (pAddJet->tau3/pAddJet->tau2);
+    iVals[lBase+i0*lNLabel+7]   = pAddJet     ->mass_sd0;
+    iVals[lBase+i0*lNLabel+8]   = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
+    iVals[lBase+i0*lNLabel+9]   = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
+    iVals[lBase+i0*lNLabel+10]  = pAddJet     ->doublecsv;
+    iSbVals[i0*lNLabel+0]       = pAddJet     ->nTracks;
+    iSbVals[i0*lNLabel+1]       = pAddJet     ->nSV;
+    iSbVals[i0*lNLabel+2]       = pAddJet     ->trackSip3dSig_3;
+    iSbVals[i0*lNLabel+3]       = pAddJet     ->trackSip3dSig_2;
+    iSbVals[i0*lNLabel+4]       = pAddJet     ->trackSip3dSig_1;
+    iSbVals[i0*lNLabel+5]       = pAddJet     ->trackSip3dSig_0;
+    iSbVals[i0*lNLabel+6]       = pAddJet     ->trackSip3dSig_3_1;
+    iSbVals[i0*lNLabel+7]       = pAddJet     ->trackSip3dSig_2_1;
+    iSbVals[i0*lNLabel+8]       = pAddJet     ->trackSip3dSig_1_1;
+    iSbVals[i0*lNLabel+9]       = pAddJet     ->trackSip3dSig_0_1;
+    iSbVals[i0*lNLabel+10]      = pAddJet     ->trackSip3dSig_3_2;
+    iSbVals[i0*lNLabel+11]      = pAddJet     ->trackSip3dSig_2_2;
+    iSbVals[i0*lNLabel+12]      = pAddJet     ->trackSip3dSig_1_2;
+    iSbVals[i0*lNLabel+13]      = pAddJet     ->trackSip3dSig_0_2;
+    iSbVals[i0*lNLabel+14]      = pAddJet     ->trackSip3dSig_3_3;
+    iSbVals[i0*lNLabel+15]      = pAddJet     ->trackSip3dSig_2_3;
+    iSbVals[i0*lNLabel+16]      = pAddJet     ->trackSip3dSig_1_3;
+    iSbVals[i0*lNLabel+17]      = pAddJet     ->trackSip3dSig_0_3;
+    iSbVals[i0*lNLabel+18]      = pAddJet     ->trackSip2dSigAboveCharm_0;
+    iSbVals[i0*lNLabel+19]      = pAddJet     ->trackSip2dSigAboveBottom_0;
+    iSbVals[i0*lNLabel+20]      = pAddJet     ->tau_SVmass0_nSecondaryVertices;
+    iSbVals[i0*lNLabel+21]      = pAddJet     ->tau_SVmass0_flightDistance2dSig;
+    iSbVals[i0*lNLabel+22]      = pAddJet     ->tau_SVmass0_vertexDeltaR;
+    iSbVals[i0*lNLabel+23]      = pAddJet     ->tau_SVmass0_vertexNTracks;
+    iSbVals[i0*lNLabel+24]      = pAddJet     ->tau_SVmass0_trackEtaRel_2;
+    iSbVals[i0*lNLabel+25]      = pAddJet     ->tau_SVmass0_trackEtaRel_1;
+    iSbVals[i0*lNLabel+26]      = pAddJet     ->tau_SVmass0_trackEtaRel_0;
+    iSbVals[i0*lNLabel+27]      = pAddJet     ->tau_SVmass0_vertexEnergyRatio;
+    iSbVals[i0*lNLabel+28]      = pAddJet     ->tau_SVmass0_vertexMass;
+    iSbVals[i0*lNLabel+29]      = pAddJet     ->tau_SVmass0_vertexMass_corrected;
+    iSbVals[i0*lNLabel+30]      = pAddJet     ->tau_SVmass0_zratio;
+    iSbVals[i0*lNLabel+31]      = pAddJet     ->tau_SVfd0_nSecondaryVertices;
+    iSbVals[i0*lNLabel+32]      = pAddJet     ->tau_SVfd0_flightDistance2dSig;
+    iSbVals[i0*lNLabel+33]      = pAddJet     ->tau_SVfd0_vertexDeltaR;
+    iSbVals[i0*lNLabel+34]      = pAddJet     ->tau_SVfd0_vertexNTracks;
+    iSbVals[i0*lNLabel+35]      = pAddJet     ->tau_SVfd0_trackEtaRel_2;
+    iSbVals[i0*lNLabel+36]      = pAddJet     ->tau_SVfd0_trackEtaRel_1;
+    iSbVals[i0*lNLabel+37]      = pAddJet     ->tau_SVfd0_trackEtaRel_0;
+    iSbVals[i0*lNLabel+38]      = pAddJet     ->tau_SVfd0_vertexEnergyRatio;
+    iSbVals[i0*lNLabel+39]      = pAddJet     ->tau_SVfd0_vertexMass;
+    iSbVals[i0*lNLabel+40]      = pAddJet     ->tau_SVfd0_vertexMass_corrected;
+    iSbVals[i0*lNLabel+41]      = pAddJet     ->tau_SVfd0_zratio;
+    iSbVals[i0*lNLabel+42]      = pAddJet     ->trackSip2dSigAboveCharm_1;
+    iSbVals[i0*lNLabel+43]      = pAddJet     ->trackSip2dSigAboveBottom_1;
+    iSbVals[i0*lNLabel+44]      = pAddJet     ->tau_SVmass1_nSecondaryVertices;
+    iSbVals[i0*lNLabel+45]      = pAddJet     ->tau_SVmass1_flightDistance2dSig;
+    iSbVals[i0*lNLabel+46]      = pAddJet     ->tau_SVmass1_vertexDeltaR;
+    iSbVals[i0*lNLabel+47]      = pAddJet     ->tau_SVmass1_vertexNTracks;
+    iSbVals[i0*lNLabel+48]      = pAddJet     ->tau_SVmass1_trackEtaRel_2;
+    iSbVals[i0*lNLabel+49]      = pAddJet     ->tau_SVmass1_trackEtaRel_1;
+    iSbVals[i0*lNLabel+50]      = pAddJet     ->tau_SVmass1_trackEtaRel_0;
+    iSbVals[i0*lNLabel+51]      = pAddJet     ->tau_SVmass1_vertexEnergyRatio;
+    iSbVals[i0*lNLabel+52]      = pAddJet     ->tau_SVmass1_vertexMass;
+    iSbVals[i0*lNLabel+53]      = pAddJet     ->tau_SVmass1_vertexMass_corrected;
+    iSbVals[i0*lNLabel+54]      = pAddJet     ->tau_SVmass1_zratio;
+    iSbVals[i0*lNLabel+55]      = pAddJet     ->tau_SVfd1_nSecondaryVertices;
+    iSbVals[i0*lNLabel+56]      = pAddJet     ->tau_SVfd1_flightDistance2dSig;
+    iSbVals[i0*lNLabel+57]      = pAddJet     ->tau_SVfd1_vertexDeltaR;
+    iSbVals[i0*lNLabel+58]      = pAddJet     ->tau_SVfd1_vertexNTracks;
+    iSbVals[i0*lNLabel+59]      = pAddJet     ->tau_SVfd1_trackEtaRel_2;
+    iSbVals[i0*lNLabel+60]      = pAddJet     ->tau_SVfd1_trackEtaRel_1;
+    iSbVals[i0*lNLabel+61]      = pAddJet     ->tau_SVfd1_trackEtaRel_0;
+    iSbVals[i0*lNLabel+62]      = pAddJet     ->tau_SVfd1_vertexEnergyRatio;
+    iSbVals[i0*lNLabel+63]      = pAddJet     ->tau_SVfd1_vertexMass;
+    iSbVals[i0*lNLabel+64]      = pAddJet     ->tau_SVfd1_vertexMass_corrected;
+    iSbVals[i0*lNLabel+65]      = pAddJet     ->tau_SVfd1_zratio;
+    iSbVals[i0*lNLabel+66]      = pAddJet     ->nSM;
+    iSbVals[i0*lNLabel+67]      = pAddJet     ->nSE;
+    iSbVals[i0*lNLabel+68]      = pAddJet     ->PFMuon_pt;
+    iSbVals[i0*lNLabel+69]      = pAddJet     ->PFMuon_eta;
+    iSbVals[i0*lNLabel+70]      = pAddJet     ->PFMuon_phi;
+    iSbVals[i0*lNLabel+71]      = pAddJet     ->PFMuon_ptRel;
+    iSbVals[i0*lNLabel+72]      = pAddJet     ->PFMuon_ratio;
+    iSbVals[i0*lNLabel+73]      = pAddJet     ->PFMuon_ratioRel;
+    iSbVals[i0*lNLabel+74]      = pAddJet     ->PFMuon_IP;
+    iSbVals[i0*lNLabel+75]      = pAddJet     ->PFMuon_IP2D;
+    iSbVals[i0*lNLabel+76]      = pAddJet     ->PFElectron_pt;
+    iSbVals[i0*lNLabel+77]      = pAddJet     ->PFElectron_eta;
+    iSbVals[i0*lNLabel+78]      = pAddJet     ->PFElectron_phi;
+    iSbVals[i0*lNLabel+79]      = pAddJet     ->PFElectron_ptRel;
+    iSbVals[i0*lNLabel+80]      = pAddJet     ->PFElectron_ratio;
+    iSbVals[i0*lNLabel+81]      = pAddJet     ->PFElectron_ratioRel;
+    iSbVals[i0*lNLabel+82]      = pAddJet     ->PFElectron_IP;
+    iSbVals[i0*lNLabel+83]      = pAddJet     ->PFElectron_IP2D;
   }
 }
 TAddJet *SbJetLoader::getAddJet(TJet *iJet) { 
@@ -273,8 +248,8 @@ TAddJet *SbJetLoader::getAddJet(TJet *iJet) {
     if((*fSbJets)[i0] == iJet) { lIndex = i0; break;}
   }
   if(lIndex == -1) return 0;
-  for  (int i0 = 0; i0 < fVAddJets->GetEntriesFast(); i0++) { 
-    TAddJet *pJet = (TAddJet*)((*fVAddJets)[i0]);
+  for  (int i0 = 0; i0 < fSbAddJets->GetEntriesFast(); i0++) { 
+    TAddJet *pJet = (TAddJet*)((*fSbAddJets)[i0]);
     if(pJet->index == fabs(lIndex)) { lJet = pJet; break;}
   }
   return lJet;

@@ -20,8 +20,7 @@ public:
   void setupTree(TTree *iTree,std::string iJetLabel);
   void load(int iEvent);
   void selectSbJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR);
-  void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals);
-  void fillSbJet(std::vector<TJet*> &iObjects,std::vector<float> &iVals);
+  void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,std::vector<float> &iSbVals);
   TAddJet *getAddJet(TJet *iJet);
   std::vector<TJet*> fSelSbJets;
   double ftopSize;
@@ -29,8 +28,8 @@ public:
 protected: 
   TClonesArray *fSbJets;
   TBranch      *fSbJetBr;
-  TClonesArray *fVAddJets;
-  TBranch      *fVAddJetBr;
+  TClonesArray *fSbAddJets;
+  TBranch      *fSbAddJetBr;
   TClonesArray *fFatJets;
   TBranch      *fFatJetBr;
   TTrigger     *fTrigger;

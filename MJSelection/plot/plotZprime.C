@@ -29,7 +29,7 @@
 using namespace std;
 
 //Object Processors                                                                                                                                                                                      
-BitsLoader       *fBits      = 0;
+ZprimeBitsLoader       *fBits      = 0;
 
 //=== FUNCTION DECLARATIONS ======================================================================================
 
@@ -96,7 +96,7 @@ void plotZprime(const string preselection, const string selection, const string 
   //
   char hname[100];
   vector<TH1D*> hFatJetPtv;
-  vector<TH1D*> hFatJetMassv, hNSubjetinessv;                                                                                                                                                                                    
+  vector<TH1D*> hFatJetMassv, hFatJetTau21v;                                                                                                                                                                                    
   vector<TH1D*> hSubjetBtagv; 
   vector<double> neventsv;
 
@@ -106,14 +106,14 @@ void plotZprime(const string preselection, const string selection, const string 
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",20,360,1000));        hFatJetPtv[isam]->Sumw2();
     sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,30,120));        hFatJetMassv[isam]->Sumw2();
-    sprintf(hname,"hNSubjetiness_%i",isam);   hNSubjetinessv.push_back(new TH1D(hname,"",15,0.2,1));       hNSubjetinessv[isam]->Sumw2();
+    sprintf(hname,"hFatJetTau21_%i",isam);    hFatJetTau21v.push_back(new TH1D(hname,"",15,0.2,1));        hFatJetTau21v[isam]->Sumw2();
     sprintf(hname,"hSubjetBtag_%i",isam);     hSubjetBtagv.push_back(new TH1D(hname,"",15,0,1));           hSubjetBtagv[isam]->Sumw2();
     neventsv.push_back(0);
   }
 
   TH1D *hFatJetPtMC        = (TH1D*)hFatJetPtv[0]->Clone("hFatJetPtMC");
   TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0]->Clone("hFatJetMassMC");
-  TH1D *hNSubjetinessMC    = (TH1D*)hNSubjetinessv[0]->Clone("hNSubjetinessMC");
+  TH1D *hFatJetTau21MC     = (TH1D*)hFatJetTau21v[0]->Clone("hFatJetTau21MC");
   TH1D *hSubjetBtagMC      = (TH1D*)hSubjetBtagv[0]->Clone("hSubjetBtagMC"); 
 
   TH1D *hFatJetPtSig       = (TH1D*)hFatJetPtv[0]->Clone("hFatJetPtSig");
@@ -124,127 +124,62 @@ void plotZprime(const string preselection, const string selection, const string 
   TTree *intree=0;
 
   // Loop over samples
-
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
-    CSample *sample = samplev[isam];
+    CSample *sample  = samplev[isam];
     cout << "Sample: " << sample->label << endl;
-    bool isData    = (isam==0);
-    bool isSignal  = (isam==samplev.size()-1 || isam==samplev.size()-2);
-    bool isSignal1 = (isam==samplev.size()-1);
-    bool isSignal2 = (isam==samplev.size()-2);
-    // bool isSignal3 = (isam==samplev.size()-3);
-    // bool isSignal4 = (isam==samplev.size()-4);
-    // bool isSignal5 = (isam==samplev.size()-5);
-    // bool isSignal6 = (isam==samplev.size()-6);
+    bool isData      = (isam==0);
+    bool isSigZprime = (isam==samplev.size()-1);
  
     for(unsigned int ifile=0; ifile<sample->fnamev.size(); ifile++) {
       string infilename = sample->fnamev[ifile];
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits  = new BitsLoader(intree,"15",algo,syst,preselection);
+      fBits  = new ZprimeBitsLoader(intree,"15",algo,syst,preselection);
       double nevts=0;
       int noweight=0;
 
       std::cout << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
-	// if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
 	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
-	// common selection
+	// Common selection
 	if(fBits->metfilter!=0)                   continue;
-	//preselection
+	// Preselection
 	if(!fBits->passPreSelection(preselection)) continue;
 	
-	//selection
+	// Selection
 	float btagw=1;
 	if(!fBits->passSelection(preselection,selection,subsample,combo,btagw)) continue;
 
+	// Apply weigths
         double wgt = 1;
-	if(!isData) {
-	  wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->triggerEff*btagw*fBits->eleSF0*fBits->eleSF1*fBits->eleSF2*fBits->muoSF0*fBits->muoSF1*fBits->muoSF2;
-	  if(sample->label=="t#bar{t}" && ifile==0 && fBits->topSize<1.2){
-	     wgt *= fBits->ToptagSF;
-	  }
-	  if(sample->label!="t#bar{t}" || ifile!=0 || fBits->topSize>=1.2){
-	     wgt *= fBits->TopmistagSF;
-	  }
+        double wgt_Sig = 1;
+	double QCD = 1;
 
-	  // if(sample->label=="t#bar{t} merged" && ifile==0 && fBits->topSize<1.2){ 
-	  //   wgt *= fBits->ToptagSF;
-	  // }
-	  // if(sample->label=="t#bar{t} merged" && ifile==0 && fBits->topSize>=1.2){                                                                                                                 
-	  //   wgt *= 0;                                                                                                                                                                             
-	  // }                                                                                                                                                                                        
-	  // if(sample->label=="t#bar{t} comb." && ifile==0 && fBits->topSize<1.2){                                                                                                      
-	  //   wgt *= 0;                                                                                                                                                                         
-	  // }   
-	  // if(sample->label!="t#bar{t} merged" || ifile!=0 || fBits->topSize>=1.2){
-	  //   wgt *= fBits->TopmistagSF;
-	  // }
-	  
-	  if(sample->label=="W+jets" || sample->label=="Z+jets" || sample->label=="#gamma+jets"){
-	    if( fBits->kfactor ==0) wgt *= 1;
-	    else wgt *= fBits->kfactor;
-	    if(subsample=="SR" || subsample=="TopCR" || subsample=="minusMass" || subsample=="minusTau32"){
-	      if(ifile==0 || ifile==2) {
-		wgt *= fBits->btagSF;
-	      }
-	      if(ifile==1 || ifile==3) {
-		wgt *= fBits->bmistagSF;
-	      }
-	    }
-	  }
-	}
-	nevts += wgt;
+	if(!isData) {
+          wgt *= LUMI*fBits->scale1fb;
+          wgt_Sig *= LUMI*scale1fb;
+          if (isam==1) { wgt_Sig *= QCD;}
+        }
+        nevts += wgt;
 	noweight++;
 	
         neventsv[isam]+=wgt;
-        hMETv[isam]            ->Fill(fBits->getMET(preselection).Pt(),       wgt);
-        hMETLogv[isam]         ->Fill(fBits->getMET(preselection).Pt(),       wgt);
-	hFatJetMassv[isam]     ->Fill(fBits->fjet_mass(selection),       wgt);
-	hFatJetPtv[isam]       ->Fill(fBits->bst_jet0_pt,       wgt);
-        // hTransverseMassv[isam] ->Fill(fBits->transverse_mass(selection),       wgt);
-	hFatJetTau32v[isam]    ->Fill(fBits->nsubjet(selection),       wgt);
-        hBtagv[isam]           ->Fill(fBits->btag(selection),       wgt);
-	hMinDPhiJetsMetv[isam] ->Fill(fBits->min_dphijetsmet,       wgt);
-        hNJetsv[isam]          ->Fill(fBits->njets,       wgt);
-        hNBJetsv[isam]         ->Fill(fBits->nbjetsLdR2,       wgt);
-	hJet1CHFv[isam]        ->Fill(fBits->chf(selection),       wgt);
-        hJet1NHFv[isam]        ->Fill(fBits->nhf(selection),       wgt);
-        hJet1NEMFv[isam]       ->Fill(fBits->nemf(selection),       wgt);
-	hJet1Etav[isam]        ->Fill(fBits->res_jet0_eta, wgt);
-	hJet2Etav[isam]        ->Fill(fBits->res_jet1_eta, wgt);
-	hJet3Etav[isam]        ->Fill(fBits->res_jet2_eta, wgt);
-	hJet4Etav[isam]        ->Fill(fBits->res_jet3_eta, wgt);
+        hFatJetPtv[isam]       ->Fill(fBits->bst_jet0_pt,             wgt);
+	hFatJetMassv[isam]     ->Fill(fBits->fjet_mass(selection),    wgt);
+	hFatJetTau21v[isam]    ->Fill(fBits->nsubjet(selection),      wgt);
+        hBtagv[isam]           ->Fill(fBits->btag(selection),         wgt);
 
-	if((!isData && subsample.compare("SR")!=0) || (!isData  && !isSignal && subsample.compare("SR")==0)){ // && !isSignal
-          neventsMC+=wgt;
-          hMETMC            ->Fill(fBits->getMET(preselection).Pt(),       wgt);
-          hMETLogMC         ->Fill(fBits->getMET(preselection).Pt(),       wgt);
+	if((!isData)){
+	  neventsMC+=wgt;
+          hFatJetPtMC       ->Fill(fBits->bst_jet0_pt,                wgt);
 	  hFatJetMassMC     ->Fill(fBits->fjet_mass(selection),       wgt);
-	  hFatJetPtMC       ->Fill(fBits->bst_jet0_pt,       wgt);
-	  // hTransverseMassMC ->Fill(fBits->transverse_mass(selection),       wgt);
-	  hFatJetTau32MC    ->Fill(fBits->nsubjet(selection),       wgt);
-	  hBtagMC           ->Fill(fBits->btag(selection),       wgt);
-	  hMinDPhiJetsMetMC ->Fill(fBits->min_dphijetsmet,       wgt);
-	  hNJetsMC          ->Fill(fBits->njets,       wgt);
-          hNBJetsMC         ->Fill(fBits->nbjetsLdR2,       wgt);
-	  hJet1CHFMC        ->Fill(fBits->chf(selection),       wgt);
-	  hJet1NHFMC        ->Fill(fBits->nhf(selection),       wgt);
-	  hJet1NEMFMC       ->Fill(fBits->nemf(selection),       wgt);
-	  hJet1EtaMC        ->Fill(fBits->res_jet0_eta, wgt);
-	  hJet2EtaMC        ->Fill(fBits->res_jet1_eta, wgt);
-	  hJet3EtaMC        ->Fill(fBits->res_jet2_eta, wgt);
-	  hJet4EtaMC        ->Fill(fBits->res_jet3_eta, wgt);
-        }
-	if(!isData){
-	  if(isSignal1) hMETSig1->Fill(fBits->getMET(preselection).Pt(),       wgt);
-	  if(isSignal2) hMETSig2->Fill(fBits->getMET(preselection).Pt(),       wgt);
-	  // if(isSignal3) hMETSig3->Fill(fBits->getMET(preselection).Pt(),       wgt);
-	  // if(isSignal4) hMETSig4->Fill(fBits->getMET(preselection).Pt(),       wgt);
-	  // if(isSignal5) hMETSig5->Fill(fBits->getMET(preselection).Pt(),       wgt);
-          // if(isSignal6) hMETSig6->Fill(fBits->getMET(preselection).Pt(),       wgt);
+	  hFatJetTau21MC    ->Fill(fBits->nsubjet(selection),         wgt);
+	  hBtagMC           ->Fill(fBits->btag(selection),            wgt);
+	  if(isSigZprime){
+	    hFatJetPtSig    ->Fill(fBits->bst_jet0_pt,                wgt);
+	  }
 	}
       }
 
@@ -259,37 +194,29 @@ void plotZprime(const string preselection, const string selection, const string 
     }
   }
 
+  // 
+  // QCD SF
+  //
+  double QCDSF = 1.0;
+  QCDSF = (neventsv[0]-(neventsv[2]+neventsv[3]+neventsv[4]+neventsv[5]+neventsv[6]+neventsv[7]))/neventsv[1];
+  hFatJetPtv[1]   ->Scale(QCDSF);
+  hFatJetMassv[1] ->Scale(QCDSF);
+  hFatJetTau21v[1]->Scale(QCDSF);
+  hBtagv[1]       ->Scale(QCDSF);
+
   //
   // Make pull histograms
   //
-  TH1D *hMETPull            = makePullHist(hMETv[0],            hMETMC,            "hMETPull",             doBlind);
-  TH1D *hMETLogPull         = makePullHist(hMETLogv[0],         hMETLogMC,         "hMETLogPull",          doBlind);
-  TH1D *hFatJetMassPull     = makePullHist(hFatJetMassv[0],     hFatJetMassMC,     "hFatJetMassPull",      doBlind);
   TH1D *hFatJetPtPull       = makePullHist(hFatJetPtv[0],       hFatJetPtMC,       "hFatJetPtPull",        doBlind);
-  // TH1D *hTransverseMassPull = makePullHist(hTransverseMassv[0], hTransverseMassMC, "hTransverseMassPull",  doBlind);
-  TH1D *hFatJetTau32Pull    = makePullHist(hFatJetTau32v[0],    hFatJetTau32MC,    "hFatJetTau32Pull",     doBlind);
+  TH1D *hFatJetMassPull     = makePullHist(hFatJetMassv[0],     hFatJetMassMC,     "hFatJetMassPull",      doBlind);
+  TH1D *hFatJetTau21Pull    = makePullHist(hFatJetTau21v[0],    hFatJetTau32MC,    "hFatJetTau21Pull",     doBlind);
   TH1D *hBtagPull           = makePullHist(hBtagv[0],           hBtagMC,           "hBtagPull",            doBlind);
-  TH1D *hMinDPhiJetsMetPull = makePullHist(hMinDPhiJetsMetv[0], hMinDPhiJetsMetMC, "hMinDPhiJetsMetPull",  doBlind);
-  TH1D *hNJetsPull          = makePullHist(hNJetsv[0],          hNJetsMC,          "hNJetsPull",           doBlind);
-  TH1D *hNBJetsPull         = makePullHist(hNBJetsv[0],         hNBJetsMC,         "hNBJetsPull",          doBlind);
-  TH1D *hJet1CHFPull        = makePullHist(hJet1CHFv[0],        hJet1CHFMC,        "hJet1CHFPull",         doBlind);
-  TH1D *hJet1NHFPull        = makePullHist(hJet1NHFv[0],        hJet1NHFMC,        "hJet1NHFPull",         doBlind);
-  TH1D *hJet1NEMFPull       = makePullHist(hJet1NEMFv[0],       hJet1NEMFMC,       "hJet1NEMFPull",        doBlind);
-  TH1D *hJet1EtaPull        = makePullHist(hJet1Etav[0],        hJet1EtaMC,        "hJet1EtaPull",         doBlind);
-  TH1D *hJet2EtaPull        = makePullHist(hJet2Etav[0],        hJet2EtaMC,        "hJet2EtaPull",         doBlind);
-  TH1D *hJet3EtaPull        = makePullHist(hJet3Etav[0],        hJet3EtaMC,        "hJet3EtaPull",         doBlind);
-  TH1D *hJet4EtaPull        = makePullHist(hJet4Etav[0],        hJet4EtaMC,        "hJet4EtaPull",         doBlind);
 
   //                                                                                                                                                                                                    
   // Calculate significance                                                                                                                                                                               
   //                 
   vector<float> significance;                                                                                                                                                                                
-  significance.push_back(CalcSig(hMETSig1, hMETMC));
-  significance.push_back(CalcSig(hMETSig2, hMETMC));
-  // significance.push_back(CalcSig(hMETSig3, hMETMC));
-  // significance.push_back(CalcSig(hMETSig4, hMETMC));
-  // significance.push_back(CalcSig(hMETSig5, hMETMC));
-  // significance.push_back(CalcSig(hMETSig6, hMETMC));
+  significance.push_back(CalcSig(hFatJetPtSig,  hFatJetPt));
 
   //--------------------------------------------------------------------------------------------------------------
   // Output
@@ -314,6 +241,7 @@ void plotZprime(const string preselection, const string selection, const string 
   txtfile << "---------------------------------------------"  << endl;
   txtfile << setw(35) << "SM Expected:" << setw(15) << neventsMC << endl;
   if(!doBlind) { txtfile << setw(35) << "Observed:" << setw(15) << neventsv[0] << endl; }
+  txtfile << "QCD Scale Factor:" << QCDSF << endl;
   if(subsample.compare("SR")==0){
     txtfile << "---------------------------------------------"  << endl;
     for(unsigned int isam=max; isam<samplev.size(); isam++) {
@@ -356,77 +284,21 @@ void plotZprime(const string preselection, const string selection, const string 
 
   char ylabel[100];
 
-  sprintf(ylabel,"Events / GeV");
-  makePlot(c, "metl", "U [GeV]", ylabel, hMETv, samplev, hMETMC, hMETPull, doBlind, LUMI, false, 0.0, -0.03,
-           0.1, 2.1*(hMETMC->GetBinContent(hMETMC->GetMaximumBin()))/(hMETMC->GetBinWidth(hMETMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / GeV");
-  makePlot(c, "met", "U [GeV]", ylabel, hMETLogv, samplev, hMETLogMC, hMETLogPull, doBlind, LUMI, true, 0.0, -0.03,
-           2e-5*(hMETLogMC->GetBinContent(hMETLogMC->GetMaximumBin()))/(hMETLogMC->GetBinWidth(hMETLogMC->GetMaximumBin())), 
-	   4e2*(hMETLogMC->GetBinContent(hMETLogMC->GetMaximumBin()))/(hMETLogMC->GetBinWidth(hMETLogMC->GetMaximumBin())), selection, subsample);
+  sprintf(ylabel,"Events / %.1f GeV/c^{2}",hFatJetPtv[0]->GetBinWidth(1));
+  makePlot(c, "fjpt", "Jet p_{T} [GeV/c^{2}]", ylabel, hFatJetPtv, samplev, hFatJetPtMC, hFatJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
+           0.1, 2.1*(hFatJetPtMC->GetBinContent(hFatJetPtMC->GetMaximumBin()))/(hFatJetPtMC->GetBinWidth(hFatJetPtMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / GeV/c^{2}");
   makePlot(c, "msd", "Soft Drop Mass [GeV/c^{2}]", ylabel, hFatJetMassv, samplev, hFatJetMassMC, hFatJetMassPull, doBlind, LUMI, false, -0.45, -0.03,
            0.1, 2.1*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())), selection, subsample);
 
-  sprintf(ylabel,"Events / %.1f GeV/c^{2}",hFatJetPtv[0]->GetBinWidth(1));
-  makePlot(c, "fjpt", "Jet p_{T} [GeV/c^{2}]", ylabel, hFatJetPtv, samplev, hFatJetPtMC, hFatJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
-           0.1, 2.1*(hFatJetPtMC->GetBinContent(hFatJetPtMC->GetMaximumBin()))/(hFatJetPtMC->GetBinWidth(hFatJetPtMC->GetMaximumBin())), selection, subsample);
-
-  // sprintf(ylabel,"Events / %.1f GeV/c^{2}",hTransverseMassv[0]->GetBinWidth(1));
-  // makePlot(c, "mt", "Transverse Mass [GeV/c^{2}]", ylabel, hTransverseMassv, samplev, hTransverseMassMC, hTransverseMassPull, doBlind, LUMI, false, 0.0, -0.03,
-  //         0.1, 2.1*(hTransverseMassMC->GetBinContent(hTransverseMassMC->GetMaximumBin()))/(hTransverseMassMC->GetBinWidth(hTransverseMassMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %.1f ",hFatJetTau32v[0]->GetBinWidth(10));
-  makePlot(c, "tau32", "#tau_{3}/#tau_{2}", ylabel, hFatJetTau32v, samplev, hFatJetTau32MC, hFatJetTau32Pull, doBlind, LUMI, false, -0.45, -0.03,
-           0.1, 2.1*(hFatJetTau32MC->GetBinContent(hFatJetTau32MC->GetMaximumBin()))/(hFatJetTau32MC->GetBinWidth(hFatJetTau32MC->GetMaximumBin())), selection, subsample);
+  sprintf(ylabel,"Events / %.1f ",hFatJetTau21v[0]->GetBinWidth(10));
+  makePlot(c, "tau21", "#tau_{2}/#tau_{1}", ylabel, hFatJetTau21v, samplev, hFatJetTau21MC, hFatJetTau21Pull, doBlind, LUMI, false, -0.45, -0.03,
+           0.1, 2.1*(hFatJetTau21MC->GetBinContent(hFatJetTau21MC->GetMaximumBin()))/(hFatJetTau21MC->GetBinWidth(hFatJetTau21MC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f ",hBtagv[0]->GetBinWidth(10));
   makePlot(c, "btag", "Max subjet csv", ylabel, hBtagv, samplev, hBtagMC, hBtagPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hBtagMC->GetBinContent(hBtagMC->GetMaximumBin()))/(hBtagMC->GetBinWidth(hBtagMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %.1f ",hMinDPhiJetsMetv[0]->GetBinWidth(1));
-  makePlot(c, "min_dphijetsmet", "Min #Delta#phi(MET,j_{i})", ylabel, hMinDPhiJetsMetv, samplev, hMinDPhiJetsMetMC, hMinDPhiJetsMetPull, doBlind, LUMI, false, -0.4, -0.15,
-           0.1, 2.1*(hMinDPhiJetsMetMC->GetBinContent(hMinDPhiJetsMetMC->GetMaximumBin()))/(hMinDPhiJetsMetMC->GetBinWidth(hMinDPhiJetsMetMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %i ",int(hNJetsv[0]->GetBinWidth(1)));
-  makePlot(c, "njets", "N_{jets} (AK4)", "Events", hNJetsv, samplev, hNJetsMC, hNJetsPull, doBlind, LUMI, false, 0.0, -0.03,
-           0.1, 2.1*(hNJetsMC->GetBinContent(hNJetsMC->GetMaximumBin()))/(hNJetsMC->GetBinWidth(hNJetsMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %i ",int(hNBJetsv[0]->GetBinWidth(1)));
-  makePlot(c, "nbjets", "N^{#Delta R(j,J)>2}_{b-jets} (AK4)", "Events", hNBJetsv, samplev, hNBJetsMC, hNBJetsPull, doBlind, LUMI, false, 0.0, -0.03,
-           0.1, 2.1*(hNBJetsMC->GetBinContent(hNBJetsMC->GetMaximumBin()))/(hNBJetsMC->GetBinWidth(hNBJetsMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %.1f ",hJet1CHFv[0]->GetBinWidth(1));
-  makePlot(c, "chf", "CHF", "Events", hJet1CHFv, samplev, hJet1CHFMC, hJet1CHFPull, doBlind, LUMI, true, 0.0, -0.03,
-           2e-4*(hJet1CHFMC->GetBinContent(hJet1CHFMC->GetMaximumBin()))/(hJet1CHFMC->GetBinWidth(hJet1CHFMC->GetMaximumBin())), 
-	   2e3*(hJet1CHFMC->GetBinContent(hJet1CHFMC->GetMaximumBin()))/(hJet1CHFMC->GetBinWidth(hJet1CHFMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %.1f ",hJet1NHFv[0]->GetBinWidth(1));
-  makePlot(c, "nhf", "NHF", "Events", hJet1NHFv, samplev, hJet1NHFMC, hJet1NHFPull, doBlind, LUMI, true, 0.0, -0.03,
-           2e-4*(hJet1NHFMC->GetBinContent(hJet1NHFMC->GetMaximumBin()))/(hJet1NHFMC->GetBinWidth(hJet1NHFMC->GetMaximumBin())), 
-	   2e3*(hJet1NHFMC->GetBinContent(hJet1NHFMC->GetMaximumBin()))/(hJet1NHFMC->GetBinWidth(hJet1NHFMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %.1f ",hJet1NEMFv[0]->GetBinWidth(1));
-  makePlot(c, "nemf", "NEMF", "Events", hJet1NEMFv, samplev, hJet1NEMFMC, hJet1NEMFPull, doBlind, LUMI, true, 0.0, -0.03,
-           2e-4*(hJet1NEMFMC->GetBinContent(hJet1NEMFMC->GetMaximumBin()))/(hJet1NEMFMC->GetBinWidth(hJet1NEMFMC->GetMaximumBin())), 
-	   2e3*(hJet1NEMFMC->GetBinContent(hJet1NEMFMC->GetMaximumBin()))/(hJet1NEMFMC->GetBinWidth(hJet1NEMFMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %.1f",hJet1Etav[0]->GetBinWidth(1));
-  makePlot(c, "jet1eta", "jet1 #eta", ylabel, hJet1Etav, samplev, hJet1EtaMC, hJet1EtaPull, doBlind, LUMI, false, 0.05, -0.03,
-           0.1, 1.6*(hJet1EtaMC->GetBinContent(hJet1EtaMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %.1f",hJet2Etav[0]->GetBinWidth(1));
-  makePlot(c, "jet2eta", "jet2 #eta", ylabel, hJet2Etav, samplev, hJet2EtaMC, hJet2EtaPull, doBlind, LUMI, false, 0.05, -0.03,
-           0.1, 1.6*(hJet2EtaMC->GetBinContent(hJet2EtaMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %.1f",hJet3Etav[0]->GetBinWidth(1));
-  makePlot(c, "jet3eta", "jet3 #eta", ylabel, hJet3Etav, samplev, hJet3EtaMC, hJet3EtaPull, doBlind, LUMI, false, 0.05, -0.03,
-           0.1, 1.6*(hJet3EtaMC->GetBinContent(hJet3EtaMC->GetMaximumBin())), selection, subsample);
-
-  sprintf(ylabel,"Events / %.1f",hJet4Etav[0]->GetBinWidth(1));
-  makePlot(c, "jet4eta", "jets #eta", ylabel, hJet4Etav, samplev, hJet4EtaMC, hJet4EtaPull, doBlind, LUMI, false, 0.05, -0.03,
-           0.1, 1.6*(hJet4EtaMC->GetBinContent(hJet4EtaMC->GetMaximumBin())), selection, subsample);
 
   cout << endl;
   cout << " <> Output saved in " << outputDir << endl;
