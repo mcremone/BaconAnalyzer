@@ -15,10 +15,12 @@ exec=$6
 option1=$7
 option2=$8
 
-options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q 2nd"
+#options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q 2nd"
 #options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q cmscaf1nd"
+options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q 2nw4cores"
 if [ $ismc = "data" ]; then
-    options1="Output.root -a 5:1  -a 2:"${ismc}" -a 3:$PWD/../Json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt  -n 2000 -q 8nh"
+#    options1="Output.root -a 5:1  -a 2:"${ismc}" -a 3:$PWD/../Json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt  -n 2000 -q 2nd"
+    options1="Output.root -a 5:1  -a 2:"${ismc}" -a 3:$PWD/../Json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt  -n 2000 -q 2nw4cores"
 fi
 
 scandir=$dir$label

@@ -107,7 +107,7 @@ int main( int argc, char **argv ) {
   //
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  // for(int i0 = 0; i0 < int(50000); i0++){ // for testing
+  //for(int i0 = 0; i0 < int(100000); i0++){ // for testing
     // if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // Check json and GenInfo
@@ -226,17 +226,17 @@ int main( int argc, char **argv ) {
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"GJets_1j_NLO/nominal_G","GJets_LO/inv_pt_G","EWKcorr/photon");
     }
     if(lOption.find("mcz")!=std::string::npos || lOption.find("mcdy")!=std::string::npos){
-      fGen->findBoson(23,0);
+      fGen->findBoson(23,1);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z");
     }
     if(lOption.find("mcw")!=std::string::npos){
-      fGen->findBoson(24,0);
+      fGen->findBoson(24,1);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W"); 
     }
     if(lOption.find("tt")!=std::string::npos){
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
-      if(lOption.find("tt1l")!=std::string::npos) fGen->findBoson(24,1);
-      if(lOption.find("tt2l")!=std::string::npos) fGen->findBoson(6,1);
+      if(lOption.find("tt1l")!=std::string::npos) fGen->findBoson(24,2);
+      if(lOption.find("tt2l")!=std::string::npos) fGen->findBoson(6,3);
     }
     
     lOut->Fill();
