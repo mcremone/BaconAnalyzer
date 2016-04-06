@@ -141,6 +141,7 @@ void  EvtLoader::fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vect
     fFMetPhi      = fEvt->pfMETCphi;
     fFPuppEt      = fEvt->puppETC;
     fFPuppEtPhi   = fEvt->puppETCphi;
+    correctMet(fFPuppEt     ,fFPuppEtPhi,     iPhotons[0]);
     correctMet(fFMet        ,fFMetPhi,        iPhotons[0]);
   }
 }

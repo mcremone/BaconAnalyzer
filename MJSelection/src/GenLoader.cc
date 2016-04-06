@@ -438,7 +438,7 @@ int GenLoader::findLastBoson(int iparent,int iId){
   }
   return iLast;
 }
-bool GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize)
+int GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize)
 {
   TLorentzVector vTop,vB,vDau1,vDau2;
   topSize = -999;
@@ -450,9 +450,9 @@ bool GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double
       vB.SetPtEtaPhiM(mcB->pt, mcB->eta, mcB->phi, mcB->mass);
     }
     TGenParticle *mcW = findDaughter(j,24); //
-    if (!mcW || !mcB) return false;     // this shouldn't happen
-    if (vB.DeltaR(jet) > dR) return false; // all decay products fall into jet cone 
-    tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vB));
+    if (!mcW || !mcB) return 0;     // this shouldn't happen
+    // if (vB.DeltaR(jet) > dR) return false; // all decay products fall into jet cone 
+    tmpTopSize = TMath::Max(tmpTopSize,jet.DeltaR(vB));
 
     int iW = findLastBoson(j,24);
  
@@ -461,8 +461,8 @@ bool GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double
       TGenParticle *dau1 = (TGenParticle*)((*fGens)[iQ]);
       if(dau1->parent==iW && abs(dau1->pdgId)<6) {
 	vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
-	if (vDau1.DeltaR(jet) > dR) return false;
-        tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau1));
+	// if (vDau1.DeltaR(jet) > dR) return false;
+        tmpTopSize = TMath::Max(tmpTopSize,jet.DeltaR(vDau1));
         break; // found the first quark
       }
     }
@@ -470,14 +470,14 @@ bool GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double
       TGenParticle *dau2 = (TGenParticle*)((*fGens)[jQ]);
       if(dau2->parent==iW && abs(dau2->pdgId)<6) {
 	vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
-	if (vDau2.DeltaR(jet) > dR) return false;
-        tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau2));
+	// if (vDau2.DeltaR(jet) > dR) return false;
+        tmpTopSize = TMath::Max(tmpTopSize,jet.DeltaR(vDau2));
         topSize = TMath::Sqrt(tmpTopSize);
-	return true;
+	return 1;
       }
     }
   }
-  return false;
+  return 0;
 }
 bool GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_size){
   for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {

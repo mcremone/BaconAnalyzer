@@ -263,7 +263,7 @@ void JetLoader::fillBTag(std::vector<const TJet*> iObjects) {
     vSFL.clear(); vSFL_nominal.clear();
     vSFL_nominal.push_back(getJetSFs("nominal",iObjects, freaders[j0].at(0), freaders[j0].at(3)));
     for(auto iftype :flavorTypes) {    
-      vSFL_nominal.push_back(getJetSFs(iftype,iObjects, freaders[j0].at(0), freaders[j0].at(3))); // 0 and 3 HF and LF respectively - flavor types:nominal,Ms,Bs
+      vSFL_nominal.push_back(getJetSFs(iftype,iObjects, freaders[j0].at(0), freaders[j0].at(3))); // 0 and 3 HF and LF respectively - flavor types: Ms,Bs
     }
     vSFL.push_back(vSFL_nominal.at(0));
 

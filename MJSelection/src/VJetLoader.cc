@@ -25,8 +25,10 @@ VJetLoader::~VJetLoader() {
   delete fVAddJetBr;
 }
 void VJetLoader::reset() { 
-  fNVJets = 0; 
-  fVMT    = 0;
+  fNVJets        = 0; 
+  fVMT           = 0;
+  ftopSize       = 999;
+  fisHadronicTop = 0;
   fSelVJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
 }
@@ -47,15 +49,19 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("maxsubcsv");
   //fLabels.push_back("mindPhi");
   //fLabels.push_back("mindFPhi");
-  std::stringstream pSMT;   pSMT << iJetLabel << "mT";
+  std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
+  std::stringstream pSNJ;   pSNJ << iJetLabel << "0_njets";
+  std::stringstream pSis;   pSis << iJetLabel << "0_isHadronicTop";
+  std::stringstream pSTS;   pSTS << iJetLabel << "0_topSize";
   fTree = iTree;
-  fTree->Branch("nf15PUPPIjets"    ,&fNVJets ,"fNVJets/I");
-  fTree->Branch(pSMT.str().c_str() ,&fVMT    ,(pSMT.str()+"/F").c_str());
+  fTree->Branch(pSNJ.str().c_str() ,&fNVJets        ,(pSNJ.str()+"/I").c_str());
   for(int i0 = 0; i0 < fN*4.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
   for(int i0 = 0; i0 < fN*(int(fLabels.size())); i0++) {double pVar = 0; fVars.push_back(pVar);} 
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);                                                 // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi for vjet0 (3*1=3)
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,fN*3,fLabels);
-  fTree->Branch("topSize"          ,&ftopSize ,"ftopSize/D"); 
+  fTree->Branch(pSMT.str().c_str() ,&fVMT           ,(pSMT.str()+"/F").c_str());
+  fTree->Branch(pSis.str().c_str() ,&fisHadronicTop ,(pSis.str()+"/I").c_str());
+  fTree->Branch(pSTS.str().c_str() ,&ftopSize       ,(pSTS.str()+"/D").c_str());
 }
 void VJetLoader::load(int iEvent) { 
   fVJets       ->Clear();

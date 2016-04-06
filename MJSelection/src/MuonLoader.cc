@@ -18,6 +18,10 @@ MuonLoader::MuonLoader(TTree *iTree,std::string imuScaleFactorFilename) {
   fhMuTight =  (TH2D*) fMuSF->Get("scalefactors_Tight_mu");
   fhMuTight->SetDirectory(0);
   fMuSF->Close();
+
+  for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);}
+  for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);}
+  for(int i0 = 0; i0 <     3; i0++) {double pVar = 1; fmuoSFVars.push_back(pVar);}
 }
 MuonLoader::~MuonLoader() { 
   delete fMuons;
@@ -35,9 +39,6 @@ void MuonLoader::setupTree(TTree *iTree) {
   fTree = iTree;
   fTree->Branch("nmu",&fNMuons,"fNMuons/I"); 
   fTree->Branch("nmuTight",&fNMuonsTight,"fNMuonsTight/I");
-  for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);} 
-  for(int i0 = 0; i0 <     3; i0++) {double pVar = 1; fmuoSFVars.push_back(pVar);}
   setupNtuple("vmuo",iTree,fN,fVars);        // add leading 2 muons: pt,eta,phi,mass (2*4=8)
   addDiMuon  ("vdimuo",iTree,1, fVars,fN*3); // add dimuon system: *_pt,mass,phi,y for dimuo0 (1*4)
   addLepSF   ("muoSF",iTree,fmuoSFVars);     // add lepSF: muoSF0,muoSF1,muoSF2
@@ -67,16 +68,12 @@ void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
   }
   fNMuons = lCount; 
 
-  // Fill Muons fSelMuons->pt,eta,phi from fVars value
-  if(fVars.size() > 0) fillMuon(fN,fSelMuons,fVars);
   // Add selected tight Muons to iVetoes 
   if(fNMuons <= 1 && lVeto.size()==1){
     if(passMuonTightSel(lVeto[0]) && lVeto[0]->pt > 20) addVMuon(lVeto[0],iVetoes,MUON_MASS);
   }
-  // Fill di Muon variables
-  if(fNMuons <= 2 && lVeto.size()==2) {
-    fillDiMuon(lVeto,iVetoes);
-  }
+  if(fVars.size() > 0)                fillMuon(fN,fSelMuons,fVars);
+  if(fNMuons <= 2 && lVeto.size()==2) fillDiMuon(lVeto,iVetoes);
 }
 // DIMUON
 void MuonLoader::addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase) { 

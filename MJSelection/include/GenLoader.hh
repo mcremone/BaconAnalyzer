@@ -31,7 +31,7 @@ public:
   TGenParticle* findDaughter(int iparent, int dauId);
   int findDaughterId(int iparent, int dauId);
   int findLastBoson(int iparent,int iId);
-  bool isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize);
+  int isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize);
   void findBoson(int iId, int lOption);
 
   TClonesArray  *fGens;

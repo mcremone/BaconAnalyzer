@@ -195,10 +195,7 @@ int main( int argc, char **argv ) {
     fVJet->load(i0);
     fVJet->selectVJets(lVetoes,lVJets,1.5);
     if(lVJets.size()>0) { 
-      if((lOption.compare("mcttbst")==0 && fGen->ismatchedJet(lVJets[0],1.5,fVJet->ftopSize)) || 
-	 (lOption.compare("mcttcom")==0 && !fGen->ismatchedJet(lVJets[0],1.5,fVJet->ftopSize))) {
-	fEvt->fselectBits =  fEvt->fselectBits | 2; 
-      }
+      fVJet->fisHadronicTop = fGen->ismatchedJet(lVJets[0],1.5,fVJet->ftopSize);
       fEvt->fselectBits =  fEvt->fselectBits | 2;
       lVJet.push_back(lVJets[0]);
       fEvt->fillmT(lVJet,fVJet->fVMT);
@@ -235,8 +232,8 @@ int main( int argc, char **argv ) {
     }
     if(lOption.find("tt")!=std::string::npos){
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
-      if(lOption.find("tt1l")!=std::string::npos) fGen->findBoson(24,2);
-      if(lOption.find("tt2l")!=std::string::npos) fGen->findBoson(6,3);
+      // if(lOption.find("tt1l")!=std::string::npos) fGen->findBoson(24,2);
+      // if(lOption.find("tt2l")!=std::string::npos) fGen->findBoson(6,3);
     }
     
     lOut->Fill();
