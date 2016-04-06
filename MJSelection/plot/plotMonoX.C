@@ -242,7 +242,7 @@ void plotMonoX(const string preselection, const string selection, const string s
 
         double wgt = 1;
 	if(!isData) {
-	  wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->triggerEff*btagw*fBits->eleSF0*fBits->eleSF1*fBits->eleSF2*fBits->muoSF0*fBits->muoSF1*fBits->muoSF2;
+	  wgt *= LUMI*fBits->scale1fb*fBits->kfactor*btagw*fBits->triggerEff*fBits->evtWeight*fBits->eleSF0*fBits->eleSF1*fBits->eleSF2*fBits->muoSF0*fBits->muoSF1*fBits->muoSF2;
 	  if(sample->label=="t#bar{t}" && ifile==0 && fBits->topSize<1.2){
 	     wgt *= fBits->ToptagSF;
 	  }
@@ -264,8 +264,6 @@ void plotMonoX(const string preselection, const string selection, const string s
 	  // }
 	  
 	  if(sample->label=="W+jets" || sample->label=="Z+jets" || sample->label=="#gamma+jets"){
-	    if( fBits->kfactor ==0) wgt *= 1;
-	    else wgt *= fBits->kfactor;
 	    if(subsample=="SR" || subsample=="TopCR" || subsample=="minusMass" || subsample=="minusTau32"){
 	      if(ifile==0 || ifile==2) {
 		wgt *= fBits->btagSF;

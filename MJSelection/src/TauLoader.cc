@@ -24,7 +24,7 @@ void TauLoader::setupTree(TTree *iTree) {
   reset();
   fTree = iTree;
   fTree->Branch("ntau",&fNTaus,"fNTaus/I");                 // tau multiplicity
-  fTree->Branch("vtau0_iso",&fTauIso,"fTauIso/D");          // tau0_isolation
+  // fTree->Branch("vtau0_iso",&fTauIso,"fTauIso/D");          // tau0_isolation
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   setupNtuple("vtau",iTree,fN,fVars);                       // tau0_pt, tau0_eta, tau0_phi (1*4=4)
 }

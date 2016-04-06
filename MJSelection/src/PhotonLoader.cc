@@ -25,7 +25,7 @@ void PhotonLoader::setupTree(TTree *iTree) {
   fTree = iTree;
   fTree->Branch("npho",       &fNPhotons,      "fNPhotons/I");       // photon multiplicity 
   fTree->Branch("nphoMedium", &fNPhotonsMedium,"fNPhotonsMedium/I"); // medium photon multiplicity
-  fTree->Branch("vpho0_iso",  &fIso,           "fIso/D");            // photon isolation
+  // fTree->Branch("vpho0_iso",  &fIso,           "fIso/D");            // photon isolation
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   setupNtuple("vpho",iTree,fN,fVars);                                // pho0_pt,_eta,_phi (1*3=3)
 }
