@@ -30,7 +30,8 @@ public:
   float computeTTbarCorr();
   TGenParticle* findDaughter(int iparent, int dauId);
   int findDaughterId(int iparent, int dauId);
-  bool isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize);
+  int findLastBoson(int iparent,int iId);
+  int isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize);
   void findBoson(int iId, int lOption);
 
   TClonesArray  *fGens;

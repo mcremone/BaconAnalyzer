@@ -79,7 +79,7 @@ void plotZprime(const string preselection, const string selection, const string 
   samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
   samplev.back()->fnamev.push_back("../zprimebits/DY.root");
   samplev.push_back(new CSample("Zprime",kOrange - 3,kOrange - 3));
-  samplev.back()->fnamev.push_back("../zprimebits/ZPrimetoQQ.root");
+  samplev.back()->fnamev.push_back("../zprimebits/Zprime.root");
   
   // integrated luminosity to scale MC
   const double LUMI = 2.26;

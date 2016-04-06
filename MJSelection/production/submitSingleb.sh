@@ -7,14 +7,14 @@ dir="singlebbits"
 eos="/store/cmst3/group/monojet/production/singleb/"
 exec="runSingleb"
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then
-#     ./sub.sh mcbkg $eos Fall15_QCD_HT100to200_MINIAOD                    27500000  $dir $exec $option1 $option2
-#     ./sub.sh mcbkg $eos Fall15_QCD_HT200to300_MINIAOD                     1735000  $dir $exec $option1 $option2
-#     ./sub.sh mcbkg $eos Fall15_QCD_HT300to500_MINIAOD                      367000  $dir $exec $option1 $option2
-#     ./sub.sh mcbkg $eos Fall15_QCD_HT500to700_MINIAOD                       29370  $dir $exec $option1 $option2
-#     ./sub.sh mcbkg $eos Fall15_QCD_HT700to1000_MINIAOD                       6524  $dir $exec $option1 $option2
-#     ./sub.sh mcbkg $eos Fall15_QCD_HT1000to1500_MINIAOD                      1064  $dir $exec $option1 $option2
+    ./sub.sh mcbkg $eos Fall15_QCD_HT100to200_MINIAOD                    27500000  $dir $exec $option1 $option2
+    ./sub.sh mcbkg $eos Fall15_QCD_HT200to300_MINIAOD                     1735000  $dir $exec $option1 $option2
+    ./sub.sh mcbkg $eos Fall15_QCD_HT300to500_MINIAOD                      367000  $dir $exec $option1 $option2
+    ./sub.sh mcbkg $eos Fall15_QCD_HT500to700_MINIAOD                       29370  $dir $exec $option1 $option2
+    ./sub.sh mcbkg $eos Fall15_QCD_HT700to1000_MINIAOD                       6524  $dir $exec $option1 $option2
+    ./sub.sh mcbkg $eos Fall15_QCD_HT1000to1500_MINIAOD                      1064  $dir $exec $option1 $option2
     ./sub.sh mcbkg $eos Fall15_QCD_HT1500to2000_MINIAOD                     121.5  $dir $exec $option1 $option2
-#     ./sub.sh mcbkg $eos Fall15_QCD_HT2000toInf_MINIAOD                      25.42  $dir $exec $option1 $option2
+    ./sub.sh mcbkg $eos Fall15_QCD_HT2000toInf_MINIAOD                      25.42  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
     ./sub.sh mcsig $eos Fall15_ZprimeToTT_M-1000_W-100_MINIAOD                  1  $dir $exec $option1 $option2

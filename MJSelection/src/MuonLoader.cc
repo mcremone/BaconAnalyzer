@@ -68,7 +68,7 @@ void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
   }
   fNMuons = lCount; 
   
-  // Add selected tight muons to iVetoes
+  // Add selected tight Muons to iVetoes
   if(fNMuons <= 1 && lVeto.size()==1){
     if(passMuonTightSel(lVeto[0]) && lVeto[0]->pt > 20) addVMuon(lVeto[0],iVetoes,MUON_MASS);
   }

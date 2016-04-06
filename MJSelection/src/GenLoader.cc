@@ -22,8 +22,8 @@ GenLoader::~GenLoader() {
   delete fGenBr;
 }
 void GenLoader::reset() { 
-  fBosonPt = 0;
-  fBosonPhi = 0;
+  fBosonPt  = -1;
+  fBosonPhi = -999;
 
   /*
   fQ     = 0;
@@ -81,8 +81,8 @@ void GenLoader::reset() {
 void GenLoader::setupTree(TTree *iTree,float iXSIn) { 
   reset();
   fTree = iTree;
-  iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); fWeight = fGenInfo->weight;
-  iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F");   fXSIn = iXSIn;
+  // iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); fWeight = fGenInfo->weight;
+  // iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F");   fXSIn = iXSIn;
 
   fTree->Branch("genVPt"     ,&fBosonPt   ,"fBosonPt/F");
   fTree->Branch("genVPhi"    ,&fBosonPhi  ,"fBosonPhi/F");
@@ -143,6 +143,7 @@ void GenLoader::setupTree(TTree *iTree,float iXSIn) {
   */
 }
 void GenLoader::load(int iEvent) { 
+  reset();
   fGens     ->Clear();
   fGenBr    ->GetEntry(iEvent);
   fGenInfoBr->GetEntry(iEvent);
@@ -427,7 +428,17 @@ int GenLoader::findDaughterId(int iparent, int dauId)
   }
   return -1;
 }
-bool GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize)
+int GenLoader::findLastBoson(int iparent,int iId){
+  Bool_t foundLast = kFALSE;
+  int iLast = iparent;
+  while (!foundLast) {
+    int tmpId = findDaughterId(iLast,iId);
+    if (tmpId>=0) iLast = tmpId;
+    else foundLast = kTRUE;
+  }
+  return iLast;
+}
+int GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topSize)
 {
   TLorentzVector vTop,vB,vDau1,vDau2;
   topSize = -999;
@@ -437,107 +448,118 @@ bool GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double
     TGenParticle *mcB = findDaughter(j,5); //
     if(mcB){
       vB.SetPtEtaPhiM(mcB->pt, mcB->eta, mcB->phi, mcB->mass);
-      if (vB.DeltaR(jet) > dR) return false; // all decay products fall into jet cone
     }
     TGenParticle *mcW = findDaughter(j,24); //
-    if (!mcW || !mcB) return false;     // this shouldn't happen
-    tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vB));
-    Bool_t foundFinalW = kFALSE;
-    int iW = j;
-    while (!foundFinalW) {
-      int tmpId = findDaughterId(iW,24);
-      if (tmpId>=0) iW = tmpId;
-      else foundFinalW = kTRUE;
-    }
-    // iW should now be the final W index
+    if (!mcW || !mcB) return 0;     // this shouldn't happen
+    // if (vB.DeltaR(jet) > dR) return false; // all decay products fall into jet cone 
+    tmpTopSize = TMath::Max(tmpTopSize,jet.DeltaR(vB));
+
+    int iW = findLastBoson(j,24);
  
     int iQ=0, jQ=0;
     for (; iQ<fGens->GetEntriesFast(); ++iQ) {
       TGenParticle *dau1 = (TGenParticle*)((*fGens)[iQ]);
       if(dau1->parent==iW && abs(dau1->pdgId)<6) {
-	if(dau1){
-	  vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
-	  if (vDau1.DeltaR(jet) > dR) return false;
-	  tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau1));
-	  break; // found the first quark
-	}
+	vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
+	// if (vDau1.DeltaR(jet) > dR) return false;
+        tmpTopSize = TMath::Max(tmpTopSize,jet.DeltaR(vDau1));
+        break; // found the first quark
       }
     }
     for (jQ=iQ+1; jQ<fGens->GetEntriesFast(); ++jQ) {
       TGenParticle *dau2 = (TGenParticle*)((*fGens)[jQ]);
       if(dau2->parent==iW && abs(dau2->pdgId)<6) {
-	if(dau2){
-	  vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
-	  if (vDau2.DeltaR(jet) > dR) return false;
-	  tmpTopSize = TMath::Max(tmpTopSize,vTop.DeltaR(vDau2));
-	  topSize = TMath::Sqrt(tmpTopSize);
-	  return true;
-	}
+	vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
+	// if (vDau2.DeltaR(jet) > dR) return false;
+        tmpTopSize = TMath::Max(tmpTopSize,jet.DeltaR(vDau2));
+        topSize = TMath::Sqrt(tmpTopSize);
+	return 1;
       }
     }
   }
-  return false;
+  return 0;
 }
 bool GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_size){
-  if(jet0.Pt()>0) {
-    for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
-     TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
-     TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
-     if (mcMom.Pt()!=0 && jet0.Pt()!=0) {
-       if (mcMom.DeltaR(jet0) < dR) {
-	 if (isHadronicTop(genp0,i0,jet0,dR,top_size)) return true;
-       }
-     }
+  for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+    TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
+    TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
+    if (mcMom.DeltaR(jet0) < dR) {
+      if (isHadronicTop(genp0,i0,jet0,dR,top_size)) return true;
     }
   }
   return false;
 }
 void GenLoader::findBoson(int iId, int lOption){
   reset();
+  float pbosonPt(-1),pbosonPhi(-999);
   for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
     TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
 
-    // find highest Pt boson G(22),Z(23),W(24)
+    // find highest Pt boson G(22)
     if(lOption == 0){
-      if(genp0->pdgId==iId && genp0->pt > fBosonPt){
-	  fBosonPt = genp0->pt;
-	  fBosonPhi = genp0->phi;
-	  break;
+      if(fabs(genp0->pdgId)==iId && genp0->pt > pbosonPt){
+	pbosonPt = genp0->pt;
+	pbosonPhi = genp0->phi;
       }      
+    }
+    
+    // find last boson Z(23),W(24)
+    if(lOption == 1){
+      if(fabs(genp0->pdgId)==iId){
+        int iL0 = findLastBoson(i0,iId);
+	for(int k0 = 0; k0 < fGens->GetEntriesFast(); k0++) {
+          TGenParticle *genp1 = (TGenParticle*)((*fGens)[k0]);
+	  if(k0==iL0){
+	    pbosonPt = genp1->pt;
+	    pbosonPhi = genp1->phi;
+	    break;
+	  }
+	}
+      }
     }
 
     // find W(24) for ttbar semilep 
-    if(lOption == 1){
-      if(genp0->pdgId==iId) {
+    if(lOption == 2){
+      if(fabs(genp0->pdgId)==iId) {
 	TGenParticle *dau1 = findDaughter(i0, 11);
 	TGenParticle *dau2 = findDaughter(i0, 13);
-	if((dau1 || dau2) && genp0->pt > fBosonPt){
-	  fBosonPt = genp0->pt;
-	  fBosonPhi = genp0->phi;
+	if(dau1 || dau2){
+	  pbosonPt = genp0->pt;
+	  pbosonPhi = genp0->phi;
 	}
       }
     }
 
     // find W for ttbar dileptonic (6)
-    if(lOption == 2){
-      if(genp0->pdgId==iId) {
-	TGenParticle *dau1 = findDaughter(i0, 24);
-	for(int i1=i0+1; i0 < fGens->GetEntriesFast(); i1++) {
-	  TGenParticle *genp1 = (TGenParticle*)((*fGens)[i1]);
-	  if(genp1->pdgId == iId) {
-	    TGenParticle *dau2 = findDaughter(i1, 24);
-	    if(dau1 && dau2) {
-	      TLorentzVector vDau1; vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
-	      TLorentzVector vDau2; vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
-	      if((vDau1 + vDau1).Pt() > fBosonPt){
-		fBosonPt = (vDau1 + vDau1).Pt();
-		fBosonPhi = (vDau1 + vDau1).Phi();
+    if(lOption == 3){
+      if(fabs(genp0->pdgId)==iId) {
+	int iW0 = findLastBoson(i0,24);
+	for(int k0 = 0; k0 < fGens->GetEntriesFast(); k0++) {
+	  TGenParticle *dau0 = (TGenParticle*)((*fGens)[k0]);
+	  TGenParticle *ele0 = findDaughter(iW0, 11); TGenParticle *muo0 = findDaughter(iW0, 13);
+	  if(k0==iW0 && (ele0 || muo0)){
+	    for(int i1=iW0+1; i0 < fGens->GetEntriesFast(); i1++) {
+	      TGenParticle *genp1 = (TGenParticle*)((*fGens)[i1]);
+	      if(genp1->pdgId == iId) {
+		int iW1 = findLastBoson(i1,24);
+		for(int k1 = 0; k1 < fGens->GetEntriesFast(); k1++) {
+		  TGenParticle *dau1 = (TGenParticle*)((*fGens)[k1]);
+		  TGenParticle *ele1 = findDaughter(iW1, 11); TGenParticle *muo1 = findDaughter(iW1, 13);
+		  if(k1==iW1 && (ele1 || muo1)){
+		    TLorentzVector vDau0; vDau0.SetPtEtaPhiM(dau0->pt, dau0->eta, dau0->phi, dau0->mass);
+		    TLorentzVector vDau1; vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
+		    pbosonPt = (vDau0 + vDau1).Pt();
+		    pbosonPhi = (vDau0 + vDau1).Phi();
+		  }
+		}
 	      }
 	    }
 	  }
 	}
       }
     }
-
+    
   }
+  fBosonPt = pbosonPt;
+  fBosonPhi = pbosonPhi;
 }

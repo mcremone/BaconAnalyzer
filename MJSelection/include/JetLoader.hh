@@ -42,22 +42,25 @@ public:
   const double CSVT = 0.97;
   int           fNJets;
   float         fMT;
+  double        fMinDPhi;
+  double        fMinDFPhi;
 protected: 
   TClonesArray *fJets;
   TBranch      *fJetBr;
   TTree        *fTree;
-  float         fMinDPhi;
-  float         fMinDFPhi;
+  int           fNJetsdR2;
   int           fNBTags;
   int           fNBTagsL;
   int           fNBTagsM;
   int           fNBTagsT;
   int           fNBTagsLdR2;
+  int           fNBTagsMdR2;
+  int           fNBTagsTdR2;
   int           fN;
   std::vector<std::string> fLabels = {"CENT", "MISTAGUP","MISTAGDO","BTAGUP","BTAGDO"};   // nominal, mistagup, mistagdown, btagup and btagdown
   std::vector<std::string> measurementTypes = {"mujets", "comb"};                         // measurements type
   std::vector<std::string> variationTypes = {"central", "up", "down"};                    // systematics type
-  std::vector<std::string> flavorTypes = {"nominal", "Ms", "Bs"};                         // nominal, mistag and btag
+  std::vector<std::string> flavorTypes = {"Ms", "Bs"};                                    // nominal, mistag and btag
   std::vector<std::string> wpTypes = {"L","M","T"};                                       // working points                           
   std::vector<double>      fVars;
   std::vector<float>       fBTagVars;

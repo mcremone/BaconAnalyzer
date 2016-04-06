@@ -141,6 +141,7 @@ void  EvtLoader::fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vect
     fFMetPhi      = fEvt->pfMETCphi;
     fFPuppEt      = fEvt->puppETC;
     fFPuppEtPhi   = fEvt->puppETCphi;
+    correctMet(fFPuppEt     ,fFPuppEtPhi,     iPhotons[0]);
     correctMet(fFMet        ,fFMetPhi,        iPhotons[0]);
   }
 }
@@ -226,7 +227,7 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
   fHist2->SetDirectory(0);
   lFile->Close();
 
-  fHist2->Divide(fHist0);
+  fHist2->Divide(fHist1);
   fHist0->Divide(fHist1);
 
   fkFactor_CENT = Float_t(fHist0->GetBinContent(fHist0->FindBin(iPt)));
@@ -237,5 +238,5 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
   if(iPt > 700) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(700)));
   if(iPt < 100) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(100)));
 
-  fkfactor = fkFactor_CENT*fEwkCorr_CENT; //(NLO/LO)*(NLO*ewk/NLO)
+  fkfactor = fEwkCorr_CENT; //(NLO*ewk/NLO)
 }
