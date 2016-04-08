@@ -1,5 +1,5 @@
-#ifndef MONOXBITSLOADER_HH
-#define MONOXBITSLOADER_HH
+#ifndef ZPRIMEBITSLOADER_HH
+#define ZPRIMEBITSLOADER_HH
 
 #include <TROOT.h>                    // access to gROOT, entry point to ROOT system
 #include <TSystem.h>                  // interface to OS
@@ -21,15 +21,14 @@
 
 using namespace std;
 
-class MonoXBitsLoader {
+class ZprimeBitsLoader {
 public:
-  MonoXBitsLoader(TTree *iTree=0,TString jet="15",TString algo="PUPPI",TString syst="CENT", string preselection="");		
-  ~MonoXBitsLoader();
+  ZprimeBitsLoader(TTree *iTree=0,TString jet="8",TString algo="PUPPI");		
+  ~ZprimeBitsLoader();
   bool selectJetAlgoAndSize(string selection, TString algo);
-  bool passPreSelection(string preselection);
-  bool passBoostedPreselection(string preselection);
-  bool passBoostedSelection(string preselection);
-  bool passSelection(string preselection, string selection, string subsample);
+  bool passBoostedSelection();
+  bool passSelection(string selection);
+
   double getWgt(bool isData, TString algo, double LUMI);
   float fjet_mass(string selection);
   float nsubjet(string selection);
@@ -59,6 +58,6 @@ public:
 
 protected:
 
-  const unsigned int kBOOSTED8 = 2;
+  const unsigned int kBOOSTED8 = 1;
 };
 #endif

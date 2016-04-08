@@ -1,7 +1,7 @@
-#include "MonoXBitsLoader.hh"  
+#include "ZprimeBitsLoader.hh"  
 using namespace std;
 
-ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString jet, TString algo, string preselection) {
+ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString jet, TString algo) {
   if(iTree){
     iTree->SetBranchAddress("runNum",                            &runNum);
     iTree->SetBranchAddress("lumiSec",                           &lumiSec);
@@ -34,22 +34,16 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString jet, TString algo, strin
 ZprimeBitsLoader::~ZprimeBitsLoader(){}
 bool ZprimeBitsLoader::selectJetAlgoAndSize(string selection, TString algo){
   bool lPass = false;
-  if((selectBits & kBOOSTED8) && selection.find("Bst")==0 && selection.compare("BstZprime")==0 && algo=="PUPPI") lPass = true;
-  else if((selectBits & kBOOSTED8) && selection.find("Bst")==0 && selection.compare("BstZprime")==0 && algo=="CHS") lPass = true;
+  if((selectBits & kBOOSTED8) && selection.find("Bst")==0 && algo=="PUPPI") lPass = true;
+  else if((selectBits & kBOOSTED8) && selection.find("Bst")==0 && algo=="CHS") lPass = true;
   return lPass;
 }
-
-bool ZprimeBitsLoader::passBoostedPreselection(string preselection){
-  bool lPass = false;
-  if(njets>0) lPass=true;
-  return lPass;
+bool ZprimeBitsLoader::passBoostedSelection(){
+  return njets>0 & bst_jet0_pt>400;
 }
-bool ZprimeBitsLoader::passBoostedSelection(string preselection){
-  return passBoostedPreselection(preselection) & njets>0 & bst8_jet1pt>400;
-}
-bool ZprimeBitsLoader::passSelection(string preselection, string selection, string subsample){
+bool ZprimeBitsLoader::passSelection(string selection){
   bool lPass = false;	
-  if (subsample == "SR" && passBoostedSelection(preselection)) {lPass = true;}
+  if (selection.find("Bst")==0 && passBoostedSelection()) {lPass = true;}
   return lPass;
 }
 double ZprimeBitsLoader::getWgt(bool isData, TString algo, double LUMI){
