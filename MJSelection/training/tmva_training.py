@@ -47,7 +47,7 @@ training_vars_tracks = [
 ]
 
 training_vars_svmass = [
-  "bst15_PUPPIjet0_tau_SVmass0_nSecondaryVertices", 
+  # "bst15_PUPPIjet0_tau_SVmass0_nSecondaryVertices", 
   "bst15_PUPPIjet0_tau_SVmass0_flightDistance2dSig",
   "bst15_PUPPIjet0_tau_SVmass0_vertexDeltaR", 
   "bst15_PUPPIjet0_tau_SVmass0_vertexNTracks",
@@ -59,16 +59,16 @@ training_vars_svmass = [
   "bst15_PUPPIjet0_tau_SVmass0_vertexMass_corrected",
   "bst15_PUPPIjet0_tau_SVmass0_zratio",
   # "bst15_PUPPIjet0_tau_SVmass1_nSecondaryVertices",
-  # "bst15_PUPPIjet0_tau_SVmass1_flightDistance2dSig",
-  # "bst15_PUPPIjet0_tau_SVmass1_vertexDeltaR",
-  # "bst15_PUPPIjet0_tau_SVmass1_vertexNTracks",
-  # "bst15_PUPPIjet0_tau_SVmass1_trackEtaRel_2",
-  # "bst15_PUPPIjet0_tau_SVmass1_trackEtaRel_1",
-  # "bst15_PUPPIjet0_tau_SVmass1_trackEtaRel_0",
-  # "bst15_PUPPIjet0_tau_SVmass1_vertexEnergyRatio",
-  # "bst15_PUPPIjet0_tau_SVmass1_vertexMass",
-  # "bst15_PUPPIjet0_tau_SVmass1_vertexMass_corrected",
-  # "bst15_PUPPIjet0_tau_SVmass1_zratio"
+  "bst15_PUPPIjet0_tau_SVmass1_flightDistance2dSig",
+  "bst15_PUPPIjet0_tau_SVmass1_vertexDeltaR",
+  "bst15_PUPPIjet0_tau_SVmass1_vertexNTracks",
+  "bst15_PUPPIjet0_tau_SVmass1_trackEtaRel_2",
+  "bst15_PUPPIjet0_tau_SVmass1_trackEtaRel_1",
+  "bst15_PUPPIjet0_tau_SVmass1_trackEtaRel_0",
+  "bst15_PUPPIjet0_tau_SVmass1_vertexEnergyRatio",
+  "bst15_PUPPIjet0_tau_SVmass1_vertexMass",
+  "bst15_PUPPIjet0_tau_SVmass1_vertexMass_corrected",
+  "bst15_PUPPIjet0_tau_SVmass1_zratio"
 ]
 
 training_vars_svfd = [
@@ -129,7 +129,8 @@ def train():
   # Declare trees
   treeS = ROOT.TChain('Events')
   treeB = ROOT.TChain('Events')
-  treeS.Add('../singlebbits/Zprime.root')    
+  # treeS.Add('trainingbits/Zprime.root')    
+  treeS.Add('../singlebbits/Zprime.root')
   treeB.Add('../singlebbits/QCD.root')
   
   # Signal and Background selection

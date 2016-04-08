@@ -143,9 +143,10 @@ int main( int argc, char **argv ) {
     fSbJet->load(i0);
     fSbJet->selectSbJets(lVetoes,lJets,1.5);
     if(lJets.size()>0){ 
-      if(lOption.compare("mcsig")==0 && fGen->ismatchedJet(lJets[0],1.5,fSbJet->ftopSize)) select = true;
+      //if(lOption.compare("mcsig")==0 && fGen->ismatchedJet(lJets[0],1.5,fSbJet->ftopSize)) select = true;
       if(lOption.compare("mcbkg")==0 || lOption.compare("data")==0)                        select = true;
     }
+    std::cout << select << std::endl;
     if(!select) continue;
     lOut->Fill();
     neventstest++;

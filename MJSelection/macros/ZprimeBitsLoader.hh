@@ -29,7 +29,7 @@ public:
   bool passPreSelection(string preselection);
   bool passBoostedPreselection(string preselection);
   bool passBoostedSelection(string preselection);
-  bool passSelection(string preselection, string selection, string subsample, string combo);
+  bool passSelection(string preselection, string selection, string subsample);
   double getWgt(bool isData, TString algo, double LUMI);
   float fjet_mass(string selection);
   float nsubjet(string selection);
@@ -44,7 +44,7 @@ public:
   double triggerEff;                                                               // trigger efficiency
   float evtWeight, puWeight;                                                       // pu and evt weight
   unsigned int npu, npv;                                                           // PU, PV multiplicity
-  int njets, nfjets;                                                               // jet multiplicity 
+  int njets;                                                                       // jet multiplicity 
   float scale1fb;                                                                  // cross section scale factor per 1/fb
 
   //

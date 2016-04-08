@@ -1,7 +1,7 @@
 #include "MonoXBitsLoader.hh"  
 using namespace std;
 
-ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString jet, TString algo,TString syst, string preselection) {
+ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString jet, TString algo, string preselection) {
   if(iTree){
     iTree->SetBranchAddress("runNum",                            &runNum);
     iTree->SetBranchAddress("lumiSec",                           &lumiSec);
@@ -15,8 +15,7 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString jet, TString algo,TStrin
     iTree->SetBranchAddress("puWeight",                          &puWeight);
     iTree->SetBranchAddress("scale1fb",                          &scale1fb);
     iTree->SetBranchAddress("evtWeight",                         &evtWeight);
-    iTree->SetBranchAddress("n"+algo+"jets",                     &njets);
-    iTree->SetBranchAddress("nfbst"+jet+"_"+algo+"jet",            &nf15jets);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_njets",     &njets);
     iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_pt",        &bst_jet0_pt);
     iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_eta",       &bst_jet0_eta);
     iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_phi",       &bst_jet0_phi);
@@ -42,15 +41,15 @@ bool ZprimeBitsLoader::selectJetAlgoAndSize(string selection, TString algo){
 
 bool ZprimeBitsLoader::passBoostedPreselection(string preselection){
   bool lPass = false;
-  if(nfjets>0) lPass=true;
+  if(njets>0) lPass=true;
   return lPass;
 }
 bool ZprimeBitsLoader::passBoostedSelection(string preselection){
-  return passBoostedPreselection(preselection) & nf8jets>0 & bst8_jet1pt>400;
+  return passBoostedPreselection(preselection) & njets>0 & bst8_jet1pt>400;
 }
-bool ZprimeBitsLoader::passSelection(string preselection, string selection, string subsample, string combo){
+bool ZprimeBitsLoader::passSelection(string preselection, string selection, string subsample){
   bool lPass = false;	
-  if (subsample == "SR" && passBoostedSelection(preselection) && (combo=="ONLY" || combo=="COMBO")) {lPass = true;}
+  if (subsample == "SR" && passBoostedSelection(preselection)) {lPass = true;}
   return lPass;
 }
 double ZprimeBitsLoader::getWgt(bool isData, TString algo, double LUMI){

@@ -43,7 +43,7 @@ float CalcSig(TH1D*sig, TH1D*bkg);
 
 //=== MAIN MACRO =================================================================================================
 
-void plotZprime(const string preselection, const string selection, const string subsample, const string combo, TString algo, TString syst)
+void plotZprime(const string preselection, const string selection)
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -52,7 +52,7 @@ void plotZprime(const string preselection, const string selection, const string 
   const bool doBlind = false;
 
   // Create output directory 
-  const string outputDir("zprimeplots/"+preselection+"_"+selection+"_"+subsample+"_"+combo+"_"+algo);
+  const string outputDir("ZprimePlots/"+selection+"_"+algo);
   gSystem->mkdir(outputDir.c_str(), true);
   CPlot::sOutDir = outputDir;
 
@@ -135,7 +135,7 @@ void plotZprime(const string preselection, const string selection, const string 
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits  = new ZprimeBitsLoader(intree,"15",algo,syst,preselection);
+      fBits  = new ZprimeBitsLoader(intree,"15",algo,preselection);
       double nevts=0;
       int noweight=0;
 
@@ -145,22 +145,13 @@ void plotZprime(const string preselection, const string selection, const string 
 	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
 	// Common selection
 	if(fBits->metfilter!=0)                   continue;
-	// Preselection
-	if(!fBits->passPreSelection(preselection)) continue;
-	
-	// Selection
-	float btagw=1;
-	if(!fBits->passSelection(preselection,selection,subsample,combo,btagw)) continue;
+	if(!fBits->passSelection(selection)) continue;
 
 	// Apply weigths
         double wgt = 1;
-        double wgt_Sig = 1;
-	double QCD = 1;
 
 	if(!isData) {
           wgt *= LUMI*fBits->scale1fb;
-          wgt_Sig *= LUMI*scale1fb;
-          if (isam==1) { wgt_Sig *= QCD;}
         }
         nevts += wgt;
 	noweight++;
