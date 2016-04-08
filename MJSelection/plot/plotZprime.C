@@ -37,13 +37,13 @@ ZprimeBitsLoader       *fBits      = 0;
 void makePlot(TCanvas *c, const string outname, const string xlabel, const string ylabel,
               const vector<TH1D*>& histv, const vector<CSample*>& samplev, TH1D* hExp, TH1D* hPull,
               const bool doBlind, const double lumi, const bool doLogy=false, const double legdx=0, const double legdy=0,
-              const double ymin=-1, const double ymax=-1, const string selection="", const string subsample="");
+              const double ymin=-1, const double ymax=-1, const string selection="");
 TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind);
 float CalcSig(TH1D*sig, TH1D*bkg);
 
 //=== MAIN MACRO =================================================================================================
 
-void plotZprime(const string preselection, const string selection, const string subsample, const string combo, TString algo, TString syst)
+void plotZprime(const string selection, const string algo)
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -52,7 +52,7 @@ void plotZprime(const string preselection, const string selection, const string 
   const bool doBlind = false;
 
   // Create output directory 
-  const string outputDir("zprimeplots/"+preselection+"_"+selection+"_"+subsample+"_"+combo+"_"+algo);
+  const string outputDir("ZprimePlots/"+selection+"_"+algo);
   gSystem->mkdir(outputDir.c_str(), true);
   CPlot::sOutDir = outputDir;
 
@@ -82,7 +82,7 @@ void plotZprime(const string preselection, const string selection, const string 
   samplev.back()->fnamev.push_back("../zprimebits/Zprime.root");
   
   // integrated luminosity to scale MC
-  const double LUMI = 2.26;
+  const double LUMI = 2.32;
   
   // histograms for various corrections
   const string cmssw_base = getenv("CMSSW_BASE");
@@ -96,13 +96,9 @@ void plotZprime(const string preselection, const string selection, const string 
   //
   char hname[100];
   vector<TH1D*> hFatJetPtv;
-  vector<TH1D*> hFatJetMassv, hFatJetTau21v;                                                                                                                                                                                    
-  vector<TH1D*> hSubjetBtagv; 
+  vector<TH1D*> hFatJetMassv, hFatJetTau21v;                                                                                                                                                                 vector<TH1D*> hSubjetBtagv; 
   vector<double> neventsv;
-
-  vector<double> neventsv;
-  const Int_t NBINS = 5;
-  Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
+  
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",20,360,1000));        hFatJetPtv[isam]->Sumw2();
     sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,30,120));        hFatJetMassv[isam]->Sumw2();
@@ -115,7 +111,6 @@ void plotZprime(const string preselection, const string selection, const string 
   TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0]->Clone("hFatJetMassMC");
   TH1D *hFatJetTau21MC     = (TH1D*)hFatJetTau21v[0]->Clone("hFatJetTau21MC");
   TH1D *hSubjetBtagMC      = (TH1D*)hSubjetBtagv[0]->Clone("hSubjetBtagMC"); 
-
   TH1D *hFatJetPtSig       = (TH1D*)hFatJetPtv[0]->Clone("hFatJetPtSig");
 
   double neventsMC = 0;
@@ -135,7 +130,7 @@ void plotZprime(const string preselection, const string selection, const string 
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits  = new ZprimeBitsLoader(intree,"15",algo,syst,preselection);
+      fBits  = new ZprimeBitsLoader(intree,algo);
       double nevts=0;
       int noweight=0;
 
@@ -145,22 +140,13 @@ void plotZprime(const string preselection, const string selection, const string 
 	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
 	// Common selection
 	if(fBits->metfilter!=0)                   continue;
-	// Preselection
-	if(!fBits->passPreSelection(preselection)) continue;
-	
-	// Selection
-	float btagw=1;
-	if(!fBits->passSelection(preselection,selection,subsample,combo,btagw)) continue;
+	if(!fBits->passSelection(selection)) continue;
 
 	// Apply weigths
         double wgt = 1;
-        double wgt_Sig = 1;
-	double QCD = 1;
 
 	if(!isData) {
           wgt *= LUMI*fBits->scale1fb;
-          wgt_Sig *= LUMI*scale1fb;
-          if (isam==1) { wgt_Sig *= QCD;}
         }
         nevts += wgt;
 	noweight++;
@@ -169,14 +155,14 @@ void plotZprime(const string preselection, const string selection, const string 
         hFatJetPtv[isam]       ->Fill(fBits->bst_jet0_pt,             wgt);
 	hFatJetMassv[isam]     ->Fill(fBits->fjet_mass(selection),    wgt);
 	hFatJetTau21v[isam]    ->Fill(fBits->nsubjet(selection),      wgt);
-        hBtagv[isam]           ->Fill(fBits->btag(selection),         wgt);
+        hSubjetBtagv[isam]           ->Fill(fBits->btag(selection),         wgt);
 
 	if((!isData)){
 	  neventsMC+=wgt;
           hFatJetPtMC       ->Fill(fBits->bst_jet0_pt,                wgt);
 	  hFatJetMassMC     ->Fill(fBits->fjet_mass(selection),       wgt);
 	  hFatJetTau21MC    ->Fill(fBits->nsubjet(selection),         wgt);
-	  hBtagMC           ->Fill(fBits->btag(selection),            wgt);
+	  hSubjetBtagMC           ->Fill(fBits->btag(selection),            wgt);
 	  if(isSigZprime){
 	    hFatJetPtSig    ->Fill(fBits->bst_jet0_pt,                wgt);
 	  }
@@ -202,21 +188,21 @@ void plotZprime(const string preselection, const string selection, const string 
   hFatJetPtv[1]   ->Scale(QCDSF);
   hFatJetMassv[1] ->Scale(QCDSF);
   hFatJetTau21v[1]->Scale(QCDSF);
-  hBtagv[1]       ->Scale(QCDSF);
+  hSubjetBtagv[1]       ->Scale(QCDSF);
 
   //
   // Make pull histograms
   //
   TH1D *hFatJetPtPull       = makePullHist(hFatJetPtv[0],       hFatJetPtMC,       "hFatJetPtPull",        doBlind);
   TH1D *hFatJetMassPull     = makePullHist(hFatJetMassv[0],     hFatJetMassMC,     "hFatJetMassPull",      doBlind);
-  TH1D *hFatJetTau21Pull    = makePullHist(hFatJetTau21v[0],    hFatJetTau32MC,    "hFatJetTau21Pull",     doBlind);
-  TH1D *hBtagPull           = makePullHist(hBtagv[0],           hBtagMC,           "hBtagPull",            doBlind);
+  TH1D *hFatJetTau21Pull    = makePullHist(hFatJetTau21v[0],    hFatJetTau21MC,    "hFatJetTau21Pull",     doBlind);
+  TH1D *hBtagPull           = makePullHist(hSubjetBtagv[0],           hSubjetBtagMC,           "hBtagPull",            doBlind);
 
   //                                                                                                                                                                                                    
   // Calculate significance                                                                                                                                                                               
   //                 
   vector<float> significance;                                                                                                                                                                                
-  significance.push_back(CalcSig(hFatJetPtSig,  hFatJetPt));
+  significance.push_back(CalcSig(hFatJetPtSig,  hFatJetPtMC));
 
   //--------------------------------------------------------------------------------------------------------------
   // Output
@@ -233,7 +219,7 @@ void plotZprime(const string preselection, const string selection, const string 
   txtfile.open(txtfname);
   txtfile << setprecision(2) << fixed;
   float max = samplev.size();
-  if (subsample.compare("SR")==0) max = samplev.size()-2;    
+  //  if (subsample.compare("SR")==0) max = samplev.size()-2;    
   for(unsigned int isam=1; isam<max; isam++) {
     txtfile << setw(35) << samplev[isam]->label;
     txtfile << setw(15) << neventsv[isam] << endl;
@@ -242,15 +228,15 @@ void plotZprime(const string preselection, const string selection, const string 
   txtfile << setw(35) << "SM Expected:" << setw(15) << neventsMC << endl;
   if(!doBlind) { txtfile << setw(35) << "Observed:" << setw(15) << neventsv[0] << endl; }
   txtfile << "QCD Scale Factor:" << QCDSF << endl;
-  if(subsample.compare("SR")==0){
-    txtfile << "---------------------------------------------"  << endl;
-    for(unsigned int isam=max; isam<samplev.size(); isam++) {
-      txtfile << setw(35) << samplev[isam]->label;
-      txtfile << setw(15) << neventsv[isam] << endl;
-      txtfile << setw(35) << "Significance: ";
-      txtfile << setw(15) << significance[samplev.size()-isam-1] << endl;
-    }
+  //  if(subsample.compare("SR")==0){
+  txtfile << "---------------------------------------------"  << endl;
+  for(unsigned int isam=max; isam<samplev.size(); isam++) {
+    txtfile << setw(35) << samplev[isam]->label;
+    txtfile << setw(15) << neventsv[isam] << endl;
+    txtfile << setw(35) << "Significance: ";
+    txtfile << setw(15) << significance[samplev.size()-isam-1] << endl;
   }
+  //  }
   //   txtfile << setw(35) << "S/sqrt(B)["+samplev[isam]->label+"]:" << setw(15) << neventsv[isam]/sqrt(neventsMC) << endl;
   txtfile.close();
 
@@ -286,19 +272,19 @@ void plotZprime(const string preselection, const string selection, const string 
 
   sprintf(ylabel,"Events / %.1f GeV/c^{2}",hFatJetPtv[0]->GetBinWidth(1));
   makePlot(c, "fjpt", "Jet p_{T} [GeV/c^{2}]", ylabel, hFatJetPtv, samplev, hFatJetPtMC, hFatJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
-           0.1, 2.1*(hFatJetPtMC->GetBinContent(hFatJetPtMC->GetMaximumBin()))/(hFatJetPtMC->GetBinWidth(hFatJetPtMC->GetMaximumBin())), selection, subsample);
+           0.1, 2.1*(hFatJetPtMC->GetBinContent(hFatJetPtMC->GetMaximumBin()))/(hFatJetPtMC->GetBinWidth(hFatJetPtMC->GetMaximumBin())), selection);
 
   sprintf(ylabel,"Events / GeV/c^{2}");
   makePlot(c, "msd", "Soft Drop Mass [GeV/c^{2}]", ylabel, hFatJetMassv, samplev, hFatJetMassMC, hFatJetMassPull, doBlind, LUMI, false, -0.45, -0.03,
-           0.1, 2.1*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())), selection, subsample);
+           0.1, 2.1*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())), selection);
 
   sprintf(ylabel,"Events / %.1f ",hFatJetTau21v[0]->GetBinWidth(10));
   makePlot(c, "tau21", "#tau_{2}/#tau_{1}", ylabel, hFatJetTau21v, samplev, hFatJetTau21MC, hFatJetTau21Pull, doBlind, LUMI, false, -0.45, -0.03,
-           0.1, 2.1*(hFatJetTau21MC->GetBinContent(hFatJetTau21MC->GetMaximumBin()))/(hFatJetTau21MC->GetBinWidth(hFatJetTau21MC->GetMaximumBin())), selection, subsample);
+           0.1, 2.1*(hFatJetTau21MC->GetBinContent(hFatJetTau21MC->GetMaximumBin()))/(hFatJetTau21MC->GetBinWidth(hFatJetTau21MC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events / %.1f ",hBtagv[0]->GetBinWidth(10));
-  makePlot(c, "btag", "Max subjet csv", ylabel, hBtagv, samplev, hBtagMC, hBtagPull, doBlind, LUMI, false, -0.4, -0.15,
-           0.1, 2.1*(hBtagMC->GetBinContent(hBtagMC->GetMaximumBin()))/(hBtagMC->GetBinWidth(hBtagMC->GetMaximumBin())), selection, subsample);
+  sprintf(ylabel,"Events / %.1f ",hSubjetBtagv[0]->GetBinWidth(10));
+  makePlot(c, "btag", "Max subjet csv", ylabel, hSubjetBtagv, samplev, hSubjetBtagMC, hBtagPull, doBlind, LUMI, false, -0.4, -0.15,
+           0.1, 2.1*(hSubjetBtagMC->GetBinContent(hSubjetBtagMC->GetMaximumBin()))/(hSubjetBtagMC->GetBinWidth(hSubjetBtagMC->GetMaximumBin())), selection);
 
   cout << endl;
   cout << " <> Output saved in " << outputDir << endl;
@@ -311,7 +297,7 @@ void plotZprime(const string preselection, const string selection, const string 
 void makePlot(TCanvas *c, const string outname, const string xlabel, const string ylabel,
               const vector<TH1D*>& histv, const vector<CSample*>& samplev, TH1D* hExp, TH1D* hPull,
               const bool doBlind, const double lumi, const bool doLogy, const double legdx, const double legdy,
-              const double ymin, const double ymax, const string selection, const string subsample)
+              const double ymin, const double ymax, const string selection)
 {
   const int uncColor = kGray+3;
 
@@ -339,16 +325,16 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   plot.AddHist1D(hExp,"E2",uncColor,1,3004);
   if(!doBlind) { plot.AddHist1D(histv[0],samplev[0]->label,"E"); }
   float max = samplev.size();
-  if (subsample.compare("SR")==0) max = samplev.size()-2; 
+  //  if (subsample.compare("SR")==0) max = samplev.size()-2; 
   for(unsigned int i=1; i<max; i++) {
     plot.AddToStack(histv[i],samplev[i]->label,samplev[i]->fillcolor,samplev[i]->linecolor);
   }
 
-  if (subsample.compare("SR")==0){
-    for(unsigned int i=max; i<histv.size(); i++) {
-      plot.AddHist1D(histv[i],samplev[i]->label,"hist",samplev[i]->fillcolor,samplev[i]->linecolor);
-    }
+  //  if (subsample.compare("SR")==0){
+  for(unsigned int i=max; i<histv.size(); i++) {
+    plot.AddHist1D(histv[i],samplev[i]->label,"hist",samplev[i]->fillcolor,samplev[i]->linecolor);
   }
+  //  }
 
   // Add CMS label
   char lumitext[100];
