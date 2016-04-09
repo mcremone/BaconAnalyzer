@@ -193,14 +193,13 @@ int main( int argc, char **argv ) {
     
     // CA15Puppi Jets
     fVJet->load(i0);
-    fVJet->selectVJets(lVetoes,lVJets,1.5);
-    if(lVJets.size()>0) { 
-      if((lOption.compare("mcttbst")==0 && fGen->ismatchedJet(lVJets[0],1.5,fVJet->ftopSize)) || 
-	 (lOption.compare("mcttcom")==0 && !fGen->ismatchedJet(lVJets[0],1.5,fVJet->ftopSize))) {
+    fVJet->selectVJets(lVetoes,lVJets,lVJet,1.5);
+    if(lVJets.size()>0) {
+      if((lOption.compare("mcttbst")==0 && fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopSize)) || 
+	 (lOption.compare("mcttcom")==0 && !fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopSize))) {
 	fEvt->fselectBits =  fEvt->fselectBits | 2; 
       }
       fEvt->fselectBits =  fEvt->fselectBits | 2;
-      lVJet.push_back(lVJets[0]);
       fEvt->fillmT(lVJet,fVJet->fVMT);
     }
     

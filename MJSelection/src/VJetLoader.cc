@@ -63,9 +63,10 @@ void VJetLoader::load(int iEvent) {
   fVAddJets    ->Clear();
   fVAddJetBr   ->GetEntry(iEvent);
 }
-void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR){
+void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR){
   reset(); 
   int lCount = 0; 
+  iJets.clear(); iVJet.clear();
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
     TJet *pVJet = (TJet*)((*fVJets)[i0]);
     // if(pVJet->pt        <=  200)                    continue;
@@ -75,6 +76,11 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
     addVJet(pVJet,iJets,pVJet->mass);
     addJet(pVJet,fSelVJets);
     lCount++;
+  }
+  if(iJets.size() > 0){
+    TLorentzVector ivJ;
+    ivJ.SetPtEtaPhiM(fSelVJets[0]->pt,fSelVJets[0]->eta,fSelVJets[0]->phi,fSelVJets[0]->mass);
+    iVJet.push_back(ivJ);
   }
   fNVJets = lCount;
   fillJet( fN,fSelVJets,fVars);

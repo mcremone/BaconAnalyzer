@@ -78,13 +78,18 @@ void plotZprime(const string selection, const string algo)
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/W.root");
   samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/DY.root");
-  samplev.push_back(new CSample("Zprime",kOrange - 3,kOrange - 3));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_50GeV_v4_mc.root");
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_100GeV_v4_mc.root");
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_150GeV_v4_mc.root");
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_200GeV_v4_mc.root");
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_250GeV_v4_mc.root");
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_300GeV_v4_mc.root");
+  // samplev.push_back(new CSample("Zprime50",kOrange - 3,kOrange - 3));
+  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_50GeV_v4_mc.root");
+  // samplev.push_back(new CSample("Zprime100",kOrange - 3,kOrange - 3));
+  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_100GeV_v4_mc.root");
+  // samplev.push_back(new CSample("Zprime150",kOrange - 3,kOrange - 3));
+  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_150GeV_v4_mc.root");
+  // samplev.push_back(new CSample("Zprime200",kOrange - 3,kOrange - 3));
+  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_200GeV_v4_mc.root");
+  // samplev.push_back(new CSample("Zprime250",kOrange - 3,kOrange - 3));
+  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_250GeV_v4_mc.root");
+  // samplev.push_back(new CSample("Zprime300",kOrange - 3,kOrange - 3));
+  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_300GeV_v4_mc.root");
 
   // integrated luminosity to scale MC
   const double LUMI = 2.32;
@@ -113,13 +118,13 @@ void plotZprime(const string selection, const string algo)
     neventsv.push_back(0);
   }
 
-  TH1D *hFatJetPtMC        = (TH1D*)hFatJetPtv[0]->Clone("hFatJetPtMC");
-  TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0]->Clone("hFatJetMassMC");
+  TH1D *hFatJetPtMC        = (TH1D*)hFatJetPtv[0]   ->Clone("hFatJetPtMC");
+  TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0] ->Clone("hFatJetMassMC");
   TH1D *hFatJetTau21MC     = (TH1D*)hFatJetTau21v[0]->Clone("hFatJetTau21MC");
-  TH1D *hSubjetBtagMC      = (TH1D*)hSubjetBtagv[0]->Clone("hSubjetBtagMC"); 
-  TH1D *hFatJetPtSig       = (TH1D*)hFatJetPtv[0]->Clone("hFatJetPtSig");
+  TH1D *hSubjetBtagMC      = (TH1D*)hSubjetBtagv[0] ->Clone("hSubjetBtagMC"); 
+  TH1D *hFatJetMassSig     = (TH1D*)hFatJetMassv[0] ->Clone("hFatJetMassSig");
 
-  double neventsMC = 0;
+  double neventsMC;
 
   TFile *infile=0;
   TTree *intree=0;
@@ -144,6 +149,8 @@ void plotZprime(const string selection, const string algo)
 
       std::cout << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
+	// for(unsigned int ientry=0; ientry<600000; ientry++) {
+
         intree->GetEntry(ientry);
 	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
 	// Common selection
@@ -165,15 +172,8 @@ void plotZprime(const string selection, const string algo)
 	hFatJetTau21v[isam]    ->Fill(fBits->nsubjet(selection),      wgt);
         hSubjetBtagv[isam]     ->Fill(fBits->btag(selection),         wgt);
 
-	if((!isData)){
-	  neventsMC+=wgt;
-          hFatJetPtMC          ->Fill(fBits->bst_jet0_pt,             wgt);
-	  hFatJetMassMC        ->Fill(fBits->fjet_mass(selection),    wgt);
-	  hFatJetTau21MC       ->Fill(fBits->nsubjet(selection),      wgt);
-	  hSubjetBtagMC        ->Fill(fBits->btag(selection),         wgt);
-	  if(isSigZprime){
-	    hFatJetPtSig    ->Fill(fBits->bst_jet0_pt,                wgt);
-	  }
+	if(isSigZprime){
+	  hFatJetMassSig       ->Fill(fBits->fjet_mass(selection),    wgt);
 	}
       }
 
@@ -192,11 +192,20 @@ void plotZprime(const string selection, const string algo)
   // QCD SF
   //
   double QCDSF = 1.0;
-  QCDSF = (neventsv[0]-(neventsv[2]+neventsv[3]+neventsv[4]+neventsv[5]+neventsv[6]+neventsv[7]))/neventsv[1];
-  hFatJetPtv[1]   ->Scale(QCDSF);
-  hFatJetMassv[1] ->Scale(QCDSF);
-  hFatJetTau21v[1]->Scale(QCDSF);
-  hSubjetBtagv[1]       ->Scale(QCDSF);
+  QCDSF = (neventsv[0]-(neventsv[2]+neventsv[3]+neventsv[4]+neventsv[5]+neventsv[6]))/neventsv[1];
+  hFatJetPtv[1]    ->Scale(QCDSF);
+  hFatJetMassv[1]  ->Scale(QCDSF);
+  hFatJetTau21v[1] ->Scale(QCDSF);
+  hSubjetBtagv[1]  ->Scale(QCDSF);
+
+  for(unsigned int isam=1; isam<samplev.size(); isam++) {
+    hFatJetPtMC    ->Add(hFatJetPtv[isam]);
+    hFatJetMassMC  ->Add(hFatJetMassv[isam]);
+    hFatJetTau21MC ->Add(hFatJetTau21v[isam]);
+    hSubjetBtagMC  ->Add(hSubjetBtagv[isam]);
+  }
+
+  neventsMC = neventsv[1]*QCDSF+neventsv[2]+neventsv[3]+neventsv[4]+neventsv[5]+neventsv[6];
 
   //
   // Make pull histograms
@@ -204,13 +213,13 @@ void plotZprime(const string selection, const string algo)
   TH1D *hFatJetPtPull       = makePullHist(hFatJetPtv[0],       hFatJetPtMC,       "hFatJetPtPull",        doBlind);
   TH1D *hFatJetMassPull     = makePullHist(hFatJetMassv[0],     hFatJetMassMC,     "hFatJetMassPull",      doBlind);
   TH1D *hFatJetTau21Pull    = makePullHist(hFatJetTau21v[0],    hFatJetTau21MC,    "hFatJetTau21Pull",     doBlind);
-  TH1D *hBtagPull           = makePullHist(hSubjetBtagv[0],           hSubjetBtagMC,           "hBtagPull",            doBlind);
+  TH1D *hBtagPull           = makePullHist(hSubjetBtagv[0],     hSubjetBtagMC,     "hBtagPull",            doBlind);
 
   //                                                                                                                                                                                                    
   // Calculate significance                                                                                                                                                                               
   //                 
   vector<float> significance;                                                                                                                                                                                
-  significance.push_back(CalcSig(hFatJetPtSig,  hFatJetPtMC));
+  significance.push_back(CalcSig(hFatJetMassSig,  hFatJetMassMC));
 
   //--------------------------------------------------------------------------------------------------------------
   // Output
@@ -228,7 +237,9 @@ void plotZprime(const string selection, const string algo)
   txtfile << setprecision(2) << fixed;
   float max = samplev.size();
   //  if (subsample.compare("SR")==0) max = samplev.size()-2;    
-  for(unsigned int isam=1; isam<max; isam++) {
+  txtfile << setw(35) << samplev[1]->label;
+  txtfile << setw(15) << neventsv[1]*QCDSF << endl;
+  for(unsigned int isam=2; isam<max; isam++) {
     txtfile << setw(35) << samplev[isam]->label;
     txtfile << setw(15) << neventsv[isam] << endl;
   }
