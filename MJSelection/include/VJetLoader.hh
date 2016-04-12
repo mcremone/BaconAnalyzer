@@ -19,7 +19,7 @@ public:
   void reset();
   void setupTree(TTree *iTree,std::string iJetLabel);
   void load(int iEvent);
-  void selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR); //,double iMetPhi,double iRho);
+  void selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR); //,double iMetPhi,double iRho);
   void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals); //,double iMetPhi,double iRho);
   void addBoson(TGenParticle *iBoson);
   TAddJet *getAddJet(TJet *iJet);

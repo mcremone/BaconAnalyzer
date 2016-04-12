@@ -18,7 +18,7 @@ public:
   //Fill specific Gen Info
   void selectBoson(int iDMu);
   float lepmatched(int iId, std::vector<TLorentzVector> vec, double dR);
-  bool ismatchedJet(TLorentzVector jet0, double dR,double &top_size);
+  int ismatchedJet(TLorentzVector jet0, double dR,double &top_size);
   //Helpers
   TGenParticle* getStatus1(int iId,bool iIsNeut);
   bool isNeutrino(TGenParticle *iPart);

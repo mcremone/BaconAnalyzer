@@ -479,15 +479,15 @@ int GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double 
   }
   return 0;
 }
-bool GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_size){
+int GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_size){
   for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
     TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
     TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
     if (mcMom.DeltaR(jet0) < dR) {
-      if (isHadronicTop(genp0,i0,jet0,dR,top_size)) return true;
+      if (isHadronicTop(genp0,i0,jet0,dR,top_size)==1) return 1;
     }
   }
-  return false;
+  return 0;
 }
 void GenLoader::findBoson(int iId, int lOption){
   reset();

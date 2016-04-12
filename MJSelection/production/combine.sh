@@ -23,6 +23,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "WHF") ]]; then rm ../
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WLF") ]]; then rm ../baconbits/WLF.root;    hadd  ../baconbits/WLF.root     ../baconbits/*WJets*_HT*mcwpluslf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WNLO") ]]; then rm ../baconbits/WNLO.root;    hadd  ../baconbits/WNLO.root     ../baconbits/Spring15_a25ns_WJetsToLNu_amcatnlo_MINIAOD*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "T") ]]; then rm ../baconbits/T.root;    hadd  ../baconbits/T.root     ../baconbits/*_ST_*/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "TT") ]]; then rm ../baconbits/TT.root;    hadd  ../baconbits/TT.root     ../baconbits/Spring15_a25ns_TTJets_madgraph_MINIAOD_mctt/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TT1L") ]]; then rm ../baconbits/TT1L.root;   hadd  ../baconbits/TT1L.root    ../baconbits/Spring15_a25ns_TTJets_madgraph_MINIAOD*mctt1l/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TT2L") ]]; then rm ../baconbits/TT2L.root;   hadd  ../baconbits/TT2L.root    ../baconbits/Spring15_a25ns_TTJets_madgraph_MINIAOD*mctt2l/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTHAD") ]]; then rm ../baconbits/TTHAD.root;   hadd  ../baconbits/TTHAD.root    ../baconbits/Spring15_a25ns_TTJets_madgraph_MINIAOD*mctthad/*.root; fi

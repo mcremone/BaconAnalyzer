@@ -146,10 +146,6 @@ int main( int argc, char **argv ) {
        fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
     if(fEvt ->passTrigger("HLT_Photon175_v*") ||
        fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 8;
-    //if(fEvt ->passTrigger("HLT_IsoMu20_v*") ||
-    //   fEvt ->passTrigger("HLT_IsoMu27_v*") ||
-    //   fEvt ->passTrigger("HLT_IsoTkMu20_v*")) trigbits= trigbits | 16;
-
     if(trigbits==1) continue;
     
     // Objects
@@ -193,11 +189,12 @@ int main( int argc, char **argv ) {
     
     // CA15Puppi Jets
     fVJet->load(i0);
-    fVJet->selectVJets(lVetoes,lVJets,1.5);
+    fVJet->selectVJets(lVetoes,lVJets,lVJet,1.5);
     if(lVJets.size()>0) { 
-      fVJet->fisHadronicTop = fGen->ismatchedJet(lVJets[0],1.5,fVJet->ftopSize);
-      fEvt->fselectBits =  fEvt->fselectBits | 2;
-      lVJet.push_back(lVJets[0]);
+      if(lOption.find("data")==std::string::npos){
+	fVJet->fisHadronicTop = fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopSize);
+      }
+      fEvt->fselectBits     = fEvt->fselectBits | 2;
       fEvt->fillmT(lVJet,fVJet->fVMT);
     }
     
@@ -232,8 +229,6 @@ int main( int argc, char **argv ) {
     }
     if(lOption.find("tt")!=std::string::npos){
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
-      // if(lOption.find("tt1l")!=std::string::npos) fGen->findBoson(24,2);
-      // if(lOption.find("tt2l")!=std::string::npos) fGen->findBoson(6,3);
     }
     
     lOut->Fill();

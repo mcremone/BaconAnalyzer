@@ -47,10 +47,9 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("phil");
   fLabels.push_back("minsubcsv");
   fLabels.push_back("maxsubcsv");
-  //fLabels.push_back("mindPhi");
-  //fLabels.push_back("mindFPhi");
+
   std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
-  std::stringstream pSNJ;   pSNJ << iJetLabel << "0_njets";
+  std::stringstream pSNJ;   pSNJ << iJetLabel << "s";
   std::stringstream pSis;   pSis << iJetLabel << "0_isHadronicTop";
   std::stringstream pSTS;   pSTS << iJetLabel << "0_topSize";
   fTree = iTree;
@@ -69,8 +68,9 @@ void VJetLoader::load(int iEvent) {
   fVAddJets    ->Clear();
   fVAddJetBr   ->GetEntry(iEvent);
 }
-void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR){
+void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR){
   reset(); 
+  iJets.clear(); iVJet.clear();
   int lCount = 0; 
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
     TJet *pVJet = (TJet*)((*fVJets)[i0]);
@@ -83,6 +83,11 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
     lCount++;
   }
   fNVJets = lCount;
+  if(iJets.size() > 0){
+    TLorentzVector ivJ;
+    ivJ.SetPtEtaPhiM(fSelVJets[0]->pt,fSelVJets[0]->eta,fSelVJets[0]->phi,fSelVJets[0]->mass);
+    iVJet.push_back(ivJ);
+  }
   fillJet( fN,fSelVJets,fVars);
   fillVJet(fN,fSelVJets,fVars); 
 }
@@ -91,7 +96,6 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
   int lMin = iObjects.size();
   int lNLabel = int(fLabels.size());
   if(iN < lMin) lMin = iN;
-  //double fMinDPhi = 1000; double fFMinDPhi = 1000;
   for(int i0 = 0; i0 < lMin; i0++) { 
     TAddJet *pAddJet = getAddJet(iObjects[i0]);
     iVals[lBase+i0*lNLabel+0]  = iObjects[i0]->mass;
@@ -106,18 +110,6 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
     iVals[lBase+i0*lNLabel+9]  = pAddJet->mass_sd0/log(iObjects[i0]->pt);
     iVals[lBase+i0*lNLabel+10] = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
     iVals[lBase+i0*lNLabel+11] = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
-    // double pDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
-    // if(pDPhi < fMinDPhi){
-    //   iVals[lBase+i0*lNLabel+12]  = pDPhi;
-    //   fMinDPhi = pDPhi;
-    // }
-    // else iVals[lBase+i0*lNLabel+12]  = fMinDPhi;
-    // double pFDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
-    // if(pDPhi < fFMinDPhi){
-    //   iVals[lBase+i0*lNLabel+13]  = pFDPhi;
-    //   fFMinDPhi = pFDPhi;
-    // }
-    // else iVals[lBase+i0*lNLabel+13]  = fFMinDPhi;
   }
 }
 void VJetLoader::addBoson(TGenParticle *iBoson) { 

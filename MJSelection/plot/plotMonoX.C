@@ -73,9 +73,12 @@ void plotMonoX(const string preselection, const string selection, const string s
     samplev.back()->fnamev.push_back("../baconbits/T.root");
     samplev.back()->fnamev.push_back("../baconbits/TZ.root");
     samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
-    samplev.back()->fnamev.push_back("../baconbits/TT1L.root");
-    samplev.back()->fnamev.push_back("../baconbits/TT2L.root");
-    samplev.back()->fnamev.push_back("../baconbits/TTHAD.root");
+    // samplev.back()->fnamev.push_back("../baconbits/TT1L.root");
+    // samplev.back()->fnamev.push_back("../baconbits/TT2L.root");
+    // samplev.back()->fnamev.push_back("../baconbits/TTHAD.root");
+    // samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
+    // samplev.back()->fnamev.push_back("../baconbits/TTG.root");
+    samplev.back()->fnamev.push_back("../baconbits/TT.root");
     samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
     samplev.back()->fnamev.push_back("../baconbits/TTG.root");
     samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
@@ -99,8 +102,6 @@ void plotMonoX(const string preselection, const string selection, const string s
     // samplev.back()->fnamev.push_back("../baconbits/TTHAD.root");
     // samplev.back()->fnamev.push_back("../baconbits/TTBST.root");
     // samplev.back()->fnamev.push_back("../baconbits/TTCOM.root");
-    // samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
-    // samplev.back()->fnamev.push_back("../baconbits/TTG.root");
     // samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
     // samplev.back()->fnamev.push_back("../baconbits/T.root");
     // samplev.back()->fnamev.push_back("../baconbits/TZ.root");
@@ -117,7 +118,7 @@ void plotMonoX(const string preselection, const string selection, const string s
     samplev.push_back(new CSample("M_{S} 1100, M#chi 100", kBlue, kBlue));
     samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S1_Mres-1100_Mchi-100_MINIAOD_mc.root");
     samplev.push_back(new CSample("M_{V} 300 X 5", kRed, kRed));
-    samplev.back()->fnamev.push_back("../baconbits/../baconbits/Spring15_a25ns_Monotop_S4_Mchi-300_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S4_Mchi-300_MINIAOD_mc.root");
     // samplev.push_back(new CSample("Mres-1300_Mchi-100", kBlack, kBlack));
     // samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-1300_Mchi-100_13TeV-madgraph-pythia8_mc.root");
     // samplev.push_back(new CSample("Mchi-500", kGreen, kGreen));

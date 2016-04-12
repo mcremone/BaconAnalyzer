@@ -97,6 +97,7 @@ public:
   float evtWeight, puWeight;                                                       // pu and evt weight
   double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2;                           // weights
   double topSize;                                                                  // topSize
+  int isHadronicTop;                                                               // hadronic Top requirement
   unsigned int npu, npv;                                                           // PU, PV multiplicity
   int nmu, nele, ntau, npho;                                                       // object multiplicity
   int njets, nfjets, nf15jets;                                                     // jet multiplicity 
@@ -139,10 +140,6 @@ protected:
   const unsigned int kSingleElectron = 4;
   const unsigned int kSinglePhoton  = 8;
   const unsigned int kBOOSTED15PUPPI = 2;
-  const unsigned int kBOOSTED15CHS = 4;
-  const unsigned int kBOOSTED8PUPPI = 8;
-  const unsigned int kBOOSTED8CHS = 16;
-  const unsigned int kRESOLVEDPUPPI = 32;
-  const unsigned int kRESOLVEDCHS = 64;
+  const unsigned int kRESOLVEDPUPPI = 4;
 };
 #endif
