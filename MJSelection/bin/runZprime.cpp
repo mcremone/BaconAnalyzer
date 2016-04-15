@@ -77,7 +77,7 @@ int main( int argc, char **argv ) {
   fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fVJetPuppi= new VJetLoader    (lTree,"CA8Puppi","AddCA8Puppi");                        // fVJets, fVJetBr => CA8PUPPI
   fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
-  if(lOption.compare("data")!=0) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
+  if(lOption.compare("data")!=0) fGen      = new GenLoader     (lTree);                  // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   float lWeight = 1.;
   if(lOption.compare("data")!=0) lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
@@ -102,7 +102,7 @@ int main( int argc, char **argv ) {
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
   // for(int i0 = 0; i0 < int(10); i0++){ // for testing
-    if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
+    //if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // check GenInfo
     fEvt->load(i0);
@@ -160,17 +160,14 @@ int main( int argc, char **argv ) {
 
     // ttbar, EWK and kFactor correction                                                                                                                                                    
     if(lName.find("ZJets")!=std::string::npos || lName.find("DYJets")!=std::string::npos){
-      std::cout << "z" << std::endl;
       fGen->findBoson(23,1);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z");
     }
     if(lName.find("WJets")!=std::string::npos){
-      std::cout << "w" << std::endl;
       fGen->findBoson(24,1);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W");
     }
     if(lName.find("TTJets")!=std::string::npos){
-      std::cout << "tt" << std::endl;
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
     }
 
