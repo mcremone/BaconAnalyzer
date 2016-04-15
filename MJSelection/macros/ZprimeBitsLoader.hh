@@ -58,6 +58,8 @@ public:
 
 protected:
 
-  const unsigned int kBOOSTED8 = 1;
+  const unsigned int kBOOSTED8PUPPI = 2;
+  const unsigned int kBOOSTED8CHS = 4;
+
 };
 #endif

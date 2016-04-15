@@ -13,6 +13,8 @@ GenLoader::GenLoader(TTree *iTree) {
   iTree->SetBranchAddress("GenParticle",       &fGens);
   fGenBr  = iTree->GetBranch("GenParticle");
   fBoson = 0;
+
+  fWeight = fGenInfo->weight;
 }
 GenLoader::~GenLoader() { 
   delete fGenInfo;
@@ -81,9 +83,9 @@ void GenLoader::reset() {
 void GenLoader::setupTree(TTree *iTree,float iXSIn) { 
   reset();
   fTree = iTree;
-  // iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); fWeight = fGenInfo->weight;
-  // iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F");   fXSIn = iXSIn;
-
+  //iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); 
+  //fWeight = fGenInfo->weight;
+  //iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F");   fXSIn = iXSIn;
   fTree->Branch("genVPt"     ,&fBosonPt   ,"fBosonPt/F");
   fTree->Branch("genVPhi"    ,&fBosonPhi  ,"fBosonPhi/F");
 
@@ -479,15 +481,15 @@ int GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double 
   }
   return 0;
 }
-bool GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_size){
+int GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_size){
   for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
     TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
     TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
     if (mcMom.DeltaR(jet0) < dR) {
-      if (isHadronicTop(genp0,i0,jet0,dR,top_size)==1) return true;
+      if (isHadronicTop(genp0,i0,jet0,dR,top_size)==1) return 1;
     }
   }
-  return false;
+  return 0;
 }
 void GenLoader::findBoson(int iId, int lOption){
   reset();

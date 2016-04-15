@@ -88,7 +88,7 @@ int main( int argc, char **argv ) {
   //
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  //for(int i0 = 0; i0 < int(10000); i0++){ // for testing
+  //for(int i0 = 0; i0 < int(100); i0++){ // for testing
     if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // Check Json and GenInfo
@@ -102,22 +102,8 @@ int main( int argc, char **argv ) {
 
     // Primary vertex requirement
     if(!fEvt->PV()) continue;
-    
-    // Triggerbits for MET, Electrons and Photons
-    unsigned int trigbits=1;    
-    if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2; 
-    if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
-       fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*") ||
-       fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*"))  trigbits = trigbits | 4;
-    if(fEvt ->passTrigger("HLT_Photon175_v*") ||
-       fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 8;
-    if(trigbits==1) continue;
-    
+    unsigned int trigbits = 1;
+
     // Objects
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVetoes;
     fMuon     ->load(i0);
@@ -135,18 +121,18 @@ int main( int argc, char **argv ) {
     fPhoton   ->load(i0);
     fPhoton   ->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
 
-    // Trigger Efficiencies
-    fEvt      ->triggerEff(lElectrons, lPhotons);
-    
     // CA15Puppi Jets
     bool select = false;
     fSbJet->load(i0);
-    fSbJet->selectSbJets(lVetoes,lJets,1.5);
+    fSbJet->selectSbJets(lVetoes,lJets,1.5);    
     if(lJets.size()>0){ 
-      //if(lOption.compare("mcsig")==0 && fGen->ismatchedJet(lJets[0],1.5,fSbJet->ftopSize)) select = true;
-      if(lOption.compare("mcbkg")==0 || lOption.compare("data")==0)                        select = true;
+      if(lOption.compare("mcsig")==0){
+	fSbJet->fisHadronicTop = fGen->ismatchedJet(lJets[0],1.5,fSbJet->ftopSize);
+	// if(fSbJet->fisHadronicTop == 1 && fSbJet->ftopSize<1.5) select = true;
+      }
+      select = true;
     }
-    std::cout << select << std::endl;
+
     if(!select) continue;
     lOut->Fill();
     neventstest++;

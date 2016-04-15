@@ -8,6 +8,7 @@
 #include "MonoXUtils.hh"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+
 // B-tag scale factors
 #include "CondFormats/BTauObjects/interface/BTagEntry.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibration.h"
@@ -24,6 +25,7 @@ public:
   void reset();
   void resetBTag();
   void setupTree(TTree *iTree, std::string iJetLabel);
+  void setupTreeBTag(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
   void selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMetPhi,float iFMet,float iFMetPhi);
   std::vector<TJet*> fSelJets;

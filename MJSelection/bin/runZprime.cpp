@@ -67,7 +67,6 @@ int main( int argc, char **argv ) {
   if(lJSON.size() > 0) fRangeMap->AddJSONFile(lJSON.c_str());
 
   TTree *lTree = load(lName); 
-  float lWeight = (float(lXS)*1000.)/weight; if(lOption.find("data")!=std::string::npos) lWeight = 1.;
   
   // Declare Readers 
   fEvt      = new EvtLoader     (lTree,lName);                                           // fEvt, fEvtBr, fVertices, fVertexBr
@@ -78,7 +77,10 @@ int main( int argc, char **argv ) {
   fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fVJetPuppi= new VJetLoader    (lTree,"CA8Puppi","AddCA8Puppi");                        // fVJets, fVJetBr => CA8PUPPI
   fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
-  if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
+  if(lOption.compare("data")!=0) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
+
+  float lWeight = 1.;
+  if(lOption.compare("data")!=0) lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
 
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
@@ -92,19 +94,21 @@ int main( int argc, char **argv ) {
   // fElectron ->setupTree      (lOut); 
   // fTau      ->setupTree      (lOut); 
   // fPhoton   ->setupTree      (lOut); 
-  // if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
+  // if(lOption.compare("data")!=0) fGen ->setupTree (lOut,float(lXS));
 
   //
   // Loop over events i0 = iEvent
   //
   int neventstest = 0;
-  //for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  for(int i0 = 0; i0 < int(10); i0++){ // for testing
+  for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
+  // for(int i0 = 0; i0 < int(10); i0++){ // for testing
     if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // check GenInfo
     fEvt->load(i0);
-    if(lOption.find("data")==std::string::npos)    fGen->load(i0);
+    if(lOption.compare("data")!=0){
+      fGen->load(i0);
+    }
     else{
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
     }
@@ -115,8 +119,10 @@ int main( int argc, char **argv ) {
     // triggerbits for PFJet
     unsigned int trigbits=1;   
     if(fEvt ->passTrigger("HLT_AK8PFJet360_TrimMass30_v*") ||
-       fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*") ||
-       fEvt ->passTrigger("HLT_PFHT800_v*")) trigbits = trigbits | 2; 
+       fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*") //||
+       // fEvt ->passTrigger("HLT_PFHT800_v*")
+       ) 
+      trigbits = trigbits | 2; 
     if(trigbits==1) continue;
     
     // Objects
@@ -137,17 +143,36 @@ int main( int argc, char **argv ) {
     // CA8Puppi Jets
     fVJetPuppi->load(i0);
     fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,1.5);
-    if(lVJets.size()>0){ if(lVJet[0].Pt()< 400) continue; fEvt->fselectBits =  fEvt->fselectBits | 2;}
+    if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 2;}
     
     // AK8CHS Jets
     fVJetCHS  ->load(i0); 
     fVJetCHS  ->selectVJets(lVetoes,lVJets,lVJet,0.8);
-    if(lVJets.size()>0){ if(lVJet[0].Pt()< 400) continue; fEvt->fselectBits =  fEvt->fselectBits | 4;}
+    if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
     // AK4Puppi Jets
     fJet      ->load(i0);
     fJet      ->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
-    if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 6;}
+    if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 8;}
+
+    // Select only Puppi Jets                                       
+    // if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 8)) continue;
+
+    // ttbar, EWK and kFactor correction                                                                                                                                                    
+    if(lName.find("ZJets")!=std::string::npos || lName.find("DYJets")!=std::string::npos){
+      std::cout << "z" << std::endl;
+      fGen->findBoson(23,1);
+      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z");
+    }
+    if(lName.find("WJets")!=std::string::npos){
+      std::cout << "w" << std::endl;
+      fGen->findBoson(24,1);
+      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W");
+    }
+    if(lName.find("TTJets")!=std::string::npos){
+      std::cout << "tt" << std::endl;
+      fEvt->fevtWeight *= fGen->computeTTbarCorr();
+    }
 
     lOut->Fill();
     neventstest++;

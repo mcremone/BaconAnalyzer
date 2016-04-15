@@ -78,17 +78,18 @@ void plotZprime(const string selection, const string algo)
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/W.root");
   samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/DY.root");
+
   // samplev.push_back(new CSample("Zprime50",kOrange - 3,kOrange - 3));
   // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_50GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime100",kOrange - 3,kOrange - 3));
+  // samplev.push_back(new CSample("Zprime100",kOrange - 4,kOrange - 4));
   // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_100GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime150",kOrange - 3,kOrange - 3));
+  // samplev.push_back(new CSample("Zprime150",kOrange + 6,kOrange + 6));
   // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_150GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime200",kOrange - 3,kOrange - 3));
+  // samplev.push_back(new CSample("Zprime200",kOrange + 8,kOrange + 8));
   // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_200GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime250",kOrange - 3,kOrange - 3));
+  // samplev.push_back(new CSample("Zprime250",kOrange + 7,kOrange + 7));
   // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_250GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime300",kOrange - 3,kOrange - 3));
+  // samplev.push_back(new CSample("Zprime300",kOrange + 9,kOrange + 9));
   // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_300GeV_v4_mc.root");
 
   // integrated luminosity to scale MC
@@ -112,7 +113,7 @@ void plotZprime(const string selection, const string algo)
   
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",20,360,1000));        hFatJetPtv[isam]->Sumw2();
-    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,30,120));        hFatJetMassv[isam]->Sumw2();
+    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,40,120));        hFatJetMassv[isam]->Sumw2();
     sprintf(hname,"hFatJetTau21_%i",isam);    hFatJetTau21v.push_back(new TH1D(hname,"",15,0.2,1));        hFatJetTau21v[isam]->Sumw2();
     sprintf(hname,"hSubjetBtag_%i",isam);     hSubjetBtagv.push_back(new TH1D(hname,"",15,0,1));           hSubjetBtagv[isam]->Sumw2();
     neventsv.push_back(0);
@@ -133,8 +134,13 @@ void plotZprime(const string selection, const string algo)
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     CSample *sample  = samplev[isam];
     cout << "Sample: " << sample->label << endl;
-    bool isData      = (isam==0);
-    bool isSigZprime = (isam==samplev.size()-1);
+    bool isData    = (isam==0);
+    // bool isSignal1 = (isam==samplev.size()-1);
+    // bool isSignal2 = (isam==samplev.size()-2);
+    // bool isSignal3 = (isam==samplev.size()-3);                                                                                                                                    
+    // bool isSignal4 = (isam==samplev.size()-4);                                                                                                                                    
+    // bool isSignal5 = (isam==samplev.size()-5);    
+    // bool isSignal6 = (isam==samplev.size()-6);  
  
     for(unsigned int ifile=0; ifile<sample->fnamev.size(); ifile++) {
       string infilename = sample->fnamev[ifile];
@@ -172,9 +178,9 @@ void plotZprime(const string selection, const string algo)
 	hFatJetTau21v[isam]    ->Fill(fBits->nsubjet(selection),      wgt);
         hSubjetBtagv[isam]     ->Fill(fBits->btag(selection),         wgt);
 
-	if(isSigZprime){
-	  hFatJetMassSig       ->Fill(fBits->fjet_mass(selection),    wgt);
-	}
+	//if(isSignal1 || isSignal2 || isSignal3 || isSignal4 || isSignal5 || isSignal6){
+	hFatJetMassSig       ->Fill(fBits->fjet_mass(selection),    wgt);
+	//}
       }
 
       if(isData && doBlind) {
@@ -294,11 +300,11 @@ void plotZprime(const string selection, const string algo)
            0.1, 2.1*(hFatJetPtMC->GetBinContent(hFatJetPtMC->GetMaximumBin()))/(hFatJetPtMC->GetBinWidth(hFatJetPtMC->GetMaximumBin())), selection);
 
   sprintf(ylabel,"Events / GeV/c^{2}");
-  makePlot(c, "msd", "Soft Drop Mass [GeV/c^{2}]", ylabel, hFatJetMassv, samplev, hFatJetMassMC, hFatJetMassPull, doBlind, LUMI, false, -0.45, -0.03,
+  makePlot(c, "msd", "Soft Drop Mass [GeV/c^{2}]", ylabel, hFatJetMassv, samplev, hFatJetMassMC, hFatJetMassPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())), selection);
 
   sprintf(ylabel,"Events / %.1f ",hFatJetTau21v[0]->GetBinWidth(10));
-  makePlot(c, "tau21", "#tau_{2}/#tau_{1}", ylabel, hFatJetTau21v, samplev, hFatJetTau21MC, hFatJetTau21Pull, doBlind, LUMI, false, -0.45, -0.03,
+  makePlot(c, "tau21", "#tau_{2}/#tau_{1}", ylabel, hFatJetTau21v, samplev, hFatJetTau21MC, hFatJetTau21Pull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetTau21MC->GetBinContent(hFatJetTau21MC->GetMaximumBin()))/(hFatJetTau21MC->GetBinWidth(hFatJetTau21MC->GetMaximumBin())), selection);
 
   sprintf(ylabel,"Events / %.1f ",hSubjetBtagv[0]->GetBinWidth(10));
@@ -349,11 +355,11 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
     plot.AddToStack(histv[i],samplev[i]->label,samplev[i]->fillcolor,samplev[i]->linecolor);
   }
 
-  //  if (subsample.compare("SR")==0){
-  for(unsigned int i=max; i<histv.size(); i++) {
-    plot.AddHist1D(histv[i],samplev[i]->label,"hist",samplev[i]->fillcolor,samplev[i]->linecolor);
-  }
-  //  }
+  //if (subsample.compare("SR")==0){
+  // for(unsigned int i=max; i<histv.size(); i++) {
+  //  plot.AddHist1D(histv[i],samplev[i]->label,"hist",samplev[i]->fillcolor,samplev[i]->linecolor);
+  // }
+  // }
 
   // Add CMS label
   char lumitext[100];

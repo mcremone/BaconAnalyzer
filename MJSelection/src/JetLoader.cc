@@ -84,9 +84,12 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch("nbPUPPIjetsLdR2" ,&fNBTagsLdR2  ,"fNBTagsLdR2/I");
   fTree->Branch("nbPUPPIjetsTdR2" ,&fNBTagsMdR2  ,"fNBTagsMdR2/I");
   fTree->Branch("nbPUPPIjetsMdR2" ,&fNBTagsTdR2  ,"fNBTagsTdR2/I");
+}
+void JetLoader::setupTreeBTag(TTree *iTree, std::string iJetLabel) {
+  reset();
   for(int i0 = 0; i0 < 60; i0++) {float pBTagVar = 1; fBTagVars.push_back(pBTagVar);} // declare array of 60 vars ( L0,L1,Lminus1,L2, M0,M1,Mminus1,M2 T0,T1,Tminus1,T2) for (CENT,MISTAGUP,MISTAGDO,BTAGUP,BTAGDO)
   int i1 = 0;
-  for(auto iwptype : wpTypes) { 
+  for(auto iwptype : wpTypes) {
     addBTag(iJetLabel.c_str(),iTree,iwptype,fLabels,i1,fBTagVars);
     i1 += 20;
   }
@@ -97,7 +100,7 @@ void JetLoader::load(int iEvent) {
 }
 void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMetPhi,float iFMet,float iFMetPhi){ //,float iRho) {
   reset(); 
-  int lCount = 0,lCountdR2 = 0,lNBTag = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0,lNBTagMdR2 = 0,lNBTagTdR2 = 0; // lNFwd = 0;
+  int lCount = 0,lCountdR2 = 0,lNBTag = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0,lNBTagMdR2 = 0,lNBTagTdR2 = 0;
   double pDPhi = 999;
   double pDFPhi = 999;
   for  (int i0 = 0; i0 < fJets->GetEntriesFast(); i0++) { 
@@ -120,7 +123,6 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
     if(iFMet > 0){
       if(acos(cos(iFMetPhi-pJet->phi)) < pDFPhi)   pDFPhi = acos(cos(iFMetPhi-pJet->phi)); 
     }
-
 
     // jet and b-tag multiplicity
     if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVL){

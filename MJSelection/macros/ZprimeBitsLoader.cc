@@ -34,12 +34,13 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString jet, TString algo) {
 ZprimeBitsLoader::~ZprimeBitsLoader(){}
 bool ZprimeBitsLoader::selectJetAlgoAndSize(string selection, TString algo){
   bool lPass = false;
-  if((selectBits & kBOOSTED8) && selection.find("Bst")==0 && algo=="PUPPI") lPass = true;
-  else if((selectBits & kBOOSTED8) && selection.find("Bst")==0 && algo=="CHS") lPass = true;
+  if((selectBits & kBOOSTED8PUPPI) && selection.find("Bst")==0 && algo=="PUPPI") lPass = true;
+  else if((selectBits & kBOOSTED8CHS) && selection.find("Bst")==0 && algo=="CHS") lPass = true;
   return lPass;
 }
 bool ZprimeBitsLoader::passBoostedSelection(){
-  return njets>0 & bst_jet0_pt>400;
+  double RHO_CUT = 0.38;
+  return njets>0 & bst_jet0_pt>400 & bst_jet0_msd>40 & bst_jet0_tau21 < (-0.066*bst_jet0_rho + RHO_CUT);
 }
 bool ZprimeBitsLoader::passSelection(string selection){
   bool lPass = false;	

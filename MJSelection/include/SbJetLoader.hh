@@ -24,6 +24,7 @@ public:
   TAddJet *getAddJet(TJet *iJet);
   std::vector<TJet*> fSelSbJets;
   double ftopSize;
+  int fisHadronicTop;
   float fVMT;
 protected: 
   TClonesArray *fSbJets;

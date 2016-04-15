@@ -94,12 +94,13 @@ int main( int argc, char **argv ) {
 
   // Setup Tree
   fEvt     ->setupTree      (lOut,lWeight); 
+  fMuon    ->setupTree      (lOut);
+  fElectron->setupTree      (lOut);
+  fTau     ->setupTree      (lOut);
+  fPhoton  ->setupTree      (lOut);
   fJet     ->setupTree      (lOut,"res_PUPPIjet"); 
+  fJet     ->setupTreeBTag  (lOut,"res_PUPPIjet");
   fVJet    ->setupTree      (lOut,"bst15_PUPPIjet"); 
-  fMuon    ->setupTree      (lOut); 
-  fElectron->setupTree      (lOut); 
-  fTau     ->setupTree      (lOut); 
-  fPhoton  ->setupTree      (lOut); 
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
   //
