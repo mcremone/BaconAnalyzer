@@ -16,4 +16,5 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
     ./plotMonoX.sh Zee BstMonoTop ZHFCR ${combo} ${algo} CENT
     ./plotMonoX.sh Zee BstMonoTop ZLFCR ${combo} ${algo} CENT
     ./plotMonoX.sh Pho BstMonoTop ZCR ${combo} ${algo} CENT
+    cp -r MonoXPlots/* /afs/cern.ch/user/c/cmantill/www/MonoTop/MonoTop74/
 fi

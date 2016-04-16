@@ -76,8 +76,6 @@ void plotMonoX(const string preselection, const string selection, const string s
     // samplev.back()->fnamev.push_back("../baconbits/TT1L.root");
     // samplev.back()->fnamev.push_back("../baconbits/TT2L.root");
     // samplev.back()->fnamev.push_back("../baconbits/TTHAD.root");
-    // samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
-    // samplev.back()->fnamev.push_back("../baconbits/TTG.root");
     samplev.back()->fnamev.push_back("../baconbits/TT.root");
     samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
     samplev.back()->fnamev.push_back("../baconbits/TTG.root");
@@ -132,7 +130,7 @@ void plotMonoX(const string preselection, const string selection, const string s
   }
 
   // integrated luminosity to scale MC
-  const double LUMI = 2.26;
+  const double LUMI = 2.32;
   
   // histograms for various corrections
   const string cmssw_base = getenv("CMSSW_BASE");
@@ -244,10 +242,10 @@ void plotMonoX(const string preselection, const string selection, const string s
         double wgt = 1;
 	if(!isData) {
 	  wgt *= LUMI*fBits->scale1fb*fBits->kfactor*btagw*fBits->triggerEff*fBits->evtWeight*fBits->eleSF0*fBits->eleSF1*fBits->eleSF2*fBits->muoSF0*fBits->muoSF1*fBits->muoSF2;
-	  if(sample->label=="t#bar{t}" && ifile==0 && fBits->topSize<1.2){
+	  if(sample->label=="t#bar{t}" && ifile==0 && fBits->topSize<0.8 && fBits->isHadronicTop==1){
 	     wgt *= fBits->ToptagSF;
 	  }
-	  if(sample->label!="t#bar{t}" || ifile!=0 || fBits->topSize>=1.2){
+	  if(sample->label!="t#bar{t}" || ifile!=0 || fBits->isHadronicTop==0 || fBits->topSize>=0.8){
 	     wgt *= fBits->TopmistagSF;
 	  }
 
@@ -275,6 +273,9 @@ void plotMonoX(const string preselection, const string selection, const string s
 	    }
 	  }
 	}
+	//else{
+	//  std::cout << fBits->min_dphijetsmet << " " << fBits->evtNum << " " << fBits->vmetpt << " " << " " << fBits->vmetphi << " " << fBits->vfakemetpt << " " << fBits->vfakemetphi << " " << fBits->njets << std::endl;
+	//}
 	nevts += wgt;
 	noweight++;
 	
