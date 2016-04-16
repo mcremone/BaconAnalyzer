@@ -10,7 +10,7 @@
 // input: - Input file (result from TMVA),
 //        - use of colors or grey scale
 //        - use of TMVA plotting TStyle
-void correlations( TString fin = "tmva_output/TMVA_mcsig15PUPPI.root", Bool_t isRegression = kFALSE, 
+void correlations( TString fin = "tmva_output/TMVA_svmass_08_had_flav_allvariables_opt_maxsubcsv.root", Bool_t isRegression = kFALSE, 
                    Bool_t greyScale = kFALSE, Bool_t useTMVAStyle = kTRUE )
 {
 

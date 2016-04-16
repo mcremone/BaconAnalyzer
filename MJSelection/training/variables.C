@@ -8,7 +8,7 @@
 //        - use of TMVA plotting TStyle
 //void variables( TString fin = "TMVA.root", TString dirName = "InputVariables_Id", TString title = "TMVA Input Variables",
 //                Bool_t isRegression = kFALSE, Bool_t useTMVAStyle = kTRUE )
-void variables( TString fin = "tmva_output/TMVA_svmass.root", TString dirName = "InputVariables_Id", TString title = "TMVA Input Variables",
+void variables( TString fin = "tmva_output/TMVA_svmass_08_had_flav_allvariables_opt_maxsubcsv.root", TString dirName = "InputVariables_Id", TString title = "TMVA Input Variables",
 		  Bool_t isRegression = kFALSE, Bool_t useTMVAStyle = kTRUE )
 {
    TString outfname = dirName;
