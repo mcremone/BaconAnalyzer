@@ -13,6 +13,8 @@ GenLoader::GenLoader(TTree *iTree) {
   iTree->SetBranchAddress("GenParticle",       &fGens);
   fGenBr  = iTree->GetBranch("GenParticle");
   fBoson = 0;
+
+  fWeight = fGenInfo->weight;
 }
 GenLoader::~GenLoader() { 
   delete fGenInfo;
