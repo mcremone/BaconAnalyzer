@@ -11,6 +11,7 @@
   TTree *tBg76 = (TTree*)fBg76->Get("Events");
   TTree *tBg74 = (TTree*)fBg74->Get("Events");
 
+  plotDistributions(tSig76,tBg76,tSig74,tBg74,"bst15_PUPPIjet0_maxsubcsv","bst15_PUPPIjet1maxsubcsv",20,0,1);
   plotDistributions(tSig76,tBg76,tSig74,tBg74,"bst15_PUPPIjet0_pt","bst15_PUPPIjet1.Pt()",20,0,800);
   plotDistributions(tSig76,tBg76,tSig74,tBg74,"bst15_PUPPIjet0_nTracks","bst15_PUPPIjet1nTracks",24,0,24);
   plotDistributions(tSig76,tBg76,tSig74,tBg74,"bst15_PUPPIjet0_nSV","bst15_PUPPIjet1nSV",10,0,10);
