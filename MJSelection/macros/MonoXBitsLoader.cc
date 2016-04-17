@@ -5,10 +5,10 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString algo,TString 
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0){
-      iTree->SetBranchAddress("mindPhi",                         &min_dphijetsmet);
+      iTree->SetBranchAddress("mindPhi",                             &min_dphijetsmet);
     }
     else{
-      iTree->SetBranchAddress("mindFPhi",                        &min_dphijetsmet);
+      iTree->SetBranchAddress("mindFPhi",                            &min_dphijetsmet);
     }
     iTree->SetBranchAddress("runNum",                            &runNum);
     iTree->SetBranchAddress("lumiSec",                           &lumiSec);
@@ -28,7 +28,6 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString algo,TString 
     iTree->SetBranchAddress("fake"+met,                          &vfakemetpt);
     iTree->SetBranchAddress("fake"+met+"phi",                    &vfakemetphi);
     iTree->SetBranchAddress("n"+algo+"jets",                     &njets);
-    iTree->SetBranchAddress("nf"+jet+algo+"jets",                &nfjets);
     iTree->SetBranchAddress("nbtags"                             &nbtags);
     iTree->SetBranchAddress("nb"+algo+"jetsL",                   &nbjetsL);
     iTree->SetBranchAddress("nb"+algo+"jetsM",                   &nbjetsM);
@@ -58,29 +57,31 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString algo,TString 
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL1_"+syst,      &res_btagwL1);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwLminus1_"+syst, &res_btagwLminus1);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL2_"+syst,      &res_btagwL2);
-    iTree->SetBranchAddress("topSize",                           &topSize);
     iTree->SetBranchAddress("nmu",                               &nmu);
     iTree->SetBranchAddress("nele",                              &nele);
     iTree->SetBranchAddress("ntau",                              &ntau);
     iTree->SetBranchAddress("npho",                              &npho);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jetmT",          &bst_mt);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_pt",        &bst_jet0_pt);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_eta",       &bst_jet0_eta);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_phi",       &bst_jet0_phi);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_mass",      &bst_jet0_mass);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_msd",       &bst_jet0_msd);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_tau32",     &bst_jet0_tau32);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_CHF",       &bst_jet0_CHF);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_NHF",       &bst_jet0_NHF);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_NEFM",      &bst_jet0_NEMF);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_minsubcsv", &bst_jet0_minsubcsv);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_maxsubcsv", &bst_jet0_maxsubcsv);
-    iTree->SetBranchAddress("eleSF0",                            &eleSF0);
-    iTree->SetBranchAddress("eleSF1",                            &eleSF1);
-    iTree->SetBranchAddress("eleSF2",                            &eleSF2);
-    iTree->SetBranchAddress("muoSF0",                            &muoSF0);
-    iTree->SetBranchAddress("muoSF1",                            &muoSF1);
-    iTree->SetBranchAddress("muoSF2",                            &muoSF2);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_isHadronicTop", &isHadronicTop);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_topSize",       &topSize);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jets",               &nfjets);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_mT",            &bst_mt);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_pt",            &bst_jet0_pt);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_eta",           &bst_jet0_eta);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_phi",           &bst_jet0_phi);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_mass",          &bst_jet0_mass);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_msd",           &bst_jet0_msd);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_tau32",         &bst_jet0_tau32);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_CHF",           &bst_jet0_CHF);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_NHF",           &bst_jet0_NHF);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_NEFM",          &bst_jet0_NEMF);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_minsubcsv",     &bst_jet0_minsubcsv);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_maxsubcsv",     &bst_jet0_maxsubcsv);
+    iTree->SetBranchAddress("eleSF0",                                &eleSF0);
+    iTree->SetBranchAddress("eleSF1",                                &eleSF1);
+    iTree->SetBranchAddress("eleSF2",                                &eleSF2);
+    iTree->SetBranchAddress("muoSF0",                                &muoSF0);
+    iTree->SetBranchAddress("muoSF1",                                &muoSF1);
+    iTree->SetBranchAddress("muoSF2",                                &muoSF2);
   }
 }
 MonoXBitsLoader::~MonoXBitsLoader(){}
@@ -91,7 +92,6 @@ bool MonoXBitsLoader::selectJetAlgoAndSize(string selection, TString algo){
   else if((selectBits & kBOOSTED8PUPPI) && selection.find("Bst")==0 && selection.compare("BstMonoZbb")==0 && algo=="PUPPI") lPass = true;
   else if((selectBits & kBOOSTED8CHS) && selection.find("Bst")==0 && selection.compare("BstMonoZbb")==0 && algo=="CHS") lPass = true;
   else if((selectBits & kRESOLVEDPUPPI) && selection.find("Res")==0 && algo=="PUPPI") lPass = true;
-  else if((selectBits & kRESOLVEDCHS) && selection.find("Res")==0 && algo=="CHS") lPass = true;
   return lPass;
 }
 bool MonoXBitsLoader::isHad(){
@@ -423,7 +423,7 @@ double MonoXBitsLoader::getWgt(bool isData, TString algo, double LUMI, float bta
   }
   return wgt;
 }
-float BitsLoader::transverse_mass(string selection){
+float MonoXBitsLoader::transverse_mass(string selection){
   if(selection == "BstMonoTop" || selection == "BstMonoHbb") return bst_mt;
   else if(selection == "BstMonoZbb") return bst_mt;
   else return res_mt;

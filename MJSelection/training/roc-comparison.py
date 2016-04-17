@@ -5,10 +5,13 @@ def getPerformanceCurve(fFileS1, fFileB1, pTmin, pTmax, fXMin=0, fXMax=0):
     #get files and histograms
     file_S1 = TFile(fFileS1)
     file_B1 = TFile(fFileB1)
-    
+    ''' 
     file_S174 = TFile("/tmp/cmantill/validation_mcsig15PUPPI_mcsig15PUPPI.root")
     file_B174 = TFile("/tmp/cmantill/validation_QCD_mcsig15PUPPI_mcsig15PUPPI.root")
-    
+    '''   
+    file_S174 = TFile("Training_with/validation/validation_Zprime_svmass_test_withptcut.root")
+    file_B174 = TFile("Training_with/validation/validation_QCD_svmass_test_withptcut.root")
+
     h2_S_new = TH1F("hBDTGDisc_S","",100000,-1.,1.)
     h2_B_new = TH1F("hBDTGDisc_B","",100000,-1.,1.)
     h2_S_subjet = TH1F("hSubjetDisc_S","",100000,0.,1.)
@@ -55,18 +58,20 @@ def getPerformanceCurve(fFileS1, fFileB1, pTmin, pTmax, fXMin=0, fXMax=0):
           subjetcsv74 = -1
       elif(event.maxsubjetcsv >1):
           subjetcsv74 = -1
-      h2_S_subjet74.Fill( subjetcsv74 )
-      h2_S_new74.Fill( event.BDTG )
-
+      if (event.bst15_PUPPIjet0_pt > 250 and event.isHadronicTop==1 and event.topSize < 0.8):
+          h2_S_subjet74.Fill( subjetcsv74 )
+          h2_S_new74.Fill( event.BDTG )
+          
     for event in treeB74:
       subjetcsv74 =event.maxsubjetcsv
       if(event.maxsubjetcsv < -1):
          subjetcsv74 = -1
       elif(event.maxsubjetcsv >1):
          subjetcsv74 = -1
-      h2_B_subjet74.Fill( subjetcsv74 )
-      h2_B_new74.Fill( event.BDTG )
-      
+      if (event.bst15_PUPPIjet0_pt > 250):
+          h2_B_subjet74.Fill( subjetcsv74 )
+          h2_B_new74.Fill( event.BDTG )
+
     mg = []    
     
     #total jet count for denominator of efficiency calculation
@@ -197,17 +202,19 @@ def makePlots():
    mg = [] # maps to hold legend entries and TGraph*s
 
    #mg15PUPPI = getPerformanceCurve("validation/validation_Zprime_svmass_ptcut_maxsubjetcsv_corrected.root","validation/validation_QCD_svmass_ptcut_maxsubjetcsv_corrected.root",300.,2000.)
-   mg15PUPPI = getPerformanceCurve("Training_with/validation/validation_Zprime_svmass_test_withptcut.root","Training_with/validation/validation_QCD_svmass_test_withptcut.root",300.,2000.)
+   #mg15PUPPI = getPerformanceCurve("Training_with/validation/validation_Zprime_svmass_test_withptcut.root","Training_with/validation/validation_QCD_svmass_test_withptcut.root",300.,2000.)
+   #mg15PUPPI = getPerformanceCurve("Training_without/validation/validation_Zprime_svmass_test_withptcut_withoutmaxsubjetcsv.root","Training_without/validation/validation_QCD_svmass_test_withptcut_withoutmaxsubjetcsv.root",300.,2000.)
+   mg15PUPPI = getPerformanceCurve("Training_without/validation/validation_Zprime_svmass_test_withptcut_withoutmaxsubjetcsv.root","Training_without/validation/validation_QCD_svmass_test_withptcut_withoutmaxsubjetcsv.root",300.,2000.)
    #mg15CHS = getPerformanceCurve("validation/validation_mcsig15CHS_mcsig15CHS.root","validation/validation_QCD_mcsig15CHS_mcsig15CHS.root",300.,2000.)
    #mg8PUPPI = getPerformanceCurve("validation/validation_mcsig8PUPPI_mcsig8PUPPI.root","validation/validation_QCD_mcsig8PUPPI_mcsig8PUPPI.root",300.,2000.)
    #mg8CHS = getPerformanceCurve("validation/validation_mcsig8CHS_mcsig8CHS.root","validation/validation_QCD_mcsig8CHS_mcsig8CHS.root",300.,2000.)
    
-   ordering.append("single-b-tag 76")
+   ordering.append("single-b-tag 76 without subjet")
    ordering.append("Subjet CSVv2 76")
-   ordering.append("single-b-tag 74")
+   ordering.append("single-b-tag 74 without subjet")
    ordering.append("Subjet CSVv2 74")
 
-   plotPerformanceCurves(mg15PUPPI,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","CA15 PUPPI","singleb_subjet_bst15PUPPI.pdf",0, 1, 1E-3, 1, 1)
+   plotPerformanceCurves(mg15PUPPI,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","CA15 PUPPI Pt > 250","comparison_withandwithout_single_bst15PUPPI_pt250.pdf",0, 1, 1E-3, 1, 1)
    #plotPerformanceCurves(mg15CHS,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","CA15 CHS","singleb_subjet_bst15CHS.pdf",0, 1, 1E-3, 1, 1)
    #plotPerformanceCurves(mg8PUPPI,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","AK8 PUPPI","singleb_subjet_bst8PUPPI.pdf",0, 1, 1E-3, 1, 1)
    #plotPerformanceCurves(mg8CHS,ordering,"","Tagging efficiency (Singleb)","Mistagging efficiency","AK8 CHS","singleb_subjet_bst8CHS.pdf",0, 1, 1E-3, 1, 1)

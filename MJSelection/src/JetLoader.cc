@@ -75,8 +75,6 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   for(int i0 = 0; i0 < fN*(10)+3; i0++) {double pVar = 0; fVars.push_back(pVar);}     // declare array of 43 vars
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);                                      // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi for j1,j2,j3,j4 (3*4=12)
   addOthers  (iJetLabel.c_str(),iTree,fN,fVars);                                      // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32 -6*4=24)
-  // std::stringstream diJet;   diJet << "d" << iJetLabel;
-  // addDijet   (diJet.str().c_str(),iTree,1, fVars);                                    // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
   fTree->Branch("nbtags"          ,&fNBTags      ,"fNBTags/I");                       // b tags
   fTree->Branch("nbPUPPIjetsL"    ,&fNBTagsL     ,"fNBTagsL/I");
   fTree->Branch("nbPUPPIjetsM"    ,&fNBTagsM     ,"fNBTagsM/I");
@@ -85,8 +83,15 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch("nbPUPPIjetsTdR2" ,&fNBTagsMdR2  ,"fNBTagsMdR2/I");
   fTree->Branch("nbPUPPIjetsMdR2" ,&fNBTagsTdR2  ,"fNBTagsTdR2/I");
 }
+void JetLoader::setupTreeDiJet(TTree *iTree, std::string iJetLabel) {
+  reset();
+  fTree = iTree;
+  std::stringstream diJet;   diJet << "d" << iJetLabel;
+  addDijet   (diJet.str().c_str(),iTree,1, fVars);                                    // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
+}
 void JetLoader::setupTreeBTag(TTree *iTree, std::string iJetLabel) {
   reset();
+  fTree = iTree;
   for(int i0 = 0; i0 < 60; i0++) {float pBTagVar = 1; fBTagVars.push_back(pBTagVar);} // declare array of 60 vars ( L0,L1,Lminus1,L2, M0,M1,Mminus1,M2 T0,T1,Tminus1,T2) for (CENT,MISTAGUP,MISTAGDO,BTAGUP,BTAGDO)
   int i1 = 0;
   for(auto iwptype : wpTypes) {
@@ -148,11 +153,9 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
   fNBTagsT    = lNBTagT;
   fNBTagsLdR2 = lNBTagLdR2;
   fNBTagsMdR2 = lNBTagMdR2;
-  fNBTagsTdR2 = lNBTagMdR2;
+  fNBTagsTdR2 = lNBTagTdR2;
   fillJet(fN,fSelJets,fVars);
   fillOthers(fN,fSelJets,fVars);
-  // fillDiJet();
-  // fillBTag(fGoodJets);
 }
 void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 
   for(int i0 = 0; i0 < iN; i0++) { 
@@ -164,16 +167,12 @@ void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<do
     pSCHF   << iHeader << i0 << "_CHF";
     pSNHF   << iHeader << i0 << "_NHF";
     pSEMF   << iHeader << i0 << "_NEMF";
-    // pSDPhi  << iHeader << i0 << "_dphi";
-    // pSPtT   << iHeader << i0 << "_pttrue";
     iTree->Branch(pSMass .str().c_str(),&iVals[lBase+0],(pSMass .str()+"/D").c_str());
     iTree->Branch(pSCSV .str().c_str() ,&iVals[lBase+1],(pSCSV  .str()+"/D").c_str());
     iTree->Branch(pSQGID.str().c_str() ,&iVals[lBase+2],(pSQGID .str()+"/D").c_str());
     iTree->Branch(pSCHF .str().c_str() ,&iVals[lBase+3],(pSCHF  .str()+"/D").c_str());
     iTree->Branch(pSNHF .str().c_str() ,&iVals[lBase+4],(pSNHF  .str()+"/D").c_str());
     iTree->Branch(pSEMF .str().c_str() ,&iVals[lBase+5],(pSEMF  .str()+"/D").c_str());
-    // iTree->Branch(pSDPhi.str().c_str() ,&iVals[lBase+6],(pSDPhi .str()+"/D").c_str());
-    // iTree->Branch(pSPtT .str().c_str() ,&iVals[lBase+7],(pSPtT  .str()+"/D").c_str());
   }
 }
 void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){ //,float iMetPhi,float iRho) { 
@@ -187,10 +186,6 @@ void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<doubl
     iVals[lBase+i0*6+3] = iObjects[i0]->chHadFrac;
     iVals[lBase+i0*6+4] = iObjects[i0]->neuHadFrac;
     iVals[lBase+i0*6+5] = iObjects[i0]->neuEmFrac;
-    // double pDPhi = TMath::Min(fabs(iObjects[i0]->phi-iMetPhi),2.*TMath::Pi()-fabs(iObjects[i0]->phi-iMetPhi));
-    // iVals[lBase+i0*8+6] = pDPhi;
-    // iVals[lBase+i0*8+7] = correction(*(iObjects[i0]),iRho);
-    // if(pDPhi < fMinDPhi) fMinDPhi = pDPhi;
   }
 }
 void JetLoader::addDijet(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 

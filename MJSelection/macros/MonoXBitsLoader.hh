@@ -1,5 +1,5 @@
-#ifndef ZPRIMEBITSLOADER_HH
-#define ZPRIMEBITSLOADER_HH
+#ifndef MONOXBITSLOADER_HH
+#define MONOXBITSLOADER_HH
 
 #include <TROOT.h>                    // access to gROOT, entry point to ROOT system
 #include <TSystem.h>                  // interface to OS
@@ -21,10 +21,10 @@
 
 using namespace std;
 
-class ZprimeBitsLoader {
+class MonoXBitsLoader {
 public:
-  ZprimeBitsLoader(TTree *iTree=0,TString jet="15",TString algo="PUPPI",TString syst="CENT", string preselection="");		
-  ~ZprimeBitsLoader();
+  MonoXBitsLoader(TTree *iTree=0,TString jet="15",TString algo="PUPPI",TString syst="CENT", string preselection="");		
+  ~MonoXBitsLoader();
   bool selectJetAlgoAndSize(string selection, TString algo);
   bool isHad();
   bool isMuo();
@@ -37,10 +37,7 @@ public:
   TLorentzVector getTop();
   bool passMetPreselection(string preselection);
   bool passBoostedMonoTopPreselection(string preselection);
-  bool passBoosted15Zprime(string preselection);
-  bool passBoosted8Zprime(string preselection);
   bool passResolvedMonoTop(string preselection);
-  bool passResolvedZprimebb(string preselection);
   bool passBoostedMonoTopSR(string preselection);
   bool passBoostedMonoTopQCDCR(string preselection); 
   bool passBoostedMonoTopZnunuHFCR(string preselection);
@@ -84,7 +81,7 @@ public:
   float chf(string selection);
   float nhf(string selection);
   float nemf(string selection);
-  
+
   //
   // variables to read in bacon bits
   //
@@ -95,6 +92,7 @@ public:
   float evtWeight, puWeight;                                                       // pu and evt weight
   double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2;                           // weights
   double topSize;                                                                  // topSize
+  int isHadronicTop;                                                               // hadronic Top requirement
   unsigned int npu, npv;                                                           // PU, PV multiplicity
   int nmu, nele, ntau, npho;                                                       // object multiplicity
   int njets, nfjets, nf15jets;                                                     // jet multiplicity 
@@ -122,7 +120,7 @@ public:
   double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                         // subjet btag                            
   float            bst_jet0_rho, bst_jet0_phil;                                    // msd and pt dependent variables
   double           bst_jet0_CHF, bst_jet0_NHF, bst_jet0_NEMF;                      // boosted jet variables
-  float            bst_mt;                                                         // mT
+  float            bst_mt;                                                         // bst jet mT
 
   const float ToptagSF     = 1.1318;                                               // ToptagSF
   const float TopmistagSF  = 1.1639;                                               // TopmistagSF 
@@ -135,10 +133,10 @@ protected:
   const unsigned int kSingleElectron = 4;
   const unsigned int kSinglePhoton  = 8;
   const unsigned int kBOOSTED15PUPPI = 2;
-  const unsigned int kBOOSTED15CHS = 4;
-  const unsigned int kBOOSTED8PUPPI = 8;
-  const unsigned int kBOOSTED8CHS = 16;
-  const unsigned int kRESOLVEDPUPPI = 32;
-  const unsigned int kRESOLVEDCHS = 64;
+  // const unsigned int kBOOSTED15CHS = 4;
+  // const unsigned int kBOOSTED8PUPPI = 8;
+  // const unsigned int kBOOSTED8CHS = 16;
+  const unsigned int kRESOLVEDPUPPI = 4;
+  // const unsigned int kRESOLVEDCHS = 64;
 };
 #endif

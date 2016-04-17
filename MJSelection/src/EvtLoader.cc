@@ -238,5 +238,5 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
   if(iPt > 700) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(700)));
   if(iPt < 100) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(100)));
 
-  fkfactor = fEwkCorr_CENT; //(NLO*ewk/NLO)
+  fkfactor = fEwkCorr_CENT; //(NLO*ewk/LO)
 }

@@ -77,7 +77,6 @@ int main( int argc, char **argv ) {
   if(lJSON.size() > 0) fRangeMap->AddJSONFile(lJSON.c_str());
 
   TTree *lTree = load(lName); 
-  float lWeight = (float(lXS)*1000.)/weight; if(lOption.find("data")!=std::string::npos) lWeight = 1.;
   
   // Declare Readers 
   fEvt      = new EvtLoader     (lTree,lName);                                           // fEvt, fEvtBr, fVertices, fVertexBr
@@ -91,6 +90,9 @@ int main( int argc, char **argv ) {
 
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
+
+  float lWeight = 1.;
+  if(lOption.find("data")==std::string::npos) lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
 
   // Setup Tree
   fEvt     ->setupTree      (lOut,lWeight); 
@@ -147,10 +149,6 @@ int main( int argc, char **argv ) {
        fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
     if(fEvt ->passTrigger("HLT_Photon175_v*") ||
        fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 8;
-    //if(fEvt ->passTrigger("HLT_IsoMu20_v*") ||
-    //   fEvt ->passTrigger("HLT_IsoMu27_v*") ||
-    //   fEvt ->passTrigger("HLT_IsoTkMu20_v*")) trigbits= trigbits | 16;
-
     if(trigbits==1) continue;
     
     // Objects
@@ -195,12 +193,9 @@ int main( int argc, char **argv ) {
     // CA15Puppi Jets
     fVJet->load(i0);
     fVJet->selectVJets(lVetoes,lVJets,lVJet,1.5);
-    if(lVJets.size()>0) {
-      if((lOption.compare("mcttbst")==0 && fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopSize)) || 
-	 (lOption.compare("mcttcom")==0 && !fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopSize))) {
-	fEvt->fselectBits =  fEvt->fselectBits | 2; 
-      }
-      fEvt->fselectBits =  fEvt->fselectBits | 2;
+    if(lVJets.size()>0) { 
+      if(lOption.find("data")==std::string::npos)	fVJet->fisHadronicTop = fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopSize);
+      fEvt->fselectBits = fEvt->fselectBits | 2;
       fEvt->fillmT(lVJet,fVJet->fVMT);
     }
     
@@ -235,8 +230,6 @@ int main( int argc, char **argv ) {
     }
     if(lOption.find("tt")!=std::string::npos){
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
-      if(lOption.find("tt1l")!=std::string::npos) fGen->findBoson(24,2);
-      if(lOption.find("tt2l")!=std::string::npos) fGen->findBoson(6,3);
     }
     
     lOut->Fill();

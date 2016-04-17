@@ -6,17 +6,17 @@
 #include "TLatex.h"
 
 void plotDistributions(TTree *tSig76, TTree *tBg76,TTree *tSig74, TTree *tBg74,TString varName76="", TString varName74="",int nBins=10,float lowX=-1,float highX=10) {
-  tSig76->Draw(TString::Format("%s>>hSig76(%i,%f,%f)",varName76.Data(),nBins,lowX,highX).Data(),"isHadronicTop == 1 && topSize<1.5","hist");
+  tSig76->Draw(TString::Format("%s>>hSig76(%i,%f,%f)",varName76.Data(),nBins,lowX,highX).Data(),"bst15_PUPPIjet0_pt>250 && isHadronicTop == 1 && topSize<0.8","hist");
   TH1F *hSig76 = (TH1F*)gPad->GetPrimitive("hSig76");
   hSig76->SetName("hSig76");
-  tSig74->Draw(TString::Format("%s>>hSig74(%i,%f,%f)",varName74.Data(),nBins,lowX,highX).Data(),"","hist");
+  tSig74->Draw(TString::Format("%s>>hSig74(%i,%f,%f)",varName74.Data(),nBins,lowX,highX).Data(),"bst15_PUPPIjet1.Pt() >250","hist");
   TH1F *hSig74 = (TH1F*)gPad->GetPrimitive("hSig74");
   hSig74->SetName("hSig74");
 
-  tBg76->Draw(TString::Format("%s>>hBg76(%i,%f,%f)",varName76.Data(),nBins,lowX,highX).Data(),"","hist");
+  tBg76->Draw(TString::Format("%s>>hBg76(%i,%f,%f)",varName76.Data(),nBins,lowX,highX).Data(),"bst15_PUPPIjet0_pt>250","hist");
   TH1F *hBg76 = (TH1F*)gPad->GetPrimitive("hBg76");
   hBg76->SetName("hBg76");
-  tBg74->Draw(TString::Format("%s>>hBg74(%i,%f,%f)",varName74.Data(),nBins,lowX,highX).Data(),"","hist");
+  tBg74->Draw(TString::Format("%s>>hBg74(%i,%f,%f)",varName74.Data(),nBins,lowX,highX).Data(),"bst15_PUPPIjet1.Pt() >250","hist");
   TH1F *hBg74 = (TH1F*)gPad->GetPrimitive("hBg74");
   hBg74->SetName("hBg74");
  
