@@ -25,6 +25,7 @@ public:
   void reset();
   void resetBTag();
   void setupTree(TTree *iTree, std::string iJetLabel);
+  void setupTreeDiJet(TTree *iTree, std::string iJetLabel);
   void setupTreeBTag(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
   void selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMetPhi,float iFMet,float iFMetPhi);
