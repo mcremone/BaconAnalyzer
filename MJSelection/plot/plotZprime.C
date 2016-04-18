@@ -75,11 +75,9 @@ void plotZprime(const string selection, const string algo)
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/WZ.root");
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZZ.root");
   samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/W.root");
-  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/W.root");
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/W.root");
   samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/DY.root");
-  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/DY.root");
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/DY.root");
 
   samplev.push_back(new CSample("Zprime50",kOrange - 3,kOrange - 3));
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_50GeV_v4_mc.root");
@@ -153,10 +151,10 @@ void plotZprime(const string selection, const string algo)
       double nevts=0;
       int noweight=0;
 
-      std::cout << intree->GetEntries() << std::endl;
+      //      std::cout << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
 	// for(unsigned int ientry=0; ientry<600000; ientry++) {
-	if(!doBlind && ientry % 5 != 0) continue;
+	//	if(!doBlind && ientry % 5 != 0) continue;
         intree->GetEntry(ientry);
 	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
 	// Common selection
@@ -186,7 +184,7 @@ void plotZprime(const string selection, const string algo)
       if(isData && doBlind) {
         cout << endl;
       } else {
-        cout << nevts << " " << noweight  <<  endl;
+        cout << nevts << " " << noweight  <<  " " << fBits->scale1fb << endl;
       }
       delete infile;
       infile=0;

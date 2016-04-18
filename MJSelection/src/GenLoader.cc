@@ -148,7 +148,9 @@ void GenLoader::load(int iEvent) {
   fGens     ->Clear();
   fGenBr    ->GetEntry(iEvent);
   fGenInfoBr->GetEntry(iEvent);
+
   fWeight = fGenInfo->weight;
+
 }
 void GenLoader::fillGenEvent() { 
   fQ    = fGenInfo->scalePDF; 

@@ -65,7 +65,6 @@ int main( int argc, char **argv ) {
   if(lJSON.size() > 0) fRangeMap->AddJSONFile(lJSON.c_str());
 
   TTree *lTree = load(lName); 
-  float lWeight = (float(lXS)*1000.)/weight; if(lOption.find("data")!=std::string::npos) lWeight = 1.;
   
   // Declare Readers 
   fEvt      = new EvtLoader     (lTree,lName);                                           // fEvt, fEvtBr, fVertices, fVertexBr
@@ -80,7 +79,7 @@ int main( int argc, char **argv ) {
   TTree *lOut  = new TTree("Events","Events");
 
   // Setup Tree
-  fEvt     ->setupTree      (lOut,lWeight); 
+  fEvt     ->setupTree      (lOut); 
   fSbJet   ->setupTree      (lOut,"bst15_PUPPIjet"); 
 
   //
@@ -98,6 +97,7 @@ int main( int argc, char **argv ) {
     }
     else{
       fGen->load(i0);
+      fEvt->fScale = (float(lXS)*1000.*fGen->fWeight)/weight;
     }
 
     // Primary vertex requirement

@@ -79,15 +79,11 @@ int main( int argc, char **argv ) {
   fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
   if(lOption.compare("data")!=0) fGen      = new GenLoader     (lTree);                  // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
-  float lWeight = 1.;
-  if(lOption.compare("data")!=0) lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
-  std::cout << fGen->fWeight << std::endl;
-
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
 
   // Setup Tree
-  fEvt      ->setupTree      (lOut,lWeight); 
+  fEvt      ->setupTree      (lOut); 
   fJet      ->setupTree      (lOut,"res_PUPPIjet");
   fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
   fVJetCHS  ->setupTree      (lOut,"bst8_CHSjet"); 
@@ -104,11 +100,12 @@ int main( int argc, char **argv ) {
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
   // for(int i0 = 0; i0 < int(10); i0++){ // for testing
     //if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
-    
+
     // check GenInfo
     fEvt->load(i0);
     if(lOption.compare("data")!=0){
       fGen->load(i0);
+      fEvt->fScale = (float(lXS)*1000.*fGen->fWeight)/weight;
     }
     else{
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
@@ -143,21 +140,21 @@ int main( int argc, char **argv ) {
         
     // CA8Puppi Jets
     fVJetPuppi->load(i0);
-    fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,1.5);
+    fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,0.8);
     if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 2;}
     
     // AK8CHS Jets
-    fVJetCHS  ->load(i0); 
-    fVJetCHS  ->selectVJets(lVetoes,lVJets,lVJet,0.8);
-    if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
+    // fVJetCHS  ->load(i0); 
+    // fVJetCHS  ->selectVJets(lVetoes,lVJets,lVJet,0.8);
+    // if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
     // AK4Puppi Jets
     fJet      ->load(i0);
     fJet      ->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
-    if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 8;}
+    //    if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
     // Select only Puppi Jets                                       
-    // if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 8)) continue;
+    if(!(fEvt->fselectBits & 2)) continue;
 
     // ttbar, EWK and kFactor correction                                                                                                                                                    
     if(lName.find("ZJets")!=std::string::npos || lName.find("DYJets")!=std::string::npos){
