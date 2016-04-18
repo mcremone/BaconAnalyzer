@@ -39,8 +39,12 @@ bool ZprimeBitsLoader::selectJetAlgoAndSize(string selection, TString algo){
   return lPass;
 }
 bool ZprimeBitsLoader::passBoostedSelection(){
+<<<<<<< HEAD
   //  return njets>0 & bst_jet0_pt>500 & bst_jet0_tau21 < (-0.063*bst_jet0_rho + RHO_CUT) && bst_jet0_msd>40;
   return njets>0 & bst_jet0_pt>500;  
+=======
+  return njets>0 & bst_jet0_pt>500 & bst_jet0_tau21 < (-0.063*bst_jet0_rho + RHO_CUT) && bst_jet0_msd>40;
+>>>>>>> f9007993eefc33feaaf5746086c15c42c880313b
 }
 bool ZprimeBitsLoader::passSelection(string selection){
   bool lPass = false;	

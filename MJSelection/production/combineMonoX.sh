@@ -10,10 +10,10 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
     done
 fi
 
-if [[ ($sample = "All") || ($sample != "All" && $sample = "DY") ]]; then rm ../monoxbits/DY.root;    hadd  ../monoxbits/DY.root     ../monoxbits/*DYJets*_HT*jets/*.root; fi
+# if [[ ($sample = "All") || ($sample != "All" && $sample = "DY") ]]; then rm ../monoxbits/DY.root;    hadd  ../monoxbits/DY.root     ../monoxbits/*DYJets*_HT*jets/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYHF") ]]; then rm ../monoxbits/DYHF.root;    hadd  ../monoxbits/DYHF.root     ../monoxbits/*DYJets*_HT*mcdyplushf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYLF") ]]; then rm ../monoxbits/DYLF.root;    hadd  ../monoxbits/DYLF.root     ../monoxbits/*DYJets*_HT*mcdypluslf/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "DYNLO") ]]; then rm ../monoxbits/DYNLO.root;  hadd  ../monoxbits/DYNLO.root   ../monoxbits/*DYJetsToLL_M-50_MINIAOD*/*.root; fi
+# if [[ ($sample = "All") || ($sample != "All" && $sample = "DYNLO") ]]; then rm ../monoxbits/DYNLO.root;  hadd  ../monoxbits/DYNLO.root   ../monoxbits/*DYJetsToLL_M-50_MINIAOD*/*.root; fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "Z") ]]; then rm ../monoxbits/Z.root;    hadd  ../monoxbits/Z.root     ../monoxbits/*ZJetsToNuNu*jets/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZHF") ]]; then rm ../monoxbits/ZHF.root;    hadd  ../monoxbits/ZHF.root     ../monoxbits/*ZJets*_HT*mczplushf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZLF") ]]; then rm ../monoxbits/ZLF.root;    hadd  ../monoxbits/ZLF.root     ../monoxbits/*ZJets*_HT*mczpluslf/*.root; fi
