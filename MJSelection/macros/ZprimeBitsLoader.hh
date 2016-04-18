@@ -60,6 +60,7 @@ protected:
 
   const unsigned int kBOOSTED8PUPPI = 2;
   const unsigned int kBOOSTED8CHS = 4;
+  const float RHO_CUT = 0.38;
 
 };
 #endif
