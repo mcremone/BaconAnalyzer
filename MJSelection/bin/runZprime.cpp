@@ -81,6 +81,7 @@ int main( int argc, char **argv ) {
 
   float lWeight = 1.;
   if(lOption.compare("data")!=0) lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
+  std::cout << fGen->fWeight << std::endl;
 
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");

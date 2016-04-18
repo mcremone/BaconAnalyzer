@@ -13,8 +13,6 @@ GenLoader::GenLoader(TTree *iTree) {
   iTree->SetBranchAddress("GenParticle",       &fGens);
   fGenBr  = iTree->GetBranch("GenParticle");
   fBoson = 0;
-
-  fWeight = fGenInfo->weight;
 }
 GenLoader::~GenLoader() { 
   delete fGenInfo;
@@ -83,6 +81,7 @@ void GenLoader::reset() {
 void GenLoader::setupTree(TTree *iTree,float iXSIn) { 
   reset();
   fTree = iTree;
+
   // iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); fWeight = fGenInfo->weight;
   // iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F");   fXSIn = iXSIn;
 
@@ -149,6 +148,7 @@ void GenLoader::load(int iEvent) {
   fGens     ->Clear();
   fGenBr    ->GetEntry(iEvent);
   fGenInfoBr->GetEntry(iEvent);
+  fWeight = fGenInfo->weight;
 }
 void GenLoader::fillGenEvent() { 
   fQ    = fGenInfo->scalePDF; 

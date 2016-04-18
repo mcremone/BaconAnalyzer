@@ -10,7 +10,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then rm ../zprimebits/QCD.root;  hadd  ../zprimebits/QCD.root   ../zprimebits/*QCD*mc/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DY") ]]; then rm ../zprimebits/DY.root;    hadd  ../zprimebits/DY.root     ../zprimebits/*DYJets*/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "W") ]]; then rm ../zprimebits/W.root;    hadd  ../zprimebits/W.root     ../zprimebits/*WJets*mcwjets/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "W") ]]; then rm ../zprimebits/W.root;    hadd  ../zprimebits/W.root     ../zprimebits/*WJets*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "T") ]]; then rm ../zprimebits/T.root;    hadd  ../zprimebits/T.root     ../zprimebits/ST*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TT") ]]; then rm ../zprimebits/TT.root;   hadd  ../zprimebits/TT.root    ../zprimebits/*TTJets*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WW") ]]; then rm ../zprimebits/WW.root;   hadd  ../zprimebits/WW.root    ../zprimebits/*WW*/*.root; fi
