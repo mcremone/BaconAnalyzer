@@ -79,18 +79,18 @@ void plotZprime(const string selection, const string algo)
   samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/DY.root");
 
-  // samplev.push_back(new CSample("Zprime50",kOrange - 3,kOrange - 3));
-  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_50GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime100",kOrange - 4,kOrange - 4));
-  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_100GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime150",kOrange + 6,kOrange + 6));
-  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_150GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime200",kOrange + 8,kOrange + 8));
-  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_200GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime250",kOrange + 7,kOrange + 7));
-  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_250GeV_v4_mc.root");
-  // samplev.push_back(new CSample("Zprime300",kOrange + 9,kOrange + 9));
-  // samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_300GeV_v4_mc.root");
+  samplev.push_back(new CSample("Zprime50",kOrange - 3,kOrange - 3));
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_50GeV_v4_mc.root");
+  samplev.push_back(new CSample("Zprime100",kOrange - 4,kOrange - 4));
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_100GeV_v4_mc.root");
+  samplev.push_back(new CSample("Zprime150",kOrange + 6,kOrange + 6));
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_150GeV_v4_mc.root");
+  samplev.push_back(new CSample("Zprime200",kOrange + 8,kOrange + 8));
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_200GeV_v4_mc.root");
+  samplev.push_back(new CSample("Zprime250",kOrange + 7,kOrange + 7));
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_250GeV_v4_mc.root");
+  samplev.push_back(new CSample("Zprime300",kOrange + 9,kOrange + 9));
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_300GeV_v4_mc.root");
 
   // integrated luminosity to scale MC
   const double LUMI = 2.32;
@@ -135,12 +135,10 @@ void plotZprime(const string selection, const string algo)
     CSample *sample  = samplev[isam];
     cout << "Sample: " << sample->label << endl;
     bool isData    = (isam==0);
-    // bool isSignal1 = (isam==samplev.size()-1);
-    // bool isSignal2 = (isam==samplev.size()-2);
-    // bool isSignal3 = (isam==samplev.size()-3);                                                                                                                                    
-    // bool isSignal4 = (isam==samplev.size()-4);                                                                                                                                    
-    // bool isSignal5 = (isam==samplev.size()-5);    
-    // bool isSignal6 = (isam==samplev.size()-6);  
+    bool isSignal1 = (isam==samplev.size()-1);
+    bool isSignal2 = (isam==samplev.size()-2);
+    bool isSignal3 = (isam==samplev.size()-3);                                                                                              bool isSignal4 = (isam==samplev.size()-4);                                                                                              bool isSignal5 = (isam==samplev.size()-5);    
+    bool isSignal6 = (isam==samplev.size()-6);  
  
     for(unsigned int ifile=0; ifile<sample->fnamev.size(); ifile++) {
       string infilename = sample->fnamev[ifile];
@@ -153,10 +151,10 @@ void plotZprime(const string selection, const string algo)
       double nevts=0;
       int noweight=0;
 
-      std::cout << intree->GetEntries() << std::endl;
+      //      std::cout << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
 	// for(unsigned int ientry=0; ientry<600000; ientry++) {
-
+	//	if(!doBlind && ientry % 5 != 0) continue;
         intree->GetEntry(ientry);
 	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
 	// Common selection
@@ -186,7 +184,7 @@ void plotZprime(const string selection, const string algo)
       if(isData && doBlind) {
         cout << endl;
       } else {
-        cout << nevts << " " << noweight  <<  endl;
+        cout << nevts << " " << noweight  <<  " " << fBits->scale1fb << endl;
       }
       delete infile;
       infile=0;
@@ -204,7 +202,7 @@ void plotZprime(const string selection, const string algo)
   hFatJetTau21v[1] ->Scale(QCDSF);
   hSubjetBtagv[1]  ->Scale(QCDSF);
 
-  for(unsigned int isam=1; isam<samplev.size(); isam++) {
+  for(unsigned int isam=1; isam<samplev.size()-6; isam++) {
     hFatJetPtMC    ->Add(hFatJetPtv[isam]);
     hFatJetMassMC  ->Add(hFatJetMassv[isam]);
     hFatJetTau21MC ->Add(hFatJetTau21v[isam]);
@@ -241,7 +239,7 @@ void plotZprime(const string selection, const string algo)
   sprintf(txtfname,"%s/summary.txt",outputDir.c_str());
   txtfile.open(txtfname);
   txtfile << setprecision(2) << fixed;
-  float max = samplev.size();
+  float max = samplev.size()-6;
   //  if (subsample.compare("SR")==0) max = samplev.size()-2;    
   txtfile << setw(35) << samplev[1]->label;
   txtfile << setw(15) << neventsv[1]*QCDSF << endl;
@@ -321,18 +319,19 @@ void plotZprime(const string selection, const string algo)
 //--------------------------------------------------------------------------------------------------
 void makePlot(TCanvas *c, const string outname, const string xlabel, const string ylabel,
               const vector<TH1D*>& histv, const vector<CSample*>& samplev, TH1D* hExp, TH1D* hPull,
-              const bool doBlind, const double lumi, const bool doLogy, const double legdx, const double legdy,
+              bool doBlind, const double lumi, const bool doLogy, const double legdx, const double legdy,
               const double ymin, const double ymax, const string selection)
 {
   const int uncColor = kGray+3;
-
-  // Should divide by bin width
+  // should divide by bin width
   for (int iB=1; iB<hExp->GetNbinsX()+1; ++iB) {
     float currentVal = hExp->GetBinContent(iB);
     float currentErr = hExp->GetBinError(iB);
     float binWidth = hExp->GetBinWidth(iB);
     hExp->SetBinContent(iB,currentVal/binWidth);
+    //hExp->SetBinContent(iB,currentVal);
     hExp->SetBinError(iB,currentErr/binWidth);
+    //hExp->SetBinError(iB,currentErr);
   }
   for(unsigned int i=0; i<histv.size(); i++) {
     for (int iB=1; iB<histv[i]->GetNbinsX()+1; ++iB) {
@@ -340,7 +339,9 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
       float currentErr = histv[i]->GetBinError(iB);
       float binWidth = histv[i]->GetBinWidth(iB);
       histv[i]->SetBinContent(iB,currentVal/binWidth);
+      //histv[i]->SetBinContent(iB,currentVal);
       histv[i]->SetBinError(iB,currentErr/binWidth);
+      //histv[i]->SetBinError(iB,currentErr);
     }
   }
   
@@ -349,27 +350,38 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   CPlot plot(outname.c_str(),"",xlabel.c_str(),ylabel.c_str());  
   plot.AddHist1D(hExp,"E2",uncColor,1,3004);
   if(!doBlind) { plot.AddHist1D(histv[0],samplev[0]->label,"E"); }
-  float max = samplev.size();
+  float max = samplev.size()-6;
   //  if (subsample.compare("SR")==0) max = samplev.size()-2; 
   for(unsigned int i=1; i<max; i++) {
     plot.AddToStack(histv[i],samplev[i]->label,samplev[i]->fillcolor,samplev[i]->linecolor);
   }
+  // unsigned int i=0;
+  // if(selection == "BstMonoTop" || selection == "ResMonoTop")  i=histv.size()-6;
+  // if(selection == "BstMonoHiggs" || selection == "ResMonoHiggs")  i=histv.size()-5;
+  // if(selection == "BstMonoV" || selection == "ResMonoV")
+  //   {
+  //     if(subsample == "Zbb")  i=histv.size()-4;
+  //     //      if(subsample == "Zcc")  i=histv.size()-3;
+  //     if(subsample == "Wcs")  i=histv.size()-2;
+  //     if(subsample == "Vlf")  i=histv.size()-1;
+  //   }
 
-  //if (subsample.compare("SR")==0){
-  // for(unsigned int i=max; i<histv.size(); i++) {
-  //  plot.AddHist1D(histv[i],samplev[i]->label,"hist",samplev[i]->fillcolor,samplev[i]->linecolor);
-  // }
-  // }
-
-  // Add CMS label
+  // if(i!=0) 
+  //  if (subsample.compare("SR")==0 || subsample.find("Znunu")==0){
+  //  if (subsample.compare("SR")==0){
+    for(unsigned int i=max; i<histv.size(); i++) {
+      plot.AddHist1D(histv[i],samplev[i]->label,"hist",samplev[i]->fillcolor,samplev[i]->linecolor);
+    }
+    //  }
   char lumitext[100];
   sprintf(lumitext,"%.2f fb^{-1} (13 TeV)",lumi);
+  // plot.AddTextBox(lumitext,0.66,0.99,0.95,0.925,0,kBlack);
+  // plot.AddTextBox("CMS",0.68,0.88,0.80,0.82,0,kBlack,62);
+  // plot.AddTextBox("Preliminary",0.68,0.82,0.87,0.77,0,kBlack,52);
   plot.AddTextBox(lumitext,0.66,0.99,0.95,0.925,0,kBlack);
   plot.AddTextBox("CMS",0.18,0.88,0.30,0.82,0,kBlack,62);
   plot.AddTextBox("Preliminary",0.18,0.82,0.37,0.77,0,kBlack,52);
-  // const double xmin = histv[0]->GetXaxis()->GetBinLowEdge(1);
-  // const double xmax = histv[0]->GetXaxis()->GetBinUpEdge(histv[0]->GetNbinsX());
-  // plot.AddLine(xmin,0,xmax,0,kBlack,3);
+  //plot.AddTextBox("Work In Progress",0.18,0.82,0.37,0.77,0,kBlack,52);   
 
   plot.TransLegend(legdx, legdy);
   
@@ -391,9 +403,9 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
     hExpPull->SetBinContent(iB,1.);
     hExpPull->SetBinError(iB,currentErr/currentVal);
   }
-  CPlot plotPull(outname.c_str(),"",xlabel.c_str(),"Pull");
-  plotPull.AddHist1D(hExpPull,"E2",uncColor,1,3004);
+  CPlot plotPull(outname.c_str(),"",xlabel.c_str(),"Data / Pred.");
   plotPull.AddHist1D(hPull,"EX0",kBlack);
+  plotPull.AddHist1D(hExpPull,"E2",uncColor,1,3004);
   plotPull.SetYRange(0.,2.);
   plotPull.AddLine(xmin,1,xmax,1,kBlack,3);
 
@@ -420,10 +432,10 @@ TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind
     double numer = hData->GetBinContent(ibin);
     double denom = hMC->GetBinContent(ibin);
     double pull  = (denom>0) ? numer/denom : 0;
-    double err   = (denom>0) ? sqrt(hData->GetBinContent(ibin))/hMC->GetBinContent(ibin): 0;
-    
+    double err   = (denom>0) ? sqrt(hData->GetBinContent(ibin))/hMC->GetBinContent(ibin) : 0;
+
     if(doBlind) {
-      pull = 0;
+      pull = 1;
       err  = 1;
     }
 
@@ -433,7 +445,7 @@ TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind
   hPull->GetYaxis()->SetTitleOffset(0.42);
   hPull->GetYaxis()->SetTitleSize(0.13);
   hPull->GetYaxis()->SetLabelSize(0.10);
-  hPull->GetYaxis()->SetNdivisions(104);
+  hPull->GetYaxis()->SetNdivisions(5);
   hPull->GetYaxis()->CenterTitle();
   hPull->GetXaxis()->SetTitleOffset(1.2);
   hPull->GetXaxis()->SetTitleSize(0.13);
@@ -443,10 +455,59 @@ TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind
   return hPull;
 }
 
+//--------------------------------------------------------------------------------------------------
+void makeHTML(const string outputDir)
+{
+  enum { kBST_ONLY=0, kRES_ONLY, kMJ_ONLY, kBST_COMBO, kRES_COMBO, kMJ_COMBO, kBST_PRE, kRES_PRE, kMJ_PRE };
+
+  ofstream htmlfile;
+  char htmlfname[200];
+  sprintf(htmlfname,"%s/plots.html",outputDir.c_str());
+  htmlfile.open(htmlfname);
+  htmlfile << "<!DOCTYPE html" << endl;
+  htmlfile << " PUBLIC \"-//W3C//DTD HTML 3.2//EN\">" << endl;
+  htmlfile << "<html>" << endl;
+  htmlfile << "<head><title>B2G Selection</title></head>" << endl;
+  htmlfile << "<body bgcolor=\"EEEEEE\">" << endl;
+
+  htmlfile << "<table border=\"0\" cellspacing=\"5\" width=\"100%\">" << endl;
+  htmlfile << "<tr>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"met.png\"><img src=\"met.png\" alt=\"met.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"metlog.png\"><img src=\"metlog.png\" alt=\"metlog.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"njets.png\"><img src=\"njets.png\" alt=\"njets.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"nbjets.png\"><img src=\"nbjets.png\" alt=\"nbjets.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "</tr>" << endl;
+  htmlfile << "</table>" << endl;
+
+  htmlfile << "<table border=\"0\" cellspacing=\"5\" width=\"100%\">" << endl;
+  htmlfile << "<tr>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet1pt.png\"><img src=\"jet1pt.png\" alt=\"jet1pt.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet1eta.png\"><img src=\"jet1eta.png\" alt=\"jet1eta.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet1phi.png\"><img src=\"jet1phi.png\" alt=\"jet1phi.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"></td>" << endl;
+  htmlfile << "</tr>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet2pt.png\"><img src=\"jet2pt.png\" alt=\"jet2pt.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet2eta.png\"><img src=\"jet2eta.png\" alt=\"jet2eta.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet2phi.png\"><img src=\"jet2phi.png\" alt=\"jet2phi.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"></td>" << endl;
+  htmlfile << "</tr>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet3pt.png\"><img src=\"jet3pt.png\" alt=\"jet3pt.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet3eta.png\"><img src=\"jet3eta.png\" alt=\"jet3eta.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"><a target=\"_blank\" href=\"jet3phi.png\"><img src=\"jet3phi.png\" alt=\"jet3phi.png\" width=\"100%\"></a></td>" << endl;
+  htmlfile << "<td width=\"25%\"></td>" << endl;
+  htmlfile << "</tr>" << endl;
+  htmlfile << "</table>" << endl;
+  htmlfile << "<hr />" << endl;
+
+  htmlfile << "</body>" << endl;
+  htmlfile << "</html>" << endl;
+  htmlfile.close(); 
+}
 //--------------------------------------------------------------------------------------------------                                                                                                      
 float CalcSig(TH1D*sig, TH1D*bkg) {
   float fSig2 = 0;
   int nb = sig->GetNbinsX();
+  //  std::cout << "nb = " << nb << std::endl;
   for (int i = 0; i <= nb+1; i++) {
     if (sig->GetBinContent(i) > 0 && bkg->GetBinContent(i)>0) {
       fSig2 += pow(sig->GetBinContent(i),2)/bkg->GetBinContent(i);

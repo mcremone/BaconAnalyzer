@@ -91,11 +91,8 @@ int main( int argc, char **argv ) {
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
 
-  float lWeight = 1.;
-  if(lOption.find("data")==std::string::npos) lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
-
   // Setup Tree
-  fEvt     ->setupTree      (lOut,lWeight); 
+  fEvt     ->setupTree      (lOut); 
   fMuon    ->setupTree      (lOut);
   fElectron->setupTree      (lOut);
   fTau     ->setupTree      (lOut);
@@ -120,6 +117,7 @@ int main( int argc, char **argv ) {
     }
     else{
       fGen->load(i0);
+      fEvt->fScale = (float(lXS)*1000.*fGen->fWeight)/weight;
       if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
       if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
       if(lOption.find("tt")!=std::string::npos){

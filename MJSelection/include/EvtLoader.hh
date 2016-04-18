@@ -22,7 +22,7 @@ public:
 	    std::string iPUWeight="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAnalyzer/MJSelection/Json/puWeights_13TeV_25ns.root");
   ~EvtLoader(); 
   void reset();
-  void setupTree  (TTree *iTree,float iWeight);
+  void setupTree  (TTree *iTree);
   void load (int iEvent);
   //Fillers
   void fillEvent(unsigned int trigBit);

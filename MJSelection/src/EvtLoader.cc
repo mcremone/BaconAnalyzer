@@ -57,7 +57,7 @@ void EvtLoader::reset() {
   fFPuppEt      = 0;
   fFPuppEtPhi   = 0;
 }
-void EvtLoader::setupTree(TTree *iTree,float iWeight) {
+void EvtLoader::setupTree(TTree *iTree) {
   reset();
   fTree = iTree;
   fTree->Branch("runNum"          ,&fRun            ,"fRun/i");
@@ -87,7 +87,7 @@ void EvtLoader::setupTree(TTree *iTree,float iWeight) {
   fTree->Branch("fakepuppet"      ,&fFPuppEt        ,"fFPuppEt/F");
   fTree->Branch("fakepuppetphi"   ,&fFPuppEtPhi     ,"fFPuppEtPhi/F");
 
-  fScale = iWeight;
+  //  fScale = iWeight;
 }
 void EvtLoader::load(int iEvent) { 
   fVertices ->Clear();
