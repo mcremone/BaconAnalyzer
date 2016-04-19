@@ -43,6 +43,7 @@ void EvtLoader::reset() {
   fNVtx         = 0; 
   fNPU          = 0;
   fPUWeight     = 0; 
+  fScale        = 0;
   fevtWeight    = 0;
 
   fkfactor      = 0;
@@ -86,8 +87,6 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("fakepfmetphi"    ,&fFMetPhi        ,"fFMetPhi/F");
   fTree->Branch("fakepuppet"      ,&fFPuppEt        ,"fFPuppEt/F");
   fTree->Branch("fakepuppetphi"   ,&fFPuppEtPhi     ,"fFPuppEtPhi/F");
-
-  //  fScale = iWeight;
 }
 void EvtLoader::load(int iEvent) { 
   fVertices ->Clear();
