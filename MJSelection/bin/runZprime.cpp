@@ -86,7 +86,7 @@ int main( int argc, char **argv ) {
   fEvt      ->setupTree      (lOut); 
   fJet      ->setupTree      (lOut,"res_PUPPIjet");
   fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
-  fVJetCHS  ->setupTree      (lOut,"bst8_CHSjet"); 
+  // fVJetCHS  ->setupTree      (lOut,"bst8_CHSjet"); 
   // fMuon     ->setupTree      (lOut); 
   // fElectron ->setupTree      (lOut); 
   // fTau      ->setupTree      (lOut); 
