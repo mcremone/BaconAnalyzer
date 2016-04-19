@@ -3,9 +3,9 @@
 sample=$1
 option1=$2
 option2=$3
-dir="monoxbits"
+dir="razorbits"
 eos="/store/cmst3/group/monojet/production/08/"
-exec="runMonoX"
+exec="runRazor"
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then 
     ./sub.sh mc $eos QCD_HT100to200_13TeVRunIIFall15MiniAODv2_PU25nsData2015v1_76X_mcRun2_asymptotic_v12_v1  27500000  $dir $exec $option1 $option2
     ./sub.sh mc $eos QCD_HT200to300_13TeVRunIIFall15MiniAODv2_PU25nsData2015v1_76X_mcRun2_asymptotic_v12_v1   1735000  $dir $exec $option1 $option2
