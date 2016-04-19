@@ -1,4 +1,4 @@
-# no emacs temp files
+B1;3201;0c# no emacs temp files
 *~
 # no tables files
 *.tex
@@ -12,13 +12,20 @@ LSFJOB*
 # no python init file
 python/__init__.py
 *.root
-MJSelection/plot/ZPrimePlots/
+MJSelection/plot/ZprimePlots/
 MJSelection/plot/MonoXPlots/
 MJSelection/plot/RazorPlots/
 MJSelection/zprimebits/
 MJSelection/monoxbits/
 MJSelection/razorbits/
+MJSelection/singlebbits/
+MJSelection/training/plots/
+MJSelection/training/tmva_output/
+MJSelection/training/weights/
+MJSelection/training/validation/
 *.d
 *.so
 *.o
 *.pyc
+*.pcm
+./#*
