@@ -1,4 +1,4 @@
-B1;3201;0c# no emacs temp files
+# no emacs temp files
 *~
 # no tables files
 *.tex
@@ -29,3 +29,7 @@ MJSelection/training/validation/
 *.pyc
 *.pcm
 ./#*
+./__afs*
+MJSelection/macros/.__afs*
+MJSelection/plot/.__afs*
+MJSelection/production/.__afs*

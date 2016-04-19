@@ -67,4 +67,4 @@ Declare variables and preselection functions in macros/$YOURANALYSISBitsLoader.*
 
 Modify list of input baconbits in plot$YOURANALYSIS.C and input options(jet, systematics, etc.)
 
-       e.g. plotMonoX.C ONLY PUPPI CENT
+       e.g. `plotMonoX.C ONLY PUPPI CENT`
