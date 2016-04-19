@@ -199,7 +199,7 @@ int main( int argc, char **argv ) {
     
     // AK4Puppi Jets
     fJet->load(i0); 
-    fJet->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
+    fJet->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     if(lJets.size()>0){
       fEvt->fselectBits =  fEvt->fselectBits | 4;
       fEvt->fillmT(lJets,fJet->fMT);
