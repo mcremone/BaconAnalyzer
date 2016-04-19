@@ -44,6 +44,7 @@ double JetLoader::correction(TJet &iJet,float iRho) {
   return ((fJetCorr->getCorrection())*iJet.ptRaw);
 }
 void JetLoader::reset() { 
+  fNJetsAbove80GeV = 0;
   fNJets      = 0;
   fMT         = 0;
   fMinDPhi    = 1000;
@@ -67,6 +68,7 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   reset();
   fTree = iTree;
   fTree->Branch("nPUPPIjets"      ,&fNJets       ,"fNJets/I");                        // jet multiplicity
+  fTree->Branch("nPUPPIjetsAbove80GeV"      ,&fNJetsAbove80GeV       ,"fNJetsAbove80GeV/I");
   fTree->Branch("nPUPPIjetsdR2"   ,&fNJetsdR2    ,"fNJetsdR2/I");
   fTree->Branch("mindPhi"         ,&fMinDPhi     ,"fMinDPhi/D");
   fTree->Branch("mindFPhi"        ,&fMinDFPhi    ,"fMinDFPhi/D");
@@ -105,7 +107,7 @@ void JetLoader::load(int iEvent) {
 }
 void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMetPhi,float iFMet,float iFMetPhi){ //,float iRho) {
   reset(); 
-  int lCount = 0,lCountdR2 = 0,lNBTag = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0,lNBTagMdR2 = 0,lNBTagTdR2 = 0;
+  int lCount = 0,lCountAbove80GeV = 0,lCountdR2 = 0,lNBTag = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0,lNBTagMdR2 = 0,lNBTagTdR2 = 0;
   double pDPhi = 999;
   double pDFPhi = 999;
   for  (int i0 = 0; i0 < fJets->GetEntriesFast(); i0++) { 
@@ -116,6 +118,7 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
     if(fabs(pJet->eta) >= 4.5)                    continue;
     if(!passJetLooseSel(pJet))                    continue;
     lCount++;
+    if(pJet->pt        >  80) lCountAbove80GeV++;
     addJet(pJet,fSelJets);
     addVJet(pJet,iJets,pJet->mass);
 
@@ -144,6 +147,7 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
     }
   }
   fNJets      = lCount;
+  fNJetsAbove80GeV      = lCountAbove80GeV;
   fNJetsdR2   = lCountdR2;
   fMinDPhi    = pDPhi;
   fMinDFPhi   = pDFPhi;

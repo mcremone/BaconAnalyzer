@@ -44,6 +44,7 @@ public:
   const double CSVM = 0.89;
   const double CSVT = 0.97;
   int           fNJets;
+  int           fNJetsAbove80GeV;
   float         fMT;
   double        fMinDPhi;
   double        fMinDFPhi;
