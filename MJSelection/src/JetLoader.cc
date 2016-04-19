@@ -47,22 +47,22 @@ void JetLoader::resetBTag() {
   for(unsigned int i0 = 0; i0 < fBTagVars.size(); i0++) fBTagVars[i0] = 1;
 }
 void JetLoader::reset() { 
+  fNJets           = 0;
   fNJetsAbove80GeV = 0;
-  fNJets      = 0;
-  fMT         = 0;
-  fMinDPhi    = 1000;
-  fMinDFPhi   = 1000; 
-  fNBTags     = 0;
-  fNBTagsL    = 0;
-  fNBTagsM    = 0;
-  fNBTagsT    = 0;
-  fNBTagsLdR2 = 0;
-  fNBTagsMdR2 = 0;
-  fNBTagsTdR2 = 0;
-  falphaT     = -1;
-  fdPhiMin    = -1;
-  fMR         = -1;
-  fRsq        = -1;
+  fMT              = 0;
+  fMinDPhi         = 1000;
+  fMinDFPhi        = 1000; 
+  fNBTags          = 0;
+  fNBTagsL         = 0;
+  fNBTagsM         = 0;
+  fNBTagsT         = 0;
+  fNBTagsLdR2      = 0;
+  fNBTagsMdR2      = 0;
+  fNBTagsTdR2      = 0;
+  falphaT          = -1;
+  fdPhiMin         = -1;
+  fMR              = -1;
+  fRsq             = -1;
   fSelJets.clear();
   fGoodJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
@@ -71,26 +71,26 @@ void JetLoader::reset() {
 void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
   reset();
   fTree = iTree;
-  fTree->Branch("nPUPPIjets"      ,&fNJets       ,"fNJets/I");                        // jet multiplicity
-  fTree->Branch("nPUPPIjetsAbove80GeV"      ,&fNJetsAbove80GeV       ,"fNJetsAbove80GeV/I");
-  fTree->Branch("nPUPPIjetsdR2"   ,&fNJetsdR2    ,"fNJetsdR2/I");
-  fTree->Branch("mindPhi"         ,&fMinDPhi     ,"fMinDPhi/D");
-  fTree->Branch("mindFPhi"        ,&fMinDFPhi    ,"fMinDFPhi/D");
+  fTree->Branch("nPUPPIjets"                ,&fNJets           ,"fNJets/I");          // jet multiplicity
+  fTree->Branch("nPUPPIjetsAbove80GeV"      ,&fNJetsAbove80GeV ,"fNJetsAbove80GeV/I");
+  fTree->Branch("nPUPPIjetsdR2"             ,&fNJetsdR2        ,"fNJetsdR2/I");
+  fTree->Branch("mindPhi"                   ,&fMinDPhi         ,"fMinDPhi/D");
+  fTree->Branch("mindFPhi"                  ,&fMinDFPhi        ,"fMinDFPhi/D");
 
   std::stringstream pSMT;   
   pSMT << iJetLabel << "mT";
-  fTree->Branch(pSMT.str().c_str(),&fMT          ,(pSMT.str()+"/F").c_str());
+  fTree->Branch(pSMT.str().c_str()          ,&fMT              ,(pSMT.str()+"/F").c_str());
 
   for(int i0 = 0; i0 < fN*(10)+3; i0++) {double pVar = 0; fVars.push_back(pVar);}     // declare array of 43 vars
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);                                      // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi for j1,j2,j3,j4 (3*4=12)
   addOthers  (iJetLabel.c_str(),iTree,fN,fVars);                                      // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32 -6*4=24)
-  fTree->Branch("nbtags"          ,&fNBTags      ,"fNBTags/I");                       // b tags
-  fTree->Branch("nbPUPPIjetsL"    ,&fNBTagsL     ,"fNBTagsL/I");
-  fTree->Branch("nbPUPPIjetsM"    ,&fNBTagsM     ,"fNBTagsM/I");
-  fTree->Branch("nbPUPPIjetsT"    ,&fNBTagsT     ,"fNBTagsT/I");
-  fTree->Branch("nbPUPPIjetsLdR2" ,&fNBTagsLdR2  ,"fNBTagsLdR2/I");
-  fTree->Branch("nbPUPPIjetsTdR2" ,&fNBTagsMdR2  ,"fNBTagsMdR2/I");
-  fTree->Branch("nbPUPPIjetsMdR2" ,&fNBTagsTdR2  ,"fNBTagsTdR2/I");
+  fTree->Branch("nbtags"                    ,&fNBTags          ,"fNBTags/I");         // b tags
+  fTree->Branch("nbPUPPIjetsL"              ,&fNBTagsL         ,"fNBTagsL/I");
+  fTree->Branch("nbPUPPIjetsM"              ,&fNBTagsM         ,"fNBTagsM/I");
+  fTree->Branch("nbPUPPIjetsT"              ,&fNBTagsT         ,"fNBTagsT/I");
+  fTree->Branch("nbPUPPIjetsLdR2"           ,&fNBTagsLdR2      ,"fNBTagsLdR2/I");
+  fTree->Branch("nbPUPPIjetsTdR2"           ,&fNBTagsMdR2      ,"fNBTagsMdR2/I");
+  fTree->Branch("nbPUPPIjetsMdR2"           ,&fNBTagsTdR2      ,"fNBTagsTdR2/I");
 }
 void JetLoader::setupTreeDiJet(TTree *iTree, std::string iJetLabel) {
   reset();
@@ -167,18 +167,18 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
       if(iVJets.size()>0) {if(pJet->pt>0 && vPJet.DeltaR(iVJets[0])>2) lNBTagTdR2++;}
     }
   }
-  fNJets      = lCount;
-  fNJetsAbove80GeV      = lCountAbove80GeV;
-  fNJetsdR2   = lCountdR2;
-  fMinDPhi    = pDPhi;
-  fMinDFPhi   = pDFPhi;
-  fNBTags     = lNBTag;
-  fNBTagsL    = lNBTagL;
-  fNBTagsM    = lNBTagM;
-  fNBTagsT    = lNBTagT;
-  fNBTagsLdR2 = lNBTagLdR2;
-  fNBTagsMdR2 = lNBTagMdR2;
-  fNBTagsTdR2 = lNBTagTdR2;
+  fNJets           = lCount;
+  fNJetsAbove80GeV = lCountAbove80GeV;
+  fNJetsdR2        = lCountdR2;
+  fMinDPhi         = pDPhi;
+  fMinDFPhi        = pDFPhi;
+  fNBTags          = lNBTag;
+  fNBTagsL         = lNBTagL;
+  fNBTagsM         = lNBTagM;
+  fNBTagsT         = lNBTagT;
+  fNBTagsLdR2      = lNBTagLdR2;
+  fNBTagsMdR2      = lNBTagMdR2;
+  fNBTagsTdR2      = lNBTagTdR2;
   fillJet(fN,fSelJets,fVars);
   fillOthers(fN,fSelJets,fVars);
   fillRazor(iJets,iMet,iMetPhi);
