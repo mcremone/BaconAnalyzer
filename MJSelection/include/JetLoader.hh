@@ -16,6 +16,9 @@
 #include "BTagCalibrationStandalone.h"
 #include "BTagUnc.hh"
 
+// Razor utils
+#include "RazorUtils.hh"
+
 using namespace baconhep;
 
 class JetLoader { 
@@ -26,9 +29,10 @@ public:
   void resetBTag();
   void setupTree(TTree *iTree, std::string iJetLabel);
   void setupTreeDiJet(TTree *iTree, std::string iJetLabel);
+  void setupTreeRazor(TTree *iTree);
   void setupTreeBTag(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
-  void selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMetPhi,float iFMet,float iFMetPhi);
+  void selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMet,float iMetPhi,float iFMet,float iFMetPhi);
   std::vector<TJet*> fSelJets;
   std::vector<const TJet*> fGoodJets;
   //Fillers
@@ -38,15 +42,23 @@ public:
   void fillDiJet();
   void addBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> &iLabels,int iN,std::vector<float> &iVals);
   void fillBTag(std::vector<const TJet*> iObjects);
+  void fillRazor(std::vector<TLorentzVector> iJets,float iMet, float iFMet);
   double correction(TJet &iJet,float iRho);
 
   const double CSVL = 0.605;
   const double CSVM = 0.89;
   const double CSVT = 0.97;
+
   int           fNJets;
-  float         fMT;
+  int           fNJetsAbove80GeV;
   double        fMinDPhi;
   double        fMinDFPhi;
+  float         fMT;
+  float         fMR, fdeltaPhi;
+  float         fHT, fMHT;
+  float         falphaT, fdPhiMin;
+  float         fRsq; 
+
 protected: 
   TClonesArray *fJets;
   TBranch      *fJetBr;
