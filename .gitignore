@@ -5,9 +5,20 @@
 *.aux
 *.log
 *.pdf
+*.png
 LSFJOB*
 # no python compiled files:
 *pyc
 # no python init file
 python/__init__.py
 *.root
+MJSelection/plot/ZPrimePlots/
+MJSelection/plot/MonoXPlots/
+MJSelection/plot/RazorPlots/
+MJSelection/zprimebits/
+MJSelection/monoxbits/
+MJSelection/razorbits/
+*.d
+*.so
+*.o
+*.pyc
