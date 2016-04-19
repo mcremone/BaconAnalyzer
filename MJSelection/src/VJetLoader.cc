@@ -89,11 +89,6 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
     iVJet.push_back(ivJ);
   }
   fNVJets = lCount;
-  if(iJets.size() > 0){
-    TLorentzVector ivJ;
-    ivJ.SetPtEtaPhiM(fSelVJets[0]->pt,fSelVJets[0]->eta,fSelVJets[0]->phi,fSelVJets[0]->mass);
-    iVJet.push_back(ivJ);
-  }
   fillJet( fN,fSelVJets,fVars);
   fillVJet(fN,fSelVJets,fVars); 
 }

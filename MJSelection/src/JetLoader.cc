@@ -9,7 +9,7 @@ JetLoader::JetLoader(TTree *iTree,std::string btagScaleFactorFilename) {
   fJets  = new TClonesArray("baconhep::TJet");
   iTree->SetBranchAddress("AK4Puppi",       &fJets);
   fJetBr  = iTree->GetBranch("AK4Puppi");
-  fN = 4;
+  fN = 4; // 4 narrow jets
   std::vector<JetCorrectorParameters> corrParams;
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt"));
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt"));
@@ -43,6 +43,9 @@ double JetLoader::correction(TJet &iJet,float iRho) {
   fJetCorr->setJetEMF(-99.0);     
   return ((fJetCorr->getCorrection())*iJet.ptRaw);
 }
+void JetLoader::resetBTag() {
+  for(unsigned int i0 = 0; i0 < fBTagVars.size(); i0++) fBTagVars[i0] = 1;
+}
 void JetLoader::reset() { 
   fNJetsAbove80GeV = 0;
   fNJets      = 0;
@@ -56,13 +59,14 @@ void JetLoader::reset() {
   fNBTagsLdR2 = 0;
   fNBTagsMdR2 = 0;
   fNBTagsTdR2 = 0;
+  falphaT     = -1;
+  fdPhiMin    = -1;
+  fMR         = -1;
+  fRsq        = -1;
   fSelJets.clear();
   fGoodJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
-  for(unsigned int i0 = 0; i0 < fBTagVars.size(); i0++) fBTagVars[i0] = 1;
-}
-void JetLoader::resetBTag() {
-  for(unsigned int i0 = 0; i0 < fBTagVars.size(); i0++) fBTagVars[i0] = 1;
+  resetBTag();
 }
 void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
   reset();
@@ -72,8 +76,11 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch("nPUPPIjetsdR2"   ,&fNJetsdR2    ,"fNJetsdR2/I");
   fTree->Branch("mindPhi"         ,&fMinDPhi     ,"fMinDPhi/D");
   fTree->Branch("mindFPhi"        ,&fMinDFPhi    ,"fMinDFPhi/D");
-  std::stringstream pSMT;   pSMT << iJetLabel << "mT";
+
+  std::stringstream pSMT;   
+  pSMT << iJetLabel << "mT";
   fTree->Branch(pSMT.str().c_str(),&fMT          ,(pSMT.str()+"/F").c_str());
+
   for(int i0 = 0; i0 < fN*(10)+3; i0++) {double pVar = 0; fVars.push_back(pVar);}     // declare array of 43 vars
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);                                      // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi for j1,j2,j3,j4 (3*4=12)
   addOthers  (iJetLabel.c_str(),iTree,fN,fVars);                                      // Mass + b-tag + qgid + chf/nhf/emf + .. for j1,j2,j3,j4 (8*4=32 -6*4=24)
@@ -88,8 +95,19 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
 void JetLoader::setupTreeDiJet(TTree *iTree, std::string iJetLabel) {
   reset();
   fTree = iTree;
-  std::stringstream diJet;   diJet << "d" << iJetLabel;
+  std::stringstream diJet;   diJet << "dj" << iJetLabel;
   addDijet   (diJet.str().c_str(),iTree,1, fVars);                                    // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
+}
+void JetLoader::setupTreeRazor(TTree *iTree) {
+  reset();
+  fTree = iTree;
+  fTree->Branch("alphaT"          ,&falphaT     ,"falphaT/F");                        // alpha T
+  fTree->Branch("mindFPhi"        ,&fdPhiMin    ,"fdPhiMin/F");                       // dPhi Min
+  fTree->Branch("MR"              ,&fMR         ,"fMR/F");                            // MR
+  fTree->Branch("Rsq"             ,&fRsq        ,"fRsq/F");                           // Rsq 
+  fTree->Branch("deltaPhi"        ,&fdeltaPhi   ,"fdeltaPhi/F");                      // deltaPhi
+  fTree->Branch("HT"              ,&fHT         ,"fHT/F");                            // HT
+  fTree->Branch("MHT"             ,&fMHT        ,"fMHT/F");                           // MHT
 }
 void JetLoader::setupTreeBTag(TTree *iTree, std::string iJetLabel) {
   reset();
@@ -105,11 +123,12 @@ void JetLoader::load(int iEvent) {
   fJets   ->Clear();
   fJetBr ->GetEntry(iEvent);
 }
-void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMetPhi,float iFMet,float iFMetPhi){ //,float iRho) {
+void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMet,float iMetPhi,float iFMet,float iFMetPhi){ 
   reset(); 
   int lCount = 0,lCountAbove80GeV = 0,lCountdR2 = 0,lNBTag = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0,lNBTagMdR2 = 0,lNBTagTdR2 = 0;
-  double pDPhi = 999;
-  double pDFPhi = 999;
+  double pDPhi(999),pDFPhi(999);
+  float  pMhtX(0.), pMhtY(0.);
+
   for  (int i0 = 0; i0 < fJets->GetEntriesFast(); i0++) { 
     TJet *pJet = (TJet*)((*fJets)[i0]);
     if(pJet->csv > 0.89 && fabs(pJet->eta) < 2.5 && pJet->pt  > 15 && passJet04Sel(pJet) && !passVeto(pJet->eta,pJet->phi,0.4,iVetoes)) lNBTag++;
@@ -123,6 +142,8 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
     addVJet(pJet,iJets,pJet->mass);
 
     TLorentzVector vPJet; vPJet.SetPtEtaPhiM(pJet->pt, pJet->eta, pJet->phi, pJet->mass);
+    fHT += vPJet.Pt(); pMhtX += vPJet.Px(); pMhtY += vPJet.Py();
+
     if(iVJets.size()>0 && iVJets[0].Pt()>0 && vPJet.DeltaR(iVJets[0])>2){
       fGoodJets.push_back(pJet);
       lCountdR2++;
@@ -160,6 +181,9 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
   fNBTagsTdR2 = lNBTagTdR2;
   fillJet(fN,fSelJets,fVars);
   fillOthers(fN,fSelJets,fVars);
+  fillRazor(iJets,iMet,iMetPhi);
+  TLorentzVector fMyMHT; fMyMHT.SetPxPyPzE(-pMhtX, -pMhtY, 0, sqrt(pow(pMhtX,2) + pow(pMhtY,2)));
+  fMHT = fMyMHT.Pt();
 }
 void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 
   for(int i0 = 0; i0 < iN; i0++) { 
@@ -179,7 +203,7 @@ void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<do
     iTree->Branch(pSEMF .str().c_str() ,&iVals[lBase+5],(pSEMF  .str()+"/D").c_str());
   }
 }
-void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){ //,float iMetPhi,float iRho) { 
+void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){ 
   int lBase = 3.*fN;
   int lMin = iObjects.size();
   if(iN < lMin) lMin = iN;
@@ -213,7 +237,6 @@ void JetLoader::addDijet(std::string iHeader,TTree *iTree,int iN,std::vector<dou
  }
 }
 void JetLoader::fillDiJet() { 
-  //Select Di-jet
   float lMass = -1;
   TJet *pJet0=0,*pJet1=0;
   TLorentzVector lVec;
@@ -290,4 +313,11 @@ void JetLoader::fillBTag(std::vector<const TJet*> iObjects) {
     }
     iN += 20;
   }
+}
+void JetLoader::fillRazor(std::vector<TLorentzVector> iJets,float iMet, float iMetPhi) {
+  std::vector<TLorentzVector> hemispheres = getHemispheres( iJets );
+  TLorentzVector PFMET; PFMET.SetPtEtaPhiM(iMet, 0, iMetPhi, 0);
+  fMR       = computeMR(hemispheres[0], hemispheres[1]);
+  fRsq      = computeRsq(hemispheres[0], hemispheres[1], PFMET);
+  fdeltaPhi = fabs(hemispheres[0].DeltaPhi(hemispheres[1]));
 }
