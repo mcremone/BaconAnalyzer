@@ -25,7 +25,7 @@ class RazorBitsLoader {
 public:
   RazorBitsLoader(TTree *iTree=0,TString algo="PUPPI",TString syst, string preselection);		
   ~RazorBitsLoader();
-  bool selectJetAlgoAndSize(string selection, TString algo);
+  bool selectJetAlgoAndSize(TString algo);
   bool isHad();
   bool isMuo();
   bool isZmm();
@@ -34,8 +34,10 @@ public:
   bool isPho();
   bool passPreSelection(string preselection);
   bool passRazorPreSelection();
-  bool passRazorSR();
-  bool passSelection(string selection);
+  bool passRazorSR(string preselection);
+  bool passMonojetPreSelection();
+  bool passMonojetSR(string preselection);
+  bool passSelection(string preselection, string subsample, string combo);
 
   double getWgt(bool isData, TString algo, double LUMI);
   

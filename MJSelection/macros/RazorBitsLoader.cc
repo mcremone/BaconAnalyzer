@@ -4,7 +4,7 @@ using namespace std;
 RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string preselection) {
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
-    if(preselection.compare("Had")==0){
+    if(preselection.compare("Had")==0 || preselection.compare("MET")==0){
       iTree->SetBranchAddress("mindPhi",                             &min_dphijetsmet);
     }
     else{
@@ -68,7 +68,6 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("muoSF1",                            &muoSF1);
     iTree->SetBranchAddress("muoSF2",                            &muoSF2);
     iTree->SetBranchAddress("alphaT",                            &alphaT);
-    iTree->SetBranchAddress("mindFPhi",                          &dPhiMin);
     iTree->SetBranchAddress("MR",                                &MR);
     iTree->SetBranchAddress("Rsq",                               &Rsq);
     iTree->SetBranchAddress("deltaPhi",                          &deltaPhi);
@@ -77,51 +76,45 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
   }
 }
 RazorBitsLoader::~RazorBitsLoader(){}
-bool RazorBitsLoader::selectJetAlgoAndSize(string selection, TString algo){
+bool RazorBitsLoader::selectJetAlgoAndSize(TString algo){
   bool lPass = false;
-  if((selectBits & kRESOLVEDPUPPI) && selection.find("Res")==0 && algo=="PUPPI") lPass = true;
+  if((selectBits & kRESOLVEDPUPPI) && algo=="PUPPI") lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::isHad(){
   bool lPass = false;
   //  if((triggerBits & kHad) && nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true;
-  if nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true; 
+  if (nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true; 
   return lPass;
 }
 bool RazorBitsLoader::isMET(){
   bool lPass = false;
-  //  if((triggerBits & kMET) && nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true;
-  if nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true; 
+  if((triggerBits & kMET) && nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::isMuo(){
   bool lPass = false;
-  //  if((triggerBits & kSingleMuon) && nmu==1 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
-  if nmu==1 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;   
+  if((triggerBits & kSingleMuon) && nmu==1 && nele==0 && npho==0 && ntau==0) lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::isZmm(){
   bool lPass = false;
-  //  if((triggerBits & kSingleMuon) && nmu==2 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
-  if nmu==2 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
+  if((triggerBits & kSingleMuon) && nmu==2 && nele==0 && npho==0 && ntau==0) lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::isEle(){
   bool lPass = false;
-  //  if(((triggerBits & kSingleElectron) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==1 && npho==0 && ntau==0 && vmetpt>50 && (vfakemetpt!=0)) lPass = true;
-  if nmu==0 && nele==1 && npho==0 && ntau==0 && vmetpt>50 && (vfakemetpt!=0)) lPass = true;
+  if(((triggerBits & kSingleElectron) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==1 && npho==0 && ntau==0 && vmetpt>50) lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::isZee(){
   bool lPass = false;
-  //  if(((triggerBits & kSingleElectron) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==2 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
-  if nmu==0 && nele==2 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true; 
+  if(((triggerBits & kSingleElectron) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==2 && npho==0 && ntau==0) lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::isPho(){
   bool lPass = false;
-  //  if((triggerBits & kSinglePhoton) && nmu==0 && nele==0 && npho==1 && ntau==0 && (vfakemetpt!=0)) lPass = true;
-  if nmu==0 && nele==0 && npho==1 && ntau==0 && (vfakemetpt!=0)) lPass = true;
+  if((triggerBits & kSinglePhoton) && nmu==0 && nele==0 && npho==1 && ntau==0) lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::passPreSelection(string preselection){
@@ -139,42 +132,27 @@ bool RazorBitsLoader::passRazorPreselection(){
   bool lPass = false;
   return lPass;
 }
-bool RazorBitsLoader::passRazorSR(){ 
-  return passRazorPreselection();
+bool RazorBitsLoader::passMonojetPreselection(){
+  bool lPass = false;
+  if(njets>0 && 
+     res_jet0_pt>100 &&
+     min_dphijetsmet>0.5 &&
+     nbjetsL==0) lPass = true;
+  return lPass;
+}
+bool RazorBitsLoader::passRazorSR(string preselection){ 
+  return passPreSelection(preselection) & passRazorPreselection();
+}
+bool RazorBitsLoader::passMonojetSR(string preselection){
+  return passPreSelection(preselection) & (vmetpt>200) & passMonojetPreselection();
 }
 bool RazorBitsLoader::passSelection(string preselection, string subsample, string combo){
   bool lPass = false;	
-  if (subsample == "SR" && passBoostedMonoTopSR(preselection) 
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0; lPass = true;}
-
-  if (subsample == "QCDCR" && passBoostedMonoTopQCDCR(preselection)
-      && (combo=="ONLY" || combo=="COMBO")) {lPass = true;}
-
-  if (subsample == "TopCR" && passBoostedMonoTopTopCR(preselection) 
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL1; lPass = true;}
-  if (subsample == "minusTau32" && passBoostedMonoTopTopCRminusTau32(preselection)
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL1; lPass = true;}
-  if (subsample == "minusMass" && passBoostedMonoTopTopCRminusMass(preselection)
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL1; lPass = true;}
-  if (subsample == "minusBtag" && passBoostedMonoTopTopCRminusBtag(preselection)
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL1; lPass = true;}
-
-  if (subsample == "WCR" && passBoostedMonoTopWCR(preselection) 
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0; lPass = true;}
-  if (subsample == "WHFCR" && passBoostedMonoTopWHFCR(preselection) 
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwM1; lPass = true;}
-  if (subsample == "WLFCR" && passBoostedMonoTopWLFCR(preselection) 
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwM0; lPass = true;}
-
-  if (subsample == "ZCR" && passBoostedMonoTopZCR(preselection) 
-      && (combo=="ONLY" || combo=="COMBO")) lPass = true;
-  if (subsample == "ZHFCR" && passBoostedMonoTopZHFCR(preselection) 
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwLminus1; lPass = true;}
-  if (subsample == "ZLFCR" && passBoostedMonoTopZLFCR(preselection) 
-      && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0; lPass = true;}
+  if (subsample == "SR" && passRazorSR(preselection) 
+      && (combo=="ONLY" || (combo=="COMBO" && !passMonojetSR(preselection))) lPass = true;
   return lPass;
 }
-double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI, float btagw){
+double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){
   float wgt = 1;
   if(!isData) {     
     wgt *= LUMI*scale1fb*kfactor*res_btagwL0*triggerEff*evtWeight;
