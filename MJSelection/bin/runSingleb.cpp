@@ -94,6 +94,7 @@ int main( int argc, char **argv ) {
     fEvt->load(i0);
     if(lOption.find("data")!=std::string::npos){
       if(!passEvent(fEvt->fRun,fEvt->fLumi))                                                              continue;
+      fEvt->fScale = 1;
     }
     else{
       fGen->load(i0);

@@ -108,6 +108,7 @@ int main( int argc, char **argv ) {
       fEvt->fScale = (float(lXS)*1000.*fGen->fWeight)/weight;
     }
     else{
+      fEvt->fScale = 1;
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
     }
 

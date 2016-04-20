@@ -43,7 +43,6 @@ void EvtLoader::reset() {
   fNVtx         = 0; 
   fNPU          = 0;
   fPUWeight     = 0; 
-  fScale        = 0;
   fevtWeight    = 0;
 
   fkfactor      = 0;
