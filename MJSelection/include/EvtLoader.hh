@@ -25,7 +25,7 @@ public:
   void setupTree  (TTree *iTree);
   void load (int iEvent);
   //Fillers
-  void fillEvent(unsigned int trigBit);
+  void fillEvent(unsigned int trigBit, float lWeight);
   bool passSkim();
   TLorentzVector Met(int iOption);
   //Trigger

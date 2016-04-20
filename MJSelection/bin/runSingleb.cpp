@@ -92,13 +92,13 @@ int main( int argc, char **argv ) {
     
     // Check Json and GenInfo
     fEvt->load(i0);
+    float lWeight = 1;
     if(lOption.find("data")!=std::string::npos){
       if(!passEvent(fEvt->fRun,fEvt->fLumi))                                                              continue;
-      fEvt->fScale = 1;
     }
     else{
       fGen->load(i0);
-      fEvt->fScale = (float(lXS)*1000.*fGen->fWeight)/weight;
+      lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
     }
 
     // Primary vertex requirement
@@ -109,7 +109,7 @@ int main( int argc, char **argv ) {
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVetoes;
     fMuon     ->load(i0);
     fMuon     ->selectMuons(lMuons);
-    fEvt      ->fillEvent(trigbits);
+    fEvt      ->fillEvent(trigbits,lWeight);
     fElectron ->load(i0);
     fElectron ->selectElectrons(fEvt->fRho,lElectrons);
 

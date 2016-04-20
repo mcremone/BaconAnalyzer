@@ -112,13 +112,13 @@ int main( int argc, char **argv ) {
     
     // Check json and GenInfo
     fEvt->load(i0);
+    float lWeight = 1;
     if(lOption.find("data")!=std::string::npos){
       if(!passEvent(fEvt->fRun,fEvt->fLumi))                                                              continue;
-      fEvt->fScale = 1;
     }
     else{
       fGen->load(i0);
-      fEvt->fScale = (float(lXS)*1000.*fGen->fWeight)/weight;
+      lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
       if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
       if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
       if(lOption.find("tt")!=std::string::npos){
@@ -157,7 +157,7 @@ int main( int argc, char **argv ) {
     fMuon     ->load(i0);
     fMuon     ->selectMuons(lMuons);
     
-    fEvt      ->fillEvent(trigbits);
+    fEvt      ->fillEvent(trigbits,lWeight);
     
     // Electrons
     fElectron ->load(i0);

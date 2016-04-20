@@ -41,6 +41,7 @@ void EvtLoader::reset() {
   fNVtx         = 0; 
   fNPU          = 0;
   fPUWeight     = 0; 
+  fScale        = 1;
   fevtWeight    = 0;
   fkfactor      = 0;
   fkFactor_CENT = 0;
@@ -85,7 +86,6 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("fakepuppet"      ,&fFPuppEt        ,"fFPuppEt/F");
   fTree->Branch("fakepuppetphi"   ,&fFPuppEtPhi     ,"fFPuppEtPhi/F");
 
-  fScale = 1;
   fRun   = 0;
   fLumi  = 0;
 }
@@ -104,13 +104,16 @@ bool EvtLoader::passSkim() {
   bool lFilter = fMetFilters % 2 == 0; 
   return (lMet && lFilter); 
 }
-void EvtLoader::fillEvent(unsigned int trigBit) { 
+void EvtLoader::fillEvent(unsigned int trigBit,float lWeight) { 
   reset();
+  fRun          = fEvt->runNum;
+  fLumi         = fEvt->lumiSec;
   fNPU          = fEvt->nPUmean;
   fNVtx         = nVtx();
   fITrigger     = trigBit;
   fselectBits   = 1;
   fPUWeight     = puWeight(float(fNVtx)); 
+  fScale        = lWeight;
   fevtWeight    = 1;
   fMetFilters   = fEvt->metFilterFailBits;
   fEvtV         = fEvt->evtNum;

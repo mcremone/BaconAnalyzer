@@ -103,12 +103,12 @@ int main( int argc, char **argv ) {
 
     // check GenInfo
     fEvt->load(i0);
+    float lWeight = 1;
     if(lOption.compare("data")!=0){
       fGen->load(i0);
-      fEvt->fScale = (float(lXS)*1000.*fGen->fWeight)/weight;
+      lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
     }
     else{
-      fEvt->fScale = 1;
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
     }
 
@@ -123,10 +123,10 @@ int main( int argc, char **argv ) {
        ) 
       trigbits = trigbits | 2; 
     // if(trigbits==1) continue;
+    fEvt      ->fillEvent(trigbits,lWeight);
     
     // Objects
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJets, lVJet, lVetoes;
-    fEvt      ->fillEvent(trigbits);
     fMuon     ->load(i0);
     fMuon     ->selectMuons(lMuons);
     fElectron ->load(i0);
