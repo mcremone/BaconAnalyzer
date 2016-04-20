@@ -478,8 +478,6 @@ int GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double 
 	// if (vDau2.DeltaR(jet) > dR) return false;
         tmpTopMatching = TMath::Max(tmpTopMatching,jet.DeltaR(vDau2));
         tmpTopSize     = TMath::Max(tmpTopSize,vTop.DeltaR(vDau2));
-        topMatching    = TMath::Sqrt(tmpTopMatching);
-	topSize        = TMath::Sqrt(tmpTopSize);
 	return 1;
       }
     }
