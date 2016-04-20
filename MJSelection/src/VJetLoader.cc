@@ -28,6 +28,7 @@ void VJetLoader::reset() {
   fNVJets        = 0; 
   fVMT           = 0;
   ftopSize       = 999;
+  ftopMatching   = 999;
   fisHadronicTop = 0;
   fSelVJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
@@ -51,7 +52,9 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
   std::stringstream pSNJ;   pSNJ << iJetLabel << "s";
   std::stringstream pSis;   pSis << iJetLabel << "0_isHadronicTop";
+  std::stringstream pSTM;   pSTM << iJetLabel << "0_topMatching";
   std::stringstream pSTS;   pSTS << iJetLabel << "0_topSize";
+
   fTree = iTree;
   fTree->Branch(pSNJ.str().c_str() ,&fNVJets        ,(pSNJ.str()+"/I").c_str());
   for(int i0 = 0; i0 < fN*4.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
@@ -60,6 +63,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,fN*3,fLabels);
   fTree->Branch(pSMT.str().c_str() ,&fVMT           ,(pSMT.str()+"/F").c_str());
   fTree->Branch(pSis.str().c_str() ,&fisHadronicTop ,(pSis.str()+"/I").c_str());
+  fTree->Branch(pSTM.str().c_str() ,&ftopMatching   ,(pSTM.str()+"/D").c_str());
   fTree->Branch(pSTS.str().c_str() ,&ftopSize       ,(pSTS.str()+"/D").c_str());
 }
 void VJetLoader::load(int iEvent) { 

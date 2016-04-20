@@ -127,7 +127,7 @@ int main( int argc, char **argv ) {
     fSbJet->selectSbJets(lVetoes,lJets,1.5);    
     if(lJets.size()>0){ 
       if(lOption.compare("mcsig")==0){
-	fSbJet->fisHadronicTop = fGen->ismatchedJet(lJets[0],1.5,fSbJet->ftopSize);
+	fSbJet->fisHadronicTop = fGen->ismatchedJet(lJets[0],1.5,fSbJet->ftopMatching,fSbJet->ftopSize);
 	// if(fSbJet->fisHadronicTop == 1 && fSbJet->ftopSize<1.5) select = true;
       }
       select = true;

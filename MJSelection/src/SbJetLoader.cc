@@ -28,6 +28,7 @@ void SbJetLoader::reset() {
   fNSbJets       = 0; 
   fVMT           = 0;
   ftopSize       = 999;
+  ftopMatching   = 999;
   fisHadronicTop = 0;
   fSelSbJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
@@ -104,6 +105,7 @@ void SbJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch("nbHadrons"       ,&fnbHadrons        ,"fnbHadrons/I");
   fTree->Branch("ncHadrons"       ,&fncHadrons        ,"fncHadrons/I");
   fTree->Branch("topSize"         ,&ftopSize          ,"ftopSize/D");
+  fTree->Branch("topMatching"     ,&ftopMatching      ,"ftopMatching/D");
   fTree->Branch("isHadronicTop"   ,&fisHadronicTop    ,"fisHadronicTop/I");
 }
 void SbJetLoader::load(int iEvent) { 

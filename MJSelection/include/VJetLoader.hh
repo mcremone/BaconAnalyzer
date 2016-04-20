@@ -27,7 +27,7 @@ public:
   float pullDot(float iY1,float iY2,float iPhi1,float iPhi2);
   TJet* getLargeJet(TJet *iMatch);
   std::vector<TJet*> fSelVJets;
-  double ftopSize;
+  double ftopSize, ftopMatching;
   int fisHadronicTop;
   float fVMT;
 protected: 

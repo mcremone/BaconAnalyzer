@@ -23,7 +23,7 @@ public:
   void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,std::vector<float> &iSbVals);
   TAddJet *getAddJet(TJet *iJet);
   std::vector<TJet*> fSelSbJets;
-  double ftopSize;
+  double ftopSize, ftopMatching;
   int fisHadronicTop;
   float fVMT;
 protected: 

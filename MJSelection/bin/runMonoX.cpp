@@ -192,7 +192,7 @@ int main( int argc, char **argv ) {
     fVJet->load(i0);
     fVJet->selectVJets(lVetoes,lVJets,lVJet,1.5);
     if(lVJets.size()>0) { 
-      if(lOption.find("data")==std::string::npos)	fVJet->fisHadronicTop = fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopSize);
+      if(lOption.find("data")==std::string::npos)	fVJet->fisHadronicTop = fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopMatching,fVJet->ftopSize);
       fEvt->fselectBits = fEvt->fselectBits | 2;
       fEvt->fillmT(lVJet,fVJet->fVMT);
     }
