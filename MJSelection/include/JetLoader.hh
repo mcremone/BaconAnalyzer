@@ -55,7 +55,7 @@ public:
   double        fMinDPhi;
   double        fMinDFPhi;
   float         fMR, fdeltaPhi;
-  float         fHT, fMHT;
+  float         fHT, fMHT, fMT2;
   float         falphaT, fdPhiMin;
   float         fRsq; 
 

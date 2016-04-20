@@ -118,8 +118,8 @@ fi
 #     ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_05Oct_MINIAOD                                                   1  $dir $exec $option1 $option2
 #     ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_v4_MINIAOD                                                      1  $dir $exec $option1 $option2
 # fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "DiJet") ]]; then
-    ./sub.sh mc $eos Fall15_GluGlu_HToInvisible_M110_13TeV_powheg_pythia8                                           1  $dir $exec $option1 $option2
+# if [[ ($sample = "All") || ($sample != "All" && $sample = "DiJet") ]]; then
+#     ./sub.sh mc $eos Fall15_GluGlu_HToInvisible_M110_13TeV_powheg_pythia8                                           1  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Fall15_GluGlu_HToInvisible_M125_13TeV_powheg_pythia8                                           1  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Fall15_GluGlu_HToInvisible_M150_13TeV_powheg_pythia8                                           1  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Fall15_GluGlu_HToInvisible_M200_13TeV_powheg_pythia8                                           1  $dir $exec $option1 $option2
@@ -127,7 +127,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "DiJet") ]]; then
 #     ./sub.sh mc $eos Fall15_GluGlu_HToInvisible_M400_13TeV_powheg_pythia8                                           1  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Fall15_GluGlu_HToInvisible_M500_13TeV_powheg_pythia8                                           1  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Fall15_GluGlu_HToInvisible_M600_13TeV_powheg_pythia8                                           1  $dir $exec $option1 $option2
-fi
+# fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
 #    ./sub.sh data $eos SingleElectron_Run2015D_PrReco_v4_MINIAOD                                                    1  $dir $exec $option1 $option2   
 #     ./sub.sh data $eos SingleElectron_Run2015D_PrReco_05Oct_MINIAOD                                                 1  $dir $exec $option1 $option2

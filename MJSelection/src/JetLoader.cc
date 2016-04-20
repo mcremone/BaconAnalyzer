@@ -63,6 +63,9 @@ void JetLoader::reset() {
   fdPhiMin         = -1;
   fMR              = -1;
   fRsq             = -1;
+  fHT              = 0;
+  fMHT             = 0;
+  fMT2             = 0;
   fSelJets.clear();
   fGoodJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
@@ -108,6 +111,7 @@ void JetLoader::setupTreeRazor(TTree *iTree) {
   fTree->Branch("deltaPhi"        ,&fdeltaPhi   ,"fdeltaPhi/F");                      // deltaPhi
   fTree->Branch("HT"              ,&fHT         ,"fHT/F");                            // HT
   fTree->Branch("MHT"             ,&fMHT        ,"fMHT/F");                           // MHT
+  // fTree->Branch("MT2"             ,&fMT2        ,"fMT2/F");                           // MT2
 }
 void JetLoader::setupTreeBTag(TTree *iTree, std::string iJetLabel) {
   reset();
@@ -181,6 +185,7 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
   fNBTagsTdR2      = lNBTagTdR2;
   fillJet(fN,fSelJets,fVars);
   fillOthers(fN,fSelJets,fVars);
+  fillDiJet();
   fillRazor(iJets,iMet,iMetPhi);
   TLorentzVector fMyMHT; fMyMHT.SetPxPyPzE(-pMhtX, -pMhtY, 0, sqrt(pow(pMhtX,2) + pow(pMhtY,2)));
   fMHT = fMyMHT.Pt();
@@ -317,7 +322,9 @@ void JetLoader::fillBTag(std::vector<const TJet*> iObjects) {
 void JetLoader::fillRazor(std::vector<TLorentzVector> iJets,float iMet, float iMetPhi) {
   std::vector<TLorentzVector> hemispheres = getHemispheres( iJets );
   TLorentzVector PFMET; PFMET.SetPtEtaPhiM(iMet, 0, iMetPhi, 0);
+  // float testMass = -1.;
   fMR       = computeMR(hemispheres[0], hemispheres[1]);
   fRsq      = computeRsq(hemispheres[0], hemispheres[1], PFMET);
   fdeltaPhi = fabs(hemispheres[0].DeltaPhi(hemispheres[1]));
+  // fMT2      = calcMT2(testMass, kFalse, iJets, PFMET, 0, 0);
 }
