@@ -122,7 +122,7 @@ int main( int argc, char **argv ) {
        // fEvt ->passTrigger("HLT_PFHT800_v*")
        ) 
       trigbits = trigbits | 2; 
-    if(trigbits==1) continue;
+    // if(trigbits==1) continue;
     
     // Objects
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJets, lVJet, lVetoes;
