@@ -23,16 +23,13 @@ using namespace std;
 
 class ZprimeBitsLoader {
 public:
-  ZprimeBitsLoader(TTree *iTree=0,TString jet="8",TString algo="PUPPI");		
+  ZprimeBitsLoader(TTree *iTree=0,TString algo="PUPPI");		
   ~ZprimeBitsLoader();
-  bool selectJetAlgoAndSize(string selection, TString algo);
-  bool passBoostedSelection();
+  bool selectJetAlgoAndSize(TString algo);
+  bool passBoostedZprimePreselection();
+  bool passBoostedZprimeSR();
   bool passSelection(string selection);
-
   double getWgt(bool isData, TString algo, double LUMI);
-  float fjet_mass(string selection);
-  float nsubjet(string selection);
-  float btag(string selection);
   
   //
   // variables to read in bacon bits
@@ -59,7 +56,6 @@ public:
 protected:
 
   const unsigned int kBOOSTED8PUPPI = 2;
-  const unsigned int kBOOSTED8CHS = 4;
   const float RHO_CUT = 0.38;
 
 };
