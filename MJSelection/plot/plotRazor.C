@@ -73,9 +73,6 @@ void plotRazor(const string preselection, const string selection, const string s
     samplev.back()->fnamev.push_back("../razorbits/T.root");
     samplev.back()->fnamev.push_back("../razorbits/TZ.root");
     samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
-    // samplev.back()->fnamev.push_back("../razorbits/TT1L.root");
-    // samplev.back()->fnamev.push_back("../razorbits/TT2L.root");
-    // samplev.back()->fnamev.push_back("../razorbits/TTHAD.root");
     samplev.back()->fnamev.push_back("../razorbits/TT.root");
     samplev.back()->fnamev.push_back("../razorbits/TTZ.root");
     samplev.back()->fnamev.push_back("../razorbits/TTG.root");
@@ -84,12 +81,9 @@ void plotRazor(const string preselection, const string selection, const string s
     samplev.back()->fnamev.push_back("../razorbits/WZ.root");
     samplev.back()->fnamev.push_back("../razorbits/ZZ.root");
     samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
-    // samplev.back()->fnamev.push_back("../razorbits/W.root");
     samplev.back()->fnamev.push_back("../razorbits/WHF.root");
-    // samplev.push_back(new CSample("W+LF",kGreen - 7,kGreen - 7));
     samplev.back()->fnamev.push_back("../razorbits/WLF.root");
     samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
-    // samplev.back()->fnamev.push_back("../razorbits/Z.root");
     samplev.back()->fnamev.push_back("../razorbits/ZHF.root");   
     samplev.back()->fnamev.push_back("../razorbits/ZLF.root");
     samplev.back()->fnamev.push_back("../razorbits/DYHF.root");
@@ -97,7 +91,6 @@ void plotRazor(const string preselection, const string selection, const string s
   }
   if (preselection.compare("Pho")==0){
     samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
-    //    samplev.back()->fnamev.push_back("../razorbits/G.root");
     samplev.back()->fnamev.push_back("../razorbits/GHF.root");
     samplev.back()->fnamev.push_back("../razorbits/GLF.root");
   }

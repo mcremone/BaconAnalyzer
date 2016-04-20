@@ -61,12 +61,19 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("nele",                              &nele);
     iTree->SetBranchAddress("ntau",                              &ntau);
     iTree->SetBranchAddress("npho",                              &npho);
-    iTree->SetBranchAddress("eleSF0",                                &eleSF0);
-    iTree->SetBranchAddress("eleSF1",                                &eleSF1);
-    iTree->SetBranchAddress("eleSF2",                                &eleSF2);
-    iTree->SetBranchAddress("muoSF0",                                &muoSF0);
-    iTree->SetBranchAddress("muoSF1",                                &muoSF1);
-    iTree->SetBranchAddress("muoSF2",                                &muoSF2);
+    iTree->SetBranchAddress("eleSF0",                            &eleSF0);
+    iTree->SetBranchAddress("eleSF1",                            &eleSF1);
+    iTree->SetBranchAddress("eleSF2",                            &eleSF2);
+    iTree->SetBranchAddress("muoSF0",                            &muoSF0);
+    iTree->SetBranchAddress("muoSF1",                            &muoSF1);
+    iTree->SetBranchAddress("muoSF2",                            &muoSF2);
+    iTree->SetBranchAddress("alphaT",                            &alphaT);
+    iTree->SetBranchAddress("mindFPhi",                          &dPhiMin);
+    iTree->SetBranchAddress("MR",                                &MR);
+    iTree->SetBranchAddress("Rsq",                               &Rsq);
+    iTree->SetBranchAddress("deltaPhi",                          &deltaPhi);
+    iTree->SetBranchAddress("HT",                                &HT);
+    iTree->SetBranchAddress("MHT",                               &MHT);
   }
 }
 RazorBitsLoader::~RazorBitsLoader(){}
