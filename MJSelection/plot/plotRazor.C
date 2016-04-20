@@ -125,14 +125,15 @@ void plotRazor(const string preselection, const string selection, const string s
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",NBINS,edges));            hMETv[isam]->Sumw2();
     sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",NBINS,edges));         hMETLogv[isam]->Sumw2();
-    sprintf(hname,"hHT_%i",isam);             hHTv.push_back(new TH1D(hname,"",NBINS,edges));             hHTv[isam]->Sumw2();
-    sprintf(hname,"hMHT_%i",isam);            hMHTv.push_back(new TH1D(hname,"",NBINS,edges));            hMHTv[isam]->Sumw2();
+    sprintf(hname,"hHT_%i",isam);             hHTv.push_back(new TH1D(hname,"",20,100,600));              hHTv[isam]->Sumw2();
+    sprintf(hname,"hMHT_%i",isam);            hMHTv.push_back(new TH1D(hname,"",30,300,2000));            hMHTv[isam]->Sumw2();
     sprintf(hname,"hNJets_%i",isam);          hNJetsv.push_back(new TH1D(hname,"",10,0,10));              hNJetsv[isam]->Sumw2();
-    sprintf(hname,"halphaT_%i",isam);         halphaTv.push_back(new TH1D(hname,"",NBINS,edges));         halphaTv[isam]->Sumw2();
-    sprintf(hname,"hmindFPhi_%i",isam);       hmindFPhiv.push_back(new TH1D(hname,"",NBINS,edges));       hmindFPhiv[isam]->Sumw2();
-    sprintf(hname,"hMR_%i",isam);             hMRv.push_back(new TH1D(hname,"",NBINS,edges));             hMRv[isam]->Sumw2();
-    sprintf(hname,"hRsq_%i",isam);            hRsqv.push_back(new TH1D(hname,"",NBINS,edges));            hRsqLogv[isam]->Sumw2();
-    sprintf(hname,"hdeltaPhi_%i",isam);       hdeltaPhiv.push_back(new TH1D(hname,"",NBINS,edges));       hdeltaPhiv[isam]->Sumw2();
+    sprintf(hname,"halphaT_%i",isam);         halphaTv.push_back(new TH1D(hname,"",20,0,2.5));            halphaTv[isam]->Sumw2();
+    sprintf(hname,"hmindFPhi_%i",isam);       hmindFPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hmindFPhiv[isam]->Sumw2();
+    sprintf(hname,"hMR_%i",isam);             hMRv.push_back(new TH1D(hname,"",20,500,3500));             hMRv[isam]->Sumw2();
+    sprintf(hname,"hRsq_%i",isam);            hRsqv.push_back(new TH1D(hname,"",20,0.2,1.2));             hRsqLogv[isam]->Sumw2();
+    sprintf(hname,"hdeltaPhi_%i",isam);       hdeltaPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hdeltaPhiv[isam]->Sumw2();
+
     neventsv.push_back(0);
   }
 
@@ -360,11 +361,11 @@ void plotRazor(const string preselection, const string selection, const string s
 	   4e2*(hMETLogMC->GetBinContent(hMETLogMC->GetMaximumBin()))/(hMETLogMC->GetBinWidth(hMETLogMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / GeV");
-  makePlot(c, "ht", "HT [GeV]", ylabel, hHTv, samplev, hHTMC, hHTPull, doBlind, LUMI, false, 0.0, -0.03,
+  makePlot(c, "ht", "H_{T} [GeV]", ylabel, hHTv, samplev, hHTMC, hHTPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hHTMC->GetBinContent(hHTMC->GetMaximumBin()))/(hHTMC->GetBinWidth(hHTMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / GeV");
-  makePlot(c, "mht", "MHT [GeV]", ylabel, hMHTv, samplev, hMHTMC, hMHTPull, doBlind, LUMI, false, 0.0, -0.03,
+  makePlot(c, "mht", "H_{T}^{miss} [GeV]", ylabel, hMHTv, samplev, hMHTMC, hMHTPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hMHTMC->GetBinContent(hMHTMC->GetMaximumBin()))/(hMHTMC->GetBinWidth(hHTMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %i ",int(hNJetsv[0]->GetBinWidth(1)));
@@ -372,23 +373,23 @@ void plotRazor(const string preselection, const string selection, const string s
            0.1, 2.1*(hNJetsMC->GetBinContent(hNJetsMC->GetMaximumBin()))/(hNJetsMC->GetBinWidth(hNJetsMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / GeV");
-  makePlot(c, "alphat", "alphaT [GeV]", ylabel, halphaTv, samplev, halphaTMC, halphaTPull, doBlind, LUMI, false, 0.0, -0.03,
+  makePlot(c, "alphat", "#alpha_{T} [GeV]", ylabel, halphaTv, samplev, halphaTMC, halphaTPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(halphaTMC->GetBinContent(halphaTMC->GetMaximumBin()))/(halphaTMC->GetBinWidth(halphaTMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f ",hmindFPhiv[0]->GetBinWidth(1));
-  makePlot(c, "mindfphi", "Min #Delta#phi", ylabel, hmindFPhiv, samplev, hmindFPhiMC, hmindFPhiPull, doBlind, LUMI, false, -0.4, -0.15,
+  makePlot(c, "mindfphi", "#Delta#phi*_{min}", ylabel, hmindFPhiv, samplev, hmindFPhiMC, hmindFPhiPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hmindFPhiMC->GetBinContent(hmindFPhiMC->GetMaximumBin()))/(hmindFPhiMC->GetBinWidth(hmindFPhiMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f ",hMRv[0]->GetBinWidth(1));
-  makePlot(c, "mr", "MR", ylabel, hMRv, samplev, hMRMC, hMRPull, doBlind, LUMI, false, -0.4, -0.15,
+  makePlot(c, "mr", "M_{R} [GeV]", ylabel, hMRv, samplev, hMRMC, hMRPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hMRMC->GetBinContent(hMRMC->GetMaximumBin()))/(hMRMC->GetBinWidth(hMRMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f ",hRsqv[0]->GetBinWidth(1));
-  makePlot(c, "rsq", "Rsq", ylabel, hRsqv, samplev, hRsqMC, hRsqPull, doBlind, LUMI, false, -0.4, -0.15,
+  makePlot(c, "rsq", "R^{2}", ylabel, hRsqv, samplev, hRsqMC, hRsqPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hRsqMC->GetBinContent(hRsqMC->GetMaximumBin()))/(hRsqMC->GetBinWidth(hRsqMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f ",hdeltaPhiv[0]->GetBinWidth(1));
-  makePlot(c, "deltaphi", "deltaPhi", ylabel, hdeltaPhiv, samplev, hdeltaPhiMC, hdeltaPhiPull, doBlind, LUMI, false, -0.4, -0.15,
+  makePlot(c, "deltaphi", "#Delta#phi*", ylabel, hdeltaPhiv, samplev, hdeltaPhiMC, hdeltaPhiPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hdeltaPhiMC->GetBinContent(hdeltaPhiMC->GetMaximumBin()))/(hdeltaPhiMC->GetBinWidth(hdeltaPhiMC->GetMaximumBin())), selection, subsample);
 
   cout << endl;
