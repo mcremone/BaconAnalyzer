@@ -145,39 +145,36 @@ void plotZprime(const string selection, const string algo)
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      // Load variables for jet size e.g. "15" "PUPPI"
-      fBits  = new ZprimeBitsLoader(intree,"8",algo);
+
+      fBits  = new ZprimeBitsLoader(intree,algo);
 
       double nevts=0;
       int noweight=0;
 
-      //      std::cout << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
-	// for(unsigned int ientry=0; ientry<600000; ientry++) {
+	// Blinding policy: keep just one fifth of the events
 	//	if(!doBlind && ientry % 5 != 0) continue;
         intree->GetEntry(ientry);
-	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
-	// Common selection
+
+	if(!fBits->selectJetAlgoAndSize(algo)) continue;
 	if(fBits->metfilter!=0)                          continue;
 	if(!fBits->passSelection(selection))             continue;
 
 	// Apply weigths
         double wgt = 1;
-
-	if(!isData) {
-          wgt *= LUMI*fBits->scale1fb;
-        }
-        nevts += wgt;
+	wgt *= fBits->getWgt(isData,algo,LUMI);
+        
+	nevts += wgt;
 	noweight++;
 	
         neventsv[isam]+=wgt;
         hFatJetPtv[isam]       ->Fill(fBits->bst_jet0_pt,             wgt);
-	hFatJetMassv[isam]     ->Fill(fBits->fjet_mass(selection),    wgt);
-	hFatJetTau21v[isam]    ->Fill(fBits->nsubjet(selection),      wgt);
-        hSubjetBtagv[isam]     ->Fill(fBits->btag(selection),         wgt);
+	hFatJetMassv[isam]     ->Fill(fBits->bst_jet0_msd,    wgt);
+	hFatJetTau21v[isam]    ->Fill(fBits->bst_jet0_tau21,      wgt);
+        hSubjetBtagv[isam]     ->Fill(fBits->bst_jet0_minsubcsv,         wgt);
 
 	//if(isSignal1 || isSignal2 || isSignal3 || isSignal4 || isSignal5 || isSignal6){
-	hFatJetMassSig       ->Fill(fBits->fjet_mass(selection),    wgt);
+	hFatJetMassSig       ->Fill(fBits->bst_jet0_msd,    wgt);
 	//}
       }
 
