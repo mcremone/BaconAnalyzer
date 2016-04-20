@@ -33,9 +33,7 @@ EvtLoader::~EvtLoader() {
   delete  fVertexBr;
 }
 void EvtLoader::reset() { 
-  fRun          = 0;
   fEvtV         = 0; 
-  fLumi         = 0; 
   fRho          = 0; 
   fITrigger     = 0; 
   fEffTrigger   = 0;
@@ -44,8 +42,9 @@ void EvtLoader::reset() {
   fNPU          = 0;
   fPUWeight     = 0; 
   fevtWeight    = 0;
-
   fkfactor      = 0;
+  fkFactor_CENT = 0;
+  fEwkCorr_CENT = 0;
 
   fMet          = 0; 
   fMetPhi       = 0; 
@@ -74,7 +73,6 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("scale1fb"        ,&fScale          ,"fScale/F");  
   fTree->Branch("evtWeight"       ,&fevtWeight      ,"fevtWeight/F");
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
-
   fTree->Branch("kfactor"         ,&fkfactor        ,"fkfactor/F");
 
   fTree->Branch("pfmet"           ,&fMet            ,"fMet/F");
@@ -86,6 +84,10 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("fakepfmetphi"    ,&fFMetPhi        ,"fFMetPhi/F");
   fTree->Branch("fakepuppet"      ,&fFPuppEt        ,"fFPuppEt/F");
   fTree->Branch("fakepuppetphi"   ,&fFPuppEtPhi     ,"fFPuppEtPhi/F");
+
+  fScale = 1;
+  fRun   = 0;
+  fLumi  = 0;
 }
 void EvtLoader::load(int iEvent) { 
   fVertices ->Clear();
@@ -104,8 +106,6 @@ bool EvtLoader::passSkim() {
 }
 void EvtLoader::fillEvent(unsigned int trigBit) { 
   reset();
-  fRun          = fEvt->runNum;
-  fLumi         = fEvt->lumiSec;
   fNPU          = fEvt->nPUmean;
   fNVtx         = nVtx();
   fITrigger     = trigBit;

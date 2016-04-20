@@ -126,7 +126,6 @@ int main( int argc, char **argv ) {
     
     // Objects
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJets, lVJet, lVetoes;
-    fEvt      ->load(i0);
     fEvt      ->fillEvent(trigbits);
     fMuon     ->load(i0);
     fMuon     ->selectMuons(lMuons);

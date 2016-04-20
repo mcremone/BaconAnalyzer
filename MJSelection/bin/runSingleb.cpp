@@ -109,7 +109,6 @@ int main( int argc, char **argv ) {
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVetoes;
     fMuon     ->load(i0);
     fMuon     ->selectMuons(lMuons);
-    fEvt      ->load(i0);
     fEvt      ->fillEvent(trigbits);
     fElectron ->load(i0);
     fElectron ->selectElectrons(fEvt->fRho,lElectrons);

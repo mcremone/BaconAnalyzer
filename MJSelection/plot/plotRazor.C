@@ -94,17 +94,6 @@ void plotRazor(const string preselection, const string selection, const string s
     samplev.back()->fnamev.push_back("../razorbits/ZLF.root");
     samplev.back()->fnamev.push_back("../razorbits/DYHF.root");
     samplev.back()->fnamev.push_back("../razorbits/DYLF.root");
-    // samplev.push_back(new CSample("t#bar{t} comb.",kOrange - 3,kOrange - 3));
-    // samplev.back()->fnamev.push_back("../razorbits/TT1L.root");
-    // samplev.back()->fnamev.push_back("../razorbits/TT2L.root");
-    // samplev.back()->fnamev.push_back("../razorbits/TTHAD.root");
-    // samplev.back()->fnamev.push_back("../razorbits/TTBST.root");
-    // samplev.back()->fnamev.push_back("../razorbits/TTCOM.root");
-    // samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
-    // samplev.back()->fnamev.push_back("../razorbits/T.root");
-    // samplev.back()->fnamev.push_back("../razorbits/TZ.root");
-    // samplev.push_back(new CSample("t#bar{t} merged",kOrange - 4,kOrange - 4));
-    // samplev.back()->fnamev.push_back("../razorbits/TTBST.root");
   }
   if (preselection.compare("Pho")==0){
     samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
@@ -117,16 +106,6 @@ void plotRazor(const string preselection, const string selection, const string s
     samplev.back()->fnamev.push_back("../razorbits/Spring15_a25ns_Monotop_S1_Mres-1100_Mchi-100_MINIAOD_mc.root");
     samplev.push_back(new CSample("M_{V} 300 X 5", kRed, kRed));
     samplev.back()->fnamev.push_back("../razorbits/Spring15_a25ns_Monotop_S4_Mchi-300_MINIAOD_mc.root");
-    // samplev.push_back(new CSample("Mres-1300_Mchi-100", kBlack, kBlack));
-    // samplev.back()->fnamev.push_back("../razorbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-1300_Mchi-100_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mchi-500", kGreen, kGreen));
-    // samplev.back()->fnamev.push_back("../razorbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-500_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mres-900_Mchi-100", kMagenta, kMagenta));
-    // samplev.back()->fnamev.push_back("../razorbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-900_Mchi-100_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mchi-900", kCyan, kCyan));
-    // samplev.back()->fnamev.push_back("../razorbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-900_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("TTDM", kMagenta - 10, kMagenta - 10));
-    // samplev.back()->fnamev.push_back("../razorbits/TTDM.root");  
   }
 
   // integrated luminosity to scale MC
@@ -155,21 +134,9 @@ void plotRazor(const string preselection, const string selection, const string s
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",NBINS,edges));            hMETv[isam]->Sumw2();
     sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",NBINS,edges));         hMETLogv[isam]->Sumw2();
-    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,0,300));        hFatJetMassv[isam]->Sumw2();
-    sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",20,250,1000));       hFatJetPtv[isam]->Sumw2();
-    sprintf(hname,"hTransverseMass_%i",isam); hTransverseMassv.push_back(new TH1D(hname,"",30,300,2000)); hTransverseMassv[isam]->Sumw2();
-    sprintf(hname,"hFatJetTau32_%i",isam);    hFatJetTau32v.push_back(new TH1D(hname,"",15,0.2,1));       hFatJetTau32v[isam]->Sumw2();
-    sprintf(hname,"hBtag_%i",isam);           hBtagv.push_back(new TH1D(hname,"",15,0.1,1.));             hBtagv[isam]->Sumw2();
-    sprintf(hname,"hMinDPhiJetsMet_%i",isam); hMinDPhiJetsMetv.push_back(new TH1D(hname,"",20,0,3.14));   hMinDPhiJetsMetv[isam]->Sumw2();
     sprintf(hname,"hNJets_%i",isam);          hNJetsv.push_back(new TH1D(hname,"",10,0,10));              hNJetsv[isam]->Sumw2();
     sprintf(hname,"hNBJets_%i",isam);         hNBJetsv.push_back(new TH1D(hname,"",10,0,10));             hNBJetsv[isam]->Sumw2();
-    sprintf(hname,"hJet1CHF_%i",isam);        hJet1CHFv.push_back(new TH1D(hname,"",30,0,1));             hJet1CHFv[isam]->Sumw2();
-    sprintf(hname,"hJet1NHF_%i",isam);        hJet1NHFv.push_back(new TH1D(hname,"",30,0,1));             hJet1NHFv[isam]->Sumw2();
-    sprintf(hname,"hJet1NEMF_%i",isam);       hJet1NEMFv.push_back(new TH1D(hname,"",30,0,1));            hJet1NEMFv[isam]->Sumw2();
-    sprintf(hname,"hJet1Eta_%i",isam);        hJet1Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet1Etav[isam]->Sumw2();
-    sprintf(hname,"hJet2Eta_%i",isam);        hJet2Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet2Etav[isam]->Sumw2();
-    sprintf(hname,"hJet3Eta_%i",isam);        hJet3Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet3Etav[isam]->Sumw2();
-    sprintf(hname,"hJet4Eta_%i",isam);        hJet4Etav.push_back(new TH1D(hname,"",30,-4.5,4.5));        hJet4Etav[isam]->Sumw2();
+
     neventsv.push_back(0);
   }
 

@@ -157,7 +157,6 @@ int main( int argc, char **argv ) {
     fMuon     ->load(i0);
     fMuon     ->selectMuons(lMuons);
     
-    fEvt      ->load(i0);
     fEvt      ->fillEvent(trigbits);
     
     // Electrons
