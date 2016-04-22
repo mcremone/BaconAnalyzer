@@ -58,10 +58,10 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "T") ]]; then
     ./sub.sh mc $eos ST_tW_antitop_5f_inclusiveDecays_13TeV_powheg_pythia8_TuneCUETP8M1                          35.6  $dir $exec $option1 $option2
     ./sub.sh mc $eos ST_tW_top_5f_inclusiveDecays_13TeV_powheg_pythia8_TuneCUETP8M1                              35.6  $dir $exec $option1 $option2
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "TZ") ]]; then
-#     ./sub.sh mc $eos Spring15_a25ns_tZq_ll_4f_MINIAOD                                                          0.0758  $dir $exec $option1 $option2;
+if [[ ($sample = "All") || ($sample != "All" && $sample = "TZ") ]]; then
+    ./sub.sh mc $eos tZq_ll_4f_13TeV_amcatnlo_pythia8_TuneCUETP8M1                                             0.0758  $dir $exec $option1 $option2;
 #     ./sub.sh mc $eos Spring15_a25ns_tZq_nunu_4f_MINIAOD                                                        0.1379  $dir $exec $option1 $option2;
-# fi
+fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTZ") ]]; then
     ./sub.sh mc $eos TTZToLLNuNu_M_10_13TeV_amcatnlo_pythia8                                                   0.2529  $dir $exec $option1 $option2;
 fi
@@ -98,10 +98,9 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then
     ./sub.sh mc $eos ZZ_13TeV_pythia8                                                                            31.8  $dir $exec $option1 $option2; 
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then 
-#     ./sub.sh data $eos MET_Run2015D_PrReco_05Oct_MINIAOD                                                            1  $dir $exec $option1 $option2
-#     ./sub.sh data $eos MET_Run2015D_PrReco_v4_MINIAOD                                                               1  $dir $exec $option1 $option2
-# fi
+#if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then 
+#    ./sub.sh data $eos METRun2015D_16Dec2015_v1                                                                     1  $dir $exec $option1 $option2
+#fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "GHF") ]]; then 
 #     ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-100To200_MINIAOD                                             9235  $dir $exec $option1 $option2
 #     ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-200To400_MINIAOD                                             2298  $dir $exec $option1 $option2
@@ -114,10 +113,9 @@ fi
 #     ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-400To600_MINIAOD                                            277.6  $dir $exec $option1 $option2
 #     ./sub.sh mcgpluslf $eos Spring15_a25ns_GJets_HT-600ToInf_MINIAOD                                            93.47  $dir $exec $option1 $option2
 # fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then
-#     ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_05Oct_MINIAOD                                                   1  $dir $exec $option1 $option2
-#     ./sub.sh data $eos SinglePhoton_Run2015D_PrReco_v4_MINIAOD                                                      1  $dir $exec $option1 $option2
-# fi
+#if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then
+#    ./sub.sh data $eos SinglePhotonRun2015D_16Dec2015_v1                                                            1  $dir $exec $option1 $option2
+#fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
     ./sub.sh mc $eos Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8                                           1  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Spring15_a25ns_Monotop_S1_Mres-1300_Mchi-100_MINIAOD                                           1  $dir $exec $option1 $option2
@@ -134,10 +132,9 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
 #     ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-700_MINIAOD                                                     1  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-900_MINIAOD                                                     1  $dir $exec $option1 $option2
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
-#    ./sub.sh data $eos SingleElectron_Run2015D_PrReco_v4_MINIAOD                                                    1  $dir $exec $option1 $option2   
-#     ./sub.sh data $eos SingleElectron_Run2015D_PrReco_05Oct_MINIAOD                                                 1  $dir $exec $option1 $option2
-# fi
+#if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
+#   ./sub.sh data $eos SingleElectronRun2015D_16Dec2015_v1                                                           1  $dir $exec $option1 $option2   
+#fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then
 #     ./sub.sh data $eos SingleMuonRun2015D_16Dec2015_v1                                                              1  $dir $exec $option1 $option2
 # fi
