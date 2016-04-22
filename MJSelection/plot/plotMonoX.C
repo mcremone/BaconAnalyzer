@@ -71,14 +71,11 @@ void plotMonoX(const string preselection, const string selection, const string s
   if (preselection.compare("Pho")!=0) {
     samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
     samplev.back()->fnamev.push_back("../monoxbits/T.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TZ.root");
+    // samplev.back()->fnamev.push_back("../monoxbits/TZ.root");
     samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
-    // samplev.back()->fnamev.push_back("../monoxbits/TT1L.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TT2L.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TTHAD.root");
     samplev.back()->fnamev.push_back("../monoxbits/TT.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TTZ.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TTG.root");
+    // samplev.back()->fnamev.push_back("../monoxbits/TTZ.root");
+    // samplev.back()->fnamev.push_back("../monoxbits/TTG.root");
     samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
     samplev.back()->fnamev.push_back("../monoxbits/WW.root");
     samplev.back()->fnamev.push_back("../monoxbits/WZ.root");
@@ -94,17 +91,6 @@ void plotMonoX(const string preselection, const string selection, const string s
     samplev.back()->fnamev.push_back("../monoxbits/ZLF.root");
     samplev.back()->fnamev.push_back("../monoxbits/DYHF.root");
     samplev.back()->fnamev.push_back("../monoxbits/DYLF.root");
-    // samplev.push_back(new CSample("t#bar{t} comb.",kOrange - 3,kOrange - 3));
-    // samplev.back()->fnamev.push_back("../monoxbits/TT1L.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TT2L.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TTHAD.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TTBST.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TTCOM.root");
-    // samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
-    // samplev.back()->fnamev.push_back("../monoxbits/T.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TZ.root");
-    // samplev.push_back(new CSample("t#bar{t} merged",kOrange - 4,kOrange - 4));
-    // samplev.back()->fnamev.push_back("../monoxbits/TTBST.root");
   }
   if (preselection.compare("Pho")==0){
     samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
@@ -114,19 +100,9 @@ void plotMonoX(const string preselection, const string selection, const string s
   }
   if (subsample.compare("SR")==0){   
     samplev.push_back(new CSample("M_{S} 1100, M#chi 100", kBlue, kBlue));
-    samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_Monotop_S1_Mres-1100_Mchi-100_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("../monoxbits/Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8_mc.root");
     samplev.push_back(new CSample("M_{V} 300 X 5", kRed, kRed));
-    samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_Monotop_S4_Mchi-300_MINIAOD_mc.root");
-    // samplev.push_back(new CSample("Mres-1300_Mchi-100", kBlack, kBlack));
-    // samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-1300_Mchi-100_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mchi-500", kGreen, kGreen));
-    // samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-500_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mres-900_Mchi-100", kMagenta, kMagenta));
-    // samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_DMJetsMonotop_S1_Mres-900_Mchi-100_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("Mchi-900", kCyan, kCyan));
-    // samplev.back()->fnamev.push_back("../monoxbits/Spring15_a25ns_DMJetsMonotop_S4_Mchi-900_13TeV-madgraph-pythia8_mc.root");
-    // samplev.push_back(new CSample("TTDM", kMagenta - 10, kMagenta - 10));
-    // samplev.back()->fnamev.push_back("../monoxbits/TTDM.root");  
+    samplev.back()->fnamev.push_back("../monoxbits/Monotop_S4_Mchi_300_13TeV_madgraph_pythia8_mc.root");
   }
 
   // integrated luminosity to scale MC
