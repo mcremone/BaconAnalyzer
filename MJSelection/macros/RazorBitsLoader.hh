@@ -23,9 +23,10 @@ using namespace std;
 
 class RazorBitsLoader {
 public:
-  RazorBitsLoader(TTree *iTree=0,TString algo="PUPPI",TString syst, string preselection);		
+  RazorBitsLoader(TTree *iTree=0,TString algo="PUPPI",TString syst="CENT", string preselection=" ");		
   ~RazorBitsLoader();
   bool selectJetAlgoAndSize(TString algo);
+  bool isMET();
   bool isHad();
   bool isMuo();
   bool isZmm();
@@ -33,7 +34,8 @@ public:
   bool isZee();
   bool isPho();
   bool passPreSelection(string preselection);
-  bool passRazorPreSelection();
+  bool passRazorPreselection();
+  bool passMonojetPreselection();
   bool passRazorSR(string preselection);
   bool passMonojetPreSelection();
   bool passMonojetSR(string preselection);
@@ -66,17 +68,21 @@ public:
   // Jets with pT-ordering:
   //
   double           res_jet0_pt, res_jet0_eta, res_jet0_phi, res_jet0_mass;         // narrow jets
-  double           res_jet1_pt, res_jet1_eta, res_jet1_phi, res_jet0_mass;
-  double           res_jet2_pt, res_jet2_eta, res_jet2_phi, res_jet0_mass; 
-  double           res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet0_mass;
+  double           res_jet1_pt, res_jet1_eta, res_jet1_phi, res_jet1_mass;
+  double           res_jet2_pt, res_jet2_eta, res_jet2_phi, res_jet2_mass; 
+  double           res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet3_mass;
   double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF;                      // jet variables
   float            res_mt;                                                         // mT
   float            alphaT, mindFPhi, MR, Rsq, deltaPhi;                            // razor variables
-  float            HT, MMT;                                                        // HT and MHT
+  float            HT, MHT;                                                        // HT and MHT
 
 protected:
 
   const unsigned int kRESOLVEDPUPPI = 2;
+  const unsigned int kMET  = 2;
+  const unsigned int kSingleElectron = 4;
+  const unsigned int kSinglePhoton  = 8;
+  const unsigned int kSingleMuon  = 16;
 
 };
 #endif

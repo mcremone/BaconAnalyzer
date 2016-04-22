@@ -37,8 +37,20 @@ public:
   TLorentzVector getTop();
   bool passMetPreselection(string preselection);
   bool passBoostedMonoTopPreselection(string preselection);
+  bool passBoostedMonoTopPreselection1(string preselection);
+  bool passBoostedMonoTopPreselection2(string preselection);
+  bool passBoostedMonoTopPreselection3(string preselection);
+  bool passBoostedMonoTopPreselection4(string preselection);
+  bool passBoosted15MonoX(string preselection);
+  bool passBoosted8MonoX(string preselection);
   bool passResolvedMonoTop(string preselection);
   bool passBoostedMonoTopSR(string preselection);
+  bool passBoostedMonoTopSR1(string preselection);
+  bool passBoostedMonoTopSR2(string preselection);
+  bool passBoostedMonoTopSR3(string preselection);
+  bool passBoostedMonoTopSR4(string preselection);
+  bool passBoostedMonoTopSR5(string preselection);
+  bool passBoostedMonoTopSR6(string preselection);
   bool passBoostedMonoTopQCDCR(string preselection); 
   bool passBoostedMonoTopZnunuHFCR(string preselection);
   bool passBoostedMonoTopZnunuLFCR(string preselection);
@@ -57,6 +69,7 @@ public:
   bool passBoostedMonoZbbTopCR(string preselection);
   bool passBoostedMonoZbbWCR(string preselection);
   bool passBoostedMonoZbbZCR(string preselection);
+  bool passResolvedMonoXbb(string preselection);
   bool passResolvedMonoHbbSR(string preselection);
   bool passResolvedMonoHbbTopCR(string preselection);
   bool passResolvedMonoHbbWCR(string preselection);
@@ -91,7 +104,7 @@ public:
   double triggerEff;                                                               // trigger efficiency
   float evtWeight, puWeight;                                                       // pu and evt weight
   double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2;                           // weights
-  double topSize;                                                                  // topSize
+  double topSize, topMatching;                                                     // topSize and topMatching
   int isHadronicTop;                                                               // hadronic Top requirement
   unsigned int npu, npv;                                                           // PU, PV multiplicity
   int nmu, nele, ntau, npho;                                                       // object multiplicity
@@ -133,10 +146,11 @@ protected:
   const unsigned int kSingleElectron = 4;
   const unsigned int kSinglePhoton  = 8;
   const unsigned int kBOOSTED15PUPPI = 2;
+  const unsigned int kRESOLVEDPUPPI = 4;
+
   // const unsigned int kBOOSTED15CHS = 4;
   // const unsigned int kBOOSTED8PUPPI = 8;
   // const unsigned int kBOOSTED8CHS = 16;
-  const unsigned int kRESOLVEDPUPPI = 4;
   // const unsigned int kRESOLVEDCHS = 64;
 };
 #endif

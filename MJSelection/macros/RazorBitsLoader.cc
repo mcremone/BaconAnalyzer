@@ -28,7 +28,7 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("fake"+met,                          &vfakemetpt);
     iTree->SetBranchAddress("fake"+met+"phi",                    &vfakemetphi);
     iTree->SetBranchAddress("n"+algo+"jets",                     &njets);
-    iTree->SetBranchAddress("nbtags"                             &nbtags);
+    iTree->SetBranchAddress("nbtags",                            &nbtags);
     iTree->SetBranchAddress("nb"+algo+"jetsL",                   &nbjetsL);
     iTree->SetBranchAddress("nb"+algo+"jetsM",                   &nbjetsM);
     iTree->SetBranchAddress("nb"+algo+"jetsLdR2",                &nbjetsLdR2);
@@ -149,7 +149,7 @@ bool RazorBitsLoader::passMonojetSR(string preselection){
 bool RazorBitsLoader::passSelection(string preselection, string subsample, string combo){
   bool lPass = false;	
   if (subsample == "SR" && passRazorSR(preselection) 
-      && (combo=="ONLY" || (combo=="COMBO" && !passMonojetSR(preselection))) lPass = true;
+      && (combo=="ONLY" || (combo=="COMBO" && !passMonojetSR(preselection)))) lPass = true;
   return lPass;
 }
 double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){

@@ -58,5 +58,9 @@ protected:
   const unsigned int kBOOSTED8PUPPI = 2;
   const float RHO_CUT = 0.38;
 
+  const unsigned int kSingleElectron = 4;
+  const unsigned int kSinglePhoton  = 8;
+  const unsigned int kBOOSTED15PUPPI = 2;
+
 };
 #endif
