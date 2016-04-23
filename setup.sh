@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#---------------------------
+# Setup development packages needed for Bacon
+# *NOTE* Could also pick directly from mycmssw
+#--------------------------
+
+
 if test -z $CMSSW_VERSION; then
   echo "[BaconAnalyzer] Need CMSSW project area setup!";
   echo

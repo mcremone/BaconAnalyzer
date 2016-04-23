@@ -1,24 +1,24 @@
 # MJSelection
 
  * Depends on BaconAna and BaconProd packages
- * Place package in `$CMSSW_BASE/src` area
+ * Place BaconAnalyzer in `$CMSSW_BASE/src` area
 
 Setup
 -------------
  * Setup $CMSSW_BASE area
  * Setup BaconProd, BaconAna
 	
-    git clone https://github.com/cmantill/BaconProd.git -b singleb --single-branch
+    `git clone https://github.com/cmantill/BaconProd.git -b singleb --single-branch`
 
-    git clone https://github.com/cmantill/BaconAna.git -b singleb --single-branch
+    `git clone https://github.com/cmantill/BaconAna.git -b singleb --single-branch`
 
  * Setup BaconAnalyzer, Development Packages
 
-    git clone https://github.com/mcremone/BaconAnalyzer.git 
+    `git clone https://github.com/mcremone/BaconAnalyzer.git`
 
-    git checkout CMSSW_7_6_X
+    `git checkout CMSSW_7_6_X`
     
-    source setup.sh
+    `source setup.sh`
 
  * Compile
 
@@ -39,23 +39,21 @@ Baconbits production
 -----------
 1) Define list of samples on production/submit$YOURANALYSIS.sh along with xsec
 
-   cd production
-
 2) Make output directory
 
-   mkdir $YOURANALYSISbits
+   `mkdir $YOURANALYSISbits`
 
 3) Make configuration files for the $OPTION samples (or All)
 
-   cd production/
+   `cd production/`
    
-   ./submit$YOURANALYSIS.sh $OPTION
+   `./submit$YOURANALYSIS.sh $OPTION`
 
 4) After compiling, submit jobs to Batch as 
-   ./submit$YOURANALYSIS.sh $OPTION --monitor sub
+   `./submit$YOURANALYSIS.sh $OPTION --monitor sub`
 
 5) When production is done combine files using
-   ./combine$YOURANALYSIS.sh $OPTION
+   `./combine$YOURANALYSIS.sh $OPTION`
 
 Baconbits are stored in $YOURANALYSISbits/*.root
 
