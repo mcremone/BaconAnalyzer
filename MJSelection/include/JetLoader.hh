@@ -10,11 +10,11 @@
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 
 // B-tag scale factors
+#include "BTagUnc.hh"
 #include "CondFormats/BTauObjects/interface/BTagEntry.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibration.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
 #include "BTagCalibrationStandalone.h"
-#include "BTagUnc.hh"
 
 // Razor utils
 #include "RazorUtils.hh"
@@ -23,7 +23,7 @@ using namespace baconhep;
 
 class JetLoader { 
 public:
-  JetLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconSkim/Utils/data/CSVv2.csv");
+  JetLoader(TTree *iTree,std::string btagScaleFactorFilename = "CSVv2.csv");
   ~JetLoader();
   void reset();
   void resetBTag();
@@ -45,9 +45,9 @@ public:
   void fillRazor(std::vector<TLorentzVector> iJets,float iMet, float iFMet);
   double correction(TJet &iJet,float iRho);
 
-  const double CSVL = 0.605;
-  const double CSVM = 0.89;
-  const double CSVT = 0.97;
+  const double CSVL = 0.460; // CSVv2 WP
+  const double CSVM = 0.800;
+  const double CSVT = 0.935;
 
   int           fNJets;
   int           fNJetsAbove80GeV;

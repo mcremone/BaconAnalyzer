@@ -496,6 +496,23 @@ int GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_matching,
   }
   return 0;
 }
+int GenLoader::ismatchedSubJet(TLorentzVector subjet0){
+  int lOption =0;
+  for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+    TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
+    TLorentzVector vq; 
+    if(abs(genp0->pdgId)==5) {
+      vq.SetPtEtaPhiM(genp0->pt, genp0->eta, genp0->phi, 5);
+      if(vq.DeltaR(subjet0) < 0.4) lOption = 1; //isB
+    }
+    else if(abs(genp0->pdgId)==4) {
+      vq.SetPtEtaPhiM(genp0->pt, genp0->eta, genp0->phi, 1.29);
+      if(vq.DeltaR(subjet0) < 0.4) lOption = 2; //isC
+    }
+    else lOption = 3; //isLF
+  }
+  return lOption;
+}
 void GenLoader::findBoson(int iId, int lOption){
   reset();
   float pbosonPt(-1),pbosonPhi(-999);

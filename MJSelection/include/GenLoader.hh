@@ -19,6 +19,7 @@ public:
   void selectBoson(int iDMu);
   float lepmatched(int iId, std::vector<TLorentzVector> vec, double dR);
   int ismatchedJet(TLorentzVector jet0, double dR,double &top_matching, double &top_size);
+  int ismatchedSubJet(TLorentzVector subjet0);
   //Helpers
   TGenParticle* getStatus1(int iId,bool iIsNeut);
   bool isNeutrino(TGenParticle *iPart);

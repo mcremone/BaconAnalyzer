@@ -99,7 +99,9 @@ int main( int argc, char **argv ) {
   fPhoton  ->setupTree      (lOut);
   fJet     ->setupTree      (lOut,"res_PUPPIjet"); 
   fJet     ->setupTreeBTag  (lOut,"res_PUPPIjet");
-  fVJet    ->setupTree      (lOut,"bst15_PUPPIjet"); 
+  fVJet    ->setupTree           (lOut,"bst15_PUPPIjet"); 
+  fVJet    ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
+
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
   //
@@ -195,6 +197,7 @@ int main( int argc, char **argv ) {
       if(lOption.find("data")==std::string::npos)	fVJet->fisHadronicTop = fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopMatching,fVJet->ftopSize);
       fEvt->fselectBits = fEvt->fselectBits | 2;
       fEvt->fillmT(lVJet,fVJet->fVMT);
+      fVJet->fillSubJetBTag(fGen->fGens,fVJet->fGoodVSubJets);
     }
     
     // AK4Puppi Jets
@@ -211,7 +214,7 @@ int main( int argc, char **argv ) {
     // ttbar, EWK and kFactor correction
     if(lOption.find("data")==std::string::npos){
       fGen->load(i0);
-      if(lJets.size()>0)        fJet->fillBTag(fJet->fGoodJets);
+      if(lJets.size()>0)        fJet->fillBTag(fJet->fGoodJets); 
     }
 
     if(lOption.find("mcg")!=std::string::npos){
