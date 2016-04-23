@@ -29,3 +29,4 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then rm ../
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then rm ../monoxbits/MET.root; hadd  ../monoxbits/MET.root   ../monoxbits/MET*_data/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then rm ../monoxbits/SingleElectron.root; hadd  ../monoxbits/SingleElectron.root   ../monoxbits/SingleElectron*_data/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then rm ../monoxbits/SinglePhoton.root; hadd  ../monoxbits/SinglePhoton.root   ../monoxbits/SinglePhoton*_data/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then rm ../monoxbits/SingleMuon.root; hadd  ../monoxbits/SingleMuon.root   ../monoxbits/SingleMuon*_data/*.root; fi

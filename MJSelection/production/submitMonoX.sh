@@ -98,9 +98,9 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then
     ./sub.sh mc $eos ZZ_13TeV_pythia8                                                                            31.8  $dir $exec $option1 $option2; 
 fi
-#if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then 
-#    ./sub.sh data $eos METRun2015D_16Dec2015_v1                                                                     1  $dir $exec $option1 $option2
-#fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then 
+   ./sub.sh data $eos METRun2015D_16Dec2015_v1                                                                     1  $dir $exec $option1 $option2
+fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "GHF") ]]; then 
 #     ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-100To200_MINIAOD                                             9235  $dir $exec $option1 $option2
 #     ./sub.sh mcgplushf $eos Spring15_a25ns_GJets_HT-200To400_MINIAOD                                             2298  $dir $exec $option1 $option2
@@ -132,12 +132,12 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
 #     ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-700_MINIAOD                                                     1  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Spring15_a25ns_Monotop_S4_Mchi-900_MINIAOD                                                     1  $dir $exec $option1 $option2
 fi
-#if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
-#   ./sub.sh data $eos SingleElectronRun2015D_16Dec2015_v1                                                           1  $dir $exec $option1 $option2   
-#fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then
-#     ./sub.sh data $eos SingleMuonRun2015D_16Dec2015_v1                                                              1  $dir $exec $option1 $option2
-# fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
+  ./sub.sh data $eos SingleElectronRun2015D_16Dec2015_v1                                                           1  $dir $exec $option1 $option2   
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then
+    ./sub.sh data $eos SingleMuonRun2015D_16Dec2015_v1                                                              1  $dir $exec $option1 $option2
+fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "TTherwig1L") ]]; then
 #     ./sub.sh mctt1l $eos Spring15_a25ns_TT_powheg_herwig_MINIAOD                                               831.76  $dir $exec $option1 $option2; 
 # fi
