@@ -41,6 +41,8 @@ public:
   bool passBoostedMonoTopPreselection2(string preselection);
   bool passBoostedMonoTopPreselection3(string preselection);
   bool passBoostedMonoTopPreselection4(string preselection);
+  bool passBoostedMonoTopPreselection5(string preselection);
+  bool passBoostedMonoTopPreselection6(string preselection);
   bool passBoosted15MonoX(string preselection);
   bool passBoosted8MonoX(string preselection);
   bool passResolvedMonoTop(string preselection);
@@ -51,6 +53,12 @@ public:
   bool passBoostedMonoTopSR4(string preselection);
   bool passBoostedMonoTopSR5(string preselection);
   bool passBoostedMonoTopSR6(string preselection);
+  bool passBoostedMonoTopSR7(string preselection);
+  bool passBoostedMonoTopSR8(string preselection);
+  bool passBoostedMonoTopSR9(string preselection);
+  bool passBoostedMonoTopSR10(string preselection);
+  bool passBoostedMonoTopSR11(string preselection);
+  bool passBoostedMonoTopSR12(string preselection);
   bool passBoostedMonoTopQCDCR(string preselection); 
   bool passBoostedMonoTopZnunuHFCR(string preselection);
   bool passBoostedMonoTopZnunuLFCR(string preselection);
