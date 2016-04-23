@@ -12,9 +12,9 @@ LSFJOB*
 # no python init file
 python/__init__.py
 *.root
-MJSelection/plot/ZprimePlots/
-MJSelection/plot/MonoXPlots/
-MJSelection/plot/RazorPlots/
+MJSelection/plot/zprimeplots/
+MJSelection/plot/monoxplots/
+MJSelection/plot/razorplots/
 MJSelection/zprimebits/
 MJSelection/monoxbits/
 MJSelection/razorbits/
