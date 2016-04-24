@@ -23,7 +23,8 @@ using namespace baconhep;
 
 class JetLoader { 
 public:
-  JetLoader(TTree *iTree,std::string btagScaleFactorFilename = "CSVv2.csv");
+  JetLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/include/CSVv2.csv");
+  //JetLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconSkim/Utils/data/CSVv2.csv");
   ~JetLoader();
   void reset();
   void resetBTag();
@@ -73,7 +74,7 @@ protected:
   int           fNBTagsTdR2;
   int           fN;
   std::vector<std::string> fLabels = {"CENT", "MISTAGUP","MISTAGDO","BTAGUP","BTAGDO"};   // nominal, mistagup, mistagdown, btagup and btagdown
-  std::vector<std::string> measurementTypes = {"mujets", "comb"};                         // measurements type
+  std::vector<std::string> measurementTypes = {"mujets", "incl"};                         // measurements type
   std::vector<std::string> variationTypes = {"central", "up", "down"};                    // systematics type
   std::vector<std::string> flavorTypes = {"Ms", "Bs"};                                    // nominal, mistag and btag
   std::vector<std::string> wpTypes = {"L","M","T"};                                       // working points                           

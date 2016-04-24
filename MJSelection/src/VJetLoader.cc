@@ -18,12 +18,12 @@ VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,std::st
 
   fN = 1;
 
-  fSubJetCalib = new BTagCalibration("csvv2subjets",subjetbtagScaleFactorFilename);
+  fSubJetCalib = new BTagCalibration("csvv2",subjetbtagScaleFactorFilename);
   fSubJetreadersL.clear(); fSubJetreadersM.clear();
   fSubJetreaders.clear();
   for(auto imtype : measurementTypes) { // fSubJetreadersL 6, M6 
     for(auto ivtype : variationTypes) {
-      fSubJetreadersL.push_back(new BTagCalibrationReader(fSubJetCalib, BTagEntry::OP_LOOSE,  imtype, ivtype)); // first mujets(HF) then comb(LF) and first central(0,3) then up(1,4) and then down(2,5)
+      fSubJetreadersL.push_back(new BTagCalibrationReader(fSubJetCalib, BTagEntry::OP_LOOSE,  imtype, ivtype)); // first lt(HF) then incl(LF) and first central(0,3) then up(1,4) and then down(2,5)
       fSubJetreadersM.push_back(new BTagCalibrationReader(fSubJetCalib, BTagEntry::OP_MEDIUM, imtype, ivtype));
     }
   }

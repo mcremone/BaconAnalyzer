@@ -16,12 +16,13 @@ JetLoader::JetLoader(TTree *iTree,std::string btagScaleFactorFilename) {
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt"));
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"));
   fJetCorr = new FactorizedJetCorrector(corrParams);
+
   fJetCalib = new BTagCalibration("csvv2",btagScaleFactorFilename);
   freadersL.clear(); freadersM.clear(); freadersT.clear();
   freaders.clear();
-  for(auto imtype : measurementTypes) { // freadersL 6
+  for(auto imtype : measurementTypes) { // freadersL 6 , freadersM 6, freadersT 6
     for(auto ivtype : variationTypes) {
-      freadersL.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_LOOSE,  imtype, ivtype)); // first mujets(HF) then comb(LF) and first central(0,3) then up(1,4) and then down(2,5)
+      freadersL.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_LOOSE,  imtype, ivtype)); // first mujets(HF) then incl(LF) and first central(0,3) then up(1,4) and then down(2,5)
       freadersM.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_MEDIUM, imtype, ivtype));
       freadersT.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_TIGHT,  imtype, ivtype));
     }

@@ -11,7 +11,7 @@
 #include "MonoXUtils.hh"
 
 // B-tag scale factors
-#include "BTagUnc.hh"
+#include "SJBTagUnc.hh"
 #include "CondFormats/BTauObjects/interface/BTagEntry.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibration.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
@@ -21,7 +21,7 @@ using namespace baconhep;
 
 class VJetLoader { 
 public:
-  VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,std::string subjetbtagScaleFactorFilename ="CSVv2_subjets.csv");
+  VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,std::string subjetbtagScaleFactorFilename ="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/include/CSVv2_subjets.csv");
   ~VJetLoader();
   void reset();
   void resetSubJetBTag();
@@ -58,7 +58,7 @@ protected:
   TTree        *fTree;
   int           fNVJets;
   std::vector<std::string> fBtagLabels = {"CENT", "MISTAGUP","MISTAGDO","BTAGUP","BTAGDO"};  // nominal, mistagup, mistagdown, btagup and btagdown
-  std::vector<std::string> measurementTypes = {"mujets", "comb"};                            // measurements type
+  std::vector<std::string> measurementTypes = {"lt", "incl"};                                // measurements type
   std::vector<std::string> variationTypes = {"central", "up", "down"};                       // systematics type 
   std::vector<std::string> flavorTypes = {"Ms", "Bs"};                                       // nominal, mistag and btag
   std::vector<std::string> wpTypes = {"L","M"};                                              // working points 
