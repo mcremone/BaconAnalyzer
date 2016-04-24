@@ -65,6 +65,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("phil");
   fLabels.push_back("minsubcsv");
   fLabels.push_back("maxsubcsv");
+  fLabels.push_back("doublecsv");
 
   std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
   std::stringstream pSNJ;   pSNJ << iJetLabel << "s";
@@ -142,6 +143,7 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
     iVals[lBase+i0*lNLabel+9]  = pAddJet->mass_sd0/log(iObjects[i0]->pt);
     iVals[lBase+i0*lNLabel+10] = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
     iVals[lBase+i0*lNLabel+11] = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
+    iVals[lBase+i0*lNLabel+12] = pAddJet     ->doublecsv;
 
     TLorentzVector vSJ1; vSJ1.SetPtEtaPhiM(pAddJet->sj1_pt, pAddJet->sj1_eta, pAddJet->sj1_phi, pAddJet->sj1_m); fGoodVSubJets.push_back(vSJ1); 
     TLorentzVector vSJ2; vSJ2.SetPtEtaPhiM(pAddJet->sj2_pt, pAddJet->sj2_eta, pAddJet->sj2_phi, pAddJet->sj2_m); fGoodVSubJets.push_back(vSJ2);
