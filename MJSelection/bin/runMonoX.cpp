@@ -194,16 +194,19 @@ int main( int argc, char **argv ) {
     fVJet->load(i0);
     fVJet->selectVJets(lVetoes,lVJets,lVJet,1.5);
     if(lVJets.size()>0) { 
-      if(lOption.find("data")==std::string::npos)	fVJet->fisHadronicTop = fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopMatching,fVJet->ftopSize);
+      if(lOption.find("data")==std::string::npos){
+	fVJet->fisHadronicTop = fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopMatching,fVJet->ftopSize);
+	fVJet->fillSubJetBTag(fGen->fGens,fVJet->fGoodVSubJets);
+      }
       fEvt->fselectBits = fEvt->fselectBits | 2;
       fEvt->fillmT(lVJet,fVJet->fVMT);
-      fVJet->fillSubJetBTag(fGen->fGens,fVJet->fGoodVSubJets);
     }
     
     // AK4Puppi Jets
     fJet->load(i0); 
     fJet->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     if(lJets.size()>0){
+      if(lOption.find("data")==std::string::npos)   fJet->fillBTag(fJet->fGoodJets);
       fEvt->fselectBits =  fEvt->fselectBits | 4;
       fEvt->fillmT(lJets,fJet->fMT);
     }
@@ -212,11 +215,6 @@ int main( int argc, char **argv ) {
     if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4)) continue;
 
     // ttbar, EWK and kFactor correction
-    if(lOption.find("data")==std::string::npos){
-      fGen->load(i0);
-      if(lJets.size()>0)        fJet->fillBTag(fJet->fGoodJets); 
-    }
-
     if(lOption.find("mcg")!=std::string::npos){
       fGen->findBoson(22,0); 
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"GJets_1j_NLO/nominal_G","GJets_LO/inv_pt_G","EWKcorr/photon");
