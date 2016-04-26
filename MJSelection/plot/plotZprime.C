@@ -93,7 +93,7 @@ void plotZprime(const string selection, const string algo)
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_300GeV_v4_mc.root");
 
   // integrated luminosity to scale MC
-  const double LUMI = 2.32;
+  const double LUMI = 0.44;
   
   // histograms for various corrections
   const string cmssw_base = getenv("CMSSW_BASE");
@@ -116,8 +116,8 @@ void plotZprime(const string selection, const string algo)
     sprintf(hname,"hFatJetPtLog_%i",isam);    hFatJetPtLogv.push_back(new TH1D(hname,"",40,500,2000));     hFatJetPtLogv[isam]->Sumw2();
     sprintf(hname,"hFatJetEta_%i",isam);      hFatJetEtav.push_back(new TH1D(hname,"",30,-4.5,4.5));       hFatJetEtav[isam]->Sumw2();
     sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",40,0,400));         hFatJetMassv[isam]->Sumw2();
-    sprintf(hname,"hFatJetTau21_%i",isam);    hFatJetTau21v.push_back(new TH1D(hname,"",25,0.2,1));        hFatJetTau21v[isam]->Sumw2();
-    sprintf(hname,"hFatJetTau21DDT_%i",isam); hFatJetTau21DDTv.push_back(new TH1D(hname,"",25,0.2,1));     hFatJetTau21DDTv[isam]->Sumw2();
+    sprintf(hname,"hFatJetTau21_%i",isam);    hFatJetTau21v.push_back(new TH1D(hname,"",25,0,1));        hFatJetTau21v[isam]->Sumw2();
+    sprintf(hname,"hFatJetTau21DDT_%i",isam); hFatJetTau21DDTv.push_back(new TH1D(hname,"",25,0,1));     hFatJetTau21DDTv[isam]->Sumw2();
     sprintf(hname,"hSubjetBtag_%i",isam);     hSubjetBtagv.push_back(new TH1D(hname,"",25,0,1));           hSubjetBtagv[isam]->Sumw2();
     neventsv.push_back(0);
   }
@@ -310,32 +310,34 @@ void plotZprime(const string selection, const string algo)
 
   char ylabel[100];
 
-  sprintf(ylabel,"Events / %.1f GeV/c^{2}",hFatJetPtv[0]->GetBinWidth(1));
-  makePlot(c, "fjpt", "Jet p_{T} [GeV/c^{2}]", ylabel, hFatJetPtv, samplev, hFatJetPtMC, hFatJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
+  sprintf(ylabel,"Events / GeV",hFatJetPtv[0]->GetBinWidth(1));
+  makePlot(c, "fjpt", "Jet p_{T} [GeV]", ylabel, hFatJetPtv, samplev, hFatJetPtMC, hFatJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetPtMC->GetBinContent(hFatJetPtMC->GetMaximumBin()))/(hFatJetPtMC->GetBinWidth(hFatJetPtMC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events / %.1f GeV/c^{2}",hFatJetPtLogv[0]->GetBinWidth(1));
+  sprintf(ylabel,"Events / GeV",hFatJetPtLogv[0]->GetBinWidth(1));
   makePlot(c, "fjptl", "Jet p_{T} [GeV/c^{2}]", ylabel, hFatJetPtLogv, samplev, hFatJetPtLogMC, hFatJetPtLogPull, doBlind, LUMI, true, 0.0, -0.03,
            2e-5*(hFatJetPtLogMC->GetBinContent(hFatJetPtLogMC->GetMaximumBin()))/(hFatJetPtLogMC->GetBinWidth(hFatJetPtLogMC->GetMaximumBin())),
            4e2*(hFatJetPtLogMC->GetBinContent(hFatJetPtLogMC->GetMaximumBin()))/(hFatJetPtLogMC->GetBinWidth(hFatJetPtLogMC->GetMaximumBin())), selection);
   
-  sprintf(ylabel,"Events / %.1f",hFatJetEtav[0]->GetBinWidth(1));
+  sprintf(ylabel,"Events",hFatJetEtav[0]->GetBinWidth(1));
   makePlot(c, "fjeta", "Jet #eta", ylabel, hFatJetEtav, samplev, hFatJetEtaMC, hFatJetEtaPull, doBlind, LUMI, false, 0.05, -0.03,
-           0.1, 1.6*(hFatJetEtaMC->GetBinContent(hFatJetEtaMC->GetMaximumBin())), selection);
+           0.1, 3.5*(hFatJetEtaMC->GetBinContent(hFatJetEtaMC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events / GeV/c^{2}");
-  makePlot(c, "msd", "Soft Drop Mass [GeV/c^{2}]", ylabel, hFatJetMassv, samplev, hFatJetMassMC, hFatJetMassPull, doBlind, LUMI, false, 0.0, -0.03,
-           0.1, 2.1*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())), selection);
+  sprintf(ylabel,"Events / GeV");
+  makePlot(c, "msd", "Soft Drop Mass [GeV]", ylabel, hFatJetMassv, samplev, hFatJetMassMC, hFatJetMassPull, doBlind, LUMI, true, 0.0, -0.03,
+	   //           0.1, 2.1*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())), selection);
+           2e-5*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())),
+           4e2*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events / %.1f ",hFatJetTau21v[0]->GetBinWidth(10));
+  sprintf(ylabel,"Events",hFatJetTau21v[0]->GetBinWidth(10));
   makePlot(c, "tau21", "#tau_{21}", ylabel, hFatJetTau21v, samplev, hFatJetTau21MC, hFatJetTau21Pull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetTau21MC->GetBinContent(hFatJetTau21MC->GetMaximumBin()))/(hFatJetTau21MC->GetBinWidth(hFatJetTau21MC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events / %.1f ",hFatJetTau21DDTv[0]->GetBinWidth(10));
+  sprintf(ylabel,"Events",hFatJetTau21DDTv[0]->GetBinWidth(10));
   makePlot(c, "tau21DDT", "#tau_{21}^{DDT}", ylabel, hFatJetTau21DDTv, samplev, hFatJetTau21DDTMC, hFatJetTau21DDTPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetTau21DDTMC->GetBinContent(hFatJetTau21DDTMC->GetMaximumBin()))/(hFatJetTau21DDTMC->GetBinWidth(hFatJetTau21DDTMC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events / %.1f ",hSubjetBtagv[0]->GetBinWidth(10));
+  sprintf(ylabel,"Events",hSubjetBtagv[0]->GetBinWidth(10));
   makePlot(c, "btag", "Max subjet csv", ylabel, hSubjetBtagv, samplev, hSubjetBtagMC, hBtagPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hSubjetBtagMC->GetBinContent(hSubjetBtagMC->GetMaximumBin()))/(hSubjetBtagMC->GetBinWidth(hSubjetBtagMC->GetMaximumBin())), selection);
 
@@ -399,9 +401,11 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   // if(i!=0) 
   //  if (subsample.compare("SR")==0 || subsample.find("Znunu")==0){
   //  if (subsample.compare("SR")==0){
-    for(unsigned int i=max; i<histv.size(); i++) {
-      plot.AddHist1D(histv[i],samplev[i]->label,"hist",samplev[i]->fillcolor,samplev[i]->linecolor);
-    }
+
+  //no signals this round
+    // for(unsigned int i=max; i<histv.size(); i++) {
+    //   plot.AddHist1D(histv[i],samplev[i]->label,"hist",samplev[i]->fillcolor,samplev[i]->linecolor);
+    // }
     //  }
   char lumitext[100];
   sprintf(lumitext,"%.2f fb^{-1} (13 TeV)",lumi);

@@ -45,6 +45,7 @@ bool ZprimeBitsLoader::passBoostedZprimeSR(){
 }
 bool ZprimeBitsLoader::passSelection(string selection){
   bool lPass = false;	
+  if (selection.find("PreSel")==0 && passBoostedZprimePreselection()) {lPass = true;}
   if (selection.find("SR")==0 && passBoostedZprimeSR()) {lPass = true;}
   return lPass;
 }
