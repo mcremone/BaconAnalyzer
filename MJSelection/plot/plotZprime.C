@@ -106,23 +106,25 @@ void plotZprime(const string selection, const string algo)
   // Declare histograms
   //
   char hname[100];
-  vector<TH1D*> hFatJetPtv, hFatJetPtLogv;
+  vector<TH1D*> hFatJetPtv, hFatJetPtLogv, hFatJetEtav;
   vector<TH1D*> hFatJetMassv, hFatJetTau21v, hFatJetTau21DDTv;              
   vector<TH1D*> hSubjetBtagv;  
   vector<double> neventsv;
   
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
-    sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",20,360,1000));        hFatJetPtv[isam]->Sumw2();
-    sprintf(hname,"hFatJetPtLog_%i",isam);    hFatJetPtLogv.push_back(new TH1D(hname,"",20,360,1000));     hFatJetPtLogv[isam]->Sumw2();
-    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,40,120));        hFatJetMassv[isam]->Sumw2();
-    sprintf(hname,"hFatJetTau21_%i",isam);    hFatJetTau21v.push_back(new TH1D(hname,"",15,0.2,1));        hFatJetTau21v[isam]->Sumw2();
-    sprintf(hname,"hFatJetTau21DDT_%i",isam); hFatJetTau21DDTv.push_back(new TH1D(hname,"",15,0.2,1));     hFatJetTau21DDTv[isam]->Sumw2();
-    sprintf(hname,"hSubjetBtag_%i",isam);     hSubjetBtagv.push_back(new TH1D(hname,"",15,0,1));           hSubjetBtagv[isam]->Sumw2();
+    sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",40,500,2000));        hFatJetPtv[isam]->Sumw2();
+    sprintf(hname,"hFatJetPtLog_%i",isam);    hFatJetPtLogv.push_back(new TH1D(hname,"",40,500,2000));     hFatJetPtLogv[isam]->Sumw2();
+    sprintf(hname,"hFatJetEta_%i",isam);       hFatJetEtav.push_back(new TH1D(hname,"",40,500,2000));        hFatJetEtav[isam]->Sumw2();
+    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",40,0,400));        hFatJetMassv[isam]->Sumw2();
+    sprintf(hname,"hFatJetTau21_%i",isam);    hFatJetTau21v.push_back(new TH1D(hname,"",25,0.2,1));        hFatJetTau21v[isam]->Sumw2();
+    sprintf(hname,"hFatJetTau21DDT_%i",isam); hFatJetTau21DDTv.push_back(new TH1D(hname,"",25,0.2,1));     hFatJetTau21DDTv[isam]->Sumw2();
+    sprintf(hname,"hSubjetBtag_%i",isam);     hSubjetBtagv.push_back(new TH1D(hname,"",25,0,1));           hSubjetBtagv[isam]->Sumw2();
     neventsv.push_back(0);
   }
 
   TH1D *hFatJetPtMC        = (TH1D*)hFatJetPtv[0]      ->Clone("hFatJetPtMC");
   TH1D *hFatJetPtLogMC     = (TH1D*)hFatJetPtLogv[0]   ->Clone("hFatJetPtLogMC");
+  TH1D *hFatJetEtaMC        = (TH1D*)hFatJetEtav[0]      ->Clone("hFatJetEtaMC");
   TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0]    ->Clone("hFatJetMassMC");
   TH1D *hFatJetTau21MC     = (TH1D*)hFatJetTau21v[0]   ->Clone("hFatJetTau21MC");
   TH1D *hFatJetTau21DDTMC  = (TH1D*)hFatJetTau21DDTv[0]->Clone("hFatJetTau21DDTMC");
@@ -159,7 +161,7 @@ void plotZprime(const string selection, const string algo)
 
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
 	// Blinding policy: keep just one fifth of the events
-	//	if(!doBlind && ientry % 5 != 0) continue;
+	if(!doBlind && isData && ientry % 5 != 0) continue;
         intree->GetEntry(ientry);
 
 	if(!fBits->selectJetAlgoAndSize(algo)) continue;
@@ -176,6 +178,7 @@ void plotZprime(const string selection, const string algo)
         neventsv[isam]+=wgt;
         hFatJetPtv[isam]       ->Fill(fBits->bst_jet0_pt,             wgt);
         hFatJetPtLogv[isam]    ->Fill(fBits->bst_jet0_pt,             wgt);
+	hFatJetEtav[isam]       ->Fill(fBits->bst_jet0_pt,             wgt);
 	hFatJetMassv[isam]     ->Fill(fBits->bst_jet0_msd,            wgt);
 	hFatJetTau21v[isam]    ->Fill(fBits->bst_jet0_tau21,          wgt);
         hFatJetTau21DDTv[isam] ->Fill(fBits->tau21DDT(),           wgt);
