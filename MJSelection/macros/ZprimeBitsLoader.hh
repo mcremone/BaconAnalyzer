@@ -30,6 +30,7 @@ public:
   bool passBoostedZprimeSR();
   bool passSelection(string selection);
   double getWgt(bool isData, TString algo, double LUMI);
+  double tau21DDT();
   
   //
   // variables to read in bacon bits

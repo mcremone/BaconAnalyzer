@@ -15,7 +15,7 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo) {
     iTree->SetBranchAddress("puWeight",                          &puWeight);
     iTree->SetBranchAddress("scale1fb",                          &scale1fb);
     iTree->SetBranchAddress("evtWeight",                         &evtWeight);
-    iTree->SetBranchAddress("bst8_"+algo+"jets",     &njets);
+    iTree->SetBranchAddress("bst8_"+algo+"jets",                 &njets);
     iTree->SetBranchAddress("bst8_"+algo+"jet0_pt",        &bst_jet0_pt);
     iTree->SetBranchAddress("bst8_"+algo+"jet0_eta",       &bst_jet0_eta);
     iTree->SetBranchAddress("bst8_"+algo+"jet0_phi",       &bst_jet0_phi);
@@ -41,7 +41,7 @@ bool ZprimeBitsLoader::passBoostedZprimePreselection(){
   return njets>0 & bst_jet0_pt>500;  
 }
 bool ZprimeBitsLoader::passBoostedZprimeSR(){
-  return passBoostedZprimePreselection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + RHO_CUT)) & bst_jet0_msd>40;
+  return passBoostedZprimePreselection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + RHO_CUT));
 }
 bool ZprimeBitsLoader::passSelection(string selection){
   bool lPass = false;	
@@ -55,4 +55,7 @@ double ZprimeBitsLoader::getWgt(bool isData, TString algo, double LUMI){
     if (algo == "CHS") wgt *= puWeight;
   }
   return wgt;
+}
+double ZprimeBitsLoader::tau21DDT(){
+  return bst_jet0_tau21 + 0.063*bst_jet0_rho;
 }
