@@ -114,8 +114,8 @@ void plotZprime(const string selection, const string algo)
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",40,500,2000));        hFatJetPtv[isam]->Sumw2();
     sprintf(hname,"hFatJetPtLog_%i",isam);    hFatJetPtLogv.push_back(new TH1D(hname,"",40,500,2000));     hFatJetPtLogv[isam]->Sumw2();
-    sprintf(hname,"hFatJetEta_%i",isam);       hFatJetEtav.push_back(new TH1D(hname,"",40,500,2000));        hFatJetEtav[isam]->Sumw2();
-    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",40,0,400));        hFatJetMassv[isam]->Sumw2();
+    sprintf(hname,"hFatJetEta_%i",isam);      hFatJetEtav.push_back(new TH1D(hname,"",30,-4.5,4.5));       hFatJetEtav[isam]->Sumw2();
+    sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",40,0,400));         hFatJetMassv[isam]->Sumw2();
     sprintf(hname,"hFatJetTau21_%i",isam);    hFatJetTau21v.push_back(new TH1D(hname,"",25,0.2,1));        hFatJetTau21v[isam]->Sumw2();
     sprintf(hname,"hFatJetTau21DDT_%i",isam); hFatJetTau21DDTv.push_back(new TH1D(hname,"",25,0.2,1));     hFatJetTau21DDTv[isam]->Sumw2();
     sprintf(hname,"hSubjetBtag_%i",isam);     hSubjetBtagv.push_back(new TH1D(hname,"",25,0,1));           hSubjetBtagv[isam]->Sumw2();
@@ -124,7 +124,7 @@ void plotZprime(const string selection, const string algo)
 
   TH1D *hFatJetPtMC        = (TH1D*)hFatJetPtv[0]      ->Clone("hFatJetPtMC");
   TH1D *hFatJetPtLogMC     = (TH1D*)hFatJetPtLogv[0]   ->Clone("hFatJetPtLogMC");
-  TH1D *hFatJetEtaMC        = (TH1D*)hFatJetEtav[0]      ->Clone("hFatJetEtaMC");
+  TH1D *hFatJetEtaMC       = (TH1D*)hFatJetEtav[0]     ->Clone("hFatJetEtaMC");
   TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0]    ->Clone("hFatJetMassMC");
   TH1D *hFatJetTau21MC     = (TH1D*)hFatJetTau21v[0]   ->Clone("hFatJetTau21MC");
   TH1D *hFatJetTau21DDTMC  = (TH1D*)hFatJetTau21DDTv[0]->Clone("hFatJetTau21DDTMC");
@@ -178,10 +178,10 @@ void plotZprime(const string selection, const string algo)
         neventsv[isam]+=wgt;
         hFatJetPtv[isam]       ->Fill(fBits->bst_jet0_pt,             wgt);
         hFatJetPtLogv[isam]    ->Fill(fBits->bst_jet0_pt,             wgt);
-	hFatJetEtav[isam]       ->Fill(fBits->bst_jet0_pt,             wgt);
+	hFatJetEtav[isam]      ->Fill(fBits->bst_jet0_eta,            wgt);
 	hFatJetMassv[isam]     ->Fill(fBits->bst_jet0_msd,            wgt);
 	hFatJetTau21v[isam]    ->Fill(fBits->bst_jet0_tau21,          wgt);
-        hFatJetTau21DDTv[isam] ->Fill(fBits->tau21DDT(),           wgt);
+        hFatJetTau21DDTv[isam] ->Fill(fBits->tau21DDT(),              wgt);
         hSubjetBtagv[isam]     ->Fill(fBits->bst_jet0_minsubcsv,      wgt);
 
 	//if(isSignal1 || isSignal2 || isSignal3 || isSignal4 || isSignal5 || isSignal6){
@@ -207,6 +207,7 @@ void plotZprime(const string selection, const string algo)
   QCDSF = (neventsv[0]-(neventsv[2]+neventsv[3]+neventsv[4]+neventsv[5]+neventsv[6]))/neventsv[1];
   hFatJetPtv[1]       ->Scale(QCDSF);
   hFatJetPtLogv[1]    ->Scale(QCDSF);
+  hFatJetEtav[1]      ->Scale(QCDSF);
   hFatJetMassv[1]     ->Scale(QCDSF);
   hFatJetTau21v[1]    ->Scale(QCDSF);
   hFatJetTau21DDTv[1] ->Scale(QCDSF);
@@ -215,6 +216,7 @@ void plotZprime(const string selection, const string algo)
   for(unsigned int isam=1; isam<samplev.size()-6; isam++) {
     hFatJetPtMC       ->Add(hFatJetPtv[isam]);
     hFatJetPtLogMC    ->Add(hFatJetPtLogv[isam]);
+    hFatJetEtaMC      ->Add(hFatJetEtav[isam]);
     hFatJetMassMC     ->Add(hFatJetMassv[isam]);
     hFatJetTau21MC    ->Add(hFatJetTau21v[isam]);
     hFatJetTau21DDTMC ->Add(hFatJetTau21DDTv[isam]);
@@ -228,6 +230,7 @@ void plotZprime(const string selection, const string algo)
   //
   TH1D *hFatJetPtPull       = makePullHist(hFatJetPtv[0],       hFatJetPtMC,       "hFatJetPtPull",        doBlind);
   TH1D *hFatJetPtLogPull    = makePullHist(hFatJetPtLogv[0],    hFatJetPtLogMC,    "hFatJetPtLogPull",     doBlind);
+  TH1D *hFatJetEtaPull      = makePullHist(hFatJetEtav[0],      hFatJetEtaMC,      "hFatJetEtaPull",       doBlind);
   TH1D *hFatJetMassPull     = makePullHist(hFatJetMassv[0],     hFatJetMassMC,     "hFatJetMassPull",      doBlind);
   TH1D *hFatJetTau21Pull    = makePullHist(hFatJetTau21v[0],    hFatJetTau21MC,    "hFatJetTau21Pull",     doBlind);
   TH1D *hFatJetTau21DDTPull = makePullHist(hFatJetTau21DDTv[0], hFatJetTau21DDTMC, "hFatJetTau21DDTPull",  doBlind);
@@ -316,6 +319,10 @@ void plotZprime(const string selection, const string algo)
            2e-5*(hFatJetPtLogMC->GetBinContent(hFatJetPtLogMC->GetMaximumBin()))/(hFatJetPtLogMC->GetBinWidth(hFatJetPtLogMC->GetMaximumBin())),
            4e2*(hFatJetPtLogMC->GetBinContent(hFatJetPtLogMC->GetMaximumBin()))/(hFatJetPtLogMC->GetBinWidth(hFatJetPtLogMC->GetMaximumBin())), selection);
   
+  sprintf(ylabel,"Events / %.1f",hFatJetEtav[0]->GetBinWidth(1));
+  makePlot(c, "fjeta", "Jet #eta", ylabel, hFatJetEtav, samplev, hFatJetEtaMC, hFatJetEtaPull, doBlind, LUMI, false, 0.05, -0.03,
+           0.1, 1.6*(hFatJetEtaMC->GetBinContent(hFatJetEtaMC->GetMaximumBin())), selection);
+
   sprintf(ylabel,"Events / GeV/c^{2}");
   makePlot(c, "msd", "Soft Drop Mass [GeV/c^{2}]", ylabel, hFatJetMassv, samplev, hFatJetMassMC, hFatJetMassPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetMassMC->GetBinContent(hFatJetMassMC->GetMaximumBin()))/(hFatJetMassMC->GetBinWidth(hFatJetMassMC->GetMaximumBin())), selection);
