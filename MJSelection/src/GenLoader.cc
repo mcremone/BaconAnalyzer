@@ -84,7 +84,7 @@ void GenLoader::setupTree(TTree *iTree,float iXSIn) {
 
   // iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); fWeight = fGenInfo->weight;
   // iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F");   fXSIn = iXSIn;
-
+  
   fTree->Branch("genVPt"     ,&fBosonPt   ,"fBosonPt/F");
   fTree->Branch("genVPhi"    ,&fBosonPhi  ,"fBosonPhi/F");
 
@@ -527,7 +527,7 @@ void GenLoader::findBoson(int iId, int lOption){
       }      
     }
     
-    // find last boson Z(23),W(24)
+    // find last boson Z(23),W(24),Z'(32)
     if(lOption == 1){
       if(fabs(genp0->pdgId)==iId){
         int iL0 = findLastBoson(i0,iId);
