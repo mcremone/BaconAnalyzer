@@ -15,7 +15,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
     cp -r monoxplots/* /afs/cern.ch/user/c/cmantill/www/MonoTop/MonoTop76/
 fi
 
-if [[ ($sample = "CutFlow") ]]; then
+if [[ ($sample = "All") || ($sample = "CutFlow") ]]; then
     ./plotMonoX.sh Had BstMonoTop SR1 ${combo} ${algo} CENT
     ./plotMonoX.sh Had BstMonoTop SR2 ${combo} ${algo} CENT
     ./plotMonoX.sh Had BstMonoTop SR3 ${combo} ${algo} CENT
