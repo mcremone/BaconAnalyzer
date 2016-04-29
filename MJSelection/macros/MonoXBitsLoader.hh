@@ -111,7 +111,7 @@ public:
   unsigned int triggerBits, selectBits;                                            // trigger and jet type bits
   double triggerEff;                                                               // trigger efficiency
   float evtWeight, puWeight;                                                       // pu and evt weight
-  double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2;                           // weights
+  double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2, phoSF0;                   // weights
   double topSize, topMatching;                                                     // topSize and topMatching
   int isHadronicTop;                                                               // hadronic Top requirement
   unsigned int npu, npv;                                                           // PU, PV multiplicity
@@ -123,6 +123,10 @@ public:
   float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2;                   // btag SF
   float res_btagwM0, res_btagwM1, res_btagwMminus1, res_btagwM2 ;
   float res_btagwT0, res_btagwT1, res_btagwTminus1, res_btagwT2;
+  float bst_btagwL0, bst_btagwL1, bst_btagwLminus1, bst_btagwL2;                   // subjet btag SF 
+  float bst_btagwM0, bst_btagwM1, bst_btagwMminus1, bst_btagwM2 ;
+  float bst_btagwT0, bst_btagwT1, bst_btagwTminus1, bst_btagwT2;
+
   float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                     // MET
   double min_dphijetsmet;                                                          // min delta phi between MET and narrow jets
 
@@ -138,7 +142,8 @@ public:
 
   double           bst_jet0_pt,bst_jet0_eta,bst_jet0_phi,bst_jet0_mass;            // leading boosted jet
   double           bst_jet0_msd, bst_jet0_tau32, bst_jet0_tau21;                   // boosted tagger variables                                                                                            
-  double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                         // subjet btag                            
+  double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                         // subjet btag
+  double           bst_jet0_doublecsv;                                             // double btag                            
   float            bst_jet0_rho, bst_jet0_phil;                                    // msd and pt dependent variables
   double           bst_jet0_CHF, bst_jet0_NHF, bst_jet0_NEMF;                      // boosted jet variables
   float            bst_mt;                                                         // bst jet mT
@@ -147,6 +152,10 @@ public:
   const float TopmistagSF  = 1.1639;                                               // TopmistagSF 
   const float btagSF       = 0.9851;                                               // btagSF
   const float bmistagSF    = 0.8853;                                               // bmistagSF
+
+  const float CSVL = 0.460;                                                        // CSVL - WPs for 76x
+  const float CSVM = 0.800;                                                        // CSVM
+  const float CSVT = 0.935;                                                        // CSVT
 
 protected:
 

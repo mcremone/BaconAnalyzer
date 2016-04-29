@@ -43,7 +43,7 @@ float CalcSig(TH1D*sig, TH1D*bkg);
 
 //=== MAIN MACRO =================================================================================================
 
-void plotMonoX(const string preselection, const string selection, const string subsample, const string combo, TString algo, TString syst)
+void plotMonoX(const string preselection, const string selection, const string subsample, const string combo = "ONLY", TString algo= "PUPPI", TString syst = "CENT")
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -71,7 +71,7 @@ void plotMonoX(const string preselection, const string selection, const string s
   if (preselection.compare("Pho")!=0) {
     samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
     samplev.back()->fnamev.push_back("../monoxbits/T.root");
-    // samplev.back()->fnamev.push_back("../monoxbits/TZ.root");
+    samplev.back()->fnamev.push_back("../monoxbits/TZ.root");
     samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
     samplev.back()->fnamev.push_back("../monoxbits/TT.root");
     // samplev.back()->fnamev.push_back("../monoxbits/TTZ.root");
@@ -81,12 +81,9 @@ void plotMonoX(const string preselection, const string selection, const string s
     samplev.back()->fnamev.push_back("../monoxbits/WZ.root");
     samplev.back()->fnamev.push_back("../monoxbits/ZZ.root");
     samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
-    // samplev.back()->fnamev.push_back("../monoxbits/W.root");
     samplev.back()->fnamev.push_back("../monoxbits/WHF.root");
-    // samplev.push_back(new CSample("W+LF",kGreen - 7,kGreen - 7));
     samplev.back()->fnamev.push_back("../monoxbits/WLF.root");
     samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
-    // samplev.back()->fnamev.push_back("../monoxbits/Z.root");
     samplev.back()->fnamev.push_back("../monoxbits/ZHF.root");   
     samplev.back()->fnamev.push_back("../monoxbits/ZLF.root");
     samplev.back()->fnamev.push_back("../monoxbits/DYHF.root");
@@ -94,7 +91,6 @@ void plotMonoX(const string preselection, const string selection, const string s
   }
   if (preselection.compare("Pho")==0){
     samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
-    //    samplev.back()->fnamev.push_back("../monoxbits/G.root");
     samplev.back()->fnamev.push_back("../monoxbits/GHF.root");
     samplev.back()->fnamev.push_back("../monoxbits/GLF.root");
   }
@@ -217,8 +213,8 @@ void plotMonoX(const string preselection, const string selection, const string s
 
         double wgt = 1;
 	if(!isData) {
-	  wgt *= LUMI*fBits->scale1fb*fBits->kfactor*btagw*fBits->triggerEff*fBits->evtWeight*fBits->eleSF0*fBits->eleSF1*fBits->eleSF2*fBits->muoSF0*fBits->muoSF1*fBits->muoSF2;
-	  if(sample->label=="t#bar{t}" && ifile==0 && fBits->topSize<0.8 && fBits->isHadronicTop==1){
+	  wgt *= LUMI*fBits->scale1fb*fBits->kfactor*btagw*fBits->triggerEff*fBits->evtWeight*fBits->eleSF0*fBits->eleSF1*fBits->eleSF2*fBits->muoSF0*fBits->muoSF1*fBits->muoSF2*fBits->phoSF0;
+	  if(sample->label=="t#bar{t}" && ifile==0 && fBits->topSize<0.8 && fBits->isHadronicTop==1){ // &&fBits->topMatching <1.4 && fBits->topMatching > 0 && fBits->topSize > 0 {
 	     wgt *= fBits->ToptagSF;
 	  }
 	  if(sample->label!="t#bar{t}" || ifile!=0 || fBits->isHadronicTop==0 || fBits->topSize>=0.8){
@@ -429,9 +425,9 @@ void plotMonoX(const string preselection, const string selection, const string s
   makePlot(c, "fjpt", "Jet p_{T} [GeV/c^{2}]", ylabel, hFatJetPtv, samplev, hFatJetPtMC, hFatJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetPtMC->GetBinContent(hFatJetPtMC->GetMaximumBin()))/(hFatJetPtMC->GetBinWidth(hFatJetPtMC->GetMaximumBin())), selection, subsample);
 
-  // sprintf(ylabel,"Events / %.1f GeV/c^{2}",hTransverseMassv[0]->GetBinWidth(1));
-  // makePlot(c, "mt", "Transverse Mass [GeV/c^{2}]", ylabel, hTransverseMassv, samplev, hTransverseMassMC, hTransverseMassPull, doBlind, LUMI, false, 0.0, -0.03,
-  //         0.1, 2.1*(hTransverseMassMC->GetBinContent(hTransverseMassMC->GetMaximumBin()))/(hTransverseMassMC->GetBinWidth(hTransverseMassMC->GetMaximumBin())), selection, subsample);
+  sprintf(ylabel,"Events / %.1f GeV/c^{2}",hTransverseMassv[0]->GetBinWidth(1));
+   makePlot(c, "mt", "Transverse Mass [GeV/c^{2}]", ylabel, hTransverseMassv, samplev, hTransverseMassMC, hTransverseMassPull, doBlind, LUMI, false, 0.0, -0.03,
+           0.1, 2.1*(hTransverseMassMC->GetBinContent(hTransverseMassMC->GetMaximumBin()))/(hTransverseMassMC->GetBinWidth(hTransverseMassMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f ",hFatJetTau32v[0]->GetBinWidth(10));
   makePlot(c, "tau32", "#tau_{3}/#tau_{2}", ylabel, hFatJetTau32v, samplev, hFatJetTau32MC, hFatJetTau32Pull, doBlind, LUMI, false, -0.45, -0.03,
@@ -470,19 +466,19 @@ void plotMonoX(const string preselection, const string selection, const string s
 
   sprintf(ylabel,"Events / %.1f",hJet1Etav[0]->GetBinWidth(1));
   makePlot(c, "jet1eta", "jet1 #eta", ylabel, hJet1Etav, samplev, hJet1EtaMC, hJet1EtaPull, doBlind, LUMI, false, 0.05, -0.03,
-           0.1, 1.6*(hJet1EtaMC->GetBinContent(hJet1EtaMC->GetMaximumBin())), selection, subsample);
+           0.1, 3.5*(hJet1EtaMC->GetBinContent(hJet1EtaMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f",hJet2Etav[0]->GetBinWidth(1));
   makePlot(c, "jet2eta", "jet2 #eta", ylabel, hJet2Etav, samplev, hJet2EtaMC, hJet2EtaPull, doBlind, LUMI, false, 0.05, -0.03,
-           0.1, 1.6*(hJet2EtaMC->GetBinContent(hJet2EtaMC->GetMaximumBin())), selection, subsample);
+           0.1, 3.5*(hJet2EtaMC->GetBinContent(hJet2EtaMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f",hJet3Etav[0]->GetBinWidth(1));
   makePlot(c, "jet3eta", "jet3 #eta", ylabel, hJet3Etav, samplev, hJet3EtaMC, hJet3EtaPull, doBlind, LUMI, false, 0.05, -0.03,
-           0.1, 1.6*(hJet3EtaMC->GetBinContent(hJet3EtaMC->GetMaximumBin())), selection, subsample);
+           0.1, 3.5*(hJet3EtaMC->GetBinContent(hJet3EtaMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %.1f",hJet4Etav[0]->GetBinWidth(1));
   makePlot(c, "jet4eta", "jets #eta", ylabel, hJet4Etav, samplev, hJet4EtaMC, hJet4EtaPull, doBlind, LUMI, false, 0.05, -0.03,
-           0.1, 1.6*(hJet4EtaMC->GetBinContent(hJet4EtaMC->GetMaximumBin())), selection, subsample);
+           0.1, 3.5*(hJet4EtaMC->GetBinContent(hJet4EtaMC->GetMaximumBin())), selection, subsample);
 
   cout << endl;
   cout << " <> Output saved in " << outputDir << endl;
@@ -564,9 +560,10 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
     hExpPull->SetBinContent(iB,1.);
     hExpPull->SetBinError(iB,currentErr/currentVal);
   }
-  CPlot plotPull(outname.c_str(),"",xlabel.c_str(),"Pull");
-  plotPull.AddHist1D(hExpPull,"E2",uncColor,1,3004);
+
+  CPlot plotPull(outname.c_str(),"",xlabel.c_str(),"Data/MC");
   plotPull.AddHist1D(hPull,"EX0",kBlack);
+  plotPull.AddHist1D(hExpPull,"E2",uncColor,1,3004);
   plotPull.SetYRange(0.,2.);
   plotPull.AddLine(xmin,1,xmax,1,kBlack,3);
 
@@ -606,7 +603,7 @@ TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind
   hPull->GetYaxis()->SetTitleOffset(0.42);
   hPull->GetYaxis()->SetTitleSize(0.13);
   hPull->GetYaxis()->SetLabelSize(0.10);
-  hPull->GetYaxis()->SetNdivisions(104);
+  hPull->GetYaxis()->SetNdivisions(5);
   hPull->GetYaxis()->CenterTitle();
   hPull->GetXaxis()->SetTitleOffset(1.2);
   hPull->GetXaxis()->SetTitleSize(0.13);
