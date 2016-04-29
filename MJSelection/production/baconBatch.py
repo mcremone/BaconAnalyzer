@@ -65,7 +65,7 @@ def write_job(exec_line, out, analyzer, i, n):
 	sub_file.write('mkdir -p scratch\n')
 	sub_file.write('cd scratch\n')
 	#sub_file.write('cp -p $CMSSW_BASE/bin/$SCRAM_ARCH/%s .\n'%analyzer)
-	#sub_file.write('cp -p %s .\n'%(os.path.abspath(analyzer)))
+	sub_file.write('cp -p %s .\n'%(os.path.abspath(analyzer)))
 	sub_file.write('mkdir -p %s\n'%(out))
 
 	sub_file.write('if ( %s ) then\n'%exec_line)
@@ -164,8 +164,7 @@ def parse_to_dict(l_list):
 		iskey+=1
   return ret
 
-def getFilesJob(dirin,job,tnjobs):  
-  print dirin
+def getFilesJob(dirin,job,tnjobs):
   if tnjobs == 1 : 
   	tnjobs = -1
 	job = 0
@@ -174,10 +173,8 @@ def getFilesJob(dirin,job,tnjobs):
   else : alldirs=[dirin]
   infiles = []
   for dir in alldirs:
-  # taking only first dir
-  #dir  = alldirs[0]
-	  if '/store/' in dir : infiles.extend(makeCaFiles(dir,options.blacklist,tnjobs,job))
-	  else : infiles.extend(makeFiles(dir,options.blacklist,tnjobs,job))
+    if '/store/' in dir : infiles.extend(makeCaFiles(dir,options.blacklist,tnjobs,job))
+    else : infiles.extend(makeFiles(dir,options.blacklist,tnjobs,job))
   if options.verbose: print "VERB -- Found following files for dir %s --> "%dir, infiles
   return infiles
 
