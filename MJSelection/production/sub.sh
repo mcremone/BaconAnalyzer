@@ -16,11 +16,11 @@ option1=$7
 option2=$8
 
 #options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q 2nd"
-options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 2000 -q 2nw4cores"
+options1="Output.root --passSumEntries 5:Events  -a 2:"${ismc}" -a 3:none  -n 7000 -q 1nh"
 
 if [ $ismc = "data" ]; then
 #    options1="Output.root -a 5:1  -a 2:"${ismc}" -a 3:$PWD/../Json/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON_v2.txt  -n 2000 -q 2nd"
-    options1="Output.root -a 5:1  -a 2:"${ismc}" -a 3:$PWD/../Json/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_v2.txt -n 2000 -q 2nw4cores"
+    options1="Output.root -a 5:1  -a 2:"${ismc}" -a 3:$PWD/../Json/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_v2.txt -n 7000 -q 2nw4cores"
 fi
 
 scandir=$dir$label
@@ -32,6 +32,10 @@ function scan {
     echo $scandir
     submitted=0
     for x in `/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select ls $scandir |  awk '{print $1}'`; do
+        hasfailed=`echo $scandir | grep -c "failed"`
+	if [ "$hasfailed" -eq 1 ]; then
+	    break
+	fi
         hasdot=`echo $x | grep -c "\."`
         if [ "$hasdot" -eq 0 ]; then
             echo "Scanning: "$scandir/$x
