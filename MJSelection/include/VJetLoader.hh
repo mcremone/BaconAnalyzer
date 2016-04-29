@@ -21,7 +21,7 @@ using namespace baconhep;
 
 class VJetLoader { 
 public:
-  VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,std::string subjetbtagScaleFactorFilename ="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/include/CSVv2_subjets.csv");
+  VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN=1, std::string subjetbtagScaleFactorFilename ="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/include/CSVv2_subjets.csv");
   ~VJetLoader();
   void reset();
   void resetSubJetBTag();
@@ -36,6 +36,7 @@ public:
   void addSubJetBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> &iLabels,int iN,std::vector<float> &iVals);
   void fillSubJetBTag(const TClonesArray* iGens, std::vector<TLorentzVector> iObjects);
   TAddJet *getAddJet(TJet *iJet);
+  double ddt(double iT1,double iT2,double iM,double iPt);
   int  trigger(TJet *iJet);
   float pullDot(float iY1,float iY2,float iPhi1,float iPhi2);
   TJet* getLargeJet(TJet *iMatch);

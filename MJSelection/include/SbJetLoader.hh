@@ -22,6 +22,8 @@ public:
   void selectSbJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,double dR);
   void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals,std::vector<float> &iSbVals);
   TAddJet *getAddJet(TJet *iJet);
+  TJet* getLargeJet(TJet *iMatch);
+
   std::vector<TJet*> fSelSbJets;
   double ftopSize, ftopMatching;
   int fisHadronicTop;
@@ -31,8 +33,8 @@ protected:
   TBranch      *fSbJetBr;
   TClonesArray *fSbAddJets;
   TBranch      *fSbAddJetBr;
-  TClonesArray *fFatJets;
-  TBranch      *fFatJetBr;
+  TClonesArray *fSbFatJets;
+  TBranch      *fSbFatJetBr;
   TTrigger     *fTrigger;
   TTree        *fTree;
   int           fNSbJets;

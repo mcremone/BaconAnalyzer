@@ -13,6 +13,7 @@ SbJetLoader::SbJetLoader(TTree *iTree,std::string iJet,std::string iAddJet) {
 
   iTree->SetBranchAddress(iJet.c_str(),       &fSbJets);
   iTree->SetBranchAddress(iAddJet.c_str(),    &fSbAddJets);
+
   fSbJetBr        = iTree->GetBranch(iJet.c_str());
   fSbAddJetBr     = iTree->GetBranch(iAddJet.c_str());
 
@@ -48,6 +49,7 @@ void SbJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("minsubcsv");
   fLabels.push_back("maxsubcsv");
   fLabels.push_back("doublecsv");
+  fLabels.push_back("fatjetcsv");
 
   fSbLabels.clear();
   fSbLabels.push_back("nTracks");
@@ -159,6 +161,9 @@ void SbJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<doubl
     iVals[lBase+i0*lNLabel+8]   = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
     iVals[lBase+i0*lNLabel+9]   = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
     iVals[lBase+i0*lNLabel+10]  = pAddJet     ->doublecsv;
+    TJet *pLargeJet = getLargeJet(iObjects[i0]);
+    if(pLargeJet != 0) iVals[lBase+i0*lNLabel+11] = pLargeJet->csv;
+
     iSbVals[i0*lNLabel+0]       = pAddJet     ->nTracks;
     iSbVals[i0*lNLabel+1]       = pAddJet     ->nSV;
     iSbVals[i0*lNLabel+2]       = pAddJet     ->trackSip3dSig_3;
@@ -257,4 +262,17 @@ TAddJet *SbJetLoader::getAddJet(TJet *iJet) {
     if(pJet->index == fabs(lIndex)) { lJet = pJet; break;}
   }
   return lJet;
+}
+TJet* SbJetLoader::getLargeJet(TJet *iMatch) {
+  TJet *lFatJet = 0;
+  for  (int i0 = 0; i0 < fSbJets->GetEntriesFast(); i0++) {
+    TJet *pSbFatJet = (TJet*)((*fSbJets)[i0]);
+    float pDEta = fabs(pSbFatJet->eta-iMatch->eta);
+    float pDPhi = fabs(pSbFatJet->phi-iMatch->phi);
+    if(pDPhi > 2.*TMath::Pi()-pDPhi) pDPhi =  2.*TMath::Pi()-pDPhi;
+    if(sqrt(pDEta*pDEta+pDPhi*pDPhi) > 0.4) continue;
+    lFatJet = pSbFatJet;
+    break;
+  }
+  return lFatJet;
 }

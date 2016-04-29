@@ -7,8 +7,9 @@
 
 using namespace baconhep;
 
-VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,std::string subjetbtagScaleFactorFilename) { 
+VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN, std::string subjetbtagScaleFactorFilename) { 
   fVJets         = new TClonesArray("baconhep::TJet");
+  // fFatJets       = new TClonesArray("baconhep::TJet");
   fVAddJets      = new TClonesArray("baconhep::TAddJet");
 
   iTree->SetBranchAddress(iJet.c_str(),       &fVJets);
@@ -16,7 +17,10 @@ VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,std::st
   fVJetBr        = iTree->GetBranch(iJet.c_str());
   fVAddJetBr     = iTree->GetBranch(iAddJet.c_str());
 
-  fN = 1;
+  // iTree->SetBranchAddress(iJet.c_str(),      &fFatJets);
+  // fFatJetBr      = iTree->GetBranch(iJet.c_str());
+
+  fN = iN;
 
   fSubJetCalib = new BTagCalibration("csvv2",subjetbtagScaleFactorFilename);
   fSubJetreadersL.clear(); fSubJetreadersM.clear();
@@ -35,6 +39,8 @@ VJetLoader::~VJetLoader() {
   delete fVJetBr;
   delete fVAddJets;
   delete fVAddJetBr;
+  // delete fFatJets;
+  // delete fFatJetBr;
 }
 void VJetLoader::resetSubJetBTag() {
   for(unsigned int i0 = 0; i0 < fSubJetBTagVars.size(); i0++) fSubJetBTagVars[i0] = 1;
@@ -61,11 +67,13 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("tau21");
   fLabels.push_back("tau32");
   fLabels.push_back("msd");
+  fLabels.push_back("ddt");
   fLabels.push_back("rho");
   fLabels.push_back("phil");
   fLabels.push_back("minsubcsv");
   fLabels.push_back("maxsubcsv");
   fLabels.push_back("doublecsv");
+  fLabels.push_back("fatjetcsv");
 
   std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
   std::stringstream pSNJ;   pSNJ << iJetLabel << "s";
@@ -99,6 +107,8 @@ void VJetLoader::load(int iEvent) {
   fVJetBr      ->GetEntry(iEvent);
   fVAddJets    ->Clear();
   fVAddJetBr   ->GetEntry(iEvent);
+  // fFatJets     ->Clear();
+  // fFatJetBr    ->GetEntry(iEvent);
 }
 void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR){
   reset(); 
@@ -139,12 +149,18 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
     iVals[lBase+i0*lNLabel+5]  = (pAddJet->tau2/pAddJet->tau1);
     iVals[lBase+i0*lNLabel+6]  = (pAddJet->tau3/pAddJet->tau2);
     iVals[lBase+i0*lNLabel+7]  = pAddJet     ->mass_sd0;
-    iVals[lBase+i0*lNLabel+8]  = log((pAddJet->mass_sd0*pAddJet->mass_sd0)/iObjects[i0]->pt);
-    iVals[lBase+i0*lNLabel+9]  = pAddJet->mass_sd0/log(iObjects[i0]->pt);
-    iVals[lBase+i0*lNLabel+10] = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
-    iVals[lBase+i0*lNLabel+11] = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
-    iVals[lBase+i0*lNLabel+12] = pAddJet     ->doublecsv;
+    iVals[lBase+i0*lNLabel+8]  = ddt(pAddJet->tau1,pAddJet->tau2,pAddJet->mass_sd0,iObjects[i0]->pt);
+    iVals[lBase+i0*lNLabel+9]  = log((pAddJet->mass_sd0*pAddJet->mass_sd0)/iObjects[i0]->pt);
+    iVals[lBase+i0*lNLabel+10] = pAddJet->mass_sd0/log(iObjects[i0]->pt);
+    iVals[lBase+i0*lNLabel+11] = TMath::Min(pAddJet->sj1_csv,pAddJet->sj2_csv);
+    iVals[lBase+i0*lNLabel+12] = TMath::Max(TMath::Max(pAddJet->sj1_csv,pAddJet->sj2_csv),TMath::Max(pAddJet->sj3_csv,pAddJet->sj4_csv));
+    iVals[lBase+i0*lNLabel+13] = pAddJet     ->doublecsv;
 
+    TJet *pLargeJet = getLargeJet(iObjects[i0]); 
+    if(pLargeJet != 0) iVals[lBase+i0*lNLabel+14] = pLargeJet->csv;
+    // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+14] = pLargeJet->pt - iObjects[i0]->pt;
+    // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+15] = pullDot(pLargeJet->pullY,iObjects[i0]->pullY,pLargeJet->pullPhi,iObjects[i0]->pullPhi);
+  
     TLorentzVector vSJ1; vSJ1.SetPtEtaPhiM(pAddJet->sj1_pt, pAddJet->sj1_eta, pAddJet->sj1_phi, pAddJet->sj1_m); fGoodVSubJets.push_back(vSJ1); 
     TLorentzVector vSJ2; vSJ2.SetPtEtaPhiM(pAddJet->sj2_pt, pAddJet->sj2_eta, pAddJet->sj2_phi, pAddJet->sj2_m); fGoodVSubJets.push_back(vSJ2);
     TLorentzVector vSJ3; vSJ3.SetPtEtaPhiM(pAddJet->sj3_pt, pAddJet->sj3_eta, pAddJet->sj3_phi, pAddJet->sj3_m); fGoodVSubJets.push_back(vSJ3);
@@ -227,6 +243,11 @@ TAddJet *VJetLoader::getAddJet(TJet *iJet) {
   }
   return lJet;
 }
+double VJetLoader::ddt(double iT1,double iT2,double iM,double iPt) {
+  double lRho = log(iM*iM/iPt)*0.63;
+  double lDDT = iT1/iT2 + lRho;
+  return lDDT;
+}
 int  VJetLoader::trigger(TJet *iJet) { 
   int pId = 0; 
   for(int i0 = 0; i0 < int(fTrigString.size()); i0++) if(fTrigger->passObj(fTrigString[i0],1,iJet->hltMatchBits))  pId += TMath::Power(2.,i0);
@@ -237,8 +258,8 @@ float VJetLoader::pullDot(float iY1,float iY2,float iPhi1,float iPhi2) {
 }
 TJet* VJetLoader::getLargeJet(TJet *iMatch) { 
   TJet *lFatJet = 0;
-  for  (int i0 = 0; i0 < fFatJets->GetEntriesFast(); i0++) {
-    TJet *pFatJet = (TJet*)((*fFatJets)[i0]);
+  for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) {
+    TJet *pFatJet = (TJet*)((*fVJets)[i0]);
     float pDEta = fabs(pFatJet->eta-iMatch->eta);
     float pDPhi = fabs(pFatJet->phi-iMatch->phi);
     if(pDPhi > 2.*TMath::Pi()-pDPhi) pDPhi =  2.*TMath::Pi()-pDPhi;
