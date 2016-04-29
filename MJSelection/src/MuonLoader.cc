@@ -41,7 +41,7 @@ void MuonLoader::setupTree(TTree *iTree) {
   fTree->Branch("nmuTight",&fNMuonsTight,"fNMuonsTight/I");
   setupNtuple("vmuo",iTree,fN,fVars);        // add leading 2 muons: pt,eta,phi,mass (2*4=8)
   addDiMuon  ("vdimuo",iTree,1, fVars,fN*3); // add dimuon system: *_pt,mass,phi,y for dimuo0 (1*4)
-  addLepSF   ("muoSF",iTree,fmuoSFVars);     // add lepSF: muoSF0,muoSF1,muoSF2
+  addSF      ("muoSF",iTree,fmuoSFVars,3);   // add lepSF: muoSF0,muoSF1,muoSF2
 }
 void MuonLoader::load(int iEvent) { 
   fMuons   ->Clear();

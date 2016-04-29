@@ -13,6 +13,8 @@
 #include "BaconAna/DataFormats/interface/TPhoton.hh"
 #include "BaconAna/DataFormats/interface/TGenParticle.hh"
 
+#include "../include/LeptonEffUtils.hh"
+
 #include <string>
 #include <sstream>
 #include <vector>
@@ -351,37 +353,58 @@ double getVal2D(TH2D*h,double val1, double val2) {
   return h->GetBinContent(h->FindBin(val1,val2));
 }
 //--------------------------------------------------------------------------------------------------
-void addLepSF(std::string iHeader,TTree *iTree,std::vector<double> &iVals) {
-  for(int i0 = 0; i0 < 3; i0++) {
+void addSF(std::string iHeader,TTree *iTree,std::vector<double> &iVals, int iN) { 
+  for(int i0 = 0; i0 < iN; i0++) {
     std::stringstream pSF;
     pSF << iHeader << i0;
     iTree->Branch(pSF.str().c_str(),&iVals[i0],(pSF.str()+"/D").c_str());
   }
 }
 //--------------------------------------------------------------------------------------------------
-void fillLepSF(int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals) {
-  std::vector <double> flepSFtight, flepSFloose;
-  flepSFtight.clear(); flepSFloose.clear();
+void fillLepSF(int iId, int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals) {
+  std::vector <double> flepSFtight, flepSFloose, flepEfftight, flepEffloose;
+  flepSFtight.clear(); flepSFloose.clear(); 
   for(unsigned int i0=0; i0<iLeptons.size(); i0++){
     flepSFtight.push_back(getVal2D(tightHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt())); //getTightMuonSF(iMuons[i0].Pt(),iMuons[i0].Eta()) - getTightEleSF(iElectrons[i0].Pt(),iElectrons[i0].Eta())
     flepSFloose.push_back(getVal2D(looseHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt())); //getLooseMuonSF(iMuons[i0].Pt(),iMuons[i0].Eta()) - getVetoEleSF(iElectrons[i0].Pt(),iElectrons[i0].Eta()))
+    if(iId == 13){
+      flepEfftight.push_back(getTightMuonDataIDEff(fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
+      flepEffloose.push_back(getLooseMuonDataIDEff(fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
+    }
+    if(iId == 11){
+      flepEfftight.push_back(getTightEleDataIDEff(fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
+      flepEffloose.push_back(getVetoEleDataIDEff(fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
+    }
   }
-  for(unsigned int i0=0; i0<2; i0++){
-    iVals[i0] = getLepEventReweight(i0, nLep, iLeptons, isMatched, flepSFtight, flepSFloose);
+  for(unsigned int i0=0; i0<3; i0++){
+    iVals[i0] = getLepEventReweight(i0, nLep, iLeptons, isMatched, flepSFtight, flepSFloose, flepEfftight, flepEffloose);
   }
 }
-//--------------------------------------------------------------------------------------
-double getLepEventReweight(int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose){
+//--------------------------------------------------------------------------------------------------
+void fillPhoSF(int iId, int nPho,std::vector<TLorentzVector> iPhotons,float isMatched,std::vector<double> &iVals) {
+  std::vector <double> fphoSFmedium, fphoSFloose, fphoEffmedium, fphoEffloose;
+  fphoSFmedium.clear(); fphoSFloose.clear(); fphoEffmedium.clear(); fphoEffloose.clear();
+  for(unsigned int i0=0; i0<iPhotons.size(); i0++){
+    fphoSFmedium.push_back(getMediumPhotonSF(fabs(iPhotons[i0].Eta()),iPhotons[i0].Pt()));
+  }
+  iVals[0] = getLepEventReweight(0, nPho, iPhotons, isMatched, fphoSFmedium, fphoSFloose, fphoEffmedium, fphoEffloose);
+}
+//--------------------------------------------------------------------------------------------------
+double getLepEventReweight(int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose, 
+			   std::vector <double> lepEfftight, std::vector <double> lepEffloose){
   // re-weighting for events with 0 leptons - i.e. 0 loose muons or 0 veto electrons
   if(Nminlep ==0 && vleptons.size()==0) return 1;
   // re-weighting for events with exactly one tight lepton
-  if(Nminlep ==1 && Nlep <= 1 && vleptons.size()==1 && isMatched==1){
-    return lepSFtight[0];
-  }
+  if(Nminlep ==1 && Nlep <= 1 && vleptons.size()==1 && isMatched==1) return lepSFtight[0];
   // re-weighting for events with exactly one tight lepton and one loose lepton
   if(Nminlep==2 && Nlep <= 2 && vleptons.size()==2){
-    if(isMatched==1) return 0.5*(lepSFtight[0]*lepSFloose[1] + lepSFloose[0]*lepSFtight[1]);
-    if(isMatched==-1) return 0.5*(lepSFtight[0] + lepSFloose[0]);
+    if(isMatched==1)
+      {
+	double num = (lepSFtight[0]*lepEfftight[0])*(lepSFloose[1]*lepEffloose[1]) + (lepSFloose[0]*lepEffloose[0])*(lepSFtight[1]*lepEfftight[1]);
+	double dnm = lepEfftight[0]*lepEffloose[1] + lepEffloose[0]*lepEfftight[1];
+	return num/dnm; //0.5*(lepSFtight[0]*lepSFloose[1] + lepSFloose[0]*lepSFtight[1]);
+      }
+    if(isMatched==-1) return ((lepSFtight[0]*lepEfftight[0]) + (lepSFloose[0]*lepEffloose[0]))/(lepEfftight[0]+lepEffloose[0]); //0.5*(lepSFtight[0] + lepSFloose[0]);
   }
   return 1;
 }

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "../include/LeptonEffUtils.hh"
+#include "../include/LeptonTrigUtils.hh"
 
 using namespace baconhep;
 
@@ -187,10 +187,13 @@ bool EvtLoader::PV(){
 void EvtLoader::triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<TLorentzVector> iPhotons) {
   fEffTrigger = ((0.975+(fEvt->pfMETC-200)*0.025*0.025)*(fEvt->pfMETC<240)+1*(fEvt->pfMETC>=240));
   if(iElectrons.size() > 0){
-    if(fITrigger & 4)                       fEffTrigger = getEleTriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
-    if(!(fITrigger & 4) && (fITrigger & 8)) fEffTrigger = 1;
+    if(fITrigger & 4)                                            fEffTrigger = getEle27TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
+    if(!(fITrigger & 4) && (fITrigger & 8))                      fEffTrigger = getEle23TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
+    if(!(fITrigger & 4) && !(fITrigger & 8) && (fITrigger & 16)) fEffTrigger = 1;
   }
-  if(iPhotons.size()   > 0)                 fEffTrigger = 1;
+  if(iPhotons.size()   > 0){
+    if(fITrigger & 16)                                           fEffTrigger = 1;
+  }
 }
 // puWeight
 float EvtLoader::puWeight(float iNPU) { 

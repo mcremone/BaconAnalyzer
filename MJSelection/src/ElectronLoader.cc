@@ -43,9 +43,9 @@ void ElectronLoader::setupTree(TTree *iTree) {
   fTree->Branch("neleTight",&fNElectrons,"fNElectronsTight/I");
   // fTree->Branch("vele0_iso",&fIso1,"fIso1/D");
   // fTree->Branch("vele1_iso",&fIso2,"fIso2/D");
-  setupNtuple("vele",iTree,fN,fVars);          // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
+  setupNtuple  ("vele",iTree,fN,fVars);        // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
   addDiElectron("vdiele",iTree,1, fVars,fN*3); // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
-  addLepSF("eleSF",iTree,feleSFVars);          // eleSF0,eleSF1,eleSF2
+  addSF        ("eleSF",iTree,feleSFVars,3);   // eleSF0,eleSF1,eleSF2
 }
 void ElectronLoader::load(int iEvent) { 
   fElectrons   ->Clear();

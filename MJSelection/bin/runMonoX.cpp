@@ -109,7 +109,7 @@ int main( int argc, char **argv ) {
   //
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  //for(int i0 = 0; i0 < int(100000); i0++){ // for testing
+  //for(int i0 = 0; i0 < int(100); i0++){ // for testing
     // if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // Check json and GenInfo
@@ -136,7 +136,7 @@ int main( int argc, char **argv ) {
     // Primary vertex requirement
     if(!fEvt->PV()) continue;
     
-    // Triggerbits for MET, Electrons, Photons and Muons
+    // Triggerbits for MET, Electrons and Photons
     unsigned int trigbits=1;    
     if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
@@ -145,11 +145,11 @@ int main( int argc, char **argv ) {
        fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2; 
     if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
-       fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*") ||
-       fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
-       fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
+       fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
+    if(fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
+       fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 8;
     if(fEvt ->passTrigger("HLT_Photon175_v*") ||
-       fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 8;
+       fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 16;
     if(trigbits==1) continue;
     
     // Objects
@@ -165,12 +165,6 @@ int main( int argc, char **argv ) {
     fElectron ->load(i0);
     fElectron ->selectElectrons(fEvt->fRho,lElectrons);
     
-    // Lepton SF
-    if(lOption.find("data")==std::string::npos){
-      fillLepSF(fMuon->fNMuons,lMuons,fMuon->fhMuTight,fMuon->fhMuLoose,fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars);
-      fillLepSF(fElectron->fNElectrons,lElectrons,fElectron->fhEleTight,fElectron->fhEleVeto,fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars);
-    }
-    
     // Fill Vetoes
     fEvt->fillVetoes(lElectrons,lVetoes);
     fEvt->fillVetoes(lMuons,lVetoes);
@@ -183,6 +177,13 @@ int main( int argc, char **argv ) {
     fPhoton  ->load(i0);
     fPhoton  ->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
     
+    // Lepton and Photon SF
+    if(lOption.find("data")==std::string::npos){
+      fillLepSF(13,fMuon->fNMuons,lMuons,fMuon->fhMuTight,fMuon->fhMuLoose,fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars);
+      fillLepSF(11,fElectron->fNElectrons,lElectrons,fElectron->fhEleTight,fElectron->fhEleVeto,fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars);
+      fillPhoSF(22,fPhoton->fNPhotonsMedium,lPhotons,fGen->lepmatched(22,lPhotons,0.3),fPhoton->fphoSFVars);
+    }
+
     // MET selection
     fEvt->fillModifiedMet(lVetoes,lPhotons);
     if(fEvt->fMet < 200. && fEvt->fPuppEt < 200. && fEvt->fFPuppEt < 200. && fEvt->fFMet < 200.) continue;

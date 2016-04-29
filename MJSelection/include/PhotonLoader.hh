@@ -18,6 +18,7 @@ public:
   void load(int iEvent);
   void selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons);
   std::vector<TPhoton*> fSelPhotons;
+  std::vector<double>   fphoSFVars;
   int           fNPhotons;
   int           fNPhotonsMedium;
 

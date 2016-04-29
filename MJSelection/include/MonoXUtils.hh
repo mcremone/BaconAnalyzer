@@ -45,9 +45,11 @@ double phoEffAreaHighPt    (const double eta, const int type);
 double getVal              (TH1D*h,double val);
 double getVal2D            (TH2D*h,double val1, double val2);
 bool   passVeto            (double iEta,double iPhi,double idR,std::vector<TLorentzVector> &iVetoes);
-void   addLepSF            (std::string iHeader,TTree *iTree,std::vector<double> &iVals);
-void   fillLepSF           (int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals);
-double getLepEventReweight (int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose);
+void   addSF               (std::string iHeader,TTree *iTree,std::vector<double> &iVals, int iN);
+void   fillLepSF           (int iId, int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals);
+void   fillPhoSF           (int iId, int nPho,std::vector<TLorentzVector> iPhotons,float isMatched,std::vector<double> &iVals);
+double getLepEventReweight (int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose, 
+			    std::vector <double> lepEfftight, std::vector <double> lepEffloose);
 void   setupNtuple         (std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals);
 void   setupNtuple         (std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iHead,std::vector<std::string> &iLabels);
 void   setupNtuple         (std::string iHeader,TTree *iTree,int iN,std::vector<float> &iVals,std::vector<std::string> &iLabels);

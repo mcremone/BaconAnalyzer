@@ -10,6 +10,7 @@ PhotonLoader::PhotonLoader(TTree *iTree) {
   fPhotonBr  = iTree->GetBranch("Photon");
   fN = 1;
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);}
+  for(int i0 = 0; i0 <     1; i0++) {double pVar = 1; fphoSFVars.push_back(pVar);}
 }
 PhotonLoader::~PhotonLoader() { 
   delete fPhotons;
@@ -20,6 +21,7 @@ void PhotonLoader::reset() {
   fNPhotonsMedium = 0; 
   fSelPhotons.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
+  for(unsigned int i0 = 0; i0 < fphoSFVars.size(); i0++) fphoSFVars[i0] = 1;
 }
 void PhotonLoader::setupTree(TTree *iTree) { 
   reset();
@@ -28,6 +30,7 @@ void PhotonLoader::setupTree(TTree *iTree) {
   fTree->Branch("nphoMedium", &fNPhotonsMedium,"fNPhotonsMedium/I"); // medium photon multiplicity
   fTree->Branch("vpho0_iso",  &fIso,           "fIso/D");            // photon isolation
   setupNtuple("vpho",iTree,fN,fVars);                                // pho0_pt,_eta,_phi (1*3=3)
+  addSF      ("phoSF",iTree,fphoSFVars,1);                           // phoSF0
 }
 void PhotonLoader::load(int iEvent) { 
   fPhotons   ->Clear();
