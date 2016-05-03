@@ -16,6 +16,8 @@ Setup
 
     `git clone https://github.com/mcremone/BaconAnalyzer.git`
 
+    `cd BaconAnalyzer`
+
     `git checkout CMSSW_7_6_X`
     
     `source setup.sh`
