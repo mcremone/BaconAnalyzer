@@ -6,11 +6,13 @@
 Setup
 -------------
  * Setup $CMSSW_BASE area
- * Setup BaconProd, BaconAna
+ * Setup BaconProd, BaconAna, and add the missing python module
 	
     `git clone https://github.com/cmantill/BaconProd.git -b singleb --single-branch`
 
     `git clone https://github.com/cmantill/BaconAna.git -b singleb --single-branch`
+
+    `cp -r /afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAna/Utils/python BaconAna/Utils/`
 
  * Setup BaconAnalyzer, Development Packages
 
