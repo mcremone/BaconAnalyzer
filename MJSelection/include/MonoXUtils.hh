@@ -30,6 +30,7 @@
 //--------------------------------------------------------------------------------------------------
 bool   passJet04Sel        (const baconhep::TJet *jet);
 bool   passJetLooseSel     (const baconhep::TJet *jet);
+bool   passJetTightSel     (const baconhep::TJet *jet);
 double eleEffArea          (const double eta);
 double phoEffArea          (const double eta, const int type);
 bool   passEleSel          (const baconhep::TElectron *electron, const double rho);
