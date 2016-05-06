@@ -49,7 +49,7 @@ extern std::vector<float> getSubJetSFs(std::string flavor, const TClonesArray* g
     //if jet pt < 30 things are messed up...                                                                                                                                                                                     
     //read scale factor depending on jet pt & flavor  
     if(isB){ //isB
-      if(vGoodSubJet[ijet].Pt() < 670 && fabs(vGoodSubJet[ijet].Eta()) < 2.4){
+      if(vGoodSubJet[ijet].Pt() < 420 && fabs(vGoodSubJet[ijet].Eta()) < 2.4){
 	SF = HFSJreader->eval(BTagEntry::FLAV_B, vGoodSubJet[ijet].Eta(), vGoodSubJet[ijet].Pt(),0.);
 	SFb = HFSJreader->eval(BTagEntry::FLAV_B, vGoodSubJet[ijet].Eta(), vGoodSubJet[ijet].Pt(),0.);
       }
@@ -57,12 +57,12 @@ extern std::vector<float> getSubJetSFs(std::string flavor, const TClonesArray* g
 	SF = HFSJreader->eval(BTagEntry::FLAV_B, 2.399 , vGoodSubJet[ijet].Pt(),0.);
 	SFb = HFSJreader->eval(BTagEntry::FLAV_B, 2.399 , vGoodSubJet[ijet].Pt(),0.);
       }
-      if(vGoodSubJet[ijet].Pt() > 670){       //pt out of bounds safety
-	SF = HFSJreader->eval(BTagEntry::FLAV_B, vGoodSubJet[ijet].Eta(), 669., 0.);
-	SFb = HFSJreader->eval(BTagEntry::FLAV_B, vGoodSubJet[ijet].Eta(), 669., 0.);
+      if(vGoodSubJet[ijet].Pt() > 420){       //pt out of bounds safety
+	SF = HFSJreader->eval(BTagEntry::FLAV_B, vGoodSubJet[ijet].Eta(), 419., 0.);
+	SFb = HFSJreader->eval(BTagEntry::FLAV_B, vGoodSubJet[ijet].Eta(), 419., 0.);
       }
     } else if (isC){ //isC
-      if(vGoodSubJet[ijet].Pt() < 670 && fabs(vGoodSubJet[ijet].Eta()) < 2.4){
+      if(vGoodSubJet[ijet].Pt() < 420 && fabs(vGoodSubJet[ijet].Eta()) < 2.4){
 	SF = HFSJreader->eval(BTagEntry::FLAV_C,vGoodSubJet[ijet].Eta(), vGoodSubJet[ijet].Pt(),0.);
 	SFb = HFSJreader->eval(BTagEntry::FLAV_C,vGoodSubJet[ijet].Eta(), vGoodSubJet[ijet].Pt(),0.);
       }
@@ -70,9 +70,9 @@ extern std::vector<float> getSubJetSFs(std::string flavor, const TClonesArray* g
 	SF = HFSJreader->eval(BTagEntry::FLAV_C, 2.399 , vGoodSubJet[ijet].Pt(),0.);
 	SFb = HFSJreader->eval(BTagEntry::FLAV_C, 2.399 , vGoodSubJet[ijet].Pt(),0.);
       }
-      if(vGoodSubJet[ijet].Pt() > 670){
-	SF = HFSJreader->eval(BTagEntry::FLAV_C,vGoodSubJet[ijet].Eta(), 669., 0.);
-	SFb = HFSJreader->eval(BTagEntry::FLAV_C,vGoodSubJet[ijet].Eta(), 669., 0.);
+      if(vGoodSubJet[ijet].Pt() > 420){
+	SF = HFSJreader->eval(BTagEntry::FLAV_C,vGoodSubJet[ijet].Eta(), 419., 0.);
+	SFb = HFSJreader->eval(BTagEntry::FLAV_C,vGoodSubJet[ijet].Eta(), 419., 0.);
       }
     } else if (isLF){ //isLF
       if(vGoodSubJet[ijet].Pt() < 1000 && fabs(vGoodSubJet[ijet].Eta()) < 2.4){
@@ -95,15 +95,15 @@ extern std::vector<float> getSubJetSFs(std::string flavor, const TClonesArray* g
     vSF.push_back(SF);
     //  vSFerr.push_back(SFerr);                                                                                                                                                                                                 
   }
-  if(flavor.compare("Bs")) return vSFb;
-  else if(flavor.compare("Ms")) return vSFlf;
-  else  return vSF;
+
+  if(flavor.compare("Bs")==0) return vSFb;
+  else if(flavor.compare("Ms")==0) return vSFlf;
+  else return vSF;
 }
 
 //-------------------------------------------------------------------------------------------------------------------------
 extern float getSubJetBtagEventReweight(const TClonesArray* genParArr, int NminBjets, std::vector <TLorentzVector> &vSubJet, std::vector <float> SF)
 {
-
   if(vSubJet.size()==0) return 1;
 
   float mcTag = 1.;
@@ -143,7 +143,7 @@ extern float getSubJetBtagEventReweight(const TClonesArray* genParArr, int NminB
   ptbinlow.push_back(100); ptbinhigh.push_back(140);
   ptbinlow.push_back(140); ptbinhigh.push_back(200);
   ptbinlow.push_back(200); ptbinhigh.push_back(300);
-  ptbinlow.push_back(300); ptbinhigh.push_back(670);
+  ptbinlow.push_back(300); ptbinhigh.push_back(420);
 
   //if jet pt < 30 things are messed up...
   for(unsigned int ij=0; ij<vSubJet.size(); ++ij){
@@ -165,7 +165,7 @@ extern float getSubJetBtagEventReweight(const TClonesArray* genParArr, int NminB
     }
 
     for(unsigned int ipt=0; ipt<ptbinhigh.size(); ++ipt){
-      if(vSubJet[ij].Pt() > 670){
+      if(vSubJet[ij].Pt() > 420){
         if(isBij)        { mcTag = bjet_ptbin_eff[ipt]; mcNoTag = (1 - bjet_ptbin_eff[ipt]); dataTag  = bjet_ptbin_eff[ipt]*SF[ij]; dataNoTag  = (1 - bjet_ptbin_eff[ipt]*SF[ij]);
         } else if(isCij) { mcTag = cjet_ptbin_eff[ipt]; mcNoTag = (1 - cjet_ptbin_eff[ipt]); dataTag  = cjet_ptbin_eff[ipt]*SF[ij]; dataNoTag  = (1 - cjet_ptbin_eff[ipt]*SF[ij]);
         } else if(isLFij){ mcTag = ljet_ptbin_eff[ipt]; mcNoTag = (1 - ljet_ptbin_eff[ipt]); dataTag  = ljet_ptbin_eff[ipt]*SF[ij]; dataNoTag  = (1 - ljet_ptbin_eff[ipt]*SF[ij]);
@@ -200,7 +200,7 @@ extern float getSubJetBtagEventReweight(const TClonesArray* genParArr, int NminB
 
       for(unsigned int jpt=0; jpt<ptbinhigh.size(); ++jpt){
         if(ik == ij) continue;
-        if(vSubJet[ik].Pt() > 670){
+        if(vSubJet[ik].Pt() > 420){
           if(isBik)        { mcNoTag = (1 - bjet_ptbin_eff[jpt]); dataNoTag  = (1 - bjet_ptbin_eff[jpt]*SF[ik]);
           } else if(isCik) { mcNoTag = (1 - cjet_ptbin_eff[jpt]); dataNoTag  = (1 - cjet_ptbin_eff[jpt]*SF[ik]);
           } else if(isLFik){ mcNoTag = (1 - ljet_ptbin_eff[jpt]); dataNoTag  = (1 - ljet_ptbin_eff[jpt]*SF[ik]);
@@ -219,7 +219,6 @@ extern float getSubJetBtagEventReweight(const TClonesArray* genParArr, int NminB
     mcSum   += mcTag*mcProd_1;
     dataSum += dataTag*dataProd_1;
   }
-
 
   // re-weighting for events with 0 jets
   if(NminBjets==0){

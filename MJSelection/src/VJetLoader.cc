@@ -63,7 +63,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("csv");
   fLabels.push_back("CHF");
   fLabels.push_back("NHF");
-  fLabels.push_back("NEFM");
+  fLabels.push_back("NEFM"); //change to EMF
   fLabels.push_back("tau21");
   fLabels.push_back("tau32");
   fLabels.push_back("msd");
@@ -95,7 +95,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
 void VJetLoader::setupTreeSubJetBTag(TTree *iTree, std::string iJetLabel) {
   resetSubJetBTag();
   fTree = iTree;
-  for(int i0 = 0; i0 < 60; i0++) {float pBTagVar = 1; fSubJetBTagVars.push_back(pBTagVar);} // declare array of 60 vars ( L0,L1,Lminus1,L2, M0,M1,Mminus1,M2 T0,T1,Tminus1,T2) for (CENT,MISTAGUP,MISTAGDO,BTAGUP,BTAGDO)
+  for(int i0 = 0; i0 < 40; i0++) {float pBTagVar = 1; fSubJetBTagVars.push_back(pBTagVar);} // declare array of 40 vars ( L0,L1,Lminus1,L2, M0,M1,Mminus1,M2) for (CENT,MISTAGUP,MISTAGDO,BTAGUP,BTAGDO)
   int i1 = 0;
   for(auto iwptype : wpTypes) {
     addSubJetBTag(iJetLabel.c_str(),iTree,iwptype,fBtagLabels,i1,fSubJetBTagVars);
@@ -161,11 +161,10 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
     // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+14] = pLargeJet->pt - iObjects[i0]->pt;
     // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+15] = pullDot(pLargeJet->pullY,iObjects[i0]->pullY,pLargeJet->pullPhi,iObjects[i0]->pullPhi);
   
-    TLorentzVector vSJ1; vSJ1.SetPtEtaPhiM(pAddJet->sj1_pt, pAddJet->sj1_eta, pAddJet->sj1_phi, pAddJet->sj1_m); fGoodVSubJets.push_back(vSJ1); 
-    TLorentzVector vSJ2; vSJ2.SetPtEtaPhiM(pAddJet->sj2_pt, pAddJet->sj2_eta, pAddJet->sj2_phi, pAddJet->sj2_m); fGoodVSubJets.push_back(vSJ2);
-    TLorentzVector vSJ3; vSJ3.SetPtEtaPhiM(pAddJet->sj3_pt, pAddJet->sj3_eta, pAddJet->sj3_phi, pAddJet->sj3_m); fGoodVSubJets.push_back(vSJ3);
-    TLorentzVector vSJ4; vSJ4.SetPtEtaPhiM(pAddJet->sj4_pt, pAddJet->sj4_eta, pAddJet->sj4_phi, pAddJet->sj4_m); fGoodVSubJets.push_back(vSJ4);
-
+    TLorentzVector vSJ1; vSJ1.SetPtEtaPhiM(pAddJet->sj1_pt, pAddJet->sj1_eta, pAddJet->sj1_phi, pAddJet->sj1_m); if(pAddJet->sj1_pt>0) fGoodVSubJets.push_back(vSJ1); 
+    TLorentzVector vSJ2; vSJ2.SetPtEtaPhiM(pAddJet->sj2_pt, pAddJet->sj2_eta, pAddJet->sj2_phi, pAddJet->sj2_m); if(pAddJet->sj2_pt>0) fGoodVSubJets.push_back(vSJ2);
+    TLorentzVector vSJ3; vSJ3.SetPtEtaPhiM(pAddJet->sj3_pt, pAddJet->sj3_eta, pAddJet->sj3_phi, pAddJet->sj3_m); if(pAddJet->sj3_pt>0) fGoodVSubJets.push_back(vSJ3);
+    TLorentzVector vSJ4; vSJ4.SetPtEtaPhiM(pAddJet->sj4_pt, pAddJet->sj4_eta, pAddJet->sj4_phi, pAddJet->sj4_m); if(pAddJet->sj4_pt>0) fGoodVSubJets.push_back(vSJ4);
   }
 }
 void VJetLoader::addBoson(TGenParticle *iBoson) { 
@@ -200,17 +199,16 @@ void VJetLoader::fillSubJetBTag(const TClonesArray* iGens, std::vector<TLorentzV
   int iN = 0;
   for(unsigned int j0=0; j0<2; j0++){  // L, M
     std::vector<std::vector<float>> vSFL,vSFL_nominal;
-    vSFL.clear(); vSFL_nominal.clear();
-    vSFL_nominal.push_back(getSubJetSFs("nominal",iGens,iObjects, fSubJetreaders[j0].at(0), fSubJetreaders[j0].at(3)));
+    vSFL_nominal.clear(); vSFL_nominal.push_back(getSubJetSFs("nominal",iGens,iObjects, fSubJetreaders[j0].at(0), fSubJetreaders[j0].at(3)));
+    vSFL.clear(); vSFL.push_back(vSFL_nominal.at(0));
+
     for(auto iftype :flavorTypes) {
       vSFL_nominal.push_back(getSubJetSFs(iftype,iGens,iObjects, fSubJetreaders[j0].at(0), fSubJetreaders[j0].at(3))); // 0 and 3 HF and LF respectively - flavor types: Ms,Bs
     }
-    vSFL.push_back(vSFL_nominal.at(0));
 
     for(auto iftype :flavorTypes) {
       for(unsigned int i0=1; i0<3; i0++){
-	std::vector<float> vSF0;
-        vSF0.clear();
+	std::vector<float> vSF0; vSF0.clear();
         for(unsigned int i1=0; i1<(vSFL.at(0)).size(); i1++) {
           if(iftype.compare("Ms")==0) vSF0.push_back( (getSubJetSFs(iftype,iGens,iObjects, fSubJetreaders[j0].at(i0), fSubJetreaders[j0].at(i0+3))).at(i1) * (vSFL_nominal.at(2).at(i1)));
           if(iftype.compare("Bs")==0) vSF0.push_back( (getSubJetSFs(iftype,iGens,iObjects, fSubJetreaders[j0].at(i0), fSubJetreaders[j0].at(i0+3))).at(i1) * (vSFL_nominal.at(1).at(i1)));
@@ -229,6 +227,7 @@ void VJetLoader::fillSubJetBTag(const TClonesArray* iGens, std::vector<TLorentzV
     }
     iN += 20;
   }
+
 }
 TAddJet *VJetLoader::getAddJet(TJet *iJet) { 
   int lIndex = -1;

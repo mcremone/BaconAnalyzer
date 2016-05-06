@@ -5,12 +5,11 @@
 // Input arguments
 //   argv[1] => lName = input bacon file name
 //   argv[2] => lOption = dataset type: "mc", 
-//                            "mcwjets",  "mcwplushf",  "mcwpluslf",
-//                            "mczjets",  "mczplushf",  "mczpluslf",
-//                            "mcdyjets", "mcdyplushf", "mcdypluslf",
-//                            "mcgjets",  "mcgplushf",  "mcgpluslf",
-//                            "mcttbst",  "mcttcom",
-//                            "mctt1l",   "mctt2l",     "mctthad",
+//                            "mcwplushf",  "mcwpluslf",
+//                            "mczplushf",  "mczpluslf",
+//                            "mcdyplushf", "mcdypluslf",
+//                            "mcgplushf",  "mcgpluslf",
+//                            "mctt",
 //                            "data"
 //   argv[3] => lJSON = JSON file for run-lumi filtering of data, specify "none" for MC or no filtering
 //   argv[4] => lXS = cross section (pb), ignored for data 
@@ -43,11 +42,6 @@ PhotonLoader    *fPhoton   = 0;
 JetLoader       *fJet      = 0; 
 VJetLoader      *fVJet     = 0;
 RunLumiRangeMap *fRangeMap = 0; 
-
-// Note for other types of jets e.g: 
-// VJetLoader      *fVJet15CHS     = 0;
-// fVJet15CHS    = new VJetLoader    (lTree,"CA15CHS","AddCA15CHS");
-// fVJet15CHS   ->setupTree      (lOut,"bst15_CHSjet");
 
 TH1F *fHist                = 0; 
 
@@ -101,7 +95,6 @@ int main( int argc, char **argv ) {
   fJet     ->setupTreeBTag  (lOut,"res_PUPPIjet");
   fVJet    ->setupTree           (lOut,"bst15_PUPPIjet"); 
   fVJet    ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
-
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
   //
@@ -123,6 +116,7 @@ int main( int argc, char **argv ) {
       lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
       if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
       if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
+      /*
       if(lOption.find("tt")!=std::string::npos){
 	int nlep = fGen->isttbarType();
 	if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
@@ -131,6 +125,7 @@ int main( int argc, char **argv ) {
 	if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
 	if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
       }
+      */
     }
 
     // Primary vertex requirement
@@ -156,26 +151,26 @@ int main( int argc, char **argv ) {
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJet, lVJets, lVetoes;
 
     // Muons
-    fMuon     ->load(i0);
-    fMuon     ->selectMuons(lMuons);
+    fMuon->load(i0);
+    fMuon->selectMuons(lMuons);
     
-    fEvt      ->fillEvent(trigbits,lWeight);
+    fEvt->fillEvent(trigbits,lWeight);
     
     // Electrons
-    fElectron ->load(i0);
-    fElectron ->selectElectrons(fEvt->fRho,lElectrons);
+    fElectron->load(i0);
+    fElectron->selectElectrons(fEvt->fRho,lElectrons);
     
     // Fill Vetoes
     fEvt->fillVetoes(lElectrons,lVetoes);
     fEvt->fillVetoes(lMuons,lVetoes);
 
     // Taus
-    fTau     ->load(i0);
-    fTau     ->selectTaus(lVetoes);
+    fTau->load(i0);
+    fTau->selectTaus(lVetoes);
 
     // Photons
-    fPhoton  ->load(i0);
-    fPhoton  ->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
+    fPhoton->load(i0);
+    fPhoton->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
     
     // Lepton and Photon SF
     if(lOption.find("data")==std::string::npos){
