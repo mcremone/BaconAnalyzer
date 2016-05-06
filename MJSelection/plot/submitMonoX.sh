@@ -20,7 +20,7 @@ fi
 
 if [[ ($sample = "All") || ($sample = "MonoHbb") ]]; then
     ./plotMonoX.sh Had BstMonoHbb SR ${combo} ${algo} CENT
-    ./plotMonoX.sh Ele BstMonoHbb HCR ${combo} ${algo} CENT
+    ./plotMonoX.sh Ele BstMonoHbb TopCR ${combo} ${algo} CENT
     ./plotMonoX.sh Ele BstMonoHbb WCR ${combo} ${algo} CENT
     ./plotMonoX.sh Pho BstMonoHbb ZCR ${combo} ${algo} CENT
     ./plotMonoX.sh Muo BstMonoHbb TopCR ${combo} ${algo} CENT

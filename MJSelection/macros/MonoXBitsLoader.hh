@@ -136,7 +136,7 @@ protected:
   const unsigned int kBOOSTED15PUPPI = 2;
   const unsigned int kRESOLVEDPUPPI = 4;
 
-  const float RHO_CUT = 0.72;
+  const float RHO_CUT = 0.64;
 
 
 };
