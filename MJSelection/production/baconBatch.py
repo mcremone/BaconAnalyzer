@@ -65,7 +65,7 @@ def write_job(exec_line, out, analyzer, i, n):
 	sub_file.write('mkdir -p scratch\n')
 	sub_file.write('cd scratch\n')
 	#sub_file.write('cp -p $CMSSW_BASE/bin/$SCRAM_ARCH/%s .\n'%analyzer)
-	sub_file.write('cp -p %s .\n'%(os.path.abspath(analyzer)))
+	#sub_file.write('cp -p %s .\n'%(os.path.abspath(analyzer)))
 	sub_file.write('mkdir -p %s\n'%(out))
 
 	sub_file.write('if ( %s ) then\n'%exec_line)
