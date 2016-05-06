@@ -58,6 +58,7 @@ protected:
   TTrigger     *fTrigger;
   TTree        *fTree;
   int           fNVJets;
+  int           fNVJetsTight;
   std::vector<std::string> fBtagLabels = {"CENT", "MISTAGUP","MISTAGDO","BTAGUP","BTAGDO"};  // nominal, mistagup, mistagdown, btagup and btagdown
   std::vector<std::string> measurementTypes = {"lt", "incl"};                                // measurements type
   std::vector<std::string> variationTypes = {"central", "up", "down"};                       // systematics type 

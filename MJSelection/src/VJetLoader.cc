@@ -47,6 +47,7 @@ void VJetLoader::resetSubJetBTag() {
 }
 void VJetLoader::reset() { 
   fNVJets        = 0; 
+  fNVJetsTight        = 0;
   fVMT           = 0;
   ftopSize       = 999;
   ftopMatching   = 999;
@@ -77,12 +78,14 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
 
   std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
   std::stringstream pSNJ;   pSNJ << iJetLabel << "s";
+  std::stringstream pSNJ;   pSNJtight << iJetLabel << "sT";
   std::stringstream pSis;   pSis << iJetLabel << "0_isHadronicTop";
   std::stringstream pSTM;   pSTM << iJetLabel << "0_topMatching";
   std::stringstream pSTS;   pSTS << iJetLabel << "0_topSize";
 
   fTree = iTree;
   fTree->Branch(pSNJ.str().c_str() ,&fNVJets        ,(pSNJ.str()+"/I").c_str());
+  fTree->Branch(pSNJtight.str().c_str() ,&fNVJetsTight        ,(pSNJ.str()+"/I").c_str());
   for(int i0 = 0; i0 < fN*4.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
   for(int i0 = 0; i0 < fN*(int(fLabels.size())); i0++) {double pVar = 0; fVars.push_back(pVar);} 
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);                                                 // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi for vjet0 (3*1=3)
@@ -114,6 +117,7 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
   reset(); 
   iJets.clear(); iVJet.clear();
   int lCount = 0; 
+  int lCountTight = 0;
   iJets.clear(); iVJet.clear();
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
     TJet *pVJet = (TJet*)((*fVJets)[i0]);
@@ -124,6 +128,7 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
     addVJet(pVJet,iJets,pVJet->mass);
     addJet(pVJet,fSelVJets);
     lCount++;
+    if(passJetTightSel(pVJet)) lCountTight++;
   }
   if(iJets.size() > 0){
     TLorentzVector ivJ;
@@ -131,6 +136,7 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
     iVJet.push_back(ivJ);
   }
   fNVJets = lCount;
+  fNVJetsTight = lCountTight;
   fillJet( fN,fSelVJets,fVars);
   fillVJet(fN,fSelVJets,fVars); 
 }
