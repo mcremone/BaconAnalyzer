@@ -100,7 +100,7 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString algo,TString 
 MonoXBitsLoader::~MonoXBitsLoader(){}
 bool MonoXBitsLoader::selectJetAlgoAndSize(string selection, TString algo){
   bool lPass = false;
-  if((selectBits & kBOOSTED15PUPPI) && selection.find("Bst")==0 && selection.compare("BstMonoZbb")!=0 && algo=="PUPPI") lPass = true;
+  if((selectBits & kBOOSTED15PUPPI) && selection.find("Bst")==0 && algo=="PUPPI") lPass = true;
   else if((selectBits & kRESOLVEDPUPPI) && selection.find("Res")==0 && algo=="PUPPI") lPass = true;
   return lPass;
 }
@@ -163,37 +163,28 @@ bool MonoXBitsLoader::passMetPreselection(string preselection){
   if(vMET.Pt()>250) lPass=true;
   return lPass;
 }
-bool MonoXBitsLoader::passBoostedMonoTopPreselection(string preselection){
+bool MonoXBitsLoader::passBoostedMonoXPreselection(string preselection){
   TLorentzVector vMET = getMET(preselection);
   bool lPass = false;
   if(vMET.Pt()>250 
      && nfjets==1 
      && bst_jet0_pt>250 
-     && bst_jet0_CHF>0.2 
+     && bst_jet0_CHF>0.47 
      && bst_jet0_NHF<0.7 
-     && bst_jet0_NEMF<0.7 
-     && bst_jet0_tau32 < (-0.018*bst_jet0_rho + RHO_CUT)
-     // && bst_jet0_msd > getsqPt()+110
-     // && bst_jet0_msd < getsqPt()+210
-     && bst_jet0_msd>110
-     && bst_jet0_msd<210 )
-    //&& bst_jet0_tau32<0.61
-    {
-      lPass=true;
-    }
+     && bst_jet0_NEMF<0.7) lPass=true;
   return lPass;
 }
 bool MonoXBitsLoader::passBoostedMonoTopSR(string preselection){ 
-  return passBoostedMonoTopPreselection(preselection) & (min_dphijetsmet>1.1) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2==0);
+  return passBoostedMonoXPreselection(preselection) & (min_dphijetsmet>1.1) & (nbjetsLdR2==0) & (bst_jet0_tau32 < (-0.018*bst_jet0_rho + RHO_CUT)) & (bst_jet0_maxsubcsv>CSVL) & (bst_jet0_msd>140) & (bst_jet0_msd<250);
 }
 bool MonoXBitsLoader::passBoostedMonoTopQCDCR(string preselection){
   return passMetPreselection(preselection) & (min_dphijetsmet<0.1);
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCR2(string preselection){
-  return passBoostedMonoTopPreselection(preselection) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2==0);
+  return passBoostedMonoXPreselection(preselection) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2==0);
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCR(string preselection){ 
-  return passBoostedMonoTopPreselection(preselection) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2>0);
+  return passBoostedMonoXPreselection(preselection) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2>0);
 }
 bool MonoXBitsLoader::passBoostedMonoTopTTbarCR(string preselection){
   bool lPass = false;
@@ -201,57 +192,41 @@ bool MonoXBitsLoader::passBoostedMonoTopTTbarCR(string preselection){
   return lPass;
 }
 bool MonoXBitsLoader::passBoostedMonoTopRhoTau32DDTCR(string preselection){
-  return passBoostedMonoTopPreselection(preselection) & (bst_jet0_rho>3) & (bst_jet0_rho<5);
+  return passBoostedMonoXPreselection(preselection) & (bst_jet0_rho>3) & (bst_jet0_rho<5);
 }
 bool MonoXBitsLoader::passBoostedMonoTopMsdPtTau32DDTCR(string preselection, float MSDSQPT_CUT){
-    return passBoostedMonoTopPreselection(preselection) & (getMsdSqPt()<MSDSQPT_CUT);
+    return passBoostedMonoXPreselection(preselection) & (getMsdSqPt()<MSDSQPT_CUT);
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCRminusTau32(string preselection){
   TLorentzVector vMET = getMET(preselection);
-  return (vMET.Pt()>250 &&
-	  nfjets==1 && bst_jet0_pt>250 &&
-	  bst_jet0_msd>110 && bst_jet0_msd<210) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2>0);
+  return (vMET.Pt()>250 && nfjets==1 && bst_jet0_pt>250 && bst_jet0_msd>110 && bst_jet0_msd<210) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2>0);
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCRminusMass(string preselection){
   TLorentzVector vMET = getMET(preselection);
-  return (vMET.Pt()>250 &&
-	  nfjets==1 && bst_jet0_pt>250 &&
-	  bst_jet0_tau32<0.61 && bst_jet0_msd>40) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2>0);
+  return (vMET.Pt()>250 && nfjets==1 && bst_jet0_pt>250 && bst_jet0_tau32<0.61 && bst_jet0_msd>40) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2>0);
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCRminusBtag(string preselection){
-  return passBoostedMonoTopPreselection(preselection) & (nbjetsLdR2>0);
+  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2>0);
 }
 bool MonoXBitsLoader::passBoostedMonoTopWCR(string preselection){
-  return passBoostedMonoTopPreselection(preselection) & (bst_jet0_maxsubcsv<CSVL) & (nbjetsLdR2==0);
+  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2==0) & (bst_jet0_maxsubcsv<CSVL);
 }
 bool MonoXBitsLoader::passBoostedMonoTopZCR(string preselection){
-  return passBoostedMonoTopPreselection(preselection);
+  return passBoostedMonoXPreselection(preselection);
 }
 
 // MonoH
-bool MonoXBitsLoader::passBoostedMonoHbbPreselection(string preselection){
-  TLorentzVector vMET = getMET(preselection);
-  bool lPass = false;
-  if(vMET.Pt()>250
-     && nfjets==1
-     && bst_jet0_pt>250
-     && bst_jet0_CHF>0.47
-     && bst_jet0_NHF<0.7
-     && bst_jet0_NEMF<0.7
-     ) lPass=true;
-  return lPass;
-}
 bool MonoXBitsLoader::passBoostedMonoHbbSR(string preselection){
-  return passBoostedMonoHbbPreselection(preselection) & (min_dphijetsmet>1.1) & (bst_jet0_minsubcsv>CSVL) & (nbjetsLdR2==0); //& (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.38));
+  return passBoostedMonoXPreselection(preselection) & (min_dphijetsmet>1.1) & (nbjetsLdR2==0) & (bst_jet0_minsubcsv>CSVL) & (bst_jet0_msd>100) & (bst_jet0_msd<140); //& (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.38));
 }
 bool MonoXBitsLoader::passBoostedMonoHbbTopCR(string preselection){
-  return passBoostedMonoHbbPreselection(preselection) & (bst_jet0_doublecsv>CSVbL) & (nbjetsLdR2>0);// & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.38));
+  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2>0) & (bst_jet0_minsubcsv>CSVL);//  & (bst_jet0_doublecsv>CSVbL) & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.38));
 }
 bool MonoXBitsLoader::passBoostedMonoHbbWCR(string preselection){
-  return passBoostedMonoHbbPreselection(preselection) & (bst_jet0_doublecsv<=CSVbL) & (nbjetsLdR2==0);
+  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2==0) & (bst_jet0_minsubcsv<=CSVL); // & (bst_jet0_doublecsv<=CSVbL);
 }
 bool MonoXBitsLoader::passBoostedMonoHbbZCR(string preselection){
-  return passBoostedMonoHbbPreselection(preselection);// & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.38));
+  return passBoostedMonoXPreselection(preselection);// & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.38));
 }
 
 // Selection

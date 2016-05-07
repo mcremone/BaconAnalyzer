@@ -36,7 +36,8 @@ public:
   TLorentzVector getMET(string preselection);
   TLorentzVector getTop();
   bool passMetPreselection(string preselection);
-  bool passBoostedMonoTopPreselection(string preselection);
+  bool passBoostedMonoXPreselection(string preselection);
+
   bool passBoostedMonoTopSR(string preselection);
   bool passBoostedMonoTopQCDCR(string preselection); 
   bool passBoostedMonoTopTopCR2(string preselection);
@@ -50,7 +51,6 @@ public:
   bool passBoostedMonoTopWCR(string preselection);
   bool passBoostedMonoTopZCR(string preselection);
 
-  bool passBoostedMonoHbbPreselection(string preselection);
   bool passBoostedMonoHbbSR(string preselection);
   bool passBoostedMonoHbbTopCR(string preselection);
   bool passBoostedMonoHbbWCR(string preselection);
@@ -123,9 +123,9 @@ public:
   const float CSVM = 0.800;                                                        // CSVM
   const float CSVT = 0.935;                                                        // CSVT
 
-  const float CSVbL = 0.3;                                                        // CSVbL - WPs for Doubleb
-  const float CSVbM = 0.6;                                                        // CSVbM
-  const float CSVbT = 0.9;                                                        // CSVbT 
+  const float CSVbL = 0.3;                                                         // CSVbL - WPs for Doubleb
+  const float CSVbM = 0.6;                                                         // CSVbM
+  const float CSVbT = 0.9;                                                         // CSVbT 
 
 protected:
 
