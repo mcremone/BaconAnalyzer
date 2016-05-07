@@ -58,17 +58,18 @@ bool passJetLooseSel(const baconhep::TJet *jet)
   return true;
 }
 //--------------------------------------------------------------------------------------------------
-bool passJetTightSel(const baconhep::TJet *jet)
+bool passJetTightLepVetoSel(const baconhep::TJet *jet)
 {
   // Tight PFJet ID
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID#Recommendations_for_13_TeV_data
   if(jet->neuHadFrac >= 0.90) return false;
   if(jet->neuEmFrac  >= 0.90) return false;
   if(jet->nParticles <= 1)    return false;
+  if(jet->muonFrac   >= 0.8)  return false;
   if(fabs(jet->eta)<2.4) {
     if(jet->chHadFrac == 0)    return false;
     if(jet->nCharged  == 0)    return false;
-    if(jet->chEmFrac  >= 0.99) return false;
+    if(jet->chEmFrac  >= 0.90) return false;
   }
   return true;
 }
