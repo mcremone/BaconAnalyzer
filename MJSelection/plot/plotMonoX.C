@@ -43,7 +43,7 @@ float CalcSig(TH1D*sig, TH1D*bkg);
 
 //=== MAIN MACRO =================================================================================================
 
-void plotMonoX(const string preselection, const string selection, const string subsample, const string combo = "ONLY", TString algo= "PUPPI", TString syst = "CENT")
+void plotMonoX(const string preselection, const string selection, const string subsample, const string combo = "ONLY", TString algo= "PUPPI", TString syst = "CENT", TString jetID = "jet")
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -63,42 +63,48 @@ void plotMonoX(const string preselection, const string selection, const string s
   vector<CSample*> samplev;
 
   samplev.push_back(new CSample("data",0,0));
-  if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("../monoxbits/MET.root");
-  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("../monoxbits/SingleElectron.root");
-  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("../monoxbits/SinglePhoton.root");
+  if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/MET.root");
+  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/SingleElectron.root");
+  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/SinglePhoton.root");
   samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-  samplev.back()->fnamev.push_back("../monoxbits/QCD.root");
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/QCD.root");
   if (preselection.compare("Pho")!=0) {
     samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
-    samplev.back()->fnamev.push_back("../monoxbits/T.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TZ.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/T.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/TZ.root");
     samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
-    samplev.back()->fnamev.push_back("../monoxbits/TT.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TTZ.root");
-    samplev.back()->fnamev.push_back("../monoxbits/TTG.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/TT.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/TTZ.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/TTG.root");
     samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
-    samplev.back()->fnamev.push_back("../monoxbits/WW.root");
-    samplev.back()->fnamev.push_back("../monoxbits/WZ.root");
-    samplev.back()->fnamev.push_back("../monoxbits/ZZ.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/WW.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/WZ.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZZ.root");
     samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
-    samplev.back()->fnamev.push_back("../monoxbits/WHF.root");
-    samplev.back()->fnamev.push_back("../monoxbits/WLF.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/WHF.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/WLF.root");
     samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../monoxbits/ZHF.root");   
-    samplev.back()->fnamev.push_back("../monoxbits/ZLF.root");
-    samplev.back()->fnamev.push_back("../monoxbits/DYHF.root");
-    samplev.back()->fnamev.push_back("../monoxbits/DYLF.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZHF.root");   
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZLF.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/DYHF.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/DYLF.root");
   }
   if (preselection.compare("Pho")==0){
     samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../monoxbits/GHF.root");
-    samplev.back()->fnamev.push_back("../monoxbits/GLF.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/GHF.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/GLF.root");
   }
-  if (subsample.compare("SR")==0){   
+  if (subsample.compare("SR")==0 && selection.compare("BstMonoTop")==0){   
     samplev.push_back(new CSample("M_{S} 1100, M#chi 100", kBlue, kBlue));
-    samplev.back()->fnamev.push_back("../monoxbits/Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8_mc.root");
     samplev.push_back(new CSample("M_{V} 300 X 5", kRed, kRed));
-    samplev.back()->fnamev.push_back("../monoxbits/Monotop_S4_Mchi_300_13TeV_madgraph_pythia8_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S4_Mchi_300_13TeV_madgraph_pythia8_mc.root");
+  }
+  if (subsample.compare("SR")==0 && selection.compare("BstMonoHbb")==0){
+    samplev.push_back(new CSample("M_{Z} 800, MA0 600", kBlue, kBlue));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_600_13TeV_madgraph_mc.root");
+    samplev.push_back(new CSample("M_{V} 2500 MA0 500", kRed, kRed));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_500_13TeV_madgraph_2_mc.root");
   }
 
   // integrated luminosity to scale MC
@@ -124,8 +130,11 @@ void plotMonoX(const string preselection, const string selection, const string s
   vector<TH1D*> hJet1CHFv, hJet1NHFv, hJet1NEMFv;
   vector<TH1D*> hJet1Etav, hJet2Etav, hJet3Etav, hJet4Etav;
   vector<double> neventsv;
-  const Int_t NBINS = 5;
-  Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
+  // const Int_t NBINS = 5;
+  // Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
+  const Int_t NBINS = 4; //for MonoH
+  Double_t edges[NBINS + 1] = {250,300,350,400,1000};
+
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",NBINS,edges));            hMETv[isam]->Sumw2();
     sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",NBINS,edges));         hMETLogv[isam]->Sumw2();
@@ -211,7 +220,7 @@ void plotMonoX(const string preselection, const string selection, const string s
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits  = new MonoXBitsLoader(intree,"15",algo,syst,preselection);
+      fBits  = new MonoXBitsLoader(intree,"15",jetID,algo,syst,preselection);
       double nevts=0;
       int noweight=0;
 
@@ -276,7 +285,7 @@ void plotMonoX(const string preselection, const string selection, const string s
         hMETLogv[isam]         ->Fill(fBits->getMET(preselection).Pt(),       wgt);
 	hFatJetMassv[isam]     ->Fill(fBits->fjet_mass(selection),            wgt);
 	hFatJetPtv[isam]       ->Fill(fBits->bst_jet0_pt,                     wgt);
-	hTransverseMassv[isam] ->Fill(fBits->transverse_mass(selection),      wgt);
+	hTransverseMassv[isam] ->Fill(fBits->bst_mt,                          wgt);
 	hFatJetTau32v[isam]    ->Fill(fBits->bst_jet0_tau32,                  wgt);
         hFatJetTau32DDTv[isam] ->Fill(fBits->tau32DDT(),                      wgt);
         hFatJetRhov[isam]      ->Fill(fBits->bst_jet0_rho,                    wgt);
@@ -304,7 +313,7 @@ void plotMonoX(const string preselection, const string selection, const string s
           hMETLogMC         ->Fill(fBits->getMET(preselection).Pt(),          wgt);
 	  hFatJetMassMC     ->Fill(fBits->fjet_mass(selection),               wgt);
 	  hFatJetPtMC       ->Fill(fBits->bst_jet0_pt,                        wgt);
-	  hTransverseMassMC ->Fill(fBits->transverse_mass(selection),         wgt);
+	  hTransverseMassMC ->Fill(fBits->bst_mt,                             wgt);
 	  hFatJetTau32MC    ->Fill(fBits->bst_jet0_tau32,                     wgt);
           hFatJetTau32DDTMC ->Fill(fBits->tau32DDT(),                         wgt);
 	  hFatJetTau21MC    ->Fill(fBits->bst_jet0_tau21,                     wgt);
@@ -636,8 +645,11 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
 //--------------------------------------------------------------------------------------------------
 TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind)
 {
-  const Int_t NBINS = 5;
-  Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
+  // const Int_t NBINS = 5;
+  // Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
+  const Int_t NBINS = 4; //for MonoH 
+  Double_t edges[NBINS + 1] = {250,300,350,400,1000};
+
   TH1D *hPull = new TH1D(name.c_str(),"",hData->GetNbinsX(),hData->GetXaxis()->GetXmin(),hData->GetXaxis()->GetXmax());
   if (name=="hMETPull" || name=="hMETLogPull")
     hPull = new TH1D(name.c_str(),"",NBINS,edges);

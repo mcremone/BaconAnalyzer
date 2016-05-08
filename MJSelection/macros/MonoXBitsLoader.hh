@@ -23,7 +23,7 @@ using namespace std;
 
 class MonoXBitsLoader {
 public:
-  MonoXBitsLoader(TTree *iTree=0,TString jet="15",TString algo="PUPPI",TString syst="CENT", string preselection="");		
+  MonoXBitsLoader(TTree *iTree=0,TString jet="15",TString jetID="jet", TString algo="PUPPI",TString syst="CENT", string preselection="");		
   ~MonoXBitsLoader();
   bool selectJetAlgoAndSize(string selection, TString algo);
   bool isHad();
@@ -136,7 +136,7 @@ protected:
   const unsigned int kBOOSTED15PUPPI = 2;
   const unsigned int kRESOLVEDPUPPI = 4;
 
-  const float RHO_CUT = 0.64;
+  const float RHO_CUT = 0.68;
 
 
 };

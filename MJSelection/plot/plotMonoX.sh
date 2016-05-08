@@ -6,5 +6,6 @@ subsample=$3
 combo=$4
 algo=$5
 syst=$6
+jetID=$7
 
-root -b -q plotMonoX.C+\(\"${preselection}\"\,\"${selection}\"\,\"${subsample}\"\,\"${combo}\"\,\"${algo}\"\,\"${syst}\"\)
+root -b -q plotMonoX.C+\(\"${preselection}\"\,\"${selection}\"\,\"${subsample}\"\,\"${combo}\"\,\"${algo}\"\,\"${syst}\"\,\"${jetID}\"\)

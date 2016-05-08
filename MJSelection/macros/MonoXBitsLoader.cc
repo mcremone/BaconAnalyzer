@@ -1,100 +1,101 @@
 #include "MonoXBitsLoader.hh"  
 using namespace std;
 
-MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString algo,TString syst, string preselection) {
+MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString jetID, TString algo,TString syst, string preselection) {
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0){
-      iTree->SetBranchAddress("mindPhi",                                &min_dphijetsmet);
+      iTree->SetBranchAddress("mindPhi",                                   &min_dphijetsmet);
     }
     else{
-      iTree->SetBranchAddress("mindFPhi",                               &min_dphijetsmet);
+      iTree->SetBranchAddress("mindFPhi",                                  &min_dphijetsmet);
     }
-    iTree->SetBranchAddress("runNum",                                   &runNum);
-    iTree->SetBranchAddress("lumiSec",                                  &lumiSec);
-    iTree->SetBranchAddress("evtNum",                                   &evtNum);
-    iTree->SetBranchAddress("metfilter",                                &metfilter);
-    iTree->SetBranchAddress("triggerBits",                              &triggerBits);
-    iTree->SetBranchAddress("selectBits",                               &selectBits);
-    iTree->SetBranchAddress("triggerEff",                               &triggerEff);
-    iTree->SetBranchAddress("npu",                                      &npu);
-    iTree->SetBranchAddress("npv",                                      &npv);
-    iTree->SetBranchAddress("puWeight",                                 &puWeight);
-    iTree->SetBranchAddress("scale1fb",                                 &scale1fb);
-    iTree->SetBranchAddress("evtWeight",                                &evtWeight);
-    iTree->SetBranchAddress("kfactor",                                  &kfactor);
-    iTree->SetBranchAddress(met,                                        &vmetpt);
-    iTree->SetBranchAddress(met+"phi",                                  &vmetphi);
-    iTree->SetBranchAddress("fake"+met,                                 &vfakemetpt);
-    iTree->SetBranchAddress("fake"+met+"phi",                           &vfakemetphi);
-    iTree->SetBranchAddress("n"+algo+"jets",                            &njets);
-    iTree->SetBranchAddress("nbtags",                                   &nbtags);
-    iTree->SetBranchAddress("nb"+algo+"jetsL",                          &nbjetsL);
-    iTree->SetBranchAddress("nb"+algo+"jetsM",                          &nbjetsM);
-    iTree->SetBranchAddress("nb"+algo+"jetsLdR2",                       &nbjetsLdR2);
-    iTree->SetBranchAddress("nb"+algo+"jetsT",                          &nbjetsT);
-    iTree->SetBranchAddress("res_"+algo+"jetmT",                        &res_mt);
-    iTree->SetBranchAddress("res_"+algo+"jet0_pt",                      &res_jet0_pt);
-    iTree->SetBranchAddress("res_"+algo+"jet0_eta",                     &res_jet0_eta);
-    iTree->SetBranchAddress("res_"+algo+"jet0_phi",                     &res_jet0_phi);
-    iTree->SetBranchAddress("res_"+algo+"jet1_pt",                      &res_jet1_pt);
-    iTree->SetBranchAddress("res_"+algo+"jet1_eta",                     &res_jet1_eta);
-    iTree->SetBranchAddress("res_"+algo+"jet1_phi",                     &res_jet1_phi);
-    iTree->SetBranchAddress("res_"+algo+"jet2_pt",                      &res_jet2_pt);
-    iTree->SetBranchAddress("res_"+algo+"jet2_eta",                     &res_jet2_eta);
-    iTree->SetBranchAddress("res_"+algo+"jet2_phi",                     &res_jet2_phi);
-    iTree->SetBranchAddress("res_"+algo+"jet3_pt",                      &res_jet3_pt);
-    iTree->SetBranchAddress("res_"+algo+"jet3_eta",                     &res_jet3_eta);
-    iTree->SetBranchAddress("res_"+algo+"jet3_phi",                     &res_jet3_phi);
-    iTree->SetBranchAddress("res_"+algo+"jet0_mass",                    &res_jet0_mass);
-    iTree->SetBranchAddress("res_"+algo+"jet1_mass",                    &res_jet1_mass);
-    iTree->SetBranchAddress("res_"+algo+"jet2_mass",                    &res_jet2_mass);
-    iTree->SetBranchAddress("res_"+algo+"jet3_mass",                    &res_jet3_mass);
-    iTree->SetBranchAddress("res_"+algo+"jet0_CHF",                     &res_jet0_CHF);
-    iTree->SetBranchAddress("res_"+algo+"jet0_NHF",                     &res_jet0_NHF);
-    iTree->SetBranchAddress("res_"+algo+"jet0_NEMF",                    &res_jet0_NEMF);
-    iTree->SetBranchAddress("res_"+algo+"jetbtagwL0_"+syst,             &res_btagwL0);
-    iTree->SetBranchAddress("res_"+algo+"jetbtagwL1_"+syst,             &res_btagwL1);
-    iTree->SetBranchAddress("res_"+algo+"jetbtagwLminus1_"+syst,        &res_btagwLminus1);
-    iTree->SetBranchAddress("res_"+algo+"jetbtagwL2_"+syst,             &res_btagwL2);
-    iTree->SetBranchAddress("nmu",                                      &nmu);
-    iTree->SetBranchAddress("nele",                                     &nele);
-    iTree->SetBranchAddress("ntau",                                     &ntau);
-    iTree->SetBranchAddress("npho",                                     &npho);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_isHadronicTop",    &isHadronicTop);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_topSize",          &topSize);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_topMatching",      &topMatching);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jets",                  &nfjets);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_mT",               &bst_mt);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_pt",               &bst_jet0_pt);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_eta",              &bst_jet0_eta);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_phi",              &bst_jet0_phi);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_mass",             &bst_jet0_mass);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_msd",              &bst_jet0_msd);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_rho",              &bst_jet0_rho);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_tau32",            &bst_jet0_tau32);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_tau21",            &bst_jet0_tau21);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_CHF",              &bst_jet0_CHF);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_NHF",              &bst_jet0_NHF);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_NEFM",             &bst_jet0_NEMF);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_minsubcsv",        &bst_jet0_minsubcsv);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_maxsubcsv",        &bst_jet0_maxsubcsv);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_doublecsv",        &bst_jet0_doublecsv);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jetbtagwL0_"+syst,      &bst_btagwL0);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jetbtagwL1_"+syst,      &bst_btagwL1);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jetbtagwLminus1_"+syst, &bst_btagwLminus1);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jetbtagwL2_"+syst,      &bst_btagwL2);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jetbtagwM0_"+syst,      &bst_btagwM0);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jetbtagwM1_"+syst,      &bst_btagwM1);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jetbtagwMminus1_"+syst, &bst_btagwMminus1);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+"jetbtagwM2_"+syst,      &bst_btagwM2);
-    iTree->SetBranchAddress("eleSF0",                                   &eleSF0);
-    iTree->SetBranchAddress("eleSF1",                                   &eleSF1);
-    iTree->SetBranchAddress("eleSF2",                                   &eleSF2);
-    iTree->SetBranchAddress("muoSF0",                                   &muoSF0);
-    iTree->SetBranchAddress("muoSF1",                                   &muoSF1);
-    iTree->SetBranchAddress("muoSF2",                                   &muoSF2);
-    iTree->SetBranchAddress("phoSF0",                                   &phoSF0);
+    iTree->SetBranchAddress("runNum",                                      &runNum);
+    iTree->SetBranchAddress("lumiSec",                                     &lumiSec);
+    iTree->SetBranchAddress("evtNum",                                      &evtNum);
+    iTree->SetBranchAddress("metfilter",                                   &metfilter);
+    iTree->SetBranchAddress("triggerBits",                                 &triggerBits);
+    iTree->SetBranchAddress("selectBits",                                  &selectBits);
+    iTree->SetBranchAddress("triggerEff",                                  &triggerEff);
+    iTree->SetBranchAddress("npu",                                         &npu);
+    iTree->SetBranchAddress("npv",                                         &npv);
+    iTree->SetBranchAddress("puWeight",                                    &puWeight);
+    iTree->SetBranchAddress("scale1fb",                                    &scale1fb);
+    iTree->SetBranchAddress("evtWeight",                                   &evtWeight);
+    iTree->SetBranchAddress("kfactor",                                     &kfactor);
+    iTree->SetBranchAddress(met,                                           &vmetpt);
+    iTree->SetBranchAddress(met+"phi",                                     &vmetphi);
+    iTree->SetBranchAddress("fake"+met,                                    &vfakemetpt);
+    iTree->SetBranchAddress("fake"+met+"phi",                              &vfakemetphi);
+    iTree->SetBranchAddress("n"+algo+"jets",                               &njets);
+    iTree->SetBranchAddress("nbtags",                                      &nbtags);
+    iTree->SetBranchAddress("nb"+algo+"jetsL",                             &nbjetsL);
+    iTree->SetBranchAddress("nb"+algo+"jetsM",                             &nbjetsM);
+    iTree->SetBranchAddress("nb"+algo+"jetsLdR2",                          &nbjetsLdR2);
+    iTree->SetBranchAddress("nb"+algo+"jetsT",                             &nbjetsT);
+    iTree->SetBranchAddress("res_"+algo+"jetmT",                           &res_mt);
+    iTree->SetBranchAddress("res_"+algo+"jet0_pt",                         &res_jet0_pt);
+    iTree->SetBranchAddress("res_"+algo+"jet0_eta",                        &res_jet0_eta);
+    iTree->SetBranchAddress("res_"+algo+"jet0_phi",                        &res_jet0_phi);
+    iTree->SetBranchAddress("res_"+algo+"jet1_pt",                         &res_jet1_pt);
+    iTree->SetBranchAddress("res_"+algo+"jet1_eta",                        &res_jet1_eta);
+    iTree->SetBranchAddress("res_"+algo+"jet1_phi",                        &res_jet1_phi);
+    iTree->SetBranchAddress("res_"+algo+"jet2_pt",                         &res_jet2_pt);
+    iTree->SetBranchAddress("res_"+algo+"jet2_eta",                        &res_jet2_eta);
+    iTree->SetBranchAddress("res_"+algo+"jet2_phi",                        &res_jet2_phi);
+    iTree->SetBranchAddress("res_"+algo+"jet3_pt",                         &res_jet3_pt);
+    iTree->SetBranchAddress("res_"+algo+"jet3_eta",                        &res_jet3_eta);
+    iTree->SetBranchAddress("res_"+algo+"jet3_phi",                        &res_jet3_phi);
+    iTree->SetBranchAddress("res_"+algo+"jet0_mass",                       &res_jet0_mass);
+    iTree->SetBranchAddress("res_"+algo+"jet1_mass",                       &res_jet1_mass);
+    iTree->SetBranchAddress("res_"+algo+"jet2_mass",                       &res_jet2_mass);
+    iTree->SetBranchAddress("res_"+algo+"jet3_mass",                       &res_jet3_mass);
+    iTree->SetBranchAddress("res_"+algo+"jet0_CHF",                        &res_jet0_CHF);
+    iTree->SetBranchAddress("res_"+algo+"jet0_NHF",                        &res_jet0_NHF);
+    iTree->SetBranchAddress("res_"+algo+"jet0_NEMF",                       &res_jet0_NEMF);
+    iTree->SetBranchAddress("res_"+algo+"jetbtagwL0_"+syst,                &res_btagwL0);
+    iTree->SetBranchAddress("res_"+algo+"jetbtagwL1_"+syst,                &res_btagwL1);
+    iTree->SetBranchAddress("res_"+algo+"jetbtagwLminus1_"+syst,           &res_btagwLminus1);
+    iTree->SetBranchAddress("res_"+algo+"jetbtagwL2_"+syst,                &res_btagwL2);
+    iTree->SetBranchAddress("nmu",                                         &nmu);
+    iTree->SetBranchAddress("nele",                                        &nele);
+    iTree->SetBranchAddress("ntau",                                        &ntau);
+    iTree->SetBranchAddress("npho",                                        &npho);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_isHadronicTop",    &isHadronicTop);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_topSize",          &topSize);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_topMatching",      &topMatching);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"s",                  &nfjets);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_mT",               &bst_mt);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_pt",               &bst_jet0_pt);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_eta",              &bst_jet0_eta);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_phi",              &bst_jet0_phi);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_mass",             &bst_jet0_mass);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_msd",              &bst_jet0_msd);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_rho",              &bst_jet0_rho);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_tau32",            &bst_jet0_tau32);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_tau21",            &bst_jet0_tau21);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_CHF",              &bst_jet0_CHF);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_NHF",              &bst_jet0_NHF);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_NEMF",             &bst_jet0_NEMF);
+    // iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_NEFM",             &bst_jet0_NEMF);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_minsubcsv",        &bst_jet0_minsubcsv);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_maxsubcsv",        &bst_jet0_maxsubcsv);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_doublecsv",        &bst_jet0_doublecsv);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwL0_"+syst,      &bst_btagwL0);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwL1_"+syst,      &bst_btagwL1);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwLminus1_"+syst, &bst_btagwLminus1);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwL2_"+syst,      &bst_btagwL2);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwM0_"+syst,      &bst_btagwM0);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwM1_"+syst,      &bst_btagwM1);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwMminus1_"+syst, &bst_btagwMminus1);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwM2_"+syst,      &bst_btagwM2);
+    iTree->SetBranchAddress("eleSF0",                                      &eleSF0);
+    iTree->SetBranchAddress("eleSF1",                                      &eleSF1);
+    iTree->SetBranchAddress("eleSF2",                                      &eleSF2);
+    iTree->SetBranchAddress("muoSF0",                                      &muoSF0);
+    iTree->SetBranchAddress("muoSF1",                                      &muoSF1);
+    iTree->SetBranchAddress("muoSF2",                                      &muoSF2);
+    iTree->SetBranchAddress("phoSF0",                                      &phoSF0);
   }
 }
 MonoXBitsLoader::~MonoXBitsLoader(){}
@@ -175,16 +176,16 @@ bool MonoXBitsLoader::passBoostedMonoXPreselection(string preselection){
   return lPass;
 }
 bool MonoXBitsLoader::passBoostedMonoTopSR(string preselection){ 
-  return passBoostedMonoXPreselection(preselection) & (min_dphijetsmet>1.1) & (nbjetsLdR2==0) & (bst_jet0_tau32 < (-0.018*bst_jet0_rho + RHO_CUT)) & (bst_jet0_maxsubcsv>CSVL) & (bst_jet0_msd>140) & (bst_jet0_msd<250);
+  return passBoostedMonoXPreselection(preselection) & (min_dphijetsmet>1.1) & (nbjetsLdR2==0) & (bst_jet0_maxsubcsv>CSVL) & (bst_jet0_msd>135) & (bst_jet0_msd<210) & (bst_jet0_tau32 < (-0.018*bst_jet0_rho + RHO_CUT));
 }
 bool MonoXBitsLoader::passBoostedMonoTopQCDCR(string preselection){
   return passMetPreselection(preselection) & (min_dphijetsmet<0.1);
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCR2(string preselection){
-  return passBoostedMonoXPreselection(preselection) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2==0);
+  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2==0) & (bst_jet0_maxsubcsv>CSVL) & (bst_jet0_msd>135) & (bst_jet0_msd<210) & (bst_jet0_tau32 < (-0.018*bst_jet0_rho + RHO_CUT));
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCR(string preselection){ 
-  return passBoostedMonoXPreselection(preselection) & (bst_jet0_maxsubcsv>CSVL) & (nbjetsLdR2>0);
+  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2>0) & (bst_jet0_maxsubcsv>CSVL) & (bst_jet0_msd>135) & (bst_jet0_msd<210) & (bst_jet0_tau32 < (-0.018*bst_jet0_rho + RHO_CUT));
 }
 bool MonoXBitsLoader::passBoostedMonoTopTTbarCR(string preselection){
   bool lPass = false;
@@ -209,24 +210,24 @@ bool MonoXBitsLoader::passBoostedMonoTopTopCRminusBtag(string preselection){
   return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2>0);
 }
 bool MonoXBitsLoader::passBoostedMonoTopWCR(string preselection){
-  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2==0) & (bst_jet0_maxsubcsv<CSVL);
+  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2==0) & (bst_jet0_maxsubcsv<CSVL) & (bst_jet0_msd>135) & (bst_jet0_msd<210) & (bst_jet0_tau32 < (-0.018*bst_jet0_rho + RHO_CUT));
 }
 bool MonoXBitsLoader::passBoostedMonoTopZCR(string preselection){
-  return passBoostedMonoXPreselection(preselection);
+  return passBoostedMonoXPreselection(preselection) & (bst_jet0_msd>135) & (bst_jet0_msd<210) & (bst_jet0_tau32 < (-0.018*bst_jet0_rho + RHO_CUT));
 }
 
 // MonoH
 bool MonoXBitsLoader::passBoostedMonoHbbSR(string preselection){
-  return passBoostedMonoXPreselection(preselection) & (min_dphijetsmet>1.1) & (nbjetsLdR2==0) & (bst_jet0_minsubcsv>CSVL) & (bst_jet0_msd>100) & (bst_jet0_msd<140); //& (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.38));
+  return passBoostedMonoXPreselection(preselection) & (min_dphijetsmet>1.1) & (nbjetsLdR2==0) & (bst_jet0_msd>50) & (bst_jet0_doublecsv>CSVbL) & (bst_jet0_msd>75) & (bst_jet0_msd<135) & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.78)); //& (bst_jet0_minsubcsv>CSVL);
 }
 bool MonoXBitsLoader::passBoostedMonoHbbTopCR(string preselection){
-  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2>0) & (bst_jet0_minsubcsv>CSVL);//  & (bst_jet0_doublecsv>CSVbL) & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.38));
+  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2>0) & (bst_jet0_msd>50) & (bst_jet0_doublecsv>CSVbL) & (bst_jet0_msd>75) & (bst_jet0_msd<135) & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.78)); // & (bst_jet0_minsubcsv>CSVL);
 }
 bool MonoXBitsLoader::passBoostedMonoHbbWCR(string preselection){
-  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2==0) & (bst_jet0_minsubcsv<=CSVL); // & (bst_jet0_doublecsv<=CSVbL);
+  return passBoostedMonoXPreselection(preselection) & (nbjetsLdR2==0) & (bst_jet0_msd>50) & (bst_jet0_doublecsv<=CSVbL) & (bst_jet0_msd>75) & (bst_jet0_msd<135) & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.78));// & (bst_jet0_minsubcsv<=CSVL) & (bst_jet0_msd>100) & (bst_jet0_msd<150);
 }
 bool MonoXBitsLoader::passBoostedMonoHbbZCR(string preselection){
-  return passBoostedMonoXPreselection(preselection);// & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.38));
+  return passBoostedMonoXPreselection(preselection) & (bst_jet0_msd>50)  & (bst_jet0_msd>75) & (bst_jet0_msd<135) & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + 0.78));
 }
 
 // Selection
