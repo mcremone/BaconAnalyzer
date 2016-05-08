@@ -35,10 +35,10 @@ VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN,
 
 }
 VJetLoader::~VJetLoader() { 
-  delete fVJets;
-  delete fVJetBr;
-  delete fVAddJets;
-  delete fVAddJetBr;
+  //delete fVJets;
+  //delete fVJetBr;
+  //delete fVAddJets;
+  //delete fVAddJetBr;
   // delete fFatJets;
   // delete fFatJetBr;
 }
@@ -47,7 +47,6 @@ void VJetLoader::resetSubJetBTag() {
 }
 void VJetLoader::reset() { 
   fNVJets        = 0; 
-  fNVJetsTight        = 0;
   fVMT           = 0;
   ftopSize       = 999;
   ftopMatching   = 999;
@@ -64,7 +63,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("csv");
   fLabels.push_back("CHF");
   fLabels.push_back("NHF");
-  fLabels.push_back("NEFM"); //change to EMF
+  fLabels.push_back("NEMF");
   fLabels.push_back("tau21");
   fLabels.push_back("tau32");
   fLabels.push_back("msd");
@@ -78,18 +77,16 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
 
   std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
   std::stringstream pSNJ;   pSNJ << iJetLabel << "s";
-  std::stringstream pSNJ;   pSNJtight << iJetLabel << "sT";
   std::stringstream pSis;   pSis << iJetLabel << "0_isHadronicTop";
   std::stringstream pSTM;   pSTM << iJetLabel << "0_topMatching";
   std::stringstream pSTS;   pSTS << iJetLabel << "0_topSize";
 
   fTree = iTree;
-  fTree->Branch(pSNJ.str().c_str() ,&fNVJets        ,(pSNJ.str()+"/I").c_str());
-  fTree->Branch(pSNJtight.str().c_str() ,&fNVJetsTight        ,(pSNJ.str()+"/I").c_str());
   for(int i0 = 0; i0 < fN*4.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
   for(int i0 = 0; i0 < fN*(int(fLabels.size())); i0++) {double pVar = 0; fVars.push_back(pVar);} 
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);                                                 // from MonoXUtils.cc => fN =1 *_pt,*_eta,*_phi for vjet0 (3*1=3)
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,fN*3,fLabels);
+  fTree->Branch(pSNJ.str().c_str() ,&fNVJets        ,(pSNJ.str()+"/I").c_str());
   fTree->Branch(pSMT.str().c_str() ,&fVMT           ,(pSMT.str()+"/F").c_str());
   fTree->Branch(pSis.str().c_str() ,&fisHadronicTop ,(pSis.str()+"/I").c_str());
   fTree->Branch(pSTM.str().c_str() ,&ftopMatching   ,(pSTM.str()+"/D").c_str());
@@ -113,30 +110,26 @@ void VJetLoader::load(int iEvent) {
   // fFatJets     ->Clear();
   // fFatJetBr    ->GetEntry(iEvent);
 }
-void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR){
+void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, std::string iJetID){
   reset(); 
   iJets.clear(); iVJet.clear();
   int lCount = 0; 
-  int lCountTight = 0;
-  iJets.clear(); iVJet.clear();
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
     TJet *pVJet = (TJet*)((*fVJets)[i0]);
-    if(pVJet->pt        <=  200)                    continue;
-    if(fabs(pVJet->eta) >=  2.4)                    continue;
-    if(passVeto(pVJet->eta,pVJet->phi,dR,iVetoes))  continue;
-    if(!passJetLooseSel(pVJet))                     continue;
+    if(pVJet->pt        <=  200)                                           continue;
+    if(fabs(pVJet->eta) >=  2.4)                                           continue;
+    if(passVeto(pVJet->eta,pVJet->phi,dR,iVetoes))                         continue;
+    if(!passJetLooseSel(pVJet))                                            continue;
+    if(iJetID.compare("tightJetID")==0 && !passJetTightLepVetoSel(pVJet))  continue;
     addVJet(pVJet,iJets,pVJet->mass);
     addJet(pVJet,fSelVJets);
     lCount++;
-    if(passJetTightSel(pVJet)) lCountTight++;
   }
   if(iJets.size() > 0){
-    TLorentzVector ivJ;
-    ivJ.SetPtEtaPhiM(fSelVJets[0]->pt,fSelVJets[0]->eta,fSelVJets[0]->phi,fSelVJets[0]->mass);
+    TLorentzVector ivJ; ivJ.SetPtEtaPhiM(fSelVJets[0]->pt,fSelVJets[0]->eta,fSelVJets[0]->phi,fSelVJets[0]->mass);
     iVJet.push_back(ivJ);
   }
   fNVJets = lCount;
-  fNVJetsTight = lCountTight;
   fillJet( fN,fSelVJets,fVars);
   fillVJet(fN,fSelVJets,fVars); 
 }

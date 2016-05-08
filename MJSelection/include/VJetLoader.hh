@@ -28,7 +28,7 @@ public:
   void setupTree(TTree *iTree,std::string iJetLabel);
   void setupTreeSubJetBTag(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
-  void selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR);
+  void selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, std::string iJetID="looseJetID");
   void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals);
   std::vector<TJet*> fSelVJets;
   std::vector<TLorentzVector> fGoodVSubJets;
@@ -53,12 +53,12 @@ protected:
   TBranch      *fVJetBr;
   TClonesArray *fVAddJets;
   TBranch      *fVAddJetBr;
-  TClonesArray *fFatJets;
-  TBranch      *fFatJetBr;
+  //TClonesArray *fFatJets;
+  //TBranch      *fFatJetBr;
   TTrigger     *fTrigger;
   TTree        *fTree;
   int           fNVJets;
-  int           fNVJetsTight;
+
   std::vector<std::string> fBtagLabels = {"CENT", "MISTAGUP","MISTAGDO","BTAGUP","BTAGDO"};  // nominal, mistagup, mistagdown, btagup and btagdown
   std::vector<std::string> measurementTypes = {"lt", "incl"};                                // measurements type
   std::vector<std::string> variationTypes = {"central", "up", "down"};                       // systematics type 

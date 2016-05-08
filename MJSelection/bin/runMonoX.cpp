@@ -41,6 +41,7 @@ TauLoader       *fTau      = 0;
 PhotonLoader    *fPhoton   = 0; 
 JetLoader       *fJet      = 0; 
 VJetLoader      *fVJet     = 0;
+VJetLoader      *fVJetT    = 0;
 RunLumiRangeMap *fRangeMap = 0; 
 
 TH1F *fHist                = 0; 
@@ -80,6 +81,7 @@ int main( int argc, char **argv ) {
   fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fVJet     = new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
+  fVJetT    = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
@@ -95,6 +97,8 @@ int main( int argc, char **argv ) {
   fJet     ->setupTreeBTag  (lOut,"res_PUPPIjet");
   fVJet    ->setupTree           (lOut,"bst15_PUPPIjet"); 
   fVJet    ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
+  fVJetT   ->setupTree           (lOut,"bst15_PUPPIjetT");
+  fVJetT   ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjetT");
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
   //
@@ -102,7 +106,7 @@ int main( int argc, char **argv ) {
   //
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  //for(int i0 = 0; i0 < int(100); i0++){ // for testing
+  //for(int i0 = 0; i0 < int(10000); i0++){ // for testing
     // if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // Check json and GenInfo
@@ -148,7 +152,7 @@ int main( int argc, char **argv ) {
     if(trigbits==1) continue;
     
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJet, lVJets, lVetoes;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJet, lVJets, lVJetT, lVJetsT, lVetoes;
 
     // Muons
     fMuon->load(i0);
@@ -188,7 +192,7 @@ int main( int argc, char **argv ) {
     
     // CA15Puppi Jets
     fVJet->load(i0);
-    fVJet->selectVJets(lVetoes,lVJets,lVJet,1.5);
+    fVJet->selectVJets(lVetoes,lVJets,lVJet,1.5,"looseJetID");
     if(lVJets.size()>0) { 
       if(lOption.find("data")==std::string::npos){
 	fVJet->fisHadronicTop = fGen->ismatchedJet(lVJet[0],1.5,fVJet->ftopMatching,fVJet->ftopSize);
@@ -198,6 +202,16 @@ int main( int argc, char **argv ) {
       fEvt->fillmT(lVJet,fVJet->fVMT);
     }
     
+    fVJetT->load(i0);
+    fVJetT->selectVJets(lVetoes,lVJetsT,lVJetT,1.5,"tightJetID");
+    if(lVJetsT.size()>0) {
+      if(lOption.find("data")==std::string::npos){
+        fVJetT->fisHadronicTop = fGen->ismatchedJet(lVJetT[0],1.5,fVJetT->ftopMatching,fVJetT->ftopSize);
+	fVJetT->fillSubJetBTag(fGen->fGens,fVJetT->fGoodVSubJets);
+      }
+      fEvt->fillmT(lVJetT,fVJetT->fVMT);
+    }
+
     // AK4Puppi Jets
     fJet->load(i0); 
     fJet->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
