@@ -17,29 +17,29 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then
     ./sub.sh mc $eos QCD_HT2000toInf_13TeV_2                                                                    25.42  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WHF") ]]; then
-   ./sub.sh mcwplushf $eos WJetsToLNu_HT_100To200_13TeV_2                                                       1343  $dir $exec $option1 $option2
-   ./sub.sh mcwplushf $eos WJetsToLNu_HT_200To400_13TeV                                                        359.6  $dir $exec $option1 $option2
-   ./sub.sh mcwplushf $eos WJetsToLNu_HT_400To600_13TeV                                                       48.85  $dir $exec $option1 $option2                                                  
-   ./sub.sh mcwplushf $eos WJetsToLNu_HT_600ToInf_13TeV_2                                                        18.91  $dir $exec $option1 $option2 
+   ./sub.sh mcwplushf $eos WJetsToLNu_HT_100To200_13TeV_2                                                        1343  $dir $exec $option1 $option2
+   ./sub.sh mcwplushf $eos WJetsToLNu_HT_200To400_13TeV                                                         359.6  $dir $exec $option1 $option2
+   ./sub.sh mcwplushf $eos WJetsToLNu_HT_400To600_13TeV                                                         48.85  $dir $exec $option1 $option2                                                  
+   ./sub.sh mcwplushf $eos WJetsToLNu_HT_600ToInf_13TeV_2                                                       18.91  $dir $exec $option1 $option2 
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WLF") ]]; then
-   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_100To200_13TeV_2                                                       1343  $dir $exec $option1 $option2
-   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_200To400_13TeV                                                        359.6  $dir $exec $option1 $option2  
-   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_400To600_13TeV                                                      48.85  $dir $exec $option1 $option2
-   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_600ToInf_13TeV_2                                                        18.91  $dir $exec $option1 $option2
+   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_100To200_13TeV_2                                                        1343  $dir $exec $option1 $option2
+   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_200To400_13TeV                                                         359.6  $dir $exec $option1 $option2  
+   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_400To600_13TeV                                                         48.85  $dir $exec $option1 $option2
+   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_600ToInf_13TeV_2                                                       18.91  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYHF") ]]; then
-   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_100to200_13TeV_2                                                148.0  $dir $exec $option1 $option2
-   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_200to400_13TeV_2                                                40.94  $dir $exec $option1 $option2
-   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_400to600_13TeV_2                                                5.497  $dir $exec $option1 $option2
-   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_600toInf_13TeV_2                                                2.193  $dir $exec $option1 $option2
-fi 
+   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_100to200_13TeV_2                                                 148.0  $dir $exec $option1 $option2
+   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_200to400_13TeV_2                                                 40.94  $dir $exec $option1 $option2
+   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_400to600_13TeV_2                                                 5.497  $dir $exec $option1 $option2
+   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_600toInf_13TeV_2                                                 2.193  $dir $exec $option1 $option2
+fi  
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYLF") ]]; then
-   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_100to200_13TeV_2                                                148.0  $dir $exec $option1 $option2
-   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_200to400_13TeV_2                                                40.94  $dir $exec $option1 $option2
-   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_400to600_13TeV_2                                                5.497  $dir $exec $option1 $option2
-   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_600toInf_13TeV_2                                                2.193  $dir $exec $option1 $option2
-fi
+   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_100to200_13TeV_2                                                 148.0  $dir $exec $option1 $option2
+   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_200to400_13TeV_2                                                 40.94  $dir $exec $option1 $option2
+   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_400to600_13TeV_2                                                 5.497  $dir $exec $option1 $option2
+   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_600toInf_13TeV_2                                                 2.193  $dir $exec $option1 $option2
+fi 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZHF") ]]; then
     ./sub.sh mczplushf $eos ZJetsToNuNu_HT_100To200_13TeV_madgraph                                              280.5  $dir $exec $option1 $option2
     ./sub.sh mczplushf $eos ZJetsToNuNu_HT_200To400_13TeV_madgraph                                               77.7  $dir $exec $option1 $option2
