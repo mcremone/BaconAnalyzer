@@ -23,17 +23,17 @@
 #include "../macros/CPlot.hh"                   // helper class for plots
 #include "../macros/KStyle.hh"                  // style settings for drawing
 #include "../macros/CSample.hh"                 // helper class to manage samples
-#include "../macros/BitsLoader.hh" 
+#include "../macros/MonoXBitsLoader.hh"         // helper to load monoxbits
 //#endif
 
 using namespace std;
 
 //Object Processors                                                                                                                                                                                      
-BitsLoader       *fBits      = 0;
+MonoXBitsLoader       *fBits      = 0;
 
 //=== MAIN MACRO =================================================================================================
 
-void skimMonoX(const string preselection, const string selection, const string subsample, const string combo, TString algo, TString syst)
+void skimMonoX(const string preselection, const string selection, const string subsample, const string combo, TString algo, TString syst, TString jetID)
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -42,7 +42,7 @@ void skimMonoX(const string preselection, const string selection, const string s
   bool doBlind = false;
   //  if(subsample.compare("SR")==0)  doBlind = true;
 
-  const string outfilename("MonoXNtuples/"+preselection+"-"+selection+"-"+subsample+"-"+combo+"-"+algo+"-"+syst+".root");
+  const string outfilename("monoxntuples/"+preselection+"-"+selection+"-"+subsample+"-"+combo+"-"+algo+"-"+syst+".root");
 
   //
   // samples
@@ -51,84 +51,156 @@ void skimMonoX(const string preselection, const string selection, const string s
   vector<CSample*> samplev;
 
   samplev.push_back(new CSample("data",0,0));
-  if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("../baconbits/MET.root");
-  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("../baconbits/SingleElectron.root");
-  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("../baconbits/SinglePhoton.root");
+  if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/MET.root");
+  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/SingleElectron.root");
+  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/SinglePhoton.root");
   samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-  samplev.back()->fnamev.push_back("../baconbits/QCD.root");
+  samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/QCD.root");
   if (preselection.compare("Pho")!=0) {
       samplev.push_back(new CSample("SingleTop",kRed - 9,kRed - 9));
-      samplev.back()->fnamev.push_back("../baconbits/T.root");
-      samplev.back()->fnamev.push_back("../baconbits/TZ.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/T.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/TZ.root");
       samplev.push_back(new CSample("ttbar",kOrange - 4,kOrange - 4));
-      //      samplev.back()->fnamev.push_back("../baconbits/TTDM.root");  
-      // samplev.back()->fnamev.push_back("../baconbits/TT1L.root");
-      // samplev.back()->fnamev.push_back("../baconbits/TT2L.root");
-      // samplev.back()->fnamev.push_back("../baconbits/TTHAD.root");
-      samplev.back()->fnamev.push_back("../baconbits/TTBST.root");
-      samplev.back()->fnamev.push_back("../baconbits/TTCOM.root");
-      samplev.back()->fnamev.push_back("../baconbits/TTZ.root");
-      samplev.back()->fnamev.push_back("../baconbits/TTG.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/TT.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/TTZ.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/TTG.root");
       samplev.push_back(new CSample("WW",kYellow - 9,kYellow - 9));
-      samplev.back()->fnamev.push_back("../baconbits/WW.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/WW.root");
       samplev.push_back(new CSample("WZ",kYellow - 9,kYellow - 9));
-      samplev.back()->fnamev.push_back("../baconbits/WZ.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/WZ.root");
       samplev.push_back(new CSample("ZZ",kYellow - 9,kYellow - 9));
-      samplev.back()->fnamev.push_back("../baconbits/ZZ.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZZ.root");
       samplev.push_back(new CSample("Wjets",kGreen - 10,kGreen - 10));
-      samplev.back()->fnamev.push_back("../baconbits/WHF.root");
-      //      samplev.push_back(new CSample("WjetsLF",kGreen - 10,kGreen - 10));
-      samplev.back()->fnamev.push_back("../baconbits/WLF.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/WHF.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/WLF.root");
       samplev.push_back(new CSample("ZnunuLO", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("../baconbits/ZHF.root");
-      //      samplev.push_back(new CSample("ZnunuLF", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("../baconbits/ZLF.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZHF.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZLF.root");
       samplev.push_back(new CSample("ZllLO", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("../baconbits/DYHF.root");
-      //      samplev.push_back(new CSample("ZllLF", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("../baconbits/DYLF.root");
-      //      samplev.back()->fnamev.push_back("../baconbits/DYNLO.root");  
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/DYHF.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/DYLF.root");
   }
   if (preselection.compare("Pho")==0){
       samplev.push_back(new CSample("Photon", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("../baconbits/GHF.root");
-      samplev.back()->fnamev.push_back("../baconbits/GLF.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/GHF.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/GLF.root");
   }
-  if (subsample.compare("SR")==0){
+  if (subsample.compare("SR")==0 && selection.compare("BstMonoTop")==0){
     samplev.push_back(new CSample("Mres-1100_Mchi-100", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S1_Mres-1100_Mchi-100_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8_mc.root");
     samplev.push_back(new CSample("Mres-1300_Mchi-100", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S1_Mres-1300_Mchi-100_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mres-1500_Mchi-100", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S1_Mres-1500_Mchi-100_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S1_Mres_1500_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mres-1700_Mchi-100", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S1_Mres-1700_Mchi-100_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S1_Mres_1700_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mres-1900_Mchi-100", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S1_Mres-1900_Mchi-100_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S1_Mres_1900_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mres-2100_Mchi-100", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S1_Mres-2100_Mchi-100_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S1_Mres_2100_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mres-900_Mchi-100", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S1_Mres-900_Mchi-100_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S1_Mres_900_Mchi_100_13TeV_madgraph_pythia8_mc.root");
     samplev.push_back(new CSample("Mchi-1100", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S4_Mchi-1100_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S4_Mchi_1100_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mchi-1300", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S4_Mchi-1300_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S4_Mchi_1300_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mchi-1500", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S4_Mchi-1500_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S4_Mchi_1500_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mchi-300", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S4_Mchi-300_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S4_Mchi_300_13TeV_madgraph_pythia8_mc.root");
     samplev.push_back(new CSample("Mchi-500", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S4_Mchi-500_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S4_Mchi_500_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mchi-700", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S4_Mchi-700_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S4_Mchi_700_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("Mchi-900", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/Spring15_a25ns_Monotop_S4_Mchi-900_MINIAOD_mc.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S4_Mchi_900_13TeV_madgraph_pythia8_2_mc.root");
     samplev.push_back(new CSample("tHq", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("../baconbits/THQ.root");
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/THQ.root");
   }
-
+  if (subsample.compare("SR")==0 && selection.compare("BstMonoHbb")==0){
+    samplev.push_back(new CSample("MZ-1000_MA0-300", kBlue, kBlue));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_300_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1000_MA0-400", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_400_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1000_MA0-500", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_500_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1000_MA0-600", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_600_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1000_MA0-800", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_800_13TeV_madgraph_mc.root");
+    samplev.push_back(new CSample("MZ-1200_MA0-300", kBlue, kBlue));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_300_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1200_MA0-500", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_500_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1200_MA0-600", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_600_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1200_MA0-700", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_700_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1200_MA0-800", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_800_13TeV_madgraph_mc.root");
+    samplev.push_back(new CSample("MZ-1400_MA0-300", kBlue, kBlue));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_300_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1400_MA0-400", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_400_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1400_MA0-500", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_500_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1400_MA0-600", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_600_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1400_MA0-700", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_700_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1400_MA0-800", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_800_13TeV_madgraph_mc.root");
+    samplev.push_back(new CSample("MZ-1700_MA0-300", kBlue, kBlue));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_300_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1700_MA0-400", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_400_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1700_MA0-500", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_500_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1700_MA0-600", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_600_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1700_MA0-700", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_700_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-1700_MA0-800", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_800_13TeV_madgraph_mc.root");
+    samplev.push_back(new CSample("MZ-2000_MA0-300", kBlue, kBlue));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_300_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-2000_MA0-400", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_400_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-2000_MA0-500", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_500_13TeV_madgraph_2_mc.root");
+    // samplev.push_back(new CSample("MZ-2000_MA0-600", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_600_13TeV_madgraph_2_mc.root");
+    // samplev.push_back(new CSample("MZ-2000_MA0-700", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_700_13TeV_madgraph_2_mc.root");
+    // samplev.push_back(new CSample("MZ-2000_MA0-800", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_800_13TeV_madgraph_2_mc.root");
+    samplev.push_back(new CSample("MZ-2500_MA0-300", kBlue, kBlue));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_300_13TeV_madgraph_2_mc.root");
+    // samplev.push_back(new CSample("MZ-2500_MA0-400", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_400_13TeV_madgraph_2_mc.root");
+    // samplev.push_back(new CSample("MZ-2500_MA0-500", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_500_13TeV_madgraph_2_mc.root");
+    // samplev.push_back(new CSample("MZ-2500_MA0-600", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_600_13TeV_madgraph_2_mc.root");
+    // samplev.push_back(new CSample("MZ-2500_MA0-700", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_700_13TeV_madgraph_2_mc.root");
+    // samplev.push_back(new CSample("MZ-2500_MA0-800", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_800_13TeV_madgraph_2_mc.root");
+    samplev.push_back(new CSample("MZ-600_MA0-300", kBlue, kBlue));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_300_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-600_MA0-400", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_400_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-800_MA0-300", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_300_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-800_MA0-400", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_400_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-800_MA0-500", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_500_13TeV_madgraph_mc.root");
+    // samplev.push_back(new CSample("MZ-800_MA0-600", kBlue, kBlue));
+    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_600_13TeV_madgraph_mc.root");
+  }
   // integrated luminosity to scale MC
-  const double LUMI = 2.318;
+  const double LUMI = 2.32;
   
   // histograms for various corrections
   const string cmssw_base = getenv("CMSSW_BASE");
@@ -154,23 +226,17 @@ void skimMonoX(const string preselection, const string selection, const string s
     if(preselection=="Ele" && subsample=="TopCR") tname = tname + string("_single_electron_top_control");
     if(preselection=="Muo" && subsample=="WCR") tname = tname + string("_single_muon_w_control");
     if(preselection=="Ele" && subsample=="WCR") tname = tname + string("_single_electron_w_control");
-    if(preselection=="Muo" && subsample=="WHFCR") tname = tname + string("_single_muon_whf_control");
-    if(preselection=="Ele" && subsample=="WHFCR") tname = tname + string("_single_electron_whf_control");
-    if(preselection=="Muo" && subsample=="WLFCR") tname = tname + string("_single_muon_wlf_control");
-    if(preselection=="Ele" && subsample=="WLFCR") tname = tname + string("_single_electron_wlf_control");
     if(preselection=="Zmm" && subsample=="ZCR") tname = tname + string("_di_muon_control");
     if(preselection=="Zee" && subsample=="ZCR") tname = tname + string("_di_electron_control");
     if(preselection=="Pho" && subsample=="ZCR") tname = tname + string("_photon_control");
-    if(preselection=="Zmm" && subsample=="ZHFCR") tname = tname + string("_di_muon_zhf_control");
-    if(preselection=="Zee" && subsample=="ZHFCR") tname = tname + string("_di_electron_zhf_control");
-    if(preselection=="Pho" && subsample=="ZHFCR") tname = tname + string("_photon_zhf_control");
-    if(preselection=="Zmm" && subsample=="ZLFCR") tname = tname + string("_di_muon_zlf_control");
-    if(preselection=="Zee" && subsample=="ZLFCR") tname = tname + string("_di_electron_zlf_control");
-    if(preselection=="Pho" && subsample=="ZLFCR") tname = tname + string("_photon_zlf_control");
     if(syst=="BTAGUP") tname = tname + string("_btagUp");
     if(syst=="BTAGDO") tname = tname + string("_btagDown");
     if(syst=="MISTAGUP") tname = tname + string("_mistagUp");
     if(syst=="MISTAGDO") tname = tname + string("_mistagDown");
+    if(syst=="SJBTAGUP") tname = tname + string("_sjbtagUp");
+    if(syst=="SJBTAGDO") tname = tname + string("_sjbtagDown");
+    if(syst=="SJMISTAGUP") tname = tname + string("_sjmistagUp");
+    if(syst=="SJMISTAGDO") tname = tname + string("_sjmistagDown");
     if(syst=="GJETHFUP") tname = tname + string("_gjethfUp");
     if(syst=="GJETHFDO") tname = tname + string("_gjethfDown");
     if(syst=="WJETHFUP") tname = tname + string("_wjethfUp");
@@ -178,8 +244,8 @@ void skimMonoX(const string preselection, const string selection, const string s
     if(syst=="ZJETHFUP") tname = tname + string("_zjethfUp");
     if(syst=="ZJETHFDO") tname = tname + string("_zjethfDown");
     outtreesv.push_back(new TTree(tname.c_str(), tname.c_str()));
-    outtreesv.back()->Branch("met",   &met_,   "met/F");
-    outtreesv.back()->Branch("metphi",&metphi_,"metphi/F");
+    outtreesv.back()->Branch("met",      &met_,      "met/F");
+    outtreesv.back()->Branch("metphi",   &metphi_,   "metphi/F");
     outtreesv.back()->Branch("genVpt",   &genVpt_,   "genVpt/F");
     outtreesv.back()->Branch("genVphi",  &genVphi_,  "genVphi/F");
     outtreesv.back()->Branch("weight",   &weight_,   "weight/F");
@@ -199,10 +265,9 @@ void skimMonoX(const string preselection, const string selection, const string s
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      if(syst!="CENT" && syst!="BTAGDO" && syst!="BTAGUP" && syst!="MISTAGDO" && syst!="MISTAGUP") fBits     = new BitsLoader(intree,algo,"CENT",preselection);
-      else fBits     = new BitsLoader(intree,algo,syst,preselection);
-      double nevts=0;
-      int noweight=0;
+      if(syst!="CENT" && syst!="BTAGUP" && syst!="BTAGDO" && syst!="MISTAGUP" && syst!="MISTAGDO" && syst!="SJBTAGUP" && syst!="SJBTAGDO" && syst!="SJMISTAGUP" && syst!="SJMISTAGDO") fBits     = new MonoXBitsLoader(intree,"15",jetID,algo,"CENT",preselection,isData);
+      else fBits   = new MonoXBitsLoader(intree,"15",jetID,algo,syst,preselection,isData);
+      double nevts=0; int noweight=0;
 
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
@@ -217,26 +282,24 @@ void skimMonoX(const string preselection, const string selection, const string s
 
 	//	double wgt = fBits->getWgt(isData,algo,LUMI,btagw);
 	double wgt = 1;
-	//	if(!isData) {wgt = fBits->scale1fb*LUMI*btagw*fBits->triggerEff*fBits->evtWeight;}
 	if(!isData) {
-	  //	  wgt *= LUMI*fBits->scale1fb*fBits->nloKfactor*fBits->ewkCorr*btagw*fBits->triggerEff*fBits->evtWeight*fBits->lepWeight;
-	  wgt *= LUMI*fBits->scale1fb*fBits->ewkCorr*btagw*fBits->triggerEff*fBits->evtWeight*fBits->lepWeight;
-	  if(sample->label=="ttbar" && ifile==0 && fBits->topSize<1.2){
+          wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->kfactor*btagw*fBits->triggerEff*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
+	  if(sample->label=="ttbar" && fBits->topSize<0.8 && fBits->isHadronicTop==1 &&fBits->topMatching <1.4 && fBits->topMatching > 0 && fBits->topSize > 0){
 	    wgt *= fBits->ToptagSF;
 	  }
-	  if(sample->label!="ttbar" || ifile!=0 || fBits->topSize>=1.2){
-            wgt *= fBits->TopmistagSF;
-          }
-	  if(sample->label=="Wjets" || sample->label=="Photon" || sample->label=="ZnunuLO" || sample->label=="ZllLO" ){
-	    if(subsample=="SR" || subsample=="TopCR") {
-	      if(ifile==0) {
-		wgt *= fBits->btagSF;
-	      }
-	      if(ifile==1) {
-		wgt *= fBits->bmistagSF;
-	      }
-	    }
-	  }
+	  // if(sample->label!="ttbar" || ifile!=0 || fBits->isHadronicTop==0 || fBits->topSize>=0.8 || fBits->topSize<0 || fBits->topMatching>=1.4 || fBits->topMatching<0){
+          //   wgt *= fBits->TopmistagSF;
+          // }
+	  // if(sample->label=="Wjets" || sample->label=="Photon" || sample->label=="ZnunuLO" || sample->label=="ZllLO" ){
+	  //   if(subsample=="SR" || subsample=="TopCR") {
+	  //     if(ifile==0) {
+	  // 	wgt *= fBits->btagSF;
+	  //     }
+	  //     if(ifile==1) {
+	  // 	wgt *= fBits->bmistagSF;
+	  //     }
+	  //   }
+	  // }
 	  
 	  if(sample->label=="Photon") {
 	    if(ifile==0) { 
@@ -275,15 +338,14 @@ void skimMonoX(const string preselection, const string selection, const string s
         //                                                                                                                                                                                  
         // Fill tree only if requested category is passed and, if                                                                                                                          
         // in combination, no preceeding category has passed                                                                                                                               
-        //                                                                                                                                                                                   
-
-        met_    = fBits->getMET(preselection).Pt();
-        metphi_ = fBits->getMET(preselection).Phi();
-        weight_    = wgt;
-	mt_ = fBits->transverse_mass(selection);
+        //
+        met_     = fBits->getMET(preselection).Pt();
+        metphi_  = fBits->getMET(preselection).Phi();
+        weight_  = wgt;
+	mt_      = fBits->transverse_mass(selection);
 	//	genVpt_   = fBits->genvpt(selection);
-	genVpt_   = fBits->bst15_genVpt;
-	genVphi_  = fBits->genvphi(selection);
+	genVpt_   = fBits->genVpt;
+	genVphi_  = fBits->genVphi;
 
 	if(!isData || !doBlind) { outtreesv[isam]->Fill(); }
       }
