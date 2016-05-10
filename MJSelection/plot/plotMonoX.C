@@ -236,7 +236,7 @@ void plotMonoX(const string preselection, const string selection, const string s
 	
 	//selection
 	float btagw=1;
-	if(!fBits->passSelection(preselection,selection,subsample,combo,btagw)) continue;
+	if(!fBits->passSelection(preselection,selection,subsample,combo,btagw,syst)) continue;
 
         double wgt = 1;
 	if(!isData) {

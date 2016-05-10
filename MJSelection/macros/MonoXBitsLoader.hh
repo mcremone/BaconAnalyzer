@@ -56,7 +56,7 @@ public:
   bool passBoostedMonoHbbWCR(string preselection);
   bool passBoostedMonoHbbZCR(string preselection);
 
-  bool passSelection(string preselection, string selection, string subsample, string combo, float &btagw);
+  bool passSelection(string preselection, string selection, string subsample, string combo, float &btagw, TString syst);
   float transverse_mass(string selection);
   float fjet_mass(string selection);
   float nsubjet(string selection);
@@ -64,7 +64,7 @@ public:
   float chf(string selection);
   float nhf(string selection);
   float nemf(string selection);
-  double getDoublebWeight();
+  double getDoublebWeight(TString syst);
   double getWgt(bool isData, TString algo, double LUMI, float btagw);
   double tau32DDT();
   double tau21DDT();
