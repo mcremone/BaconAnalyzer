@@ -23,7 +23,7 @@ using namespace std;
 
 class MonoXBitsLoader {
 public:
-  MonoXBitsLoader(TTree *iTree=0,TString jet="15",TString jetID="jet", TString algo="PUPPI",TString syst="CENT", string preselection="");		
+  MonoXBitsLoader(TTree *iTree=0,TString jet="15",TString jetID="jet", TString algo="PUPPI",TString syst="CENT", string preselection="", bool isData=false);		
   ~MonoXBitsLoader();
   bool selectJetAlgoAndSize(string selection, TString algo);
   bool isHad();
@@ -92,7 +92,7 @@ public:
   float bst_btagwL0, bst_btagwL1, bst_btagwLminus1, bst_btagwL2;                   // subjet btag SF 
   float bst_btagwM0, bst_btagwM1, bst_btagwMminus1, bst_btagwM2 ;
   float bst_btagwT0, bst_btagwT1, bst_btagwTminus1, bst_btagwT2;
-
+  float genVpt, genVphi;                                                           // gen boson
   float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                     // MET
   double min_dphijetsmet;                                                          // min delta phi between MET and narrow jets
 
@@ -136,7 +136,7 @@ protected:
   const unsigned int kBOOSTED15PUPPI = 2;
   const unsigned int kRESOLVEDPUPPI = 4;
 
-  const float RHO_CUT = 0.68;
+  const float RHO_CUT = 0.72;
 
 
 };

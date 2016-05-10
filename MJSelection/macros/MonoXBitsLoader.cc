@@ -1,7 +1,7 @@
 #include "MonoXBitsLoader.hh"  
 using namespace std;
 
-MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString jetID, TString algo,TString syst, string preselection) {
+MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString jetID, TString algo,TString syst, string preselection, bool isData) {
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0){
@@ -10,6 +10,11 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString jetID, TStrin
     else{
       iTree->SetBranchAddress("mindFPhi",                                  &min_dphijetsmet);
     }
+    TString sy = "CENT";
+    if(syst=="SJBTAGUP"){ sy = "BTAGUP"; syst = "CENT";}
+    else if(syst=="SJBTAGDO"){ sy = "BTAGDO"; syst = "CENT";}
+    else if(syst=="SJMISTAGUP"){ sy = "MISTAGUP"; syst = "CENT";}
+    else if(syst=="SJMISTAGDO"){ sy = "MISTAGDO"; syst = "CENT";}
     iTree->SetBranchAddress("runNum",                                      &runNum);
     iTree->SetBranchAddress("lumiSec",                                     &lumiSec);
     iTree->SetBranchAddress("evtNum",                                      &evtNum);
@@ -77,18 +82,9 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString jetID, TStrin
     iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_CHF",              &bst_jet0_CHF);
     iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_NHF",              &bst_jet0_NHF);
     iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_NEMF",             &bst_jet0_NEMF);
-    // iTree->SetBranchAddress("bst"+jet+"_"+algo+"jet0_NEFM",             &bst_jet0_NEMF);
     iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_minsubcsv",        &bst_jet0_minsubcsv);
     iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_maxsubcsv",        &bst_jet0_maxsubcsv);
     iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"0_doublecsv",        &bst_jet0_doublecsv);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwL0_"+syst,      &bst_btagwL0);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwL1_"+syst,      &bst_btagwL1);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwLminus1_"+syst, &bst_btagwLminus1);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwL2_"+syst,      &bst_btagwL2);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwM0_"+syst,      &bst_btagwM0);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwM1_"+syst,      &bst_btagwM1);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwMminus1_"+syst, &bst_btagwMminus1);
-    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwM2_"+syst,      &bst_btagwM2);
     iTree->SetBranchAddress("eleSF0",                                      &eleSF0);
     iTree->SetBranchAddress("eleSF1",                                      &eleSF1);
     iTree->SetBranchAddress("eleSF2",                                      &eleSF2);
@@ -96,6 +92,18 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree,TString jet, TString jetID, TStrin
     iTree->SetBranchAddress("muoSF1",                                      &muoSF1);
     iTree->SetBranchAddress("muoSF2",                                      &muoSF2);
     iTree->SetBranchAddress("phoSF0",                                      &phoSF0);
+    if(!isData) {
+      iTree->SetBranchAddress("genVPt",                                    &genVpt);
+      iTree->SetBranchAddress("genVPhi",                                   &genVphi);
+    }
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwL0_"+sy,        &bst_btagwL0);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwL1_"+sy,        &bst_btagwL1);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwLminus1_"+sy,   &bst_btagwLminus1);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwL2_"+sy,        &bst_btagwL2);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwM0_"+sy,        &bst_btagwM0);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwM1_"+sy,        &bst_btagwM1);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwMminus1_"+sy,   &bst_btagwMminus1);
+    iTree->SetBranchAddress("bst"+jet+"_"+algo+jetID+"btagwM2_"+sy,        &bst_btagwM2);
   }
 }
 MonoXBitsLoader::~MonoXBitsLoader(){}
@@ -276,7 +284,7 @@ bool MonoXBitsLoader::passSelection(string preselection, string selection, strin
   if (selection == "BstMonoHbb")
     {
       if (subsample == "SR" && passBoostedMonoHbbSR(preselection) 
-	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0*bst_btagwL2; lPass = true;}
+	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0; lPass = true;} //bst_btagwL2;
       if (subsample == "TopCR" && passBoostedMonoHbbTopCR(preselection) 
 	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL2; lPass = true;}
       if (subsample == "WCR" && passBoostedMonoHbbWCR(preselection) 

@@ -20,9 +20,9 @@
 #include <cmath>                      // C++ math library
 #include <cassert>
 
-#include "../macros/CPlot.hh"         // helper class for plots
-#include "../macros/KStyle.hh"        // style settings for drawing
-#include "../macros/CSample.hh"       // helper class to manage samples
+#include "../macros/CPlot.hh"              // helper class for plots
+#include "../macros/KStyle.hh"             // style settings for drawing
+#include "../macros/CSample.hh"            // helper class to manage samples
 #include "../macros/MonoXBitsLoader.hh"    // helper to load monoxbits
 //#endif
 
@@ -220,7 +220,7 @@ void plotMonoX(const string preselection, const string selection, const string s
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits  = new MonoXBitsLoader(intree,"15",jetID,algo,syst,preselection);
+      fBits  = new MonoXBitsLoader(intree,"15",jetID,algo,syst,preselection,isData);
       double nevts=0;
       int noweight=0;
 
