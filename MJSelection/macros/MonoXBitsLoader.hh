@@ -64,7 +64,7 @@ public:
   float chf(string selection);
   float nhf(string selection);
   float nemf(string selection);
-  double getDoublebWeight(TString syst);
+  void getDoublebWeight(TString syst, float &doublebw_L0, float &doublebw_L1);
   double getWgt(bool isData, TString algo, double LUMI, float btagw);
   double tau32DDT();
   double tau21DDT();

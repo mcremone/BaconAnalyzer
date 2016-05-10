@@ -283,7 +283,7 @@ bool MonoXBitsLoader::passSelection(string preselection, string selection, strin
 
   if (selection == "BstMonoHbb")
     {
-      getDoublebWeight(syst);
+      getDoublebWeight(syst,doublebw_L0,doublebw_L1);
       if (subsample == "SR" && passBoostedMonoHbbSR(preselection) 
 	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0*doublebw_L1; lPass = true;} //bst15_btagwL2;
       if (subsample == "TopCR" && passBoostedMonoHbbTopCR(preselection) 
@@ -322,51 +322,53 @@ float MonoXBitsLoader::nemf(string selection){
   if(selection == "BstMonoTop" || selection == "BstMonoHbb") return bst15_jet0_NEMF;
   else return res_jet0_NEMF;
 }
-double MonoXBitsLoader::getDoublebWeight(TString syst){
-  doubleb_ptbin_eff.clear(); SF.clear();
-  if(syst=="CENT"){
-    doubleb_ptbin_eff.push_back(0.827);
-    doubleb_ptbin_eff.push_back(0.792);
-    doubleb_ptbin_eff.push_back(0.771);
-    doubleb_ptbin_eff.push_back(0.685);
-    SF.push_back(0.951);
-    SF.push_back(0.982);
-    SF.push_back(0.900);
-    SF.push_back(0.958);
-  }
-  if(syst=="SJBTAGUP"){
-    doubleb_ptbin_eff.push_back(0.827+0.009);
-    doubleb_ptbin_eff.push_back(0.792+0.011);
-    doubleb_ptbin_eff.push_back(0.771+0.009);
-    doubleb_ptbin_eff.push_back(0.685+0.008);
-    SF.push_back(0.951+0.073);
-    SF.push_back(0.982+0.119);
-    SF.push_back(0.900+0.178);
-    SF.push_back(0.958+0.250);
-  }
-  if(syst=="SJBTAGDO"){
-    doubleb_ptbin_eff.push_back(0.827-0.009);
-    doubleb_ptbin_eff.push_back(0.792-0.011);
-    doubleb_ptbin_eff.push_back(0.771-0.009);
-    doubleb_ptbin_eff.push_back(0.685-0.008);
-    SF.push_back(0.951-0.073);
-    SF.push_back(0.982-0.119);
-    SF.push_back(0.900-0.178);
-    SF.push_back(0.958-0.250);
-  }
-  ptbinlow.clear(); ptbinhigh.clear();
-  ptbinlow.push_back(300);  ptbinhigh.push_back(400);
-  ptbinlow.push_back(400);  ptbinhigh.push_back(500);
-  ptbinlow.push_back(500);  ptbinhigh.push_back(600);
-  ptbinlow.push_back(600);  ptbinhigh.push_back(700);
-
-  for(unsigned int ipt=0; ipt<ptbinhigh.size(); ++ipt){
-    if( bst15_jet0_pt > ptbinlow[ipt] && bst15_jet0_pt <= ptbinhigh[ipt]){
-      mcTag  = doubleb_ptbin_eff[ipt]; mcNoTag  = (1 - doubleb_ptbin_eff[ipt]); dataTag  = doubleb_ptbin_eff[ipt]*SF[ipt]; dataNoTag  = (1 - doubleb_ptbin_eff[ipt]*SF[ipt]);
+void MonoXBitsLoader::getDoublebWeight(TString syst, float &doublebw_L0, float &doublebw_L1){
+  if(bst15_jet0_pt > 300 && bst15_jet0_pt <= 700){
+    doubleb_ptbin_eff.clear(); SF.clear();
+    if(syst=="CENT"){
+      doubleb_ptbin_eff.push_back(0.827);
+      doubleb_ptbin_eff.push_back(0.792);
+      doubleb_ptbin_eff.push_back(0.771);
+      doubleb_ptbin_eff.push_back(0.685);
+      SF.push_back(0.951);
+      SF.push_back(0.982);
+      SF.push_back(0.900);
+      SF.push_back(0.958);
     }
+    if(syst=="SJBTAGUP"){
+      doubleb_ptbin_eff.push_back(0.827+0.009);
+      doubleb_ptbin_eff.push_back(0.792+0.011);
+      doubleb_ptbin_eff.push_back(0.771+0.009);
+      doubleb_ptbin_eff.push_back(0.685+0.008);
+      SF.push_back(0.951+0.073);
+      SF.push_back(0.982+0.119);
+      SF.push_back(0.900+0.178);
+      SF.push_back(0.958+0.250);
+    }
+    if(syst=="SJBTAGDO"){
+      doubleb_ptbin_eff.push_back(0.827-0.009);
+      doubleb_ptbin_eff.push_back(0.792-0.011);
+      doubleb_ptbin_eff.push_back(0.771-0.009);
+      doubleb_ptbin_eff.push_back(0.685-0.008);
+      SF.push_back(0.951-0.073);
+      SF.push_back(0.982-0.119);
+      SF.push_back(0.900-0.178);
+      SF.push_back(0.958-0.250);
+    }
+    ptbinlow.clear(); ptbinhigh.clear();
+    ptbinlow.push_back(300);  ptbinhigh.push_back(400);
+    ptbinlow.push_back(400);  ptbinhigh.push_back(500);
+    ptbinlow.push_back(500);  ptbinhigh.push_back(600);
+    ptbinlow.push_back(600);  ptbinhigh.push_back(700);
+    
+    for(unsigned int ipt=0; ipt<ptbinhigh.size(); ++ipt){
+      if( bst15_jet0_pt > ptbinlow[ipt] && bst15_jet0_pt <= ptbinhigh[ipt]){
+	mcTag  = doubleb_ptbin_eff[ipt]; mcNoTag  = (1 - doubleb_ptbin_eff[ipt]); dataTag  = doubleb_ptbin_eff[ipt]*SF[ipt]; dataNoTag  = (1 - doubleb_ptbin_eff[ipt]*SF[ipt]);
+      }
+    }
+    doublebw_L0 = dataNoTag/mcNoTag;
+    doublebw_L1 = dataTag/mcTag;
   }
-  return doublebw_L0 = dataNoTag/mcNoTag;
-  return doublebw_L1 = dataTag/mcTag;
 }
 double MonoXBitsLoader::getWgt(bool isData, TString algo, double LUMI, float btagw){
   float wgt = 1;
