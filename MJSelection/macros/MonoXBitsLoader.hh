@@ -64,6 +64,7 @@ public:
   float chf(string selection);
   float nhf(string selection);
   float nemf(string selection);
+  double getDoublebWeight();
   double getWgt(bool isData, TString algo, double LUMI, float btagw);
   double tau32DDT();
   double tau21DDT();
@@ -138,6 +139,48 @@ protected:
 
   const float RHO_CUT = 0.72;
 
+  float  doublebw_L0=1,  doublebw_L1=1;
 
+  std::vector<float> doubleb_ptbin_eff, SF;
+  if (syst.compare("CENT")){
+    doubleb_ptbin_eff.push_back(0.827); 
+    doubleb_ptbin_eff.push_back(0.792);
+    doubleb_ptbin_eff.push_back(0.771);
+    doubleb_ptbin_eff.push_back(0.685);
+    SF.push_back(0.951);
+    SF.push_back(0.982);
+    SF.push_back(0.900);
+    SF.push_back(0.958);
+  }
+  if (syst.compare("SJBTAGUP")){
+    doubleb_ptbin_eff.push_back(0.827+0.009); 
+    doubleb_ptbin_eff.push_back(0.792+0.011);
+    doubleb_ptbin_eff.push_back(0.771+0.009);
+    doubleb_ptbin_eff.push_back(0.685+0.008);
+    SF.push_back(0.951+0.073);
+    SF.push_back(0.982+0.119);
+    SF.push_back(0.900+0.178);
+    SF.push_back(0.958+0.250);
+  }
+  if (syst.compare("SJBTAGDO")){
+    doubleb_ptbin_eff.push_back(0.827-0.009); 
+    doubleb_ptbin_eff.push_back(0.792-0.011);
+    doubleb_ptbin_eff.push_back(0.771-0.009);
+    doubleb_ptbin_eff.push_back(0.685-0.008);
+    SF.push_back(0.951-0.073);
+    SF.push_back(0.982-0.119);
+    SF.push_back(0.900-0.178);
+    SF.push_back(0.958-0.250);
+  }
+  std::vector<float> ptbinlow, ptbinhigh;
+  ptbinlow.push_back(300);  ptbinhigh.push_back(400);
+  ptbinlow.push_back(400);  ptbinhigh.push_back(500);
+  ptbinlow.push_back(500);  ptbinhigh.push_back(600);
+  ptbinlow.push_back(600); ptbinhigh.push_back(700);
+
+  float mcTag = 1.;
+  float mcNoTag = 0.;
+  float dataTag = 1.;
+  float dataNoTag = 0.;
 };
 #endif

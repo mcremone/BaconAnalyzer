@@ -283,12 +283,13 @@ bool MonoXBitsLoader::passSelection(string preselection, string selection, strin
 
   if (selection == "BstMonoHbb")
     {
+      getDoublebWeight()
       if (subsample == "SR" && passBoostedMonoHbbSR(preselection) 
-	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0; lPass = true;} //bst_btagwL2;
+	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0*doublebw_L1; lPass = true;} //bst_btagwL2;
       if (subsample == "TopCR" && passBoostedMonoHbbTopCR(preselection) 
-	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL2; lPass = true;}
+	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL1*doublebw_L1; lPass = true;}
       if (subsample == "WCR" && passBoostedMonoHbbWCR(preselection) 
-	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0; lPass = true;}
+	  && (combo=="ONLY" || combo=="COMBO")) {btagw=res_btagwL0*doublebw_L0; lPass = true;}
       if (subsample == "ZCR" && passBoostedMonoHbbZCR(preselection) 
 	  && (combo=="ONLY" || combo=="COMBO")) lPass = true;
     }
@@ -320,6 +321,15 @@ float MonoXBitsLoader::nhf(string selection){
 float MonoXBitsLoader::nemf(string selection){
   if(selection == "BstMonoTop" || selection == "BstMonoHbb") return bst_jet0_NEMF;
   else return res_jet0_NEMF;
+}
+double MonoXBitsLoader::getDoublebWeight(){
+  for(unsigned int ipt=0; ipt<ptbinhigh.size(); ++ipt){
+    if( bst_jet0_pt > ptbinlow[ipt] && bst_jet0_pt <= ptbinhigh[ipt]){
+      mcTag  = doubleb_ptbin_eff[ipt]; mcNoTag  = (1 - doubleb_ptbin_eff[ipt]); dataTag  = doubleb_ptbin_eff[ipt]*SF[ipt]; dataNoTag  = (1 - doubleb_ptbin_eff[ipt]*SF[ipt]);
+    }
+  }
+  return doublebw_L0 = dataNoTag/mcNoTag;
+  return doublebw_L1 = dataTag/mcTag;
 }
 double MonoXBitsLoader::getWgt(bool isData, TString algo, double LUMI, float btagw){
   float wgt = 1;
