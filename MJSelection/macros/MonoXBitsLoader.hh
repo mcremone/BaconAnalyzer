@@ -23,7 +23,7 @@ using namespace std;
 
 class MonoXBitsLoader {
 public:
-  MonoXBitsLoader(TTree *iTree=0,TString jet="15",TString jetID="jet", TString algo="PUPPI",TString syst="CENT", string preselection="", bool isData=false);		
+  MonoXBitsLoader(TTree *iTree=0,TString jetID="jet", TString algo="PUPPI",TString syst="CENT", string preselection="", bool isData=false);		
   ~MonoXBitsLoader();
   bool selectJetAlgoAndSize(string selection, TString algo);
   bool isHad();
@@ -79,20 +79,20 @@ public:
   double triggerEff;                                                               // trigger efficiency
   float evtWeight, puWeight;                                                       // pu and evt weight
   double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2, phoSF0;                   // weights
-  double topSize, topMatching;                                                     // topSize and topMatching
-  int isHadronicTop;                                                               // hadronic Top requirement
+  double topSize15, topMatching15;                                                 // topSize and topMatching
+  int isHadronicTop15;                                                             // hadronic Top requirement
   unsigned int npu, npv;                                                           // PU, PV multiplicity
   int nmu, nele, ntau, npho;                                                       // object multiplicity
-  int njets, nfjets, nf15jets;                                                     // jet multiplicity 
+  int njets, nfjets15;                                                             // jet multiplicity 
   int nbtags, nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2;                   // b-jet multiplicity
   float scale1fb;                                                                  // cross section scale factor per 1/fb
   float kfactor;                                                                   // kFactor and EWK correction
   float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2;                   // btag SF
   float res_btagwM0, res_btagwM1, res_btagwMminus1, res_btagwM2 ;
   float res_btagwT0, res_btagwT1, res_btagwTminus1, res_btagwT2;
-  float bst_btagwL0, bst_btagwL1, bst_btagwLminus1, bst_btagwL2;                   // subjet btag SF 
-  float bst_btagwM0, bst_btagwM1, bst_btagwMminus1, bst_btagwM2 ;
-  float bst_btagwT0, bst_btagwT1, bst_btagwTminus1, bst_btagwT2;
+  float bst15_btagwL0, bst15_btagwL1, bst15_btagwLminus1, bst15_btagwL2;           // subjet btag SF 
+  float bst15_btagwM0, bst15_btagwM1, bst15_btagwMminus1, bst15_btagwM2 ;
+  float bst15_btagwT0, bst15_btagwT1, bst15_btagwTminus1, bst15_btagwT2;
   float genVpt, genVphi;                                                           // gen boson
   float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                     // MET
   double min_dphijetsmet;                                                          // min delta phi between MET and narrow jets
@@ -107,13 +107,13 @@ public:
   double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF;                      // res jet variables
   float            res_mt;                                                         // res jet mT
 
-  double           bst_jet0_pt,bst_jet0_eta,bst_jet0_phi,bst_jet0_mass;            // leading boosted jet
-  double           bst_jet0_msd, bst_jet0_tau32, bst_jet0_tau21;                   // boosted tagger variables                                                                                            
-  double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                         // subjet btag
-  double           bst_jet0_doublecsv;                                             // double btag                            
-  double           bst_jet0_rho, bst_jet0_phil;                                    // msd and pt dependent variables
-  double           bst_jet0_CHF, bst_jet0_NHF, bst_jet0_NEMF;                      // boosted jet variables
-  float            bst_mt;                                                         // bst jet mT
+  double           bst15_jet0_pt,bst15_jet0_eta,bst15_jet0_phi,bst15_jet0_mass;    // leading boosted jet
+  double           bst15_jet0_msd, bst15_jet0_tau32, bst15_jet0_tau21;             // boosted tagger variables                                                                                            
+  double           bst15_jet0_maxsubcsv, bst15_jet0_minsubcsv;                     // subjet btag
+  double           bst15_jet0_doublecsv;                                           // double btag                            
+  double           bst15_jet0_rho, bst15_jet0_phil;                                // msd and pt dependent variables
+  double           bst15_jet0_CHF, bst15_jet0_NHF, bst15_jet0_NEMF;                // boosted jet variables
+  float            bst15_mt;                                                       // bst jet mT
 
   const float ToptagSF     = 1.1318;                                               // ToptagSF
   const float TopmistagSF  = 1.1639;                                               // TopmistagSF 
@@ -128,6 +128,17 @@ public:
   const float CSVbM = 0.6;                                                         // CSVbM
   const float CSVbT = 0.9;                                                         // CSVbT 
 
+  float doublebw_L0=1;
+  float doublebw_L1=1;
+
+  std::vector<float> doubleb_ptbin_eff, SF;
+  std::vector<float> ptbinlow, ptbinhigh;
+
+  float mcTag = 1.;
+  float mcNoTag = 0.;
+  float dataTag = 1.;
+  float dataNoTag = 0.;
+
 protected:
 
   const unsigned int kMET  = 2;
@@ -136,51 +147,8 @@ protected:
   const unsigned int kSinglePhoton  = 16;
   const unsigned int kBOOSTED15PUPPI = 2;
   const unsigned int kRESOLVEDPUPPI = 4;
-
+  
   const float RHO_CUT = 0.72;
 
-  float  doublebw_L0=1,  doublebw_L1=1;
-
-  std::vector<float> doubleb_ptbin_eff, SF;
-  if (syst.compare("CENT")){
-    doubleb_ptbin_eff.push_back(0.827); 
-    doubleb_ptbin_eff.push_back(0.792);
-    doubleb_ptbin_eff.push_back(0.771);
-    doubleb_ptbin_eff.push_back(0.685);
-    SF.push_back(0.951);
-    SF.push_back(0.982);
-    SF.push_back(0.900);
-    SF.push_back(0.958);
-  }
-  if (syst.compare("SJBTAGUP")){
-    doubleb_ptbin_eff.push_back(0.827+0.009); 
-    doubleb_ptbin_eff.push_back(0.792+0.011);
-    doubleb_ptbin_eff.push_back(0.771+0.009);
-    doubleb_ptbin_eff.push_back(0.685+0.008);
-    SF.push_back(0.951+0.073);
-    SF.push_back(0.982+0.119);
-    SF.push_back(0.900+0.178);
-    SF.push_back(0.958+0.250);
-  }
-  if (syst.compare("SJBTAGDO")){
-    doubleb_ptbin_eff.push_back(0.827-0.009); 
-    doubleb_ptbin_eff.push_back(0.792-0.011);
-    doubleb_ptbin_eff.push_back(0.771-0.009);
-    doubleb_ptbin_eff.push_back(0.685-0.008);
-    SF.push_back(0.951-0.073);
-    SF.push_back(0.982-0.119);
-    SF.push_back(0.900-0.178);
-    SF.push_back(0.958-0.250);
-  }
-  std::vector<float> ptbinlow, ptbinhigh;
-  ptbinlow.push_back(300);  ptbinhigh.push_back(400);
-  ptbinlow.push_back(400);  ptbinhigh.push_back(500);
-  ptbinlow.push_back(500);  ptbinhigh.push_back(600);
-  ptbinlow.push_back(600); ptbinhigh.push_back(700);
-
-  float mcTag = 1.;
-  float mcNoTag = 0.;
-  float dataTag = 1.;
-  float dataNoTag = 0.;
 };
 #endif

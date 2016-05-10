@@ -265,8 +265,8 @@ void skimMonoX(const string preselection, const string selection, const string s
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      if(syst!="CENT" && syst!="BTAGUP" && syst!="BTAGDO" && syst!="MISTAGUP" && syst!="MISTAGDO" && syst!="SJBTAGUP" && syst!="SJBTAGDO" && syst!="SJMISTAGUP" && syst!="SJMISTAGDO") fBits     = new MonoXBitsLoader(intree,"15",jetID,algo,"CENT",preselection,isData);
-      else fBits   = new MonoXBitsLoader(intree,"15",jetID,algo,syst,preselection,isData);
+      if(syst!="CENT" && syst!="BTAGUP" && syst!="BTAGDO" && syst!="MISTAGUP" && syst!="MISTAGDO" && syst!="SJBTAGUP" && syst!="SJBTAGDO" && syst!="SJMISTAGUP" && syst!="SJMISTAGDO") fBits     = new MonoXBitsLoader(intree,jetID,algo,"CENT",preselection,isData);
+      else fBits   = new MonoXBitsLoader(intree,jetID,algo,syst,preselection,isData);
       double nevts=0; int noweight=0;
 
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
@@ -284,10 +284,10 @@ void skimMonoX(const string preselection, const string selection, const string s
 	double wgt = 1;
 	if(!isData) {
           wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->kfactor*btagw*fBits->triggerEff*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
-	  if(sample->label=="ttbar" && fBits->topSize<0.8 && fBits->isHadronicTop==1 &&fBits->topMatching <1.4 && fBits->topMatching > 0 && fBits->topSize > 0){
+	  if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){
 	    wgt *= fBits->ToptagSF;
 	  }
-	  // if(sample->label!="ttbar" || ifile!=0 || fBits->isHadronicTop==0 || fBits->topSize>=0.8 || fBits->topSize<0 || fBits->topMatching>=1.4 || fBits->topMatching<0){
+	  // if(sample->label!="ttbar" || ifile!=0 || fBits->isHadronicTop15==0 || fBits->topSize15>=0.8 || fBits->topSize15<0 || fBits->topMatching15>=1.4 || fBits->topMatching15<0){
           //   wgt *= fBits->TopmistagSF;
           // }
 	  // if(sample->label=="Wjets" || sample->label=="Photon" || sample->label=="ZnunuLO" || sample->label=="ZllLO" ){

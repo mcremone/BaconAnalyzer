@@ -220,7 +220,7 @@ void plotMonoX(const string preselection, const string selection, const string s
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits  = new MonoXBitsLoader(intree,"15",jetID,algo,syst,preselection,isData);
+      fBits  = new MonoXBitsLoader(intree,jetID,algo,syst,preselection,isData);
       double nevts=0;
       int noweight=0;
 
@@ -243,10 +243,10 @@ void plotMonoX(const string preselection, const string selection, const string s
 	  wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
 	  //if(!(fBits->triggerBits & 2)) 
 	  wgt *= fBits->triggerEff;
-	  if(sample->label=="t#bar{t}" && fBits->topSize<0.8 && fBits->isHadronicTop==1 &&fBits->topMatching <1.4 && fBits->topMatching > 0 && fBits->topSize > 0) {
+	  if(sample->label=="t#bar{t}" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0) {
 	    wgt *= fBits->ToptagSF;
 	  }
-	  // if(sample->label!="t#bar{t}" || ifile!=0 || fBits->isHadronicTop==0 || fBits->topSize>=0.8 || fBits->topSize<0 || fBits->topMatching>=1.4 || fBits->topMatching<0){
+	  // if(sample->label!="t#bar{t}" || ifile!=0 || fBits->isHadronicTop15==0 || fBits->topSize15>=0.8 || fBits->topSize15<0 || fBits->topMatching15>=1.4 || fBits->topMatching15<0){
 	  //   wgt *= fBits->TopmistagSF;
 	  /// }
 	  
@@ -284,19 +284,19 @@ void plotMonoX(const string preselection, const string selection, const string s
         hMETv[isam]            ->Fill(fBits->getMET(preselection).Pt(),       wgt);
         hMETLogv[isam]         ->Fill(fBits->getMET(preselection).Pt(),       wgt);
 	hFatJetMassv[isam]     ->Fill(fBits->fjet_mass(selection),            wgt);
-	hFatJetPtv[isam]       ->Fill(fBits->bst_jet0_pt,                     wgt);
-	hTransverseMassv[isam] ->Fill(fBits->bst_mt,                          wgt);
-	hFatJetTau32v[isam]    ->Fill(fBits->bst_jet0_tau32,                  wgt);
+	hFatJetPtv[isam]       ->Fill(fBits->bst15_jet0_pt,                   wgt);
+	hTransverseMassv[isam] ->Fill(fBits->bst15_mt,                        wgt);
+	hFatJetTau32v[isam]    ->Fill(fBits->bst15_jet0_tau32,                wgt);
         hFatJetTau32DDTv[isam] ->Fill(fBits->tau32DDT(),                      wgt);
-        hFatJetRhov[isam]      ->Fill(fBits->bst_jet0_rho,                    wgt);
-        hFatJetTau21v[isam]    ->Fill(fBits->bst_jet0_tau21,                  wgt);
+        hFatJetRhov[isam]      ->Fill(fBits->bst15_jet0_rho,                  wgt);
+        hFatJetTau21v[isam]    ->Fill(fBits->bst15_jet0_tau21,                wgt);
         hFatJetTau21DDTv[isam] ->Fill(fBits->tau21DDT(),                      wgt);
         hFatJetMsdSqPtv[isam]  ->Fill(fBits->getMsdSqPt(),                    wgt);
-        hBtagv[isam]           ->Fill(fBits->bst_jet0_maxsubcsv,              wgt);
-        hMinSubJetcsvv[isam]   ->Fill(fBits->bst_jet0_minsubcsv,              wgt);
-        hDoublecsvv[isam]      ->Fill(fBits->bst_jet0_doublecsv,              wgt);
+        hBtagv[isam]           ->Fill(fBits->bst15_jet0_maxsubcsv,            wgt);
+        hMinSubJetcsvv[isam]   ->Fill(fBits->bst15_jet0_minsubcsv,            wgt);
+        hDoublecsvv[isam]      ->Fill(fBits->bst15_jet0_doublecsv,            wgt);
 	hMinDPhiJetsMetv[isam] ->Fill(fBits->min_dphijetsmet,                 wgt);
-        hNFJetsv[isam]         ->Fill(fBits->nfjets,                          wgt);
+        hNFJetsv[isam]         ->Fill(fBits->nfjets15,                        wgt);
         hNJetsv[isam]          ->Fill(fBits->njets,                           wgt);
         hNBJetsv[isam]         ->Fill(fBits->nbjetsLdR2,                      wgt);
 	hJet1CHFv[isam]        ->Fill(fBits->chf(selection),                  wgt);
@@ -312,19 +312,19 @@ void plotMonoX(const string preselection, const string selection, const string s
           hMETMC            ->Fill(fBits->getMET(preselection).Pt(),          wgt);
           hMETLogMC         ->Fill(fBits->getMET(preselection).Pt(),          wgt);
 	  hFatJetMassMC     ->Fill(fBits->fjet_mass(selection),               wgt);
-	  hFatJetPtMC       ->Fill(fBits->bst_jet0_pt,                        wgt);
-	  hTransverseMassMC ->Fill(fBits->bst_mt,                             wgt);
-	  hFatJetTau32MC    ->Fill(fBits->bst_jet0_tau32,                     wgt);
+	  hFatJetPtMC       ->Fill(fBits->bst15_jet0_pt,                      wgt);
+	  hTransverseMassMC ->Fill(fBits->bst15_mt,                           wgt);
+	  hFatJetTau32MC    ->Fill(fBits->bst15_jet0_tau32,                   wgt);
           hFatJetTau32DDTMC ->Fill(fBits->tau32DDT(),                         wgt);
-	  hFatJetTau21MC    ->Fill(fBits->bst_jet0_tau21,                     wgt);
+	  hFatJetTau21MC    ->Fill(fBits->bst15_jet0_tau21,                   wgt);
 	  hFatJetTau21DDTMC ->Fill(fBits->tau21DDT(),                         wgt);
-	  hFatJetRhoMC      ->Fill(fBits->bst_jet0_rho,                       wgt);
+	  hFatJetRhoMC      ->Fill(fBits->bst15_jet0_rho,                     wgt);
 	  hFatJetMsdSqPtMC  ->Fill(fBits->getMsdSqPt(),                       wgt);
-	  hBtagMC           ->Fill(fBits->bst_jet0_maxsubcsv,                 wgt);
-	  hMinSubJetcsvMC   ->Fill(fBits->bst_jet0_minsubcsv,                 wgt);
-          hDoublecsvMC      ->Fill(fBits->bst_jet0_doublecsv,                 wgt);
+	  hBtagMC           ->Fill(fBits->bst15_jet0_maxsubcsv,               wgt);
+	  hMinSubJetcsvMC   ->Fill(fBits->bst15_jet0_minsubcsv,               wgt);
+          hDoublecsvMC      ->Fill(fBits->bst15_jet0_doublecsv,               wgt);
 	  hMinDPhiJetsMetMC ->Fill(fBits->min_dphijetsmet,                    wgt);
-          hNFJetsMC         ->Fill(fBits->nfjets,                             wgt);
+          hNFJetsMC         ->Fill(fBits->nfjets15,                           wgt);
 	  hNJetsMC          ->Fill(fBits->njets,                              wgt);
           hNBJetsMC         ->Fill(fBits->nbjetsLdR2,                         wgt);
 	  hJet1CHFMC        ->Fill(fBits->chf(selection),                     wgt);
