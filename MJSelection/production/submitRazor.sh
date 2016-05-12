@@ -72,7 +72,7 @@ fi
 #     ./sub.sh mc $eos Spring15_a25ns_tHq_invisible_MINIAOD                                                    0.070940  $dir $exec $option1 $option2;
 # fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TT") ]]; then
-    ./sub.sh mctt $eos TTJets_13TeV_amcatnloFXFX_pythia8_2                                                     831.76  $dir $exec $option1 $option2;
+    ./sub.sh mc $eos TTJets_13TeV_amcatnloFXFX_pythia8_2                                                     831.76  $dir $exec $option1 $option2;
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WW") ]]; then
     ./sub.sh mc $eos WW_13TeV_pythia8                                                                           118.7  $dir $exec $option1 $option2; 
