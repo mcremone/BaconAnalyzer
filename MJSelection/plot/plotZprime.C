@@ -43,7 +43,7 @@ float CalcSig(TH1D*sig, TH1D*bkg);
 
 //=== MAIN MACRO =================================================================================================
 
-void plotZprime(const string selection, const string algo)
+void plotZprime(const string selection, const string algo, const string jet)
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -52,7 +52,7 @@ void plotZprime(const string selection, const string algo)
   const bool doBlind = false;
 
   // Create output directory 
-  const string outputDir("ZprimePlots/"+selection+"_"+algo);
+  const string outputDir("ZprimePlots/"+selection+"_"+algo+"_"+jet);
   gSystem->mkdir(outputDir.c_str(), true);
   CPlot::sOutDir = outputDir;
 
@@ -154,7 +154,7 @@ void plotZprime(const string selection, const string algo)
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
 
-      fBits  = new ZprimeBitsLoader(intree,algo);
+      fBits  = new ZprimeBitsLoader(intree,algo,jet);
 
       double nevts=0;
       int noweight=0;

@@ -23,7 +23,7 @@ using namespace std;
 
 class ZprimeBitsLoader {
 public:
-  ZprimeBitsLoader(TTree *iTree=0,TString algo="PUPPI");		
+  ZprimeBitsLoader(TTree *iTree=0,TString algo="PUPPI", TString jet="jet0");		
   ~ZprimeBitsLoader();
   bool selectJetAlgoAndSize(TString algo);
   bool passBoostedZprimePreselection();

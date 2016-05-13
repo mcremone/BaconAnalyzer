@@ -42,7 +42,7 @@ void SbJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("csv");
   fLabels.push_back("CHF");
   fLabels.push_back("NHF");
-  fLabels.push_back("NEFM");
+  fLabels.push_back("NEMF");
   fLabels.push_back("tau21");
   fLabels.push_back("tau32");
   fLabels.push_back("msd");

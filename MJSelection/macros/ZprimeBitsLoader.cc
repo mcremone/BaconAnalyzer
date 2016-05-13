@@ -1,7 +1,7 @@
 #include "ZprimeBitsLoader.hh"  
 using namespace std;
 
-ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo) {
+ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet) {
   if(iTree){
     iTree->SetBranchAddress("runNum",                            &runNum);
     iTree->SetBranchAddress("lumiSec",                           &lumiSec);
@@ -16,19 +16,19 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo) {
     iTree->SetBranchAddress("scale1fb",                          &scale1fb);
     iTree->SetBranchAddress("evtWeight",                         &evtWeight);
     iTree->SetBranchAddress("bst8_"+algo+"jets",                 &njets);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_pt",        &bst_jet0_pt);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_eta",       &bst_jet0_eta);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_phi",       &bst_jet0_phi);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_mass",      &bst_jet0_mass);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_msd",       &bst_jet0_msd);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_rho",       &bst_jet0_rho);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_phil",      &bst_jet0_phil);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_tau21",     &bst_jet0_tau21);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_CHF",       &bst_jet0_CHF);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_NHF",       &bst_jet0_NHF);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_NEFM",      &bst_jet0_NEMF);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_minsubcsv", &bst_jet0_minsubcsv);
-    iTree->SetBranchAddress("bst8_"+algo+"jet0_maxsubcsv", &bst_jet0_maxsubcsv);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_pt",        &bst_jet0_pt);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_eta",       &bst_jet0_eta);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_phi",       &bst_jet0_phi);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_mass",      &bst_jet0_mass);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_msd",       &bst_jet0_msd);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_rho",       &bst_jet0_rho);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_phil",      &bst_jet0_phil);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_tau21",     &bst_jet0_tau21);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_CHF",       &bst_jet0_CHF);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_NHF",       &bst_jet0_NHF);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_NEMF",      &bst_jet0_NEMF);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_minsubcsv", &bst_jet0_minsubcsv);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_maxsubcsv", &bst_jet0_maxsubcsv);
   }
 }
 ZprimeBitsLoader::~ZprimeBitsLoader(){}
