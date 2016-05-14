@@ -63,34 +63,34 @@ void plotZprime(const string selection, const string algo, const string jet)
   vector<CSample*> samplev;
 
   samplev.push_back(new CSample("data",0,0));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/JetHT.root");
+  samplev.back()->fnamev.push_back("../zprimebits/JetHT.root");
   samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/QCD.root");
+  samplev.back()->fnamev.push_back("../zprimebits/QCD.root");
   samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/T.root");
+  samplev.back()->fnamev.push_back("../zprimebits/T.root");
   samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/TT.root");
+  samplev.back()->fnamev.push_back("../zprimebits/TT.root");
   samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/WW.root");
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/WZ.root");
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZZ.root");
+  samplev.back()->fnamev.push_back("../zprimebits/WW.root");
+  samplev.back()->fnamev.push_back("../zprimebits/WZ.root");
+  samplev.back()->fnamev.push_back("../zprimebits/ZZ.root");
   samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/W.root");
+  samplev.back()->fnamev.push_back("../zprimebits/W.root");
   samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/DY.root");
+  samplev.back()->fnamev.push_back("../zprimebits/DY.root");
 
   samplev.push_back(new CSample("Zprime50",kOrange - 3,kOrange - 3));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_50GeV_v4_mc.root");
+  samplev.back()->fnamev.push_back("../zprimebits/ZPrimeToQQ_50GeV_v4_mc.root");
   samplev.push_back(new CSample("Zprime100",kOrange - 4,kOrange - 4));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_100GeV_v4_mc.root");
+  samplev.back()->fnamev.push_back("../zprimebits/ZPrimeToQQ_100GeV_v4_mc.root");
   samplev.push_back(new CSample("Zprime150",kOrange + 6,kOrange + 6));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_150GeV_v4_mc.root");
+  samplev.back()->fnamev.push_back("../zprimebits/ZPrimeToQQ_150GeV_v4_mc.root");
   samplev.push_back(new CSample("Zprime200",kOrange + 8,kOrange + 8));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_200GeV_v4_mc.root");
+  samplev.back()->fnamev.push_back("../zprimebits/ZPrimeToQQ_200GeV_v4_mc.root");
   samplev.push_back(new CSample("Zprime250",kOrange + 7,kOrange + 7));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_250GeV_v4_mc.root");
+  samplev.back()->fnamev.push_back("../zprimebits/ZPrimeToQQ_250GeV_v4_mc.root");
   samplev.push_back(new CSample("Zprime300",kOrange + 9,kOrange + 9));
-  samplev.back()->fnamev.push_back("/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/ZPrimeToQQ_300GeV_v4_mc.root");
+  samplev.back()->fnamev.push_back("../zprimebits/ZPrimeToQQ_300GeV_v4_mc.root");
 
   // integrated luminosity to scale MC
   const double LUMI = 0.44;
