@@ -91,7 +91,7 @@ int main( int argc, char **argv ) {
   // fElectron ->setupTree      (lOut); 
   // fTau      ->setupTree      (lOut); 
   // fPhoton   ->setupTree      (lOut); 
-  // if(lOption.compare("data")!=0) fGen ->setupTree (lOut,float(lXS));
+  if(lOption.compare("data")!=0) fGen ->setupTree (lOut,float(lXS));
 
   //
   // Loop over events i0 = iEvent
