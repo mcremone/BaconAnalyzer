@@ -46,9 +46,9 @@ public:
   void         correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr);
   void         fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes);
   void         fillModifiedMet(std::vector<TLorentzVector> &iVecCorr,std::vector<TLorentzVector> iPhotons);
-  void         fillmT(std::vector<TLorentzVector> &lCorr, float &fmT);
+  void         fillmT(float iMet, float iMetPhi,float iFMet, float iFMetPhi, std::vector<TLorentzVector> &lCorr, float &fmT);
   float        metSig(float iMet,float iMetPhi,float iCov00,float iCov01,float iCov10,float iCov11);
-  float        mT(float &iMet,float &iMetPhi,TLorentzVector &iVec);
+  float        mT(float iMet,float iMetPhi,TLorentzVector &iVec);
   //Vars
   float fRho;
   float fMetPhi;

@@ -203,18 +203,18 @@ float EvtLoader::puWeight(float iNPU) {
   return lNPVW;
 }
 // mT
-float  EvtLoader::mT(float &iMet,float &iMetPhi,TLorentzVector &iVec) { 
+float  EvtLoader::mT(float iMet,float iMetPhi,TLorentzVector &iVec) { 
   float lDPhi = fabs(iMetPhi-iVec.Phi());
   // if(fabs(lDPhi) > TMath::Pi()*2.-lDPhi) lDPhi = TMath::Pi()*2.-lDPhi;
   float lMt = sqrt(2.0*(iVec.Pt()*iMet*(1.0-cos(lDPhi))));
   return lMt;
 }
-void  EvtLoader::fillmT(std::vector<TLorentzVector> &lCorr,float &fmT) {
+void  EvtLoader::fillmT(float iMet, float iMetPhi,float iFMet, float iFMetPhi, std::vector<TLorentzVector> &lCorr, float &fmT) {
   if(lCorr.size()>0){
     TLorentzVector lVecCorr;
     for(unsigned int i0 =0; i0 < lCorr.size(); i0++) lVecCorr += lCorr[i0];
-    if(fFPuppEt>0)     fmT = mT(fFPuppEt,     fFPuppEtPhi,     lVecCorr);
-    else               fmT = mT(fFMet,        fFMetPhi,        lVecCorr);
+    fmT = (lVecCorr.Pt()>0) ?  mT(iMet,     iMetPhi,     lVecCorr): -999;
+    if(iFMet>0) fmT = (lVecCorr.Pt()>0) ? mT(iFMet,     iFMetPhi,     lVecCorr): -999;
   }
 }
 void EvtLoader::fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes){
