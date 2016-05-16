@@ -158,7 +158,7 @@ int main( int argc, char **argv ) {
 
     // ttbar, EWK and kFactor correction                                                                                                                                                    
     if(lName.find("ZJets")!=std::string::npos || lName.find("DYJets")!=std::string::npos){
-      fGen->findBoson(23,1);
+      fGen->findBoson(23,0);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z");
     }
     if(lName.find("WJets")!=std::string::npos){
@@ -166,7 +166,7 @@ int main( int argc, char **argv ) {
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W");
     }
     if(lName.find("ZPrime")!=std::string::npos){
-      fGen->findBoson(32,1);
+      fGen->findBoson(32,0);
     }
     if(lName.find("TTJets")!=std::string::npos){
       fEvt->fevtWeight *= fGen->computeTTbarCorr();

@@ -23,6 +23,11 @@ MJSelection/training/plots/
 MJSelection/training/tmva_output/
 MJSelection/training/weights/
 MJSelection/training/validation/
+MJSelection/training/Training_with/
+MJSelection/training/Training_withfj/
+MJSelection/training/Training_without/
+MJSelection/skim/monoxntuples/
+MJSelection/skim/razorntuples/
 *.d
 *.so
 *.o
@@ -32,4 +37,5 @@ MJSelection/training/validation/
 ./__afs*
 MJSelection/macros/.__afs*
 MJSelection/plot/.__afs*
+MJSelection/skim/.__afs*
 MJSelection/production/.__afs*
