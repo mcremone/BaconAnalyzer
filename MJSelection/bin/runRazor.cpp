@@ -197,7 +197,7 @@ int main( int argc, char **argv ) {
     fJet->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     if(fJet->fNJetsAbove80GeV>1){
       fEvt->fselectBits = fEvt->fselectBits | 2;
-      fEvt->fillmT(lJets,fJet->fMT);
+      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJets,fJet->fMT);
     }
 
     // Select at least 2 narrow Jets
