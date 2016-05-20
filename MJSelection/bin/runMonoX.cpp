@@ -193,7 +193,7 @@ int main( int argc, char **argv ) {
 
     // MET selection
     fEvt->fillModifiedMet(lVetoes,lPhotons);
-    if(fEvt->fMet < 200. && fEvt->fPuppEt < 200. && fEvt->fFPuppEt < 200. && fEvt->fFMet < 200.) continue;
+    if(fEvt->fMet < 170. && fEvt->fPuppEt < 170. && fEvt->fFPuppEt < 170. && fEvt->fFMet < 170.) continue;
 
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
