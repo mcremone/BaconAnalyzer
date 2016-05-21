@@ -41,8 +41,6 @@ TauLoader       *fTau      = 0;
 PhotonLoader    *fPhoton   = 0; 
 JetLoader       *fJet      = 0; 
 VJetLoader      *fVJet15   = 0;
-VJetLoader      *fVJet15T  = 0;
-VJetLoader      *fVJet8    = 0;
 VJetLoader      *fVJet8T   = 0;
 RunLumiRangeMap *fRangeMap = 0; 
 
@@ -83,8 +81,6 @@ int main( int argc, char **argv ) {
   fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fVJet15   = new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
-  fVJet15T  = new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");
-  fVJet8    = new VJetLoader    (lTree,"CA8Puppi","AddCA8Puppi");
   fVJet8T   = new VJetLoader    (lTree,"CA8Puppi","AddCA8Puppi");
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
@@ -101,10 +97,6 @@ int main( int argc, char **argv ) {
   fJet     ->setupTreeBTag  (lOut,"res_PUPPIjet");
   fVJet15  ->setupTree           (lOut,"bst15_PUPPIjet"); 
   fVJet15  ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
-  fVJet15T ->setupTree           (lOut,"bst15_PUPPIjetT");
-  fVJet15T ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjetT");
-  fVJet8   ->setupTree           (lOut,"bst8_PUPPIjet");
-  fVJet8   ->setupTreeSubJetBTag (lOut,"bst8_PUPPIjet");
   fVJet8T  ->setupTree           (lOut,"bst8_PUPPIjetT");
   fVJet8T  ->setupTreeSubJetBTag (lOut,"bst8_PUPPIjetT");
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
@@ -160,7 +152,7 @@ int main( int argc, char **argv ) {
     if(trigbits==1) continue;
     
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJet15, lVJets15, lVJet15T, lVJets15T, lVJet8, lVJets8, lVJet8T, lVJets8T, lVetoes;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJet15, lVJets15, lVJet8T, lVJets8T, lVetoes;
 
     // Muons
     fMuon->load(i0);
@@ -210,28 +202,7 @@ int main( int argc, char **argv ) {
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet15,fVJet15->fVMT);
     }
     
-    fVJet15T->load(i0);
-    fVJet15T->selectVJets(lVetoes,lVJets15T,lVJet15T,1.5,"tightJetID");
-    if(lVJets15T.size()>0) {
-      if(lOption.find("data")==std::string::npos){
-        fVJet15T->fisHadronicTop = fGen->ismatchedJet(lVJet15T[0],1.5,fVJet15T->ftopMatching,fVJet15T->ftopSize);
-	fVJet15T->fillSubJetBTag(fGen->fGens,fVJet15T->fGoodVSubJets);
-      }
-      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet15T,fVJet15T->fVMT);
-    }
-
     // CA8Puppi Jets
-    fVJet8->load(i0);
-    fVJet8->selectVJets(lVetoes,lVJets8,lVJet8,0.8,"looseJetID");
-    if(lVJets8.size()>0) {
-      if(lOption.find("data")==std::string::npos){
-        fVJet8->fisHadronicTop = fGen->ismatchedJet(lVJet8[0],0.8,fVJet8->ftopMatching,fVJet8->ftopSize);
-        fVJet8->fillSubJetBTag(fGen->fGens,fVJet8->fGoodVSubJets);
-      }
-      fEvt->fselectBits = fEvt->fselectBits | 4;
-      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet8,fVJet8->fVMT);
-    }
-
     fVJet8T->load(i0);
     fVJet8T->selectVJets(lVetoes,lVJets8T,lVJet8T,0.8,"tightJetID");
     if(lVJets8T.size()>0) {
@@ -239,10 +210,9 @@ int main( int argc, char **argv ) {
         fVJet8T->fisHadronicTop = fGen->ismatchedJet(lVJet8T[0],0.8,fVJet8T->ftopMatching,fVJet8T->ftopSize);
         fVJet8T->fillSubJetBTag(fGen->fGens,fVJet8T->fGoodVSubJets);
       }
+      fEvt->fselectBits =  fEvt->fselectBits | 4;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet8T,fVJet8T->fVMT);
     }
-
-    lVJets15.reserve(lVJets15.size() + lVJets8.size()); lVJets15.insert(lVJets15.end(), lVJets8.begin(), lVJets8.end());
 
     // AK4Puppi Jets
     fJet->load(i0); 
