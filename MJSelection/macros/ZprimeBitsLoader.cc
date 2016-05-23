@@ -19,7 +19,7 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet) {
     iTree->SetBranchAddress("bst8_"+algo+jet+"_pt",        &bst_jet0_pt);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_eta",       &bst_jet0_eta);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_phi",       &bst_jet0_phi);
-    //    iTree->SetBranchAddress("bst8_"+algo+jet+"_mass",      &bst_jet0_mass);
+    //iTree->SetBranchAddress("bst8_"+algo+jet+"_mass",      &bst_jet0_mass);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_msd",       &bst_jet0_msd);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_rho",       &bst_jet0_rho);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_phil",      &bst_jet0_phil);
