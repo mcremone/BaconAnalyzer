@@ -486,6 +486,38 @@ int GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double 
   }
   return 0;
 }
+int GenLoader::isHadronicV(TGenParticle *genp,int j,int iId, TLorentzVector jet,double dR,double &vMatching, double &vSize)
+{
+  TLorentzVector vV,vDau1,vDau2;
+  vMatching = -999.; vSize = -999.;
+  double tmpVMatching(0), tmpVSize(0);
+  if(abs(genp->pdgId)==iId){
+    vV.SetPtEtaPhiM(genp->pt, genp->eta, genp->phi, genp->mass);
+    int iV = findLastBoson(j,iId);
+
+    int iQ=0, jQ=0;
+    for (; iQ<fGens->GetEntriesFast(); ++iQ) {
+      TGenParticle *dau1 = (TGenParticle*)((*fGens)[iQ]);
+      if(dau1->parent==iV && abs(dau1->pdgId)<6) {
+        vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
+        tmpVMatching = TMath::Max(tmpVMatching,jet.DeltaR(vDau1));
+        tmpVSize     = TMath::Max(tmpVSize,vV.DeltaR(vDau1));
+        break;
+      }
+    }
+    for (jQ=iQ+1; jQ<fGens->GetEntriesFast(); ++jQ) {
+      TGenParticle *dau2 = (TGenParticle*)((*fGens)[jQ]);
+      if(dau2->parent==iV && abs(dau2->pdgId)<6) {
+        vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
+        tmpVMatching = TMath::Max(tmpVMatching,jet.DeltaR(vDau2));
+        tmpVSize     = TMath::Max(tmpVSize,vV.DeltaR(vDau2));
+        vMatching    = tmpVMatching;
+        vSize        = tmpVSize;
+        return 1;
+      }
+  }
+  return 0;
+}
 int GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_matching, double &top_size){
   for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
     TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);

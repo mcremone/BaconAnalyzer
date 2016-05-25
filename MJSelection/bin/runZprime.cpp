@@ -87,10 +87,10 @@ int main( int argc, char **argv ) {
   fJet      ->setupTree      (lOut,"res_PUPPIjet");
   fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
   // fVJetCHS  ->setupTree      (lOut,"bst8_CHSjet"); 
-  // fMuon     ->setupTree      (lOut); 
-  // fElectron ->setupTree      (lOut); 
-  // fTau      ->setupTree      (lOut); 
-  // fPhoton   ->setupTree      (lOut); 
+  fMuon     ->setupTree      (lOut); 
+  fElectron ->setupTree      (lOut); 
+  fTau      ->setupTree      (lOut); 
+  fPhoton   ->setupTree      (lOut); 
   if(lOption.compare("data")!=0) fGen ->setupTree (lOut,float(lXS));
 
   //
@@ -166,7 +166,7 @@ int main( int argc, char **argv ) {
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W");
     }
     if(lName.find("ZPrime")!=std::string::npos){
-      fGen->findBoson(32,0);
+      fGen->findBoson(10031,0);
     }
     if(lName.find("TTJets")!=std::string::npos){
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
