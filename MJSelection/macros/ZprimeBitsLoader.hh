@@ -27,8 +27,9 @@ public:
   ~ZprimeBitsLoader();
   bool selectJetAlgoAndSize(TString algo);
   bool passBoostedZprimePreselection();
-  bool passBoostedZprimeSR();
-  bool passSelection(string selection);
+  bool passBoostedZprimeSR(float ddtcut);
+  bool passSelection(string selection,float ddt,float csv1);
+  bool passBoostedZprimeBTag(float csvcut);
   double getWgt(bool isData, TString algo, double LUMI);
   double tau21DDT();
   
@@ -53,7 +54,7 @@ public:
   double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                         // subjet btag                            
   double           bst_jet0_CHF, bst_jet0_NHF, bst_jet0_NEMF;                      // boosted jet variables
   float            bst_mt;                                                         // mT
-
+  double            bst_jet0_doublecsv;                                             // doublecsv variable for leading jet
 protected:
 
   const unsigned int kBOOSTED8PUPPI = 2;

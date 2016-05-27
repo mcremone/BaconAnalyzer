@@ -117,7 +117,7 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
     TJet *pVJet = (TJet*)((*fVJets)[i0]);
     if(pVJet->pt        <=  200)                                           continue;
-    if(fabs(pVJet->eta) >=  2.4)                                           continue;
+    if(fabs(pVJet->eta) >=  2.5)                                           continue;
     if(passVeto(pVJet->eta,pVJet->phi,dR,iVetoes))                         continue;
     if(!passJetLooseSel(pVJet))                                            continue;
     if(iJetID.compare("tightJetID")==0 && !passJetTightLepVetoSel(pVJet))  continue;

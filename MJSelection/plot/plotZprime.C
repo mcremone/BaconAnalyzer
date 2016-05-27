@@ -39,11 +39,14 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
               const bool doBlind, const double lumi, const bool doLogy=false, const double legdx=0, const double legdy=0,
               const double ymin=-1, const double ymax=-1, const string selection="");
 TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind);
-float CalcSig(TH1D*sig, TH1D*bkg);
+float CalcSig1(TH1D*sig1, TH1D*bkg1);
+float CalcSig2(TH1D*sig2, TH1D*bkg2);
+float CalcSig3(TH1D*sig3, TH1D*bkg3);
+float CalcSig4(TH1D*sig, TH1D*bkg4);
 
 //=== MAIN MACRO =================================================================================================
 
-void plotZprime(const string selection, const string algo, const string jet)
+void plotZprime(const string selection, const string algo, const string jet, float cut, float csv)
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -108,7 +111,7 @@ void plotZprime(const string selection, const string algo, const string jet)
   char hname[100];
   vector<TH1D*> hFatJetPtv, hFatJetPtLogv, hFatJetEtav;
   vector<TH1D*> hFatJetMassv, hFatJetTau21v, hFatJetTau21DDTv, hFatJetMassNew;              
-  vector<TH1D*> hSubjetBtagv;  
+  vector<TH1D*> hSubjetBtagv, hFatjetBtagv;  
   vector<double> neventsv;
   
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
@@ -120,6 +123,7 @@ void plotZprime(const string selection, const string algo, const string jet)
     sprintf(hname,"hFatJetTau21_%i",isam);    hFatJetTau21v.push_back(new TH1D(hname,"",25,0,1));        hFatJetTau21v[isam]->Sumw2();
     sprintf(hname,"hFatJetTau21DDT_%i",isam); hFatJetTau21DDTv.push_back(new TH1D(hname,"",25,0,1));     hFatJetTau21DDTv[isam]->Sumw2();
     sprintf(hname,"hSubjetBtag_%i",isam);     hSubjetBtagv.push_back(new TH1D(hname,"",25,0,1));           hSubjetBtagv[isam]->Sumw2();
+    sprintf(hname,"hFatjetBtag_%i",isam);     hFatjetBtagv.push_back(new TH1D(hname,"",50,-1,1));           hFatjetBtagv[isam]->Sumw2();
     neventsv.push_back(0);
   }
 
@@ -132,6 +136,7 @@ void plotZprime(const string selection, const string algo, const string jet)
   TH1D *hFatJetTau21DDTMC  = (TH1D*)hFatJetTau21DDTv[0]->Clone("hFatJetTau21DDTMC");
   TH1D *hSubjetBtagMC      = (TH1D*)hSubjetBtagv[0]    ->Clone("hSubjetBtagMC"); 
   TH1D *hFatJetMassSig     = (TH1D*)hFatJetMassv[0]    ->Clone("hFatJetMassSig");
+  TH1D *hFatjetBtagMC      = (TH1D*)hFatjetBtagv[0]    ->Clone("hFatjetBtagMC");
 
   double neventsMC;
 
@@ -140,6 +145,7 @@ void plotZprime(const string selection, const string algo, const string jet)
 
   // Loop over samples
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
+  //  for(unsigned int isam=5; isam<6; isam++) {
     CSample *sample  = samplev[isam];
     cout << "Sample: " << sample->label << endl;
     bool isData    = (isam==0);
@@ -166,9 +172,9 @@ void plotZprime(const string selection, const string algo, const string jet)
 	if(!doBlind && isData && ientry % 5 != 0) continue;
         intree->GetEntry(ientry);
 
-	if(!fBits->selectJetAlgoAndSize(algo)) continue;
-	if(fBits->metfilter!=0)                          continue;
-	if(!fBits->passSelection(selection))             continue;
+	if(!fBits->selectJetAlgoAndSize(algo))   continue;
+	if(fBits->metfilter!=0)                  continue;
+	if(!fBits->passSelection(selection,cut,csv)) continue;
 
 	// Apply weigths
         double wgt = 1;
@@ -186,9 +192,12 @@ void plotZprime(const string selection, const string algo, const string jet)
 	hFatJetTau21v[isam]    ->Fill(fBits->bst_jet0_tau21,          wgt);
         hFatJetTau21DDTv[isam] ->Fill(fBits->tau21DDT(),              wgt);
         hSubjetBtagv[isam]     ->Fill(fBits->bst_jet0_minsubcsv,      wgt);
+        hFatjetBtagv[isam]     ->Fill(fBits->bst_jet0_doublecsv,      wgt);
 
 	//if(isSignal1 || isSignal2 || isSignal3 || isSignal4 || isSignal5 || isSignal6){
+	if(isam==5 || isam==6){ 
 	hFatJetMassSig         ->Fill(fBits->bst_jet0_msd,            wgt);
+        }
 	//}
       }
 
@@ -201,7 +210,9 @@ void plotZprime(const string selection, const string algo, const string jet)
       infile=0;
       intree=0;
     }
+   
   }
+  cout << samplev[5]->label <<" and " << samplev[6]->label << " are the signal samples." << endl;
 
   // 
   // QCD SF
@@ -216,8 +227,10 @@ void plotZprime(const string selection, const string algo, const string jet)
   hFatJetTau21v[1]    ->Scale(QCDSF);
   hFatJetTau21DDTv[1] ->Scale(QCDSF);
   hSubjetBtagv[1]     ->Scale(QCDSF);
+  hFatjetBtagv[1]     ->Scale(QCDSF);
 
-  for(unsigned int isam=1; isam<samplev.size()-6; isam++) {
+  for(unsigned int isam=1; isam<5; isam++) {
+    cout << "Adding " << samplev[isam]->label <<" to MC"<<endl;
     hFatJetPtMC       ->Add(hFatJetPtv[isam]);
     hFatJetPtLogMC    ->Add(hFatJetPtLogv[isam]);
     hFatJetEtaMC      ->Add(hFatJetEtav[isam]);
@@ -226,6 +239,7 @@ void plotZprime(const string selection, const string algo, const string jet)
     hFatJetTau21MC    ->Add(hFatJetTau21v[isam]);
     hFatJetTau21DDTMC ->Add(hFatJetTau21DDTv[isam]);
     hSubjetBtagMC     ->Add(hSubjetBtagv[isam]);
+    hFatjetBtagMC     ->Add(hFatjetBtagv[isam]);
   }
 
   neventsMC = neventsv[1]*QCDSF+neventsv[2]+neventsv[3]+neventsv[4]+neventsv[5]+neventsv[6];
@@ -233,6 +247,7 @@ void plotZprime(const string selection, const string algo, const string jet)
   //
   // Make pull histograms
   //
+  
   TH1D *hFatJetPtPull       = makePullHist(hFatJetPtv[0],       hFatJetPtMC,       "hFatJetPtPull",        doBlind);
   TH1D *hFatJetPtLogPull    = makePullHist(hFatJetPtLogv[0],    hFatJetPtLogMC,    "hFatJetPtLogPull",     doBlind);
   TH1D *hFatJetEtaPull      = makePullHist(hFatJetEtav[0],      hFatJetEtaMC,      "hFatJetEtaPull",       doBlind);
@@ -241,12 +256,15 @@ void plotZprime(const string selection, const string algo, const string jet)
   TH1D *hFatJetTau21Pull    = makePullHist(hFatJetTau21v[0],    hFatJetTau21MC,    "hFatJetTau21Pull",     doBlind);
   TH1D *hFatJetTau21DDTPull = makePullHist(hFatJetTau21DDTv[0], hFatJetTau21DDTMC, "hFatJetTau21DDTPull",  doBlind);
   TH1D *hBtagPull           = makePullHist(hSubjetBtagv[0],     hSubjetBtagMC,     "hBtagPull",            doBlind);
-
+  
   //                                                                                                                                                                                                    
   // Calculate significance                                                                                                                                                                               
   //                 
   vector<float> significance;                                                                                                                                                                                
-  significance.push_back(CalcSig(hFatJetMassSig,  hFatJetMassMC));
+  significance.push_back(CalcSig1(hFatJetMassSig,  hFatJetMassMC));
+  significance.push_back(CalcSig2(hFatJetMassSig,  hFatJetMassMC));
+  significance.push_back(CalcSig3(hFatJetMassSig,  hFatJetMassMC));
+  significance.push_back(CalcSig4(hFatJetMassSig,  hFatJetMassMC));
 
   //--------------------------------------------------------------------------------------------------------------
   // Output
@@ -260,7 +278,7 @@ void plotZprime(const string selection, const string algo, const string jet)
   ofstream txtfile;
   char txtfname[200];
   sprintf(txtfname,"%s/summary.txt",outputDir.c_str());
-  txtfile.open(txtfname);
+  txtfile.open(txtfname,std::ios_base::app);
   txtfile << setprecision(2) << fixed;
   float max = samplev.size()-6;
   //  if (subsample.compare("SR")==0) max = samplev.size()-2;    
@@ -276,12 +294,17 @@ void plotZprime(const string selection, const string algo, const string jet)
   txtfile << "QCD Scale Factor:" << QCDSF << endl;
   //  if(subsample.compare("SR")==0){
   txtfile << "---------------------------------------------"  << endl;
-  for(unsigned int isam=max; isam<samplev.size(); isam++) {
-    txtfile << setw(35) << samplev[isam]->label;
-    txtfile << setw(15) << neventsv[isam] << endl;
-    txtfile << setw(35) << "Significance: ";
-    txtfile << setw(15) << significance[samplev.size()-isam-1] << endl;
-  }
+  //for(unsigned int isam=max; isam<samplev.size(); isam++) {
+    //txtfile << setw(35) << samplev[isam]->label;
+    //txtfile << setw(15) << neventsv[isam] << endl;
+    //txtfile << setw(35) << "Significance: ";
+    //txtfile << setw(15) << significance[samplev.size()-isam-1] << endl;
+  //}
+  txtfile << setw(15) << "DDT cut value is : "<< cut << endl;
+  txtfile << setw(15) << "Type 1 Significance : "<< significance[0] << endl;
+  txtfile << setw(15) << "Type 2 Significance : "<< significance[1] << endl;
+  txtfile << setw(15) << "Type 3 Significance : "<< significance[2] << endl;
+  txtfile << setw(15) << "Type 4 Significance : "<< significance[3] << endl;
   //  }
   //   txtfile << setw(35) << "S/sqrt(B)["+samplev[isam]->label+"]:" << setw(15) << neventsv[isam]/sqrt(neventsMC) << endl;
   txtfile.close();
@@ -353,9 +376,13 @@ void plotZprime(const string selection, const string algo, const string jet)
   makePlot(c, "btag", "Max subjet csv", ylabel, hSubjetBtagv, samplev, hSubjetBtagMC, hBtagPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hSubjetBtagMC->GetBinContent(hSubjetBtagMC->GetMaximumBin()))/(hSubjetBtagMC->GetBinWidth(hSubjetBtagMC->GetMaximumBin())), selection);
 
+  sprintf(ylabel,"Events",hFatjetBtagv[0]->GetBinWidth(10));
+  makePlot(c, "fjbtag", "Doublecsv", ylabel, hFatjetBtagv, samplev, hFatjetBtagMC, hBtagPull, doBlind, LUMI, false, -0.4, -0.15,
+           0.1, 2.1*(hFatjetBtagMC->GetBinContent(hFatjetBtagMC->GetMaximumBin()))/(hFatjetBtagMC->GetBinWidth(hFatjetBtagMC->GetMaximumBin())), selection);
+
   cout << endl;
   cout << " <> Output saved in " << outputDir << endl;
-  cout << endl; 
+  cout << endl;
 }
 
 //=== FUNCTION DEFINITIONS ======================================================================================
@@ -550,14 +577,57 @@ void makeHTML(const string outputDir)
   htmlfile.close(); 
 }
 //--------------------------------------------------------------------------------------------------                                                                                                      
-float CalcSig(TH1D*sig, TH1D*bkg) {
-  float fSig2 = 0;
-  int nb = sig->GetNbinsX();
+float CalcSig1(TH1D*sig1, TH1D*bkg1) {
+  float f1Sig2 = 0;
+  int nb1 = sig1->GetNbinsX();
   //  std::cout << "nb = " << nb << std::endl;
-  for (int i = 0; i <= nb+1; i++) {
-    if (sig->GetBinContent(i) > 0 && bkg->GetBinContent(i)>0) {
-      fSig2 += pow(sig->GetBinContent(i),2)/bkg->GetBinContent(i);
+  for (int i = 0; i <= nb1; i++) {
+    if (sig1->GetBinContent(i) > 0 && bkg1->GetBinContent(i)>0) {
+      f1Sig2 += pow(sig1->GetBinContent(i),2)/(bkg1->GetBinContent(i));
     }
   }
-  return sqrt(fSig2);
+  return sqrt(f1Sig2);
 }
+
+float CalcSig2(TH1D*sig2, TH1D*bkg2) {
+  float f2Sig2 = 0;
+  int nb2 = sig2->GetNbinsX();
+  //  std::cout << "nb = " << nb << std::endl;
+   for (int i = 0; i <= nb2; i++) {
+     if (sig2->GetBinContent(i) > 0 && bkg2->GetBinContent(i)>0) {
+       f2Sig2 += pow(sig2->GetBinContent(i),2)/(sig2->GetBinContent(i)+bkg2->GetBinContent(i));
+     }
+   }
+   return sqrt(f2Sig2);
+}
+
+float CalcSig3(TH1D*sig3, TH1D*bkg3) {
+  int Syield3 = 0;
+  int Byield3 = 0;
+  float f3Sig = 0;
+  int nb3 = sig3->GetNbinsX();
+  for(int i=0; i<=nb3; i++){
+    Syield3 = Syield3 + sig3->GetBinContent(i);
+    }
+  for(int i=0; i<=nb3; i++){
+    Byield3 = Byield3 + bkg3->GetBinContent(i);
+    }
+  f3Sig = Syield3/sqrt(Byield3);
+  return f3Sig;
+}
+ 
+float CalcSig4(TH1D*sig4, TH1D*bkg4) {
+  int Syield4 = 0;
+  int Byield4 = 0;
+  float f4Sig = 0;
+  int nb4 = sig4->GetNbinsX();
+  for(int i=0; i<=nb4; i++){
+    Syield4 = Syield4 + sig4->GetBinContent(i);
+    }
+  for(int i=0; i<=nb4; i++){
+    Byield4 = Byield4 + bkg4->GetBinContent(i);
+    }
+  f4Sig = Syield4/sqrt(Syield4+Byield4);
+  return f4Sig;
+}
+                       
