@@ -19,7 +19,7 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet) {
     iTree->SetBranchAddress("bst8_"+algo+jet+"_pt",        &bst_jet0_pt);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_eta",       &bst_jet0_eta);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_phi",       &bst_jet0_phi);
-    //    iTree->SetBranchAddress("bst8_"+algo+jet+"_mass",      &bst_jet0_mass);
+    //iTree->SetBranchAddress("bst8_"+algo+jet+"_mass",      &bst_jet0_mass);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_msd",       &bst_jet0_msd);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_rho",       &bst_jet0_rho);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_phil",      &bst_jet0_phil);
@@ -27,6 +27,7 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet) {
     iTree->SetBranchAddress("bst8_"+algo+jet+"_CHF",       &bst_jet0_CHF);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_NHF",       &bst_jet0_NHF);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_NEMF",      &bst_jet0_NEMF);
+    iTree->SetBranchAddress("bst8_"+algo+jet+"_doublecsv", &bst_jet0_doublecsv);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_minsubcsv", &bst_jet0_minsubcsv);
     iTree->SetBranchAddress("bst8_"+algo+jet+"_maxsubcsv", &bst_jet0_maxsubcsv);
   }
@@ -38,15 +39,25 @@ bool ZprimeBitsLoader::selectJetAlgoAndSize(TString algo){
   return lPass;
 }
 bool ZprimeBitsLoader::passBoostedZprimePreselection(){
-  return njets>0 & bst_jet0_pt>500;  
+  
+ return njets>0 & bst_jet0_pt>500;
 }
-bool ZprimeBitsLoader::passBoostedZprimeSR(){
-  return passBoostedZprimePreselection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + RHO_CUT));
+bool ZprimeBitsLoader::passBoostedZprimeSR(float ddtcut){
+  
+  return passBoostedZprimePreselection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
 }
-bool ZprimeBitsLoader::passSelection(string selection){
+bool ZprimeBitsLoader::passBoostedZprimeBTag(float csvcut){
+  return passBoostedZprimePreselection() & (bst_jet0_doublecsv > csvcut);
+}
+bool ZprimeBitsLoader::passSelection(string selection,float ddt,float csv1){
   bool lPass = false;	
   if (selection.find("PreSel")==0 && passBoostedZprimePreselection()) {lPass = true;}
-  if (selection.find("SR")==0 && passBoostedZprimeSR()) {lPass = true;}
+  if (selection.find("SR")==0 && passBoostedZprimeSR(ddt)) {lPass = true;}
+  if (selection.find("B")==0 && passBoostedZprimeBTag(csv1)) {lPass = true;}
+  if (selection.find("SRB")==0)
+     {   
+       if (passBoostedZprimeSR(ddt) && passBoostedZprimeBTag(csv1)) {lPass = true;}
+     }
   return lPass;
 }
 double ZprimeBitsLoader::getWgt(bool isData, TString algo, double LUMI){
