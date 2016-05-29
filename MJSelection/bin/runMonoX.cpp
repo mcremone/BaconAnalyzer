@@ -98,10 +98,11 @@ int main( int argc, char **argv ) {
   fTau     ->setupTree      (lOut);
   fPhoton  ->setupTree      (lOut);
   fJet     ->setupTree      (lOut,"res_PUPPIjet"); 
-  fJet     ->setupTree      (lOut,"res_PUPPIjet");
+  fJet     ->setupTree      (lOut,"res_PUPPIjet");  
   fBTag    ->setupTree      (lOut,"res_PUPPIjet");
-  fBTag15  ->setupTree      (lOut,"res_PUPPIjetbst15");
-  fBTag8T  ->setupTree      (lOut,"res_PUPPIjetbst8T");
+  //fBTag15  ->setupTree      (lOut,"res_PUPPIjetbst15");
+  //fBTag8T  ->setupTree      (lOut,"res_PUPPIjetbst8T");
+  
   fVJet15  ->setupTree           (lOut,"bst15_PUPPIjet"); 
   fVJet15  ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
   fVJet8T  ->setupTree           (lOut,"bst8_PUPPIjetT");
@@ -219,9 +220,9 @@ int main( int argc, char **argv ) {
       if(lOption.find("data")==std::string::npos){
 	fJet->fillGoodJets(lVJets15,lGoodJets15);
 	fJet->fillGoodJets(lVJets8T,lGoodJets8T);
-	fBTag->fillBTag(fJet->fGoodJets);
-        fBTag15->fillBTag(lGoodJets15);
-        fBTag8T->fillBTag(lGoodJets8T);
+	//fBTag->fillBTag(fJet->fGoodJets);
+        //fBTag15->fillBTag(lGoodJets15);
+        //fBTag8T->fillBTag(lGoodJets8T);
       }
       fEvt->fselectBits =  fEvt->fselectBits | 8;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJets,fJet->fMT);
