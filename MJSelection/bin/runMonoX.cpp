@@ -67,10 +67,10 @@ int main( int argc, char **argv ) {
   const std::string lJSON        = argv[3];
   const double      lXS          = atof(argv[4]);
   const double      weight       = atof(argv[5]);
-
+  
   fRangeMap = new RunLumiRangeMap();
   if(lJSON.size() > 0) fRangeMap->AddJSONFile(lJSON.c_str());
-
+  
   TTree *lTree = load(lName); 
   
   // Declare Readers 
@@ -83,10 +83,10 @@ int main( int argc, char **argv ) {
   fVJet15   = new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
   fVJet8T   = new VJetLoader    (lTree,"CA8Puppi","AddCA8Puppi");
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
-
+  
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
-
+  
   // Setup Tree
   fEvt     ->setupTree      (lOut); 
   fMuon    ->setupTree      (lOut);
@@ -105,8 +105,8 @@ int main( int argc, char **argv ) {
   // Loop over events
   //
   int neventstest = 0;
-  for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  //for(int i0 = 0; i0 < int(10000); i0++){ // for testing
+  //for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
+  for(int i0 = 0; i0 < int(10000); i0++){ // for testing
     // if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // Check json and GenInfo
@@ -122,12 +122,12 @@ int main( int argc, char **argv ) {
       if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
       /*
       if(lOption.find("tt")!=std::string::npos){
-	int nlep = fGen->isttbarType();
-	if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
-	if(lOption.find("tt1l")!=std::string::npos && nlep!=1)                                            continue;
-	if(lOption.find("tthad")!=std::string::npos && nlep!=0)                                           continue;
-	if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
-	if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
+      int nlep = fGen->isttbarType();
+      if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
+      if(lOption.find("tt1l")!=std::string::npos && nlep!=1)                                            continue;
+      if(lOption.find("tthad")!=std::string::npos && nlep!=0)                                           continue;
+      if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
+      if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
       }
       */
     }
@@ -153,7 +153,7 @@ int main( int argc, char **argv ) {
     
     // Objects
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJet15, lVJets15, lVJet8T, lVJets8T, lVetoes;
-
+    
     // Muons
     fMuon->load(i0);
     fMuon->selectMuons(lMuons);
@@ -167,11 +167,11 @@ int main( int argc, char **argv ) {
     // Fill Vetoes
     fEvt->fillVetoes(lElectrons,lVetoes);
     fEvt->fillVetoes(lMuons,lVetoes);
-
+    
     // Taus
     fTau->load(i0);
     fTau->selectTaus(lVetoes);
-
+    
     // Photons
     fPhoton->load(i0);
     fPhoton->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
@@ -182,11 +182,11 @@ int main( int argc, char **argv ) {
       fillLepSF(11,fElectron->fNElectrons,lElectrons,fElectron->fhEleTight,fElectron->fhEleVeto,fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars);
       fillPhoSF(22,fPhoton->fNPhotonsMedium,lPhotons,fGen->lepmatched(22,lPhotons,0.3),fPhoton->fphoSFVars);
     }
-
+    
     // MET selection
     fEvt->fillModifiedMet(lVetoes,lPhotons);
     if(fEvt->fMet < 170. && fEvt->fPuppEt < 170. && fEvt->fFPuppEt < 170. && fEvt->fFMet < 170.) continue;
-
+    
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
     
@@ -213,7 +213,7 @@ int main( int argc, char **argv ) {
       fEvt->fselectBits =  fEvt->fselectBits | 4;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet8T,fVJet8T->fVMT);
     }
-
+    
     // AK4Puppi Jets
     fJet->load(i0); 
     fJet->selectJets(lVetoes,lVJets15,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
@@ -225,7 +225,7 @@ int main( int argc, char **argv ) {
 
     // Select only Puppi Jet
     if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4) && !(fEvt->fselectBits & 8)) continue;
-
+    
     // ttbar, EWK and kFactor correction
     if(lOption.find("mcg")!=std::string::npos){
       fGen->findBoson(22,0); 

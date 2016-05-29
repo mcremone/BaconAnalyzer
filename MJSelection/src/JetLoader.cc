@@ -148,9 +148,9 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
 
     TLorentzVector vPJet; vPJet.SetPtEtaPhiM(pJet->pt, pJet->eta, pJet->phi, pJet->mass);
     fHT += vPJet.Pt(); pMhtX += vPJet.Px(); pMhtY += vPJet.Py();
+    fGoodJets.push_back(pJet);
 
     if(iVJets.size()>0 && iVJets[0].Pt()>0 && vPJet.DeltaR(iVJets[0])>2){
-      fGoodJets.push_back(pJet);
       lCountdR2++;
     }
     if(acos(cos(iMetPhi-pJet->phi))    < pDPhi)    pDPhi  = acos(cos(iMetPhi-pJet->phi));
