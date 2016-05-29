@@ -24,6 +24,7 @@
 #include "../include/TauLoader.hh"
 #include "../include/JetLoader.hh"
 #include "../include/VJetLoader.hh"
+#include "../include/BTagWeightLoader.hh"
 #include "../include/RunLumiRangeMap.h"
 
 #include "TROOT.h"
@@ -33,16 +34,19 @@
 #include <iostream>
 
 // Object Processors
-GenLoader       *fGen      = 0; 
-EvtLoader       *fEvt      = 0; 
-MuonLoader      *fMuon     = 0; 
-ElectronLoader  *fElectron = 0; 
-TauLoader       *fTau      = 0; 
-PhotonLoader    *fPhoton   = 0; 
-JetLoader       *fJet      = 0; 
-VJetLoader      *fVJet15   = 0;
-VJetLoader      *fVJet8T   = 0;
-RunLumiRangeMap *fRangeMap = 0; 
+GenLoader        *fGen      = 0; 
+EvtLoader        *fEvt      = 0; 
+MuonLoader       *fMuon     = 0; 
+ElectronLoader   *fElectron = 0; 
+TauLoader        *fTau      = 0; 
+PhotonLoader     *fPhoton   = 0; 
+JetLoader        *fJet      = 0; 
+VJetLoader       *fVJet15   = 0;
+VJetLoader       *fVJet8T   = 0;
+BTagWeightLoader *fBTag     = 0;
+BTagWeightLoader *fBTag15   = 0;
+BTagWeightLoader *fBTag8T   = 0;
+RunLumiRangeMap  *fRangeMap = 0; 
 
 TH1F *fHist                = 0; 
 
@@ -94,7 +98,10 @@ int main( int argc, char **argv ) {
   fTau     ->setupTree      (lOut);
   fPhoton  ->setupTree      (lOut);
   fJet     ->setupTree      (lOut,"res_PUPPIjet"); 
-  fJet     ->setupTreeBTag  (lOut,"res_PUPPIjet");
+  fJet     ->setupTree      (lOut,"res_PUPPIjet");
+  fBTag    ->setupTree      (lOut,"res_PUPPIjet");
+  fBTag15  ->setupTree      (lOut,"res_PUPPIjetbst15");
+  fBTag8T  ->setupTree      (lOut,"res_PUPPIjetbst8T");
   fVJet15  ->setupTree           (lOut,"bst15_PUPPIjet"); 
   fVJet15  ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
   fVJet8T  ->setupTree           (lOut,"bst8_PUPPIjetT");
@@ -120,16 +127,6 @@ int main( int argc, char **argv ) {
       lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
       if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
       if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
-      /*
-      if(lOption.find("tt")!=std::string::npos){
-	int nlep = fGen->isttbarType();
-	if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
-	if(lOption.find("tt1l")!=std::string::npos && nlep!=1)                                            continue;
-	if(lOption.find("tthad")!=std::string::npos && nlep!=0)                                           continue;
-	if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
-	if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
-      }
-      */
     }
 
     // Primary vertex requirement
@@ -153,6 +150,7 @@ int main( int argc, char **argv ) {
     
     // Objects
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJet15, lVJets15, lVJet8T, lVJets8T, lVetoes;
+    std::vector<const TJet*> lGoodJets15, lGoodJets8T;
 
     // Muons
     fMuon->load(i0);
@@ -218,7 +216,13 @@ int main( int argc, char **argv ) {
     fJet->load(i0); 
     fJet->selectJets(lVetoes,lVJets15,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     if(lJets.size()>0){
-      if(lOption.find("data")==std::string::npos)   fJet->fillBTag(fJet->fGoodJets);
+      if(lOption.find("data")==std::string::npos){
+	fJet->fillGoodJets(lVJets15,lGoodJets15);
+	fJet->fillGoodJets(lVJets8T,lGoodJets8T);
+	fBTag->fillBTag(fJet->fGoodJets);
+        fBTag15->fillBTag(lGoodJets15);
+        fBTag8T->fillBTag(lGoodJets8T);
+      }
       fEvt->fselectBits =  fEvt->fselectBits | 8;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJets,fJet->fMT);
     }

@@ -99,7 +99,7 @@ int main( int argc, char **argv ) {
   fJet     ->setupTree      (lOut,"res_PUPPIjet");
   fJet     ->setupTreeDiJet (lOut,"res_PUPPIjet");
   fJet     ->setupTreeRazor (lOut); 
-  fJet     ->setupTreeBTag  (lOut,"res_PUPPIjet");
+  //fJet     ->setupTreeBTag  (lOut,"res_PUPPIjet");
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
   //
@@ -206,7 +206,7 @@ int main( int argc, char **argv ) {
     // ttbar, EWK and kFactor correction
     if(lOption.find("data")==std::string::npos){
       fGen->load(i0);
-      if(lJets.size()>0)        fJet->fillBTag(fJet->fGoodJets);
+      //if(lJets.size()>0)        fJet->fillBTag(fJet->fGoodJets);
     }
 
     if(lOption.find("mcg")!=std::string::npos){
