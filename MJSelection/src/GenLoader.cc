@@ -515,15 +515,19 @@ int GenLoader::isHadronicV(TGenParticle *genp,int j,int iId, TLorentzVector jet,
         vSize        = tmpVSize;
         return 1;
       }
+    }
   }
   return 0;
 }
-int GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_matching, double &top_size){
+int GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &matching, double &size, int iId){
   for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
     TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
     TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
     if (mcMom.DeltaR(jet0) < dR) {
-      if (isHadronicTop(genp0,i0,jet0,dR,top_matching,top_size)==1) return 1;
+      if(iId == 6 && isHadronicTop(genp0,i0,jet0,dR,matching,size)==1) return 1;
+      if(iId == 24 || iId == 23 || iId ==10031){
+        if (isHadronicV(genp0,i0,iId,jet0,dR,matching,size)==1) return 1;
+      }
     }
   }
   return 0;
