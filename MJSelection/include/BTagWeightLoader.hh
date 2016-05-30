@@ -33,8 +33,9 @@ public:
   std::vector<BTagCalibrationReader*> freadersM;
   std::vector<BTagCalibrationReader*> freadersT;
   std::vector<std::vector<BTagCalibrationReader*>> freaders;
-
+  
 protected: 
+  std::vector<double> fVars;
 
 };
 #endif

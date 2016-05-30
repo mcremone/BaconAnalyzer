@@ -20,13 +20,13 @@ BTagWeightLoader::BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilen
   }
   freaders.push_back(freadersL); freaders.push_back(freadersM); freaders.push_back(freadersT);
 }
-BTagWeightLoader::~BTagWeightLoader(){}
-void BTagWeightLoader::reset(std::vector<double> &iVals) {
-  for(unsigned int i0 = 0; i0 < 60; i0++) iVals[i0] = 1;
+BTagWeightLoader::~BTagWeightLoader(){
+}
+void BTagWeightLoader::reset() {
+  for(unsigned int i0 = 0; i0 < 60; i0++) fVars[i0] = 1;
 }
 void BTagWeightLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
   std::vector<std::string>  wpTypes = {"L","M","T"}; 
-  std::vector<double> fVars;
   for(int i0 = 0; i0 < 60; i0++) {double pVar = 0; fVars.push_back(pVar);} 
   int i1 = 0;
   for(auto iwptype : wpTypes) {
@@ -50,7 +50,7 @@ void BTagWeightLoader::addBTag(std::string iHeader,TTree *iTree,std::string iLab
     iBase+=4;
   }
 }
-void BTagWeightLoader::fillBTag(std::vector<const TJet*> iObjects,std::vector<double> &iVals) {
+void BTagWeightLoader::fillBTag(std::vector<const TJet*> iObjects) {
   // vSFL should contain CENT (), MISTAG(Ms), BTAG(Bs)  - 5 - CENT(vSFL.at(0)),MsUP(vSFL.at(1)),MsDO(vSFL.at(2)),BsUP(vSFL.at(3)),BsDO(vSFL.at(4))
   std::vector<std::string> flavorTypes = {"Ms", "Bs"};  
   int iN = 0;
