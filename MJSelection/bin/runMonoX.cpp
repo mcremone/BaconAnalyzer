@@ -114,8 +114,8 @@ int main( int argc, char **argv ) {
   // Loop over events
   //
   int neventstest = 0;
-  //for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-  for(int i0 = 0; i0 < int(10000); i0++){ // for testing
+  for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
+  //for(int i0 = 0; i0 < int(10000); i0++){ // for testing
     // if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
     // Check json and GenInfo
