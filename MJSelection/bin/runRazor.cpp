@@ -9,8 +9,7 @@
 //                            "mczjets",  "mczplushf",  "mczpluslf",
 //                            "mcdyjets", "mcdyplushf", "mcdypluslf",
 //                            "mcgjets",  "mcgplushf",  "mcgpluslf",
-//                            "mcttbst",  "mcttcom",
-//                            "mctt1l",   "mctt2l",     "mctthad",
+//                            "mctt",
 //                            "data"
 //   argv[3] => lJSON = JSON file for run-lumi filtering of data, specify "none" for MC or no filtering
 //   argv[4] => lXS = cross section (pb), ignored for data 
@@ -25,6 +24,7 @@
 #include "../include/TauLoader.hh"
 #include "../include/JetLoader.hh"
 #include "../include/VJetLoader.hh"
+#include "../include/BTagWeightLoader.hh"
 #include "../include/RunLumiRangeMap.h"
 
 #include "TROOT.h"
@@ -34,20 +34,17 @@
 #include <iostream>
 
 // Object Processors
-GenLoader       *fGen      = 0; 
-EvtLoader       *fEvt      = 0; 
-MuonLoader      *fMuon     = 0; 
-ElectronLoader  *fElectron = 0; 
-TauLoader       *fTau      = 0; 
-PhotonLoader    *fPhoton   = 0; 
-JetLoader       *fJet      = 0; 
-RunLumiRangeMap *fRangeMap = 0; 
-
-// **NOTE** 
-// For other types of jets e.g: 
-// VJetLoader      *fVJet15CHS     = 0;
-// fVJet15CHS    = new VJetLoader    (lTree,"CA15CHS","AddCA15CHS");
-// fVJet15CHS   ->setupTree      (lOut,"bst15_CHSjet");
+GenLoader        *fGen       = 0; 
+EvtLoader        *fEvt       = 0; 
+MuonLoader       *fMuon      = 0; 
+ElectronLoader   *fElectron  = 0; 
+TauLoader        *fTau       = 0; 
+PhotonLoader     *fPhoton    = 0; 
+JetLoader        *fJetCHS    = 0; 
+JetLoader        *fJetPuppi  = 0;
+BTagWeightLoader *fBTagCHS   = 0;
+BTagWeightLoader *fBTagPuppi = 0;
+RunLumiRangeMap  *fRangeMap  = 0; 
 
 TH1F *fHist                = 0; 
 
@@ -79,27 +76,34 @@ int main( int argc, char **argv ) {
   TTree *lTree = load(lName); 
   
   // Declare Readers 
-  fEvt      = new EvtLoader     (lTree,lName);                                           // fEvt, fEvtBr, fVertices, fVertexBr
-  fMuon     = new MuonLoader    (lTree);                                                 // fMuon and fMuonBr, fN = 2 - muonArr and muonBr
-  fElectron = new ElectronLoader(lTree);                                                 // fElectrons and fElectronBr, fN = 2
-  fTau      = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
-  fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
-  fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
+  fEvt       = new EvtLoader     (lTree,lName);                                           // fEvt, fEvtBr, fVertices, fVertexBr
+  fMuon      = new MuonLoader    (lTree);                                                 // fMuon and fMuonBr, fN = 2 - muonArr and muonBr
+  fElectron  = new ElectronLoader(lTree);                                                 // fElectrons and fElectronBr, fN = 2
+  fTau       = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
+  fPhoton    = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
+  fJetCHS    = new JetLoader     (lTree,"AK4CHS");                                        // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
+  fJetPuppi  = new JetLoader     (lTree,"AK4Puppi"); 
+  fBTagCHS   = new BTagWeightLoader(lTree);
+  fBTagPuppi = new BTagWeightLoader(lTree);
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
 
   // Setup Tree
-  fEvt     ->setupTree      (lOut); 
-  fMuon    ->setupTree      (lOut);
-  fElectron->setupTree      (lOut);
-  fTau     ->setupTree      (lOut);
-  fPhoton  ->setupTree      (lOut);
-  fJet     ->setupTree      (lOut,"res_PUPPIjet");
-  fJet     ->setupTreeDiJet (lOut,"res_PUPPIjet");
-  fJet     ->setupTreeRazor (lOut); 
-  fJet     ->setupTreeBTag  (lOut,"res_PUPPIjet");
+  fEvt       ->setupTree      (lOut); 
+  fMuon      ->setupTree      (lOut);
+  fElectron  ->setupTree      (lOut);
+  fTau       ->setupTree      (lOut);
+  fPhoton    ->setupTree      (lOut);
+  fJetCHS    ->setupTree      (lOut,"res_CHSjet");
+  fJetCHS    ->setupTreeDiJet (lOut,"res_CHSjet");
+  fJetCHS    ->setupTreeRazor (lOut,"res_CHSjet"); 
+  fJetPuppi  ->setupTree      (lOut,"res_PUPPIjet");
+  fJetPuppi  ->setupTreeDiJet (lOut,"res_PUPPIjet");
+  fJetPuppi  ->setupTreeRazor (lOut,"res_PUPPIjet");
+  fBTagCHS   ->setupTree      (lOut,"res_CHSjet");
+  fBTagPuppi ->setupTree      (lOut,"res_PUPPIjet");
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
   //
@@ -157,7 +161,7 @@ int main( int argc, char **argv ) {
     fEvt      ->fillEvent(trigbits,lWeight);
 
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJet, lVJets, lVetoes;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJetsCHS, lJetsPuppi, lVJet, lVJets, lVetoes;
 
     // Muons
     fMuon     ->load(i0);
@@ -191,22 +195,31 @@ int main( int argc, char **argv ) {
 
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
-        
+
+    // AK4CHS Jets
+    fJetCHS->load(i0); 
+    fJetCHS->selectJets(lVetoes,lVJets,lJetsCHS,fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi);
+    if(fJetCHS->fNJetsAbove80GeV>1){
+      fEvt->fselectBits = fEvt->fselectBits | 4;
+      fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lJetsCHS,fJetCHS->fMT);
+    }
+    
     // AK4Puppi Jets
-    fJet->load(i0); 
-    fJet->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
-    if(fJet->fNJetsAbove80GeV>1){
+    fJetPuppi->load(i0); 
+    fJetPuppi->selectJets(lVetoes,lVJets,lJetsPuppi,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
+    if(fJetPuppi->fNJetsAbove80GeV>1){
       fEvt->fselectBits = fEvt->fselectBits | 2;
-      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJets,fJet->fMT);
+      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJetsPuppi,fJetPuppi->fMT);
     }
 
     // Select at least 2 narrow Jets
-    if(!(fEvt->fselectBits & 2)) continue;
+    if(!(fEvt->fselectBits & 2 || fEvt->fselectBits & 4)) continue;
 
     // ttbar, EWK and kFactor correction
     if(lOption.find("data")==std::string::npos){
       fGen->load(i0);
-      if(lJets.size()>0)        fJet->fillBTag(fJet->fGoodJets);
+      if(lJetsCHS.size()>0)     fBTagCHS->fillBTag(fJetCHS->fGoodJets);
+      if(lJetsPuppi.size()>0)   fBTagPuppi->fillBTag(fJetPuppi->fGoodJets);
     }
 
     if(lOption.find("mcg")!=std::string::npos){

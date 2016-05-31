@@ -5,10 +5,10 @@
 
 using namespace baconhep;
 
-JetLoader::JetLoader(TTree *iTree,std::string btagScaleFactorFilename) { 
+JetLoader::JetLoader(TTree *iTree, std::string iJet) { 
   fJets  = new TClonesArray("baconhep::TJet");
-  iTree->SetBranchAddress("AK4Puppi",       &fJets);
-  fJetBr  = iTree->GetBranch("AK4Puppi");
+  iTree->SetBranchAddress(iJet.c_str(),       &fJets);
+  fJetBr = iTree->GetBranch(iJet.c_str());
   fN = 4; // 4 narrow jets
   std::vector<JetCorrectorParameters> corrParams;
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt"));
@@ -16,18 +16,6 @@ JetLoader::JetLoader(TTree *iTree,std::string btagScaleFactorFilename) {
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt"));
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"));
   fJetCorr = new FactorizedJetCorrector(corrParams);
-
-  fJetCalib = new BTagCalibration("csvv2",btagScaleFactorFilename);
-  freadersL.clear(); freadersM.clear(); freadersT.clear();
-  freaders.clear();
-  for(auto imtype : measurementTypes) { // freadersL 6 , freadersM 6, freadersT 6
-    for(auto ivtype : variationTypes) {
-      freadersL.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_LOOSE,  imtype, ivtype)); // first mujets(HF) then incl(LF) and first central(0,3) then up(1,4) and then down(2,5)
-      freadersM.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_MEDIUM, imtype, ivtype));
-      freadersT.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_TIGHT,  imtype, ivtype));
-    }
-  }
-  freaders.push_back(freadersL); freaders.push_back(freadersM); freaders.push_back(freadersT);
 }
 JetLoader::~JetLoader() { 
   delete fJets;
@@ -43,9 +31,6 @@ double JetLoader::correction(TJet &iJet,float iRho) {
   fJetCorr->setJetA  (iJet.area);
   fJetCorr->setJetEMF(-99.0);     
   return ((fJetCorr->getCorrection())*iJet.ptRaw);
-}
-void JetLoader::resetBTag() {
-  for(unsigned int i0 = 0; i0 < fBTagVars.size(); i0++) fBTagVars[i0] = 1;
 }
 void JetLoader::reset() { 
   fNJets           = 0;
@@ -70,7 +55,6 @@ void JetLoader::reset() {
   fSelJets.clear();
   fGoodJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
-  resetBTag();
 }
 void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
   reset();
@@ -102,27 +86,26 @@ void JetLoader::setupTreeDiJet(TTree *iTree, std::string iJetLabel) {
   std::stringstream diJet;   diJet << "dj" << iJetLabel;
   addDijet   (diJet.str().c_str(),iTree,1, fVars);                                    // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
 }
-void JetLoader::setupTreeRazor(TTree *iTree) {
+void JetLoader::setupTreeRazor(TTree *iTree, std::string iJetLabel) {
   reset();
   fTree = iTree;
-  fTree->Branch("alphaT"          ,&falphaT     ,"falphaT/F");                        // alpha T
-  fTree->Branch("mindFPhi"        ,&fdPhiMin    ,"fdPhiMin/F");                       // dPhi Min
-  fTree->Branch("MR"              ,&fMR         ,"fMR/F");                            // MR
-  fTree->Branch("Rsq"             ,&fRsq        ,"fRsq/F");                           // Rsq 
-  fTree->Branch("deltaPhi"        ,&fdeltaPhi   ,"fdeltaPhi/F");                      // deltaPhi
-  fTree->Branch("HT"              ,&fHT         ,"fHT/F");                            // HT
-  fTree->Branch("MHT"             ,&fMHT        ,"fMHT/F");                           // MHT
-  // fTree->Branch("MT2"             ,&fMT2        ,"fMT2/F");                           // MT2
-}
-void JetLoader::setupTreeBTag(TTree *iTree, std::string iJetLabel) {
-  reset();
-  fTree = iTree;
-  for(int i0 = 0; i0 < 60; i0++) {float pBTagVar = 1; fBTagVars.push_back(pBTagVar);} // declare array of 60 vars ( L0,L1,Lminus1,L2, M0,M1,Mminus1,M2 T0,T1,Tminus1,T2) for (CENT,MISTAGUP,MISTAGDO,BTAGUP,BTAGDO)
-  int i1 = 0;
-  for(auto iwptype : wpTypes) {
-    addBTag(iJetLabel.c_str(),iTree,iwptype,fLabels,i1,fBTagVars);
-    i1 += 20;
-  }
+  std::stringstream pSalphaT,pSdPhiMin,pSMR,pSRsq,pSdeltaPhi,pSHT,pSMHT;//,pSMT2;
+  pSalphaT   << iJetLabel << "alphaT";
+  pSdPhiMin  << iJetLabel << "mindFPhi";
+  pSMR       << iJetLabel << "MR";
+  pSRsq      << iJetLabel << "Rsq";
+  pSdeltaPhi << iJetLabel << "deltaPhi";
+  pSHT       << iJetLabel << "HT";
+  pSMHT      << iJetLabel << "MHT";
+  // pSMT2      << iJetLabel << "MT2";
+  iTree->Branch(pSalphaT  .str().c_str(),&falphaT  ,(pSalphaT  .str()+"/F").c_str());     // alphaT
+  iTree->Branch(pSdPhiMin .str().c_str(),&fdPhiMin ,(pSdPhiMin .str()+"/F").c_str());     // dPhi Min
+  iTree->Branch(pSMR      .str().c_str(),&fMR      ,(pSMR      .str()+"/F").c_str());     // MR
+  iTree->Branch(pSRsq     .str().c_str(),&fRsq     ,(pSRsq     .str()+"/F").c_str());     // Rsq
+  iTree->Branch(pSdeltaPhi.str().c_str(),&fdeltaPhi,(pSdeltaPhi.str()+"/F").c_str());     // deltaPhi
+  iTree->Branch(pSHT      .str().c_str(),&fHT      ,(pSHT      .str()+"/F").c_str());     // HT
+  iTree->Branch(pSMHT     .str().c_str(),&fMHT     ,(pSMHT     .str()+"/F").c_str());     // MHT
+  // iTree->Branch(pSMT2     .str().c_str(),&fMT2     ,(pSMT2     .str()+"/F").c_str());     // MT2
 }
 void JetLoader::load(int iEvent) { 
   fJets   ->Clear();
@@ -142,7 +125,7 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
     if(fabs(pJet->eta) >= 4.5)                    continue;
     if(!passJetLooseSel(pJet))                    continue;
     lCount++;
-    if(pJet->pt        >  80) lCountAbove80GeV++;
+    if(pJet->pt        >   80) lCountAbove80GeV++;
     addJet(pJet,fSelJets);
     addVJet(pJet,iJets,pJet->mass);
 
@@ -150,15 +133,13 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
     fHT += vPJet.Pt(); pMhtX += vPJet.Px(); pMhtY += vPJet.Py();
     fGoodJets.push_back(pJet);
 
-    if(iVJets.size()>0 && iVJets[0].Pt()>0 && vPJet.DeltaR(iVJets[0])>2){
-      lCountdR2++;
-    }
     if(acos(cos(iMetPhi-pJet->phi))    < pDPhi)    pDPhi  = acos(cos(iMetPhi-pJet->phi));
     if(iFMet > 0){
       if(acos(cos(iFMetPhi-pJet->phi)) < pDFPhi)   pDFPhi = acos(cos(iFMetPhi-pJet->phi)); 
     }
 
     // jet and b-tag multiplicity
+    if(iVJets.size()>0 && iVJets[0].Pt()>0 && vPJet.DeltaR(iVJets[0])>2) lCountdR2++;
     if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVL){
       lNBTagL++;
       if(iVJets.size()>0) {if(pJet->pt>0 && vPJet.DeltaR(iVJets[0])>2) lNBTagLdR2++;}
@@ -189,7 +170,16 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
   fillDiJet();
   fillRazor(iJets,iMet,iMetPhi);
   TLorentzVector fMyMHT; fMyMHT.SetPxPyPzE(-pMhtX, -pMhtY, 0, sqrt(pow(pMhtX,2) + pow(pMhtY,2)));
-  fMHT = fMyMHT.Pt();
+  fMHT             = fMyMHT.Pt();
+}
+void JetLoader::fillGoodJets(std::vector<TLorentzVector> &iVJets,std::vector<const TJet*> &iGoodJets){
+  iGoodJets.clear();
+  for(unsigned int i0 = 0; i0 < fGoodJets.size(); i0++) {
+    TLorentzVector vPJet; vPJet.SetPtEtaPhiM(fGoodJets[i0]->pt, fGoodJets[i0]->eta, fGoodJets[i0]->phi, fGoodJets[i0]->mass);
+    if(iVJets.size()>0 && iVJets[0].Pt()>0 && vPJet.DeltaR(iVJets[0])>2){
+      iGoodJets.push_back(fGoodJets[i0]);
+    }
+  }
 }
 void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 
   for(int i0 = 0; i0 < iN; i0++) { 
@@ -269,56 +259,6 @@ void JetLoader::fillDiJet() {
   fVars[lBase+5] = (pJet0->csv > pJet1->csv)*pJet0->csv + (pJet0->csv < pJet1->csv)*pJet0->csv;
   double lDPhi = fabs(pJet0->phi-pJet1->phi); 
   fVars[lBase+6] = TMath::Min(lDPhi,2.*TMath::Pi()-lDPhi);
-}
-void JetLoader::addBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> &iLabels,int iN,std::vector<float> &iVals) {
-  int iBase=iN;
-  for(int i0 = 0; i0 < int(iLabels.size()); i0++) {
-    std::stringstream pVal0,pVal1,pValminus1,pVal2;
-    pVal0       << iHeader << "btagw" << iLabel << "0"      << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwL0_CENT -- where iLabel(L,M o T) and iLabels(CENT,MISTAGUP,MISTAGD0,BTAGUP,BTAGD0)
-    pVal1       << iHeader << "btagw" << iLabel << "1"      << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwL1_CENT
-    pValminus1  << iHeader << "btagw" << iLabel << "minus1" << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwLminus1_CENT
-    pVal2       << iHeader << "btagw" << iLabel << "2"      << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwL2_CENT
-    iTree->Branch(pVal0      .str().c_str(),&iVals[iBase+0],(pVal0      .str()+"/F").c_str());
-    iTree->Branch(pVal1      .str().c_str(),&iVals[iBase+1],(pVal1      .str()+"/F").c_str());
-    iTree->Branch(pValminus1 .str().c_str(),&iVals[iBase+2],(pValminus1 .str()+"/F").c_str());
-    iTree->Branch(pVal2      .str().c_str(),&iVals[iBase+3],(pVal2      .str()+"/F").c_str());
-    iBase+=4;
-  }
-}
-void JetLoader::fillBTag(std::vector<const TJet*> iObjects) {
-  // vSFL should contain CENT (), MISTAG(Ms), BTAG(Bs)  - 5 - CENT(vSFL.at(0)),MsUP(vSFL.at(1)),MsDO(vSFL.at(2)),BsUP(vSFL.at(3)),BsDO(vSFL.at(4))
-  int iN = 0;
-  for(unsigned int j0=0; j0<3; j0++){  // L, M, T
-    std::vector<std::vector<float>> vSFL,vSFL_nominal;
-    vSFL.clear(); vSFL_nominal.clear();
-    vSFL_nominal.push_back(getJetSFs("nominal",iObjects, freaders[j0].at(0), freaders[j0].at(3)));
-    for(auto iftype :flavorTypes) {    
-      vSFL_nominal.push_back(getJetSFs(iftype,iObjects, freaders[j0].at(0), freaders[j0].at(3))); // 0 and 3 HF and LF respectively - flavor types: Ms,Bs
-    }
-    vSFL.push_back(vSFL_nominal.at(0));
-
-    for(auto iftype :flavorTypes) {
-      for(unsigned int i0=1; i0<3; i0++){
-	std::vector<float> vSF0;
-	vSF0.clear();
-	for(unsigned int i1=0; i1<(vSFL.at(0)).size(); i1++) {
-	  if(iftype.compare("Ms")==0) vSF0.push_back( (getJetSFs(iftype,iObjects, freaders[j0].at(i0), freaders[j0].at(i0+3))).at(i1) * (vSFL_nominal.at(2).at(i1)));
-	  if(iftype.compare("Bs")==0) vSF0.push_back( (getJetSFs(iftype,iObjects, freaders[j0].at(i0), freaders[j0].at(i0+3))).at(i1) * (vSFL_nominal.at(1).at(i1)));
-	}
-	vSFL.push_back(vSF0);
-      }
-    }
-    
-    // Fill btag
-    for(unsigned int j1=0; j1<5; j1++){
-      int lBase = j1*4+iN;
-      fBTagVars[lBase+0] = getBtagEventReweight(0,  iObjects, vSFL.at(j1));
-      fBTagVars[lBase+1] = getBtagEventReweight(1,  iObjects, vSFL.at(j1));
-      fBTagVars[lBase+2] = getBtagEventReweight(-1, iObjects, vSFL.at(j1));
-      fBTagVars[lBase+3] = getBtagEventReweight(2,  iObjects, vSFL.at(j1));
-    }
-    iN += 20;
-  }
 }
 void JetLoader::fillRazor(std::vector<TLorentzVector> iJets,float iMet, float iMetPhi) {
   std::vector<TLorentzVector> hemispheres = getHemispheres( iJets );
