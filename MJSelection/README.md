@@ -37,6 +37,11 @@ Modify it according to your analysis preselection.
 Triggers are listed in 	    
 	 `/src/BaconAna/DataFormats/data/HLTFile_25ns`	
 
+For other types of Jets  e.g:
+    `VJetLoader      *fVJet15CHS     = 0;`
+    `fVJet15CHS    = new VJetLoader    (lTree,"CA15CHS","AddCA15CHS");`
+    `fVJet15CHS   ->setupTree      (lOut,"bst15_CHSjet");`
+
 After modifications compile before running.
 
 Baconbits production

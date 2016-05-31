@@ -23,9 +23,9 @@ using namespace std;
 
 class MonoXBitsLoader {
 public:
-  MonoXBitsLoader(TTree *iTree=0,TString jetID="jet", TString algo="PUPPI",TString syst="CENT", string preselection="", bool isData=false);		
+  MonoXBitsLoader(TTree *iTree=0,TString bst15jetID="jetT", TString bst8jetID="jetT", TString algo="PUPPI",TString syst="CENT", string preselection="", bool isData=false);		
   ~MonoXBitsLoader();
-  bool selectJetAlgoAndSize(string selection, TString algo);
+  bool selectJetAlgoAndSize(string selection, TString algo, TString bst15jetID, TString bst8jetID);
   bool isHad();
   bool isMuo();
   bool isZmm();
@@ -35,40 +35,54 @@ public:
   bool passPreSelection(string preselection);
   TLorentzVector getMET(string preselection);
   TLorentzVector getTop();
-  bool passMetPreselection(string preselection);
-  bool passBoostedMonoXPreselection(string preselection);
+  TLorentzVector getHiggs();
+  bool passBoostedMonoTopPreselection(string preselection);
+  bool passBoosted8MonoHbbPreselection(string preselection);
+  bool passBoosted15MonoHbbPreselection(string preselection);
+  bool passResolvedMonoHbbPreselection(string preselection);
 
   bool passBoostedMonoTopSR(string preselection);
-  bool passBoostedMonoTopQCDCR(string preselection); 
-  bool passBoostedMonoTopTopCR2(string preselection);
   bool passBoostedMonoTopTopCR(string preselection); 
-  bool passBoostedMonoTopTTbarCR(string preselection);
-  bool passBoostedMonoTopRhoTau32DDTCR(string preselection);
-  bool passBoostedMonoTopMsdPtTau32DDTCR(string preselection, float MSDSQPT_CUT);
   bool passBoostedMonoTopTopCRminusTau32(string preselection);
   bool passBoostedMonoTopTopCRminusMass(string preselection);
   bool passBoostedMonoTopTopCRminusBtag(string preselection);
   bool passBoostedMonoTopWCR(string preselection);
   bool passBoostedMonoTopZCR(string preselection);
 
-  bool passBoostedMonoHbbSR(string preselection);
-  bool passBoostedMonoHbbTopCR(string preselection);
-  bool passBoostedMonoHbbWCR(string preselection);
-  bool passBoostedMonoHbbZCR(string preselection);
+  bool passBoosted15MonoHbbSR(string preselection, float csvb0 = 0.3, float csvb1 = 1000);
+  bool passBoosted15MonoHbbTopCR(string preselection, float csvb0 = 0.3, float csvb1 = 1000);
+  bool passBoosted15MonoHbbWCR(string preselection, float csvb0 = 0.3, float csvb1 = 1000);
+  bool passBoosted15MonoHbbZCR(string preselection);
 
-  bool passSelection(string preselection, string selection, string subsample, string combo, float &btagw, TString syst);
-  float transverse_mass(string selection);
+  bool passBoosted8MonoHbbSR(string preselection, float csvb0, float csvb1);
+  bool passBoosted8MonoHbbTopCR(string preselection, float csvb0, float csvb1);
+  bool passBoosted8MonoHbbWCR(string preselection, float csvb0, float csvb1);
+  bool passBoosted8MonoHbbZCR(string preselection);
+
+  bool passResolvedMonoHbbSR(string preselection);
+  bool passResolvedMonoHbbTopCR(string preselection);
+  bool passResolvedMonoHbbWCR(string preselection);
+  bool passResolvedMonoHbbZCR(string preselection);
+
+  bool passSelection(string preselection, string selection, string subsample, string combo, float &btagw, TString syst, bool isSignal);
+  int nfjets(string selection);
   float fjet_mass(string selection);
-  float nsubjet(string selection);
-  float btag(string selection);
+  float fjet_pt(string selection);
+  float transverse_mass(string selection);
+  float tau21(string selection);
+  float tau32(string selection);
+  float rho(string selection);
+  float minsubcsv(string selection);
+  float maxsubcsv(string selection);
+  float doublecsv(string selection);
   float chf(string selection);
   float nhf(string selection);
   float nemf(string selection);
-  void getDoublebWeight(TString syst, float &doublebw_L0, float &doublebw_L1);
+  float getDoublebWeight(TString syst, bool isSignal, string doublecsv, int NminBjets, float bstpt);
   double getWgt(bool isData, TString algo, double LUMI, float btagw);
-  double tau32DDT();
-  double tau21DDT();
-  double getMsdSqPt();
+  double tau32DDT(string selection);
+  double tau21DDT(string selection);
+  double getMsdSqPt(string selection);
 
   //
   // variables to read in bacon bits
@@ -79,20 +93,32 @@ public:
   double triggerEff;                                                               // trigger efficiency
   float evtWeight, puWeight;                                                       // pu and evt weight
   double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2, phoSF0;                   // weights
-  double topSize15, topMatching15;                                                 // topSize and topMatching
-  int isHadronicTop15;                                                             // hadronic Top requirement
+  double topSize15, topSize15T, topSize8, topSize8T;                               // topSize
+  double topMatching15, topMatching15T, topMatching8, topMatching8T;               // topMatching
+  int isHadronicTop15, isHadronicTopT, isHadronicTop8, isHadronicTop8T;            // hadronic Top requirement
   unsigned int npu, npv;                                                           // PU, PV multiplicity
   int nmu, nele, ntau, npho;                                                       // object multiplicity
-  int njets, nfjets15;                                                             // jet multiplicity 
+  int njets, nfjets15, nfjets8, nfjets15T, nfjets8T;                               // jet multiplicity 
   int nbtags, nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2;                   // b-jet multiplicity
   float scale1fb;                                                                  // cross section scale factor per 1/fb
   float kfactor;                                                                   // kFactor and EWK correction
   float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2;                   // btag SF
-  float res_btagwM0, res_btagwM1, res_btagwMminus1, res_btagwM2 ;
+  float res_btagwM0, res_btagwM1, res_btagwMminus1, res_btagwM2;
   float res_btagwT0, res_btagwT1, res_btagwTminus1, res_btagwT2;
   float bst15_btagwL0, bst15_btagwL1, bst15_btagwLminus1, bst15_btagwL2;           // subjet btag SF 
-  float bst15_btagwM0, bst15_btagwM1, bst15_btagwMminus1, bst15_btagwM2 ;
+  float bst15_btagwM0, bst15_btagwM1, bst15_btagwMminus1, bst15_btagwM2;
   float bst15_btagwT0, bst15_btagwT1, bst15_btagwTminus1, bst15_btagwT2;
+  float bst8_btagwL0, bst8_btagwL1, bst8_btagwLminus1, bst8_btagwL2;               // subjet btag SF 08
+  float bst8_btagwM0, bst8_btagwM1, bst8_btagwMminus1, bst8_btagwM2;
+  float bst8_btagwT0, bst8_btagwT1, bst8_btagwTminus1, bst8_btagwT2;
+
+  float bst15_btagwL0T, bst15_btagwL1T, bst15_btagwLminus1T, bst15_btagwL2T;       // subjet btag SF TightJetID
+  float bst15_btagwM0T, bst15_btagwM1T, bst15_btagwMminus1T, bst15_btagwM2T;
+  float bst15_btagwT0T, bst15_btagwT1T, bst15_btagwTminus1T, bst15_btagwT2T;
+  float bst8_btagwL0T, bst8_btagwL1T, bst8_btagwLminus1T, bst8_btagwL2T;           // subjet btag SF 08 TightJetID
+  float bst8_btagwM0T, bst8_btagwM1T, bst8_btagwMminus1T, bst8_btagwM2T;
+  float bst8_btagwT0T, bst8_btagwT1T, bst8_btagwTminus1T, bst8_btagwT2T;
+
   float genVpt, genVphi;                                                           // gen boson
   float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                     // MET
   double min_dphijetsmet;                                                          // min delta phi between MET and narrow jets
@@ -107,14 +133,40 @@ public:
   double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF;                      // res jet variables
   float            res_mt;                                                         // res jet mT
 
+  // LooseJetID
   double           bst15_jet0_pt,bst15_jet0_eta,bst15_jet0_phi,bst15_jet0_mass;    // leading boosted jet
   double           bst15_jet0_msd, bst15_jet0_tau32, bst15_jet0_tau21;             // boosted tagger variables                                                                                            
   double           bst15_jet0_maxsubcsv, bst15_jet0_minsubcsv;                     // subjet btag
   double           bst15_jet0_doublecsv;                                           // double btag                            
   double           bst15_jet0_rho, bst15_jet0_phil;                                // msd and pt dependent variables
   double           bst15_jet0_CHF, bst15_jet0_NHF, bst15_jet0_NEMF;                // boosted jet variables
-  float            bst15_mt;                                                       // bst jet mT
+  float            bst15_jet0_mT;                                                  // bst jet mT
 
+  double           bst8_jet0_pt,bst8_jet0_eta,bst8_jet0_phi,bst8_jet0_mass;        // leading boosted jet
+  double           bst8_jet0_msd, bst8_jet0_tau32, bst8_jet0_tau21;                // boosted tagger variables
+  double           bst8_jet0_maxsubcsv, bst8_jet0_minsubcsv;                       // subjet btag
+  double           bst8_jet0_doublecsv;                                            // double btag
+  double           bst8_jet0_rho, bst8_jet0_phil;                                  // msd and pt dependent variables
+  double           bst8_jet0_CHF, bst8_jet0_NHF, bst8_jet0_NEMF;                   // boosted jet variables
+  float            bst8_jet0_mT;                                                   // bst jet mT
+
+  // TightJetID
+  double           bst15_jetT0_pt,bst15_jetT0_eta,bst15_jetT0_phi,bst15_jetT0_mass;// leading boosted jet
+  double           bst15_jetT0_msd, bst15_jetT0_tau32, bst15_jetT0_tau21;          // boosted tagger variables
+  double           bst15_jetT0_maxsubcsv, bst15_jetT0_minsubcsv;                   // subjet btag
+  double           bst15_jetT0_doublecsv;                                          // double btag
+  double           bst15_jetT0_rho, bst15_jetT0_phil;                              // msd and pt dependent variables
+  double           bst15_jetT0_CHF, bst15_jetT0_NHF, bst15_jetT0_NEMF;             // boosted jet variables
+  float            bst15_jetT0_mT;                                                 // bst jet mT
+
+  double           bst8_jetT0_pt,bst8_jetT0_eta,bst8_jetT0_phi,bst8_jetT0_mass;    // leading boosted jet
+  double           bst8_jetT0_msd, bst8_jetT0_tau32, bst8_jetT0_tau21;             // boosted tagger variables
+  double           bst8_jetT0_maxsubcsv, bst8_jetT0_minsubcsv;                     // subjet btag
+  double           bst8_jetT0_doublecsv;                                           // double btag
+  double           bst8_jetT0_rho, bst8_jetT0_phil;                                // msd and pt dependent variables
+  double           bst8_jetT0_CHF, bst8_jetT0_NHF, bst8_jetT0_NEMF;                // boosted jet variables
+  float            bst8_jetT0_mT;                                                  // bst jet mT
+   
   const float ToptagSF     = 1.1318;                                               // ToptagSF
   const float TopmistagSF  = 1.1639;                                               // TopmistagSF 
   const float btagSF       = 0.9851;                                               // btagSF
@@ -128,16 +180,13 @@ public:
   const float CSVbM = 0.6;                                                         // CSVbM
   const float CSVbT = 0.9;                                                         // CSVbT 
 
-  float doublebw_L0=1;
-  float doublebw_L1=1;
-
-  std::vector<float> doubleb_ptbin_eff, SF;
+  std::vector<float> doubleb_eff, doubleb_mistag_eff, doublebSF, mistagdoublebSF;
   std::vector<float> ptbinlow, ptbinhigh;
 
   float mcTag = 1.;
-  float mcNoTag = 0.;
+  float mcNoTag = 1.;
   float dataTag = 1.;
-  float dataNoTag = 0.;
+  float dataNoTag = 1.;
 
 protected:
 
@@ -146,7 +195,10 @@ protected:
   const unsigned int kSingleElectron23 = 8;
   const unsigned int kSinglePhoton  = 16;
   const unsigned int kBOOSTED15PUPPI = 2;
-  const unsigned int kRESOLVEDPUPPI = 4;
+  //const unsigned int kBOOSTED15PUPPIT = 4;
+  //const unsigned int kBOOSTED8PUPPI = 8;
+  const unsigned int kBOOSTED8PUPPIT = 4;
+  const unsigned int kRESOLVEDPUPPI = 8;
   
   const float RHO_CUT = 0.72;
 

@@ -581,12 +581,48 @@ int GenLoader::isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double 
   }
   return 0;
 }
-int GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &top_matching, double &top_size){
+int GenLoader::isHadronicV(TGenParticle *genp,int j,int iId, TLorentzVector jet,double dR,double &vMatching, double &vSize)
+{
+  TLorentzVector vV,vDau1,vDau2;
+  vMatching = -999.; vSize = -999.;
+  double tmpVMatching(0), tmpVSize(0);
+  if(abs(genp->pdgId)==iId){
+    vV.SetPtEtaPhiM(genp->pt, genp->eta, genp->phi, genp->mass);
+    int iV = findLastBoson(j,iId);
+
+    int iQ=0, jQ=0;
+    for (; iQ<fGens->GetEntriesFast(); ++iQ) {
+      TGenParticle *dau1 = (TGenParticle*)((*fGens)[iQ]);
+      if(dau1->parent==iV && abs(dau1->pdgId)<6) {
+        vDau1.SetPtEtaPhiM(dau1->pt, dau1->eta, dau1->phi, dau1->mass);
+        tmpVMatching = TMath::Max(tmpVMatching,jet.DeltaR(vDau1));
+        tmpVSize     = TMath::Max(tmpVSize,vV.DeltaR(vDau1));
+        break;
+      }
+    }
+    for (jQ=iQ+1; jQ<fGens->GetEntriesFast(); ++jQ) {
+      TGenParticle *dau2 = (TGenParticle*)((*fGens)[jQ]);
+      if(dau2->parent==iV && abs(dau2->pdgId)<6) {
+        vDau2.SetPtEtaPhiM(dau2->pt, dau2->eta, dau2->phi, dau2->mass);
+        tmpVMatching = TMath::Max(tmpVMatching,jet.DeltaR(vDau2));
+        tmpVSize     = TMath::Max(tmpVSize,vV.DeltaR(vDau2));
+        vMatching    = tmpVMatching;
+        vSize        = tmpVSize;
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+int GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &matching, double &size, int iId){
   for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
     TGenParticle *genp0 = (TGenParticle*)((*fGens)[i0]);
     TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
     if (mcMom.DeltaR(jet0) < dR) {
-      if (isHadronicTop(genp0,i0,jet0,dR,top_matching,top_size)==1) return 1;
+      if(iId == 6 && isHadronicTop(genp0,i0,jet0,dR,matching,size)==1) return 1;
+      if(iId == 24 || iId == 23 || iId ==10031){
+        if (isHadronicV(genp0,i0,iId,jet0,dR,matching,size)==1) return 1;
+      }
     }
   }
   return 0;
@@ -622,7 +658,7 @@ void GenLoader::findBoson(int iId, int lOption){
       }      
     }
     
-    // find last boson Z(23),W(24),Z'(32)
+    // find last boson Z(23),W(24),Z'(10031)
     if(lOption == 1){
       if(fabs(genp0->pdgId)==iId){
         int iL0 = findLastBoson(i0,iId);

@@ -18,7 +18,7 @@ public:
   //Fill specific Gen Info
   void selectBoson(int iDMu);
   float lepmatched(int iId, std::vector<TLorentzVector> vec, double dR);
-  int ismatchedJet(TLorentzVector jet0, double dR,double &top_matching, double &top_size);
+  int ismatchedJet(TLorentzVector jet0, double dR,double &matching, double &size, int iId = 6);
   int ismatchedSubJet(TLorentzVector subjet0);
   //Helpers
   TGenParticle* getStatus1(int iId,bool iIsNeut);
@@ -34,6 +34,7 @@ public:
   int findDaughterId(int iparent, int dauId);
   int findLastBoson(int iparent,int iId);
   int isHadronicTop(TGenParticle *genp,int j,TLorentzVector jet,double dR,double &topMatching, double &topSize);
+  int isHadronicV(TGenParticle *genp,int j,int iId,TLorentzVector jet,double dR,double &vMatching, double &vSize);
   void findBoson(int iId, int lOption);
 
   TClonesArray  *fGens;

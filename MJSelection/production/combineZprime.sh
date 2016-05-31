@@ -5,7 +5,7 @@ sample=$1
 if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
     for x in `ls ../zprimebits | grep ZPrimeToQQ | grep -v .root`; do
 	rm ../zprimebits/$x.root
-	hadd ../zprimebits/$x.root ../zprimebits/$x/*.root
+	hadd ../zprimebits//$x.root ../zprimebits/$x/*.root
     done
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then rm ../zprimebits/QCD.root;  hadd  ../zprimebits/QCD.root   ../zprimebits/*QCD*mc/*.root; fi

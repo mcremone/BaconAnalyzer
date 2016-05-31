@@ -41,8 +41,8 @@ public:
   float pullDot(float iY1,float iY2,float iPhi1,float iPhi2);
   TJet* getLargeJet(TJet *iMatch);
 
-  double ftopSize, ftopMatching;
-  int fisHadronicTop;
+  double ftopSize, ftopMatching, fvSize, fvMatching;
+  int fisHadronicTop, fisHadronicV;
   float fVMT;
 
   const double CSVL = 0.460; // CSVv2SubJet WP 

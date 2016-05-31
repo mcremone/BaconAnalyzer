@@ -33,7 +33,7 @@ MonoXBitsLoader       *fBits      = 0;
 
 //=== MAIN MACRO =================================================================================================
 
-void skimMonoX(const string preselection, const string selection, const string subsample, const string combo, TString algo, TString syst, TString jetID)
+void skimMonoX(const string preselection, const string selection, const string subsample, const string combo, TString algo, TString syst, TString bst15jetID = "jetT", TString bst8jetID = "jetT")
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -117,7 +117,7 @@ void skimMonoX(const string preselection, const string selection, const string s
     samplev.push_back(new CSample("tHq", kCyan - 9, kCyan - 9));
     samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/THQ.root");
   }
-  if (subsample.compare("SR")==0 && selection.compare("BstMonoHbb")==0){
+  if (subsample.find("SR")!=std::string::npos && (selection.compare("Bst15MonoHbb")==0 || selection.compare("Bst8MonoHbb")==0 ||  selection.compare("ResMonoHbb")==0)){
     samplev.push_back(new CSample("MZ-1000_MA0-300", kBlue, kBlue));
     samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_300_13TeV_madgraph_mc.root");
     // samplev.push_back(new CSample("MZ-1000_MA0-400", kBlue, kBlue));
@@ -190,8 +190,8 @@ void skimMonoX(const string preselection, const string selection, const string s
     samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_300_13TeV_madgraph_mc.root");
     // samplev.push_back(new CSample("MZ-600_MA0-400", kBlue, kBlue));
     // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_400_13TeV_madgraph_mc.root");
-    // samplev.push_back(new CSample("MZ-800_MA0-300", kBlue, kBlue));
-    // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_300_13TeV_madgraph_mc.root");
+    samplev.push_back(new CSample("MZ-800_MA0-300", kBlue, kBlue));
+    samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_300_13TeV_madgraph_mc.root");
     // samplev.push_back(new CSample("MZ-800_MA0-400", kBlue, kBlue));
     // samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_400_13TeV_madgraph_mc.root");
     // samplev.push_back(new CSample("MZ-800_MA0-500", kBlue, kBlue));
@@ -220,6 +220,9 @@ void skimMonoX(const string preselection, const string selection, const string s
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     string tname = samplev[isam]->label;
     if(subsample=="SR") tname = tname + string("_signal");
+    if(subsample=="SR1") tname = tname + string("_signal1");
+    if(subsample=="SR2") tname = tname + string("_signal2");
+    if(subsample=="SR3") tname = tname + string("_signal3");
     if(subsample=="ZnunuHF") tname = tname + string("_znunuhf_control");
     if(subsample=="ZnunuLF") tname = tname + string("_znunulf_control");
     if(preselection=="Muo" && subsample=="TopCR") tname = tname + string("_single_muon_top_control");
@@ -237,6 +240,10 @@ void skimMonoX(const string preselection, const string selection, const string s
     if(syst=="SJBTAGDO") tname = tname + string("_sjbtagDown");
     if(syst=="SJMISTAGUP") tname = tname + string("_sjmistagUp");
     if(syst=="SJMISTAGDO") tname = tname + string("_sjmistagDown");
+    if(syst=="DOUBLEBBTAGUP") tname = tname + string("_doublebtagUp");
+    if(syst=="DOUBLEBBTAGDO") tname = tname + string("_doublebtagDown");
+    if(syst=="DOUBLEBMISTAGUP") tname = tname + string("_doublebmistagUp");
+    if(syst=="DOUBLEBMISTAGDO") tname = tname + string("_doublebmistagDown");
     if(syst=="GJETHFUP") tname = tname + string("_gjethfUp");
     if(syst=="GJETHFDO") tname = tname + string("_gjethfDown");
     if(syst=="WJETHFUP") tname = tname + string("_wjethfUp");
@@ -259,34 +266,54 @@ void skimMonoX(const string preselection, const string selection, const string s
     CSample *sample = samplev[isam];
     cout << "Sample: " << sample->label << endl;
     bool isData   = (isam==0);
- 
+    bool isSignal = false;
+    if(selection.compare("BstMonoTop")==0 && subsample.compare("SR")==0) isSignal  = (isam==samplev.size()-1 || isam==samplev.size()-2);
+    if(((selection.compare("Bst15MonoHbb")==0) || (selection.compare("Bst8MonoHbb")==0) || (selection.compare("ResMonoHbb")==0))  && subsample.find("SR")!=std::string::npos) isSignal  = (isam==samplev.size()-1 || isam==samplev.size()-2 || isam==samplev.size()-3 || isam==samplev.size()-4 || isam==samplev.size()-5 || isam==samplev.size()-6 || isam==samplev.size()-7 || isam==samplev.size()-8);
+    
     for(unsigned int ifile=0; ifile<sample->fnamev.size(); ifile++) {
       string infilename = sample->fnamev[ifile];
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      if(syst!="CENT" && syst!="BTAGUP" && syst!="BTAGDO" && syst!="MISTAGUP" && syst!="MISTAGDO" && syst!="SJBTAGUP" && syst!="SJBTAGDO" && syst!="SJMISTAGUP" && syst!="SJMISTAGDO") fBits     = new MonoXBitsLoader(intree,jetID,algo,"CENT",preselection,isData);
-      else fBits   = new MonoXBitsLoader(intree,jetID,algo,syst,preselection,isData);
+      if(syst!="CENT" && syst!="BTAGUP" && syst!="BTAGDO" && syst!="MISTAGUP" && syst!="MISTAGDO" && syst!="SJBTAGUP" 
+	 && syst!="SJBTAGDO" && syst!="SJMISTAGUP" && syst!="SJMISTAGDO" && syst!="DOUBLEBMISTAGUP" && syst!="DOUBLEBMISTAGDO") fBits     = new MonoXBitsLoader(intree,bst15jetID,bst8jetID,algo,"CENT",preselection,isData);
+      else fBits   = new MonoXBitsLoader(intree,bst15jetID,bst8jetID,algo,syst,preselection,isData);
+
       double nevts=0; int noweight=0;
 
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
-	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
+        if(!fBits->selectJetAlgoAndSize(selection,algo,bst15jetID,bst8jetID)) continue;
 	// common selection
 	if(fBits->metfilter!=0)                   continue;
 	//preselection
 	if(!fBits->passPreSelection(preselection)) continue;
 	//selection
 	float btagw=1;
-	if(!fBits->passSelection(preselection,selection,subsample,combo,btagw)) continue;
+	if(!fBits->passSelection(preselection,selection,subsample,combo,btagw,syst,isSignal)) continue;
 
 	//	double wgt = fBits->getWgt(isData,algo,LUMI,btagw);
 	double wgt = 1;
 	if(!isData) {
-          wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->kfactor*btagw*fBits->triggerEff*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
-	  if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){
-	    wgt *= fBits->ToptagSF;
+          wgt *= LUMI*fBits->evtWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
+          if(preselection.compare("Had")!=0) wgt *= fBits->triggerEff;
+	  if(selection.compare("BstMonoTop")==0){
+	    if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){
+	      wgt *= fBits->ToptagSF;
+	    }
 	  }
+	  if(subsample.find("SR")!=std::string::npos){
+            if(isam==samplev.size()-8) wgt *= 0.01;  
+            else if(isam==samplev.size()-7) wgt *= 0.01;
+            else if(isam==samplev.size()-6) wgt *= 0.01;
+            else if(isam==samplev.size()-5) wgt *= 0.01;
+            else if(isam==samplev.size()-4) wgt *= 0.01;
+            else if(isam==samplev.size()-3) wgt *= 0.01;
+            else if(isam==samplev.size()-2) wgt *= 0.01;
+            else if(isam==samplev.size()-1) wgt *= 0.01;
+	    else wgt *=fBits->scale1fb;
+          }
+	  else wgt *=fBits->scale1fb;
 	  // if(sample->label!="ttbar" || ifile!=0 || fBits->isHadronicTop15==0 || fBits->topSize15>=0.8 || fBits->topSize15<0 || fBits->topMatching15>=1.4 || fBits->topMatching15<0){
           //   wgt *= fBits->TopmistagSF;
           // }
@@ -343,9 +370,8 @@ void skimMonoX(const string preselection, const string selection, const string s
         metphi_  = fBits->getMET(preselection).Phi();
         weight_  = wgt;
 	mt_      = fBits->transverse_mass(selection);
-	//	genVpt_   = fBits->genvpt(selection);
-	genVpt_   = fBits->genVpt;
-	genVphi_  = fBits->genVphi;
+	genVpt_  = fBits->genVpt;
+	genVphi_ = fBits->genVphi;
 
 	if(!isData || !doBlind) { outtreesv[isam]->Fill(); }
       }

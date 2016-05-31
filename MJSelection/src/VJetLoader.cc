@@ -35,10 +35,10 @@ VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN,
 
 }
 VJetLoader::~VJetLoader() { 
-  //delete fVJets;
-  //delete fVJetBr;
-  //delete fVAddJets;
-  //delete fVAddJetBr;
+  delete fVJets;
+  delete fVJetBr;
+  delete fVAddJets;
+  delete fVAddJetBr;
   // delete fFatJets;
   // delete fFatJetBr;
 }
@@ -51,6 +51,9 @@ void VJetLoader::reset() {
   ftopSize       = 999;
   ftopMatching   = 999;
   fisHadronicTop = 0;
+  fvSize         = 999;
+  fvMatching     = 999;
+  fisHadronicV   = 0;
   fSelVJets.clear();
   fGoodVSubJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
@@ -77,9 +80,12 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
 
   std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
   std::stringstream pSNJ;   pSNJ << iJetLabel << "s";
-  std::stringstream pSis;   pSis << iJetLabel << "0_isHadronicTop";
+  std::stringstream pSiT;   pSiT << iJetLabel << "0_isHadronicTop";
   std::stringstream pSTM;   pSTM << iJetLabel << "0_topMatching";
   std::stringstream pSTS;   pSTS << iJetLabel << "0_topSize";
+  std::stringstream pSiV;   pSiV << iJetLabel << "0_isHadronicV";
+  std::stringstream pSVM;   pSVM << iJetLabel << "0_vMatching";
+  std::stringstream pSVS;   pSVS << iJetLabel << "0_vSize";
 
   fTree = iTree;
   for(int i0 = 0; i0 < fN*4.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
@@ -88,9 +94,12 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars,fN*3,fLabels);
   fTree->Branch(pSNJ.str().c_str() ,&fNVJets        ,(pSNJ.str()+"/I").c_str());
   fTree->Branch(pSMT.str().c_str() ,&fVMT           ,(pSMT.str()+"/F").c_str());
-  fTree->Branch(pSis.str().c_str() ,&fisHadronicTop ,(pSis.str()+"/I").c_str());
+  fTree->Branch(pSiT.str().c_str() ,&fisHadronicTop ,(pSiT.str()+"/I").c_str());
   fTree->Branch(pSTM.str().c_str() ,&ftopMatching   ,(pSTM.str()+"/D").c_str());
   fTree->Branch(pSTS.str().c_str() ,&ftopSize       ,(pSTS.str()+"/D").c_str());
+  fTree->Branch(pSiV.str().c_str() ,&fisHadronicV   ,(pSiT.str()+"/I").c_str());
+  fTree->Branch(pSVM.str().c_str() ,&fvMatching     ,(pSVM.str()+"/D").c_str());
+  fTree->Branch(pSVS.str().c_str() ,&fvSize         ,(pSVS.str()+"/D").c_str());
 }
 void VJetLoader::setupTreeSubJetBTag(TTree *iTree, std::string iJetLabel) {
   resetSubJetBTag();

@@ -21,10 +21,34 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
         ./skimMonoX.sh Had BstMonoTop ${reg} ${combo} ${algo} SJMISTAGDO jet
 fi
 
-if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoHbb") ]]; then
-        ./skimMonoX.sh Had BstMonoHbb ${reg} ${combo} ${algo} CENT jetT
-        ./skimMonoX.sh Had BstMonoHbb ${reg} ${combo} ${algo} BTAGUP jetT
-        ./skimMonoX.sh Had BstMonoHbb ${reg} ${combo} ${algo} BTAGDO jetT
-        ./skimMonoX.sh Had BstMonoHbb ${reg} ${combo} ${algo} MISTAGUP jetT
-        ./skimMonoX.sh Had BstMonoHbb ${reg} ${combo} ${algo} MISTAGDO jetT
+if [[ ($sample = "All") || ($sample != "All" && $sample = "Bst15MonoHbb") ]]; then
+        ./skimMonoX.sh Had Bst15MonoHbb ${reg} ${combo} ${algo} CENT jet jetT
+        ./skimMonoX.sh Had Bst15MonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
+        ./skimMonoX.sh Had Bst15MonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
+        ./skimMonoX.sh Had Bst15MonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        ./skimMonoX.sh Had Bst15MonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
+        ./skimMonoX.sh Had Bst15MonoHbb ${reg} ${combo} ${algo} SJBTAGUP jet jetT
+        ./skimMonoX.sh Had Bst15MonoHbb ${reg} ${combo} ${algo} SJBTAGDO jet jetT
+        ./skimMonoX.sh Had Bst15MonoHbb ${reg} ${combo} ${algo} SJMISTAGUP jet jetT
+        ./skimMonoX.sh Had Bst15MonoHbb ${reg} ${combo} ${algo} SJMISTAGDO jet jetT
+fi
+
+if [[ ($sample = "All") || ($sample != "All" && $sample = "Bst8MonoHbb") ]]; then
+        ./skimMonoX.sh Had Bst8MonoHbb ${reg} ${combo} ${algo} CENT jet jetT
+        ./skimMonoX.sh Had Bst8MonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
+        ./skimMonoX.sh Had Bst8MonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
+        ./skimMonoX.sh Had Bst8MonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        ./skimMonoX.sh Had Bst8MonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
+        ./skimMonoX.sh Had Bst8MonoHbb ${reg} ${combo} ${algo} DOUBLEBBTAGUP jet jetT
+        ./skimMonoX.sh Had Bst8MonoHbb ${reg} ${combo} ${algo} DOUBLEBBTAGDO jet jetT
+        ./skimMonoX.sh Had Bst8MonoHbb ${reg} ${combo} ${algo} DOUBLEBMISTAGUP jet jetT
+        ./skimMonoX.sh Had Bst8MonoHbb ${reg} ${combo} ${algo} DOUBLEBMISTAGDO jet jetT
+fi
+
+if [[ ($sample = "All") || ($sample != "All" && $sample = "ResMonoHbb") ]]; then
+        ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} CENT jet jetT
+        # ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
+        # ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
+        # ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        # ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
 fi
