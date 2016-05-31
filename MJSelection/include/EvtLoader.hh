@@ -69,8 +69,8 @@ public:
   float fevtWeight;
   float fScale;
 
-  float fkFactor_CENT;
-  float fEwkCorr_CENT;
+  float fkFactor_CENT, fkFactor_UP, fkFactor_DO;
+  float fEwkCorr_CENT, fEwkCorr_UP, fEwkCorr_DO;
   float fkfactor;
 
   double fEffTrigger;

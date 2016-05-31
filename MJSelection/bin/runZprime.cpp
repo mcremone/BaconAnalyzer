@@ -160,13 +160,17 @@ int main( int argc, char **argv ) {
     if(lName.find("ZJets")!=std::string::npos || lName.find("DYJets")!=std::string::npos){
       fGen->findBoson(23,0);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z");
+      if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,23);
     }
     if(lName.find("WJets")!=std::string::npos){
       fGen->findBoson(24,1);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W");
+      if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,24);
     }
     if(lName.find("ZPrime")!=std::string::npos){
       fGen->findBoson(10031,0);
+      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z");
+      if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,10031);
     }
     if(lName.find("TTJets")!=std::string::npos){
       fEvt->fevtWeight *= fGen->computeTTbarCorr();

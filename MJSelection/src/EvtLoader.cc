@@ -45,7 +45,11 @@ void EvtLoader::reset() {
   fevtWeight    = 0;
   fkfactor      = 0;
   fkFactor_CENT = 0;
+  fkFactor_UP   = 0;
+  fkFactor_DO   = 0;
   fEwkCorr_CENT = 0;
+  fEwkCorr_UP   = 0;
+  fEwkCorr_DO   = 0;
 
   fMet          = 0; 
   fMetPhi       = 0; 
@@ -75,6 +79,13 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("evtWeight"       ,&fevtWeight      ,"fevtWeight/F");
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
   fTree->Branch("kfactor"         ,&fkfactor        ,"fkfactor/F");
+
+  fTree->Branch("kFactor_CENT"    ,&fkFactor_CENT   ,"fkFactor_CENT/F");
+  fTree->Branch("kFactor_UP"      ,&fkFactor_UP     ,"fkFactor_UP/F");
+  fTree->Branch("kFactor_DO"      ,&fkFactor_DO     ,"fkFactor_DO/F");
+  fTree->Branch("EwkCorr_CENT"    ,&fEwkCorr_CENT   ,"fEwkCorr_CENT/F");
+  fTree->Branch("EwkCorr_UP"      ,&fEwkCorr_UP     ,"fEwkCorr_UP/F");
+  fTree->Branch("EwkCorr_DO"      ,&fEwkCorr_DO     ,"fEwkCorr_DO/F");
 
   fTree->Branch("pfmet"           ,&fMet            ,"fMet/F");
   fTree->Branch("pfmetphi"        ,&fMetPhi         ,"fMetPhi/F");
