@@ -9,5 +9,9 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
 fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoHbb") ]]; then
-    rm monohbb-boosted-combo-may8.root; hadd monohbb-boosted-combo-may8.root monoxntuples/*BstMonoHbb*;
+    #rm monohbb-boosted-combo-may27_bst15.root; hadd monohbb-boosted-combo-may27_bst15.root monoxntuples/*Bst15MonoHbb*COMBO*;
+    rm monohbb-resolved-combo-may28_res.root; hadd monohbb-resolved-combo-may28_res.root monoxntuples/*ResMonoHbb*COMBO*;
+    #rm monohbb-boosted-only-may25_bst8.root; hadd monohbb-boosted-only-may25_bst8.root monoxntuples/*Bst8MonoHbb*ONLY*;
+    #rm monohbb-resolved-only-may27_res.root; hadd monohbb-resolved-only-may27_res.root monoxntuples/*ResMonoHbb*ONLY*;
+    rm monohbb-boosted-only-may28_bst15.root; hadd monohbb-boosted-only-may28_bst15.root monoxntuples/*Bst15MonoHbb*ONLY*;
 fi

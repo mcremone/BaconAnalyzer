@@ -563,7 +563,7 @@ void GenLoader::findBoson(int iId, int lOption){
       }      
     }
     
-    // find last boson Z(23),W(24),Z'(32)
+    // find last boson Z(23),W(24),Z'(10031)
     if(lOption == 1){
       if(fabs(genp0->pdgId)==iId){
         int iL0 = findLastBoson(i0,iId);

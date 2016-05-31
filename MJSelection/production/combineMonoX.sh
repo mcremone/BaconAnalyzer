@@ -4,10 +4,10 @@ sample=$1
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then rm ../monoxbits/QCD.root;  hadd  ../monoxbits/QCD.root   ../monoxbits/*QCD*mc/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
-    for x in `ls ../monoxbits | grep Monotop | grep -v .root`; do
+   for x in `ls ../monoxbits | grep Monotop | grep -v .root`; do
 	rm ../monoxbits/$x.root
 	hadd ../monoxbits/$x.root ../monoxbits/$x/*.root
-    done
+   done
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoHbb") ]]; then
     for x in `ls ../monoxbits | grep ZprimeToA0hToA0chichihbb_2HDM_MZp_ | grep -v .root`; do
