@@ -308,6 +308,101 @@ bool GenLoader::isGenParticle(int iId) {
   }
   return false;
 }
+bool isType(string boson,string mode)
+{
+ if (boson.find"Z"){
+    const int PDGID=23;
+    if(mode.find("bb")==0){
+ bool isb = false;
+for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+   if(abs(genp->pdgId)==5) {
+     if(genp->parent<0) continue;
+     const baconhep::TGenParticle *parent = (baconhep::TGenParticle*)genParArr->At(genp->parent);
+     if(abs(parent->pdgId)==PDGID) {
+       isb = true;
+       break;
+     }
+   }
+ }
+ return isb;}
+   if(mode.find("cc")==0){
+ bool isc = false;
+for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+   if(abs(genp->pdgId)==4) {
+     if(genp->parent<0) continue;
+     const baconhep::TGenParticle *parent = (baconhep::TGenParticle*)genParArr->At(genp->parent);
+     if(abs(parent->pdgId)==PDGID) {
+       isc = true;
+       break;
+     }
+   }
+ }
+ return isc;}
+  
+}
+
+if (boson.find("Zprime")==0){
+    const int PDGID=10031;
+    if(mode.find("bb")==0){
+ bool isb = false;
+for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+   if(abs(genp->pdgId)==5) {
+     if(genp->parent<0) continue;
+     const baconhep::TGenParticle *parent = (baconhep::TGenParticle*)genParArr->At(genp->parent);
+     if(abs(parent->pdgId)==PDGID) {
+       isb = true;
+       break;
+     }
+   }
+ }
+ return isb;}
+   if(mode.find("cc")==0){
+ bool isc = false;
+for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+   if(abs(genp->pdgId)==4) {
+     if(genp->parent<0) continue;
+     const baconhep::TGenParticle *parent = (baconhep::TGenParticle*)genParArr->At(genp->parent);
+     if(abs(parent->pdgId)==PDGID) {
+       isc = true;
+       break;
+     }
+   }
+ }
+ return isc;}
+}
+
+ if (boson.find("W")==0){
+   const int PDGID=24;   
+   if(mode.find("cs")==0){
+ bool iscs = false;
+ bool isc  = false;
+ bool iss  = false;
+for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+   if(abs(genp->pdgId)==4) {
+     if(genp->parent<0) continue;
+     const baconhep::TGenParticle *parent = (baconhep::TGenParticle*)genParArr->At(genp->parent);
+     if(abs(parent->pdgId)==PDGID) {
+       isc = true;
+       break;
+     }
+   }
+ }
+for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+   if(abs(genp->pdgId)==3) {
+     if(genp->parent<0) continue;
+     const baconhep::TGenParticle *parent = (baconhep::TGenParticle*)genParArr->At(genp->parent);
+     if(abs(parent->pdgId)==PDGID) {
+       iss = true;
+       break;
+     }
+   }
+ }
+ iscs = isc && iss;
+ return iscs;}
+
+}
+}
+
 int GenLoader::isttbarType() {
   assert(fGens);
   int nlep=0;

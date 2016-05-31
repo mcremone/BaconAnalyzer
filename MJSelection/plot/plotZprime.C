@@ -144,8 +144,8 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   TTree *intree=0;
 
   // Loop over samples
-  for(unsigned int isam=0; isam<samplev.size(); isam++) {
-  //  for(unsigned int isam=5; isam<6; isam++) {
+  //for(unsigned int isam=0; isam<samplev.size(); isam++) {
+    for(unsigned int isam=5; isam<6; isam++) {
     CSample *sample  = samplev[isam];
     cout << "Sample: " << sample->label << endl;
     bool isData    = (isam==0);
@@ -218,7 +218,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   // QCD SF
   //
   double QCDSF = 1.0;
-  QCDSF = (neventsv[0]-(neventsv[2]+neventsv[3]+neventsv[4]+neventsv[5]+neventsv[6]))/neventsv[1];
+  //QCDSF = (neventsv[0]-(neventsv[2]+neventsv[3]+neventsv[4]+neventsv[5]+neventsv[6]))/neventsv[1];
   hFatJetPtv[1]       ->Scale(QCDSF);
   hFatJetPtLogv[1]    ->Scale(QCDSF);
   hFatJetEtav[1]      ->Scale(QCDSF);

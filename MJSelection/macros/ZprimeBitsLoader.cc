@@ -39,8 +39,9 @@ bool ZprimeBitsLoader::selectJetAlgoAndSize(TString algo){
   return lPass;
 }
 bool ZprimeBitsLoader::passBoostedZprimePreselection(){
-  
- return njets>0 & bst_jet0_pt>500;
+ if((bst_jet0_msd>60) && (bst_jet0_msd<100)){ 
+ return njets>0 & bst_jet0_pt>500;}
+ else {return false;}
 }
 bool ZprimeBitsLoader::passBoostedZprimeSR(float ddtcut){
   
