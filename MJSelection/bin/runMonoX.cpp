@@ -41,14 +41,14 @@ ElectronLoader   *fElectron = 0;
 TauLoader        *fTau      = 0; 
 PhotonLoader     *fPhoton   = 0; 
 JetLoader        *fJet      = 0; 
-VJetLoader       *fVJet15   = 0;
-VJetLoader       *fVJet8T   = 0;
 BTagWeightLoader *fBTag     = 0;
 BTagWeightLoader *fBTag15   = 0;
 BTagWeightLoader *fBTag8T   = 0;
+VJetLoader       *fVJet15   = 0;
+VJetLoader       *fVJet8T   = 0;
 RunLumiRangeMap  *fRangeMap = 0; 
 
-TH1F *fHist                = 0; 
+TH1F *fHist                 = 0; 
 
 // Load tree and return infile
 TTree* load(std::string iName) { 
@@ -78,31 +78,32 @@ int main( int argc, char **argv ) {
   TTree *lTree = load(lName); 
   
   // Declare Readers 
-  fEvt      = new EvtLoader     (lTree,lName);                                           // fEvt, fEvtBr, fVertices, fVertexBr
-  fMuon     = new MuonLoader    (lTree);                                                 // fMuon and fMuonBr, fN = 2 - muonArr and muonBr
-  fElectron = new ElectronLoader(lTree);                                                 // fElectrons and fElectronBr, fN = 2
-  fTau      = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
-  fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
-  fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
-  fVJet15   = new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
-  fVJet8T   = new VJetLoader    (lTree,"CA8Puppi","AddCA8Puppi");
-  if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
+  fEvt      = new EvtLoader       (lTree,lName);                                           // fEvt, fEvtBr, fVertices, fVertexBr
+  fMuon     = new MuonLoader      (lTree);                                                 // fMuon and fMuonBr, fN = 2 - muonArr and muonBr
+  fElectron = new ElectronLoader  (lTree);                                                 // fElectrons and fElectronBr, fN = 2
+  fTau      = new TauLoader       (lTree);                                                 // fTaus and fTaurBr, fN = 1
+  fPhoton   = new PhotonLoader    (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
+  fJet      = new JetLoader       (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
+  fBTag     = new BTagWeightLoader(lTree);
+  fBTag15   = new BTagWeightLoader(lTree);
+  fBTag8T   = new BTagWeightLoader(lTree);
+  fVJet15   = new VJetLoader      (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
+  fVJet8T   = new VJetLoader      (lTree,"CA8Puppi","AddCA8Puppi");
+  if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);       // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
 
   // Setup Tree
-  fEvt     ->setupTree      (lOut); 
-  fMuon    ->setupTree      (lOut);
-  fElectron->setupTree      (lOut);
-  fTau     ->setupTree      (lOut);
-  fPhoton  ->setupTree      (lOut);
-  fJet     ->setupTree      (lOut,"res_PUPPIjet"); 
-  fJet     ->setupTree      (lOut,"res_PUPPIjet");  
-  fBTag    ->setupTree      (lOut,"res_PUPPIjet");
-  //fBTag15  ->setupTree      (lOut,"res_PUPPIjetbst15");
-  //fBTag8T  ->setupTree      (lOut,"res_PUPPIjetbst8T");
-  
+  fEvt     ->setupTree           (lOut); 
+  fMuon    ->setupTree           (lOut);
+  fElectron->setupTree           (lOut);
+  fTau     ->setupTree           (lOut);
+  fPhoton  ->setupTree           (lOut);
+  fJet     ->setupTree           (lOut,"res_PUPPIjet"); 
+  fBTag    ->setupTree           (lOut,"res_PUPPIjet");
+  fBTag15  ->setupTree           (lOut,"res_PUPPIjetbst15");
+  fBTag8T  ->setupTree           (lOut,"res_PUPPIjetbst8T");
   fVJet15  ->setupTree           (lOut,"bst15_PUPPIjet"); 
   fVJet15  ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
   fVJet8T  ->setupTree           (lOut,"bst8_PUPPIjetT");
@@ -220,9 +221,9 @@ int main( int argc, char **argv ) {
       if(lOption.find("data")==std::string::npos){
 	fJet->fillGoodJets(lVJets15,lGoodJets15);
 	fJet->fillGoodJets(lVJets8T,lGoodJets8T);
-	//fBTag->fillBTag(fJet->fGoodJets);
-        //fBTag15->fillBTag(lGoodJets15);
-        //fBTag8T->fillBTag(lGoodJets8T);
+	fBTag->fillBTag(fJet->fGoodJets);
+        fBTag15->fillBTag(lGoodJets15);
+        fBTag8T->fillBTag(lGoodJets8T);
       }
       fEvt->fselectBits =  fEvt->fselectBits | 8;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJets,fJet->fMT);

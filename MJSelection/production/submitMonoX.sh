@@ -118,50 +118,53 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
     ./sub.sh mc $eos Monotop_S4_Mchi_900_13TeV_madgraph_pythia8_2                                                   1  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
-  ./sub.sh data $eos SingleElectronRun2015D_16Dec2015_v1                                                            1  $dir $exec $option1 $option2
+    ./sub.sh data $eos SingleElectronRun2015D_16Dec2015_v1                                                          1  $dir $exec $option1 $option2
 fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then
 #     ./sub.sh data $eos SingleMuonRun2015D_16Dec2015_v1                                                              1  $dir $exec $option1 $option2
 # fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoHbb") ]]; then
-    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_300_13TeV_madgraph                                  0.0234  $dir $exec $option1 $option2   
+    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_300_13TeV_madgraph                             0.0234  $dir $exec $option1 $option2   
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_400_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_500_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_600_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_800_13TeV_madgraph                                  1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_300_13TeV_madgraph                                  0.0183  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_300_13TeV_madgraph                             0.0183  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_500_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_600_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_700_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_800_13TeV_madgraph                                  1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_300_13TeV_madgraph                                  0.0136  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_300_13TeV_madgraph                             0.0136  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_400_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_500_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_600_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_700_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_800_13TeV_madgraph                                  1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_300_13TeV_madgraph                                  0.00871  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_300_13TeV_madgraph                            0.00871  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_400_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_500_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_600_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_700_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_800_13TeV_madgraph                                  1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_300_13TeV_madgraph                                  0.00561  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_300_13TeV_madgraph                            0.00561  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_400_13TeV_madgraph                                  1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_500_13TeV_madgraph_2                                1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_600_13TeV_madgraph_2                                1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_700_13TeV_madgraph_2                                1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_800_13TeV_madgraph_2                                1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_300_13TeV_madgraph_2                                0.00280  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_300_13TeV_madgraph_2                          0.00280  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_400_13TeV_madgraph_2                                1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_500_13TeV_madgraph_2                                1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_600_13TeV_madgraph_2                                1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_700_13TeV_madgraph_2                                1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_800_13TeV_madgraph_2                                1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_300_13TeV_madgraph                                   0.0260  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_300_13TeV_madgraph                              0.0260  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_400_13TeV_madgraph                                   1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_300_13TeV_madgraph                                   0.0288  $dir $exec $option1 $option2
+    ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_300_13TeV_madgraph                              0.0288  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_400_13TeV_madgraph                                   1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_500_13TeV_madgraph                                   1  $dir $exec $option1 $option2
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_600_13TeV_madgraph                                   1  $dir $exec $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "TTDM") ]]; then
+    ./sub.sh mc $eos TTbarDMJets_pseudoscalar_Mchi_1_Mphi_100_13TeV                                                 1  $dir $exec $option1 $option2
 fi

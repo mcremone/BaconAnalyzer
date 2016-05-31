@@ -1,16 +1,15 @@
 #include "../include/BTagWeightLoader.hh"
 #include <cmath>
 #include <iostream> 
+#include <string>
 #include <sstream>
-#include <vector>
+
 using namespace baconhep;
 
 BTagWeightLoader::BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilename) { 
   fJetCalib = new BTagCalibration("csvv2",btagScaleFactorFilename);
   freadersL.clear(); freadersM.clear(); freadersT.clear();
   freaders.clear();
-  std::vector<std::string> measurementTypes = {"mujets", "incl"};
-  std::vector<std::string>  variationTypes = {"central", "up", "down"};
   for(auto imtype : measurementTypes) { // freadersL 6 , freadersM 6, freadersT 6
     for(auto ivtype : variationTypes) {
       freadersL.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_LOOSE,  imtype, ivtype)); // first mujets(HF) then incl(LF) and first central(0,3) then up(1,4) and then down(2,5)
@@ -20,22 +19,22 @@ BTagWeightLoader::BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilen
   }
   freaders.push_back(freadersL); freaders.push_back(freadersM); freaders.push_back(freadersT);
 }
-BTagWeightLoader::~BTagWeightLoader(){
+BTagWeightLoader::~BTagWeightLoader() {
+  delete fJetCalib;
 }
 void BTagWeightLoader::reset() {
-  for(unsigned int i0 = 0; i0 < 60; i0++) fVars[i0] = 1;
+  for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 1;
 }
-void BTagWeightLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
-  std::vector<std::string>  wpTypes = {"L","M","T"}; 
-  for(int i0 = 0; i0 < 60; i0++) {double pVar = 0; fVars.push_back(pVar);} 
+void BTagWeightLoader::setupTree(TTree *iTree, std::string iJetLabel) {
+  reset();
+  for(int i0 = 0; i0 < 60; i0++) {float pVar = 1; fVars.push_back(pVar);} 
   int i1 = 0;
   for(auto iwptype : wpTypes) {
-    std::vector<std::string> fLabels = {"CENT", "MISTAGUP","MISTAGDO","BTAGUP","BTAGDO"};
     addBTag(iJetLabel.c_str(),iTree,iwptype,fLabels,i1,fVars);
     i1 += 20;
   }
 }
-void BTagWeightLoader::addBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> iLabels,int iN,std::vector<double> &iVals) {
+void BTagWeightLoader::addBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> iLabels,int iN,std::vector<float> &iVals) {
   int iBase=iN;
   for(int i0 = 0; i0 < int(iLabels.size()); i0++) {
     std::stringstream pVal0,pVal1,pValminus1,pVal2;
@@ -52,7 +51,6 @@ void BTagWeightLoader::addBTag(std::string iHeader,TTree *iTree,std::string iLab
 }
 void BTagWeightLoader::fillBTag(std::vector<const TJet*> iObjects) {
   // vSFL should contain CENT (), MISTAG(Ms), BTAG(Bs)  - 5 - CENT(vSFL.at(0)),MsUP(vSFL.at(1)),MsDO(vSFL.at(2)),BsUP(vSFL.at(3)),BsDO(vSFL.at(4))
-  std::vector<std::string> flavorTypes = {"Ms", "Bs"};  
   int iN = 0;
   for(unsigned int j0=0; j0<3; j0++){  // L, M, T
     std::vector<std::vector<float>> vSFL,vSFL_nominal;
@@ -65,8 +63,7 @@ void BTagWeightLoader::fillBTag(std::vector<const TJet*> iObjects) {
 
     for(auto iftype :flavorTypes) {
       for(unsigned int i0=1; i0<3; i0++){
-	std::vector<float> vSF0;
-	vSF0.clear();
+	std::vector<float> vSF0;  vSF0.clear();
 	for(unsigned int i1=0; i1<(vSFL.at(0)).size(); i1++) {
 	  if(iftype.compare("Ms")==0) vSF0.push_back( (getJetSFs(iftype,iObjects, freaders[j0].at(i0), freaders[j0].at(i0+3))).at(i1) * (vSFL_nominal.at(2).at(i1)));
 	  if(iftype.compare("Bs")==0) vSF0.push_back( (getJetSFs(iftype,iObjects, freaders[j0].at(i0), freaders[j0].at(i0+3))).at(i1) * (vSFL_nominal.at(1).at(i1)));

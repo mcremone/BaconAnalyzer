@@ -5,10 +5,10 @@
 
 using namespace baconhep;
 
-JetLoader::JetLoader(TTree *iTree) { 
+JetLoader::JetLoader(TTree *iTree, std::string iJet) { 
   fJets  = new TClonesArray("baconhep::TJet");
-  iTree->SetBranchAddress("AK4Puppi",       &fJets);
-  fJetBr  = iTree->GetBranch("AK4Puppi");
+  iTree->SetBranchAddress(iJet.c_str(),       &fJets);
+  fJetBr = iTree->GetBranch(iJet.c_str());
   fN = 4; // 4 narrow jets
   std::vector<JetCorrectorParameters> corrParams;
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt"));
@@ -86,17 +86,26 @@ void JetLoader::setupTreeDiJet(TTree *iTree, std::string iJetLabel) {
   std::stringstream diJet;   diJet << "dj" << iJetLabel;
   addDijet   (diJet.str().c_str(),iTree,1, fVars);                                    // Dijet: pt + mass + csv + ..  for dj1 (7*1 =7)
 }
-void JetLoader::setupTreeRazor(TTree *iTree) {
+void JetLoader::setupTreeRazor(TTree *iTree, std::string iJetLabel) {
   reset();
   fTree = iTree;
-  fTree->Branch("alphaT"          ,&falphaT     ,"falphaT/F");                        // alpha T
-  fTree->Branch("mindFPhi"        ,&fdPhiMin    ,"fdPhiMin/F");                       // dPhi Min
-  fTree->Branch("MR"              ,&fMR         ,"fMR/F");                            // MR
-  fTree->Branch("Rsq"             ,&fRsq        ,"fRsq/F");                           // Rsq 
-  fTree->Branch("deltaPhi"        ,&fdeltaPhi   ,"fdeltaPhi/F");                      // deltaPhi
-  fTree->Branch("HT"              ,&fHT         ,"fHT/F");                            // HT
-  fTree->Branch("MHT"             ,&fMHT        ,"fMHT/F");                           // MHT
-  // fTree->Branch("MT2"             ,&fMT2        ,"fMT2/F");                           // MT2
+  std::stringstream pSalphaT,pSdPhiMin,pSMR,pSRsq,pSdeltaPhi,pSHT,pSMHT;//,pSMT2;
+  pSalphaT   << iJetLabel << "alphaT";
+  pSdPhiMin  << iJetLabel << "mindFPhi";
+  pSMR       << iJetLabel << "MR";
+  pSRsq      << iJetLabel << "Rsq";
+  pSdeltaPhi << iJetLabel << "deltaPhi";
+  pSHT       << iJetLabel << "HT";
+  pSMHT      << iJetLabel << "MHT";
+  // pSMT2      << iJetLabel << "MT2";
+  iTree->Branch(pSalphaT  .str().c_str(),&falphaT  ,(pSalphaT  .str()+"/F").c_str());     // alphaT
+  iTree->Branch(pSdPhiMin .str().c_str(),&fdPhiMin ,(pSdPhiMin .str()+"/F").c_str());     // dPhi Min
+  iTree->Branch(pSMR      .str().c_str(),&fMR      ,(pSMR      .str()+"/F").c_str());     // MR
+  iTree->Branch(pSRsq     .str().c_str(),&fRsq     ,(pSRsq     .str()+"/F").c_str());     // Rsq
+  iTree->Branch(pSdeltaPhi.str().c_str(),&fdeltaPhi,(pSdeltaPhi.str()+"/F").c_str());     // deltaPhi
+  iTree->Branch(pSHT      .str().c_str(),&fHT      ,(pSHT      .str()+"/F").c_str());     // HT
+  iTree->Branch(pSMHT     .str().c_str(),&fMHT     ,(pSMHT     .str()+"/F").c_str());     // MHT
+  // iTree->Branch(pSMT2     .str().c_str(),&fMT2     ,(pSMT2     .str()+"/F").c_str());     // MT2
 }
 void JetLoader::load(int iEvent) { 
   fJets   ->Clear();
@@ -116,7 +125,7 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
     if(fabs(pJet->eta) >= 4.5)                    continue;
     if(!passJetLooseSel(pJet))                    continue;
     lCount++;
-    if(pJet->pt        >  80) lCountAbove80GeV++;
+    if(pJet->pt        >   80) lCountAbove80GeV++;
     addJet(pJet,fSelJets);
     addVJet(pJet,iJets,pJet->mass);
 
@@ -125,15 +134,13 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
 
     fGoodJets.push_back(pJet);
 
-    if(iVJets.size()>0 && iVJets[0].Pt()>0 && vPJet.DeltaR(iVJets[0])>2){
-      lCountdR2++;
-    }
     if(acos(cos(iMetPhi-pJet->phi))    < pDPhi)    pDPhi  = acos(cos(iMetPhi-pJet->phi));
     if(iFMet > 0){
       if(acos(cos(iFMetPhi-pJet->phi)) < pDFPhi)   pDFPhi = acos(cos(iFMetPhi-pJet->phi)); 
     }
 
     // jet and b-tag multiplicity
+    if(iVJets.size()>0 && iVJets[0].Pt()>0 && vPJet.DeltaR(iVJets[0])>2) lCountdR2++;
     if(fabs(pJet->eta) < 2.5 && pJet->csv > CSVL){
       lNBTagL++;
       if(iVJets.size()>0) {if(pJet->pt>0 && vPJet.DeltaR(iVJets[0])>2) lNBTagLdR2++;}
@@ -164,9 +171,10 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
   fillDiJet();
   fillRazor(iJets,iMet,iMetPhi);
   TLorentzVector fMyMHT; fMyMHT.SetPxPyPzE(-pMhtX, -pMhtY, 0, sqrt(pow(pMhtX,2) + pow(pMhtY,2)));
-  fMHT = fMyMHT.Pt();
+  fMHT             = fMyMHT.Pt();
 }
 void JetLoader::fillGoodJets(std::vector<TLorentzVector> &iVJets,std::vector<const TJet*> &iGoodJets){
+  iGoodJets.clear();
   for(unsigned int i0 = 0; i0 < fGoodJets.size(); i0++) {
     TLorentzVector vPJet; vPJet.SetPtEtaPhiM(fGoodJets[i0]->pt, fGoodJets[i0]->eta, fGoodJets[i0]->phi, fGoodJets[i0]->mass);
     if(iVJets.size()>0 && iVJets[0].Pt()>0 && vPJet.DeltaR(iVJets[0])>2){

@@ -16,12 +16,12 @@ using namespace baconhep;
 
 class JetLoader { 
 public:
-  JetLoader(TTree *iTree);
+  JetLoader(TTree *iTree, std::string iJet = "AK4Puppi");
   ~JetLoader();
   void reset();
   void setupTree(TTree *iTree, std::string iJetLabel);
   void setupTreeDiJet(TTree *iTree, std::string iJetLabel);
-  void setupTreeRazor(TTree *iTree);
+  void setupTreeRazor(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
   void selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMet,float iMetPhi,float iFMet,float iFMetPhi);
   void fillGoodJets(std::vector<TLorentzVector> &iVJets,std::vector<const TJet*> &iGoodJets);
@@ -49,6 +49,32 @@ public:
   float         falphaT, fdPhiMin;
   float         fRsq; 
 
+  enum RazorBox { //boxes for razor inclusive analysis
+    MuEle = 0,  
+    MuMu = 1,
+    EleEle = 2,
+    MuSixJet = 3,
+    MuFourJet = 4,
+    MuJet = 5,
+    EleSixJet = 6,
+    EleFourJet = 7,
+    EleJet = 8,
+    LooseLeptonSixJet = 9,
+    LooseLeptonFourJet = 10, 
+    SixJet = 11, 
+    FourJet = 12, 
+    LooseLeptonDiJet = 13, 
+    DiJet = 14,         
+    TwoBJet = 15, 
+    OneBJet = 16, 
+    ZeroBJet = 17, 
+    MuMultiJet = 18, 
+    EleMultiJet = 19, 
+    LooseLeptonMultiJet = 20, 
+    MultiJet = 21, 
+    NONE = 999 
+  };
+  
 protected: 
   TClonesArray *fJets;
   TBranch      *fJetBr;

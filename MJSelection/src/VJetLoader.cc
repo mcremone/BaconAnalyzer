@@ -35,10 +35,10 @@ VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN,
 
 }
 VJetLoader::~VJetLoader() { 
-  //delete fVJets;
-  //delete fVJetBr;
-  //delete fVAddJets;
-  //delete fVAddJetBr;
+  delete fVJets;
+  delete fVJetBr;
+  delete fVAddJets;
+  delete fVAddJetBr;
   // delete fFatJets;
   // delete fFatJetBr;
 }
