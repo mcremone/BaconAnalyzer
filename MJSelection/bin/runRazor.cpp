@@ -224,15 +224,15 @@ int main( int argc, char **argv ) {
 
     if(lOption.find("mcg")!=std::string::npos){
       fGen->findBoson(22,0); 
-      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"GJets_1j_NLO/nominal_G","GJets_LO/inv_pt_G","EWKcorr/photon");
+      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"GJets_1j_NLO/nominal_G","GJets_LO/inv_pt_G","EWKcorr/photon","GJets_1j_NLO");
     }
     if(lOption.find("mcz")!=std::string::npos || lOption.find("mcdy")!=std::string::npos){
       fGen->findBoson(23,1);
-      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z");
+      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z","ZJets_012j_NLO");
     }
     if(lOption.find("mcw")!=std::string::npos){
       fGen->findBoson(24,1);
-      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W"); 
+      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W","WJets_012j_NLO"); 
     }
     if(lOption.find("tt")!=std::string::npos){
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
