@@ -342,9 +342,8 @@ for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
  }
  return isc;}
   
-}
-
-if (boson.find("Zprime")==0){
+  
+  if (boson.find("Zprime")==0){
     const int PDGID=10031;
     if(mode.find("bb")==0){
  bool isb = false;
@@ -398,7 +397,6 @@ for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
 }
  return false;
 }
-
 int GenLoader::isttbarType() {
   assert(fGens);
   int nlep=0;
