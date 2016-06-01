@@ -24,7 +24,7 @@ public:
   TGenParticle* getStatus1(int iId,bool iIsNeut);
   bool isNeutrino(TGenParticle *iPart);
   bool isGenParticle(int iId);
-  bool isType(string boson,string mode);
+  bool isType(std::string boson,std::string mode);
   int isttbarType();
   int getId(int iId,int iPId,bool iIsNeut);
   TGenParticle *fBoson;

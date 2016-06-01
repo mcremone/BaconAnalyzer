@@ -112,6 +112,11 @@ int main( int argc, char **argv ) {
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
     }
 
+    // check hf or lf
+    if(lOption.find("bb")!=std::string::npos && !(fGen->isType("Z","bb") || fGen->isType("Zprime","bb"))) continue;
+    if(lOption.find("cc")!=std::string::npos && !(fGen->isType("Z","cc") || fGen->isType("Zprime","cc"))) continue;
+    if(lOption.find("lf")!=std::string::npos && !(fGen->isType("W","cs"))) continue;
+
     // primary vertex requirement
     if(!fEvt->PV()) continue;
     
