@@ -311,91 +311,33 @@ bool GenLoader::isGenParticle(int iId) {
 }
 bool GenLoader::isType(std::string boson,std::string mode)
 {
- if (boson.find("Z")==0){
-    const int PDGID=23;
-    if(mode.find("bb")==0){
- bool isb = false;
-for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
-   TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
-   if(abs(pGen->pdgId)==5) {
-     if(pGen->parent<0) continue;
-     const baconhep::TGenParticle *parent = (TGenParticle*)((*fGens)[pGen->parent]);
-     if(abs(parent->pdgId)==PDGID) {
-       isb = true;
-       break;
-     }
-   }
- }
- return isb;}
-   if(mode.find("cc")==0){
- bool isc = false;
-for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
-   TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
-   if(abs(pGen->pdgId)==4) {
-     if(pGen->parent<0) continue;
-     const baconhep::TGenParticle *parent = (TGenParticle*)((*fGens)[pGen->parent]);
-     if(abs(parent->pdgId)==PDGID) {
-       isc = true;
-       break;
-     }
-   }
- }
- return isc;}
+  int iPDGID,iId;
+  if (boson.find("Z")==0) iPDGID = 23;
+  if (boson.find("W")==0) iPDGID = 24;
+  if (boson.find("Zprime")==0) iPDGID = 10031;
   
+  if (mode.find("bb")==0) iId = 5;
+  if (mode.find("cc")==0) iId = 4;
+
+  for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
+    TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
+    if (mode.find("bb")==0 || mode.find("cc")==0) {
+      if(abs(pGen->pdgId)==iId) {
+	if(pGen->parent<0) continue;
+	TGenParticle *parent = (TGenParticle*)((*fGens)[pGen->parent]);
+	if(abs(parent->pdgId)==iPDGID) return true;
+      }
+    }
+    if (mode.find("cs")==0) {
+      if(abs(pGen->pdgId)==4 || abs(pGen->pdgId)==3) {
+	if(pGen->parent<0) continue;
+	TGenParticle *parent = (TGenParticle*)((*fGens)[pGen->parent]);
+	if(abs(parent->pdgId)==iPDGID) return true;
+      }
+    }
+  }
   
-  if (boson.find("Zprime")==0){
-    const int PDGID=10031;
-    if(mode.find("bb")==0){
- bool isb = false;
-for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
-  TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
-  if(abs(pGen->pdgId)==5) {
-     if(pGen->parent<0) continue;
-     const baconhep::TGenParticle *parent = (TGenParticle*)((*fGens)[pGen->parent]);
-     if(abs(parent->pdgId)==PDGID) {
-       isb = true;
-       break;
-     }
-   }
- }
- return isb;}
-   if(mode.find("cc")==0){
- bool isc = false;
-for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
-  TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]); 
-  if(abs(pGen->pdgId)==4) {
-     if(pGen->parent<0) continue;
-     const baconhep::TGenParticle *parent = (TGenParticle*)((*fGens)[pGen->parent]);
-     if(abs(parent->pdgId)==PDGID) {
-       isc = true;
-       break;
-     }
-   }
- }
- return isc;}
- 
-}
-
- if (boson.find("W")==0){
-   const int PDGID=24;   
-   if(mode.find("cs")==0){
- bool iscs = false;
- 
-for(int i0=0; i0 < fGens->GetEntriesFast(); i0++) {
-   TGenParticle *pGen = (TGenParticle*)((*fGens)[i0]);
-   if(abs(pGen->pdgId)==4 || abs(pGen->pdgId)==3) {
-     if(pGen->parent<0) continue;
-     const baconhep::TGenParticle *parent = (TGenParticle*)((*fGens)[pGen->parent]);
-     if(abs(parent->pdgId)==PDGID) {
-       iscs = true;
-       break;
-     }
-   }
- }
-
- return iscs;}
-}
- return false;
+  return false;
 }
 int GenLoader::isttbarType() {
   assert(fGens);
