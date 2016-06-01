@@ -87,7 +87,7 @@ int main( int argc, char **argv ) {
   fTau      = new TauLoader       (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader    (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader       (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
-  fJetCHS   = new JetLoader       (lTree);               
+  fJetCHS   = new JetLoader       (lTree,"AK4CHS");
   fBTag     = new BTagWeightLoader(lTree);
   fBTag15   = new BTagWeightLoader(lTree);
   fBTag8T   = new BTagWeightLoader(lTree);

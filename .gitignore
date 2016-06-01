@@ -12,6 +12,7 @@ LSFJOB*
 # no python init file
 python/__init__.py
 *.root
+MJSelection/scratch/
 MJSelection/plot/zprimeplots/
 MJSelection/plot/monoxplots/
 MJSelection/plot/razorplots/
@@ -39,3 +40,4 @@ MJSelection/macros/.__afs*
 MJSelection/plot/.__afs*
 MJSelection/skim/.__afs*
 MJSelection/production/.__afs*
+*core.*
