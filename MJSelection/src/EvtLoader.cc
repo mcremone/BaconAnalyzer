@@ -45,11 +45,12 @@ void EvtLoader::reset() {
   fevtWeight    = 0;
   fkfactor      = 0;
   fkFactor_CENT = 0;
-  fkFactor_UP   = 0;
-  fkFactor_DO   = 0;
   fEwkCorr_CENT = 0;
-  fEwkCorr_UP   = 0;
-  fEwkCorr_DO   = 0;
+
+  fRenScale_UP  = 0;
+  fRenScale_DO  = 0;
+  fFacScale_UP  = 0;
+  fFacScale_DO  = 0;
 
   fMet          = 0; 
   fMetPhi       = 0; 
@@ -80,12 +81,10 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
   fTree->Branch("kfactor"         ,&fkfactor        ,"fkfactor/F");
 
-  fTree->Branch("kFactor_CENT"    ,&fkFactor_CENT   ,"fkFactor_CENT/F");
-  fTree->Branch("kFactor_UP"      ,&fkFactor_UP     ,"fkFactor_UP/F");
-  fTree->Branch("kFactor_DO"      ,&fkFactor_DO     ,"fkFactor_DO/F");
-  fTree->Branch("EwkCorr_CENT"    ,&fEwkCorr_CENT   ,"fEwkCorr_CENT/F");
-  fTree->Branch("EwkCorr_UP"      ,&fEwkCorr_UP     ,"fEwkCorr_UP/F");
-  fTree->Branch("EwkCorr_DO"      ,&fEwkCorr_DO     ,"fEwkCorr_DO/F");
+  fTree->Branch("RenScale_UP"     ,&fRenScale_UP    ,"fRenScale_UP/F");
+  fTree->Branch("RenScale_DO"     ,&fRenScale_DO    ,"fRenScale_DO/F");
+  fTree->Branch("FacScale_UP"     ,&fFacScale_UP    ,"fFacScale_UP/F");
+  fTree->Branch("FacScale_DO"     ,&fFacScale_DO    ,"fFacScale_DO/F");
 
   fTree->Branch("pfmet"           ,&fMet            ,"fMet/F");
   fTree->Branch("pfmetphi"        ,&fMetPhi         ,"fMetPhi/F");
@@ -232,7 +231,15 @@ void EvtLoader::fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLore
   for(unsigned int i0 = 0; i0 < iVetoes.size(); i0++)   lVetoes.push_back(iVetoes[i0]);
 }
 // kFactor and EWK
-void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std::string iHist2,std::string ikfactor){
+void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std::string iHist2,std::string iNLO,std::string ikfactor){
+  std::string isuffix = "";
+  if(iNLO.find("G")!=std::string::npos) isuffix ="_G";
+  std::stringstream pRUP,pRDO,pFUP,pFDO;
+  pRUP << iNLO << "/ren_up" << isuffix;
+  pRDO << iNLO << "/ren_down" << isuffix;
+  pFUP << iNLO << "/fact_up" << isuffix;
+  pFDO << iNLO << "/fact_down" << isuffix;
+
   TFile *lFile = new TFile(ikfactor.c_str());
   fHist0 =  (TH1F*) lFile->Get(iHist0.c_str()); // NLO
   fHist0->SetDirectory(0);
@@ -240,6 +247,14 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
   fHist1->SetDirectory(0);
   fHist2 =  (TH1F*) lFile->Get(iHist2.c_str()); // EWK
   fHist2->SetDirectory(0);
+  fHistRUP = (TH1F*) lFile->Get(pRUP.str().c_str());
+  fHistRUP->SetDirectory(0);
+  fHistRDO = (TH1F*) lFile->Get(pRDO.str().c_str());
+  fHistRDO->SetDirectory(0);
+  fHistFUP = (TH1F*) lFile->Get(pFUP.str().c_str());
+  fHistFUP->SetDirectory(0);
+  fHistFDO = (TH1F*) lFile->Get(pFDO.str().c_str());
+  fHistFDO->SetDirectory(0);
   lFile->Close();
 
   fHist2->Divide(fHist1);
@@ -248,10 +263,24 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
   fkFactor_CENT = Float_t(fHist0->GetBinContent(fHist0->FindBin(iPt)));
   if(iPt > 700) fkFactor_CENT = Float_t(fHist0->GetBinContent(fHist0->FindBin(700)));
   if(iPt < 100) fkFactor_CENT = Float_t(fHist0->GetBinContent(fHist0->FindBin(100)));
-
+  
   fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(iPt)));
   if(iPt > 700) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(700)));
   if(iPt < 100) fEwkCorr_CENT = Float_t(fHist2->GetBinContent(fHist2->FindBin(100)));
 
   fkfactor = fEwkCorr_CENT; //(NLO*ewk/LO)
+
+  fRenScale_UP = Float_t(fHistRUP->GetBinContent(fHistRUP->FindBin(iPt)));
+  if(iPt > 700) fRenScale_UP = Float_t(fHistRUP->GetBinContent(fHistRUP->FindBin(700)));
+  if(iPt < 100) fRenScale_UP = Float_t(fHistRUP->GetBinContent(fHistRUP->FindBin(100)));
+  fRenScale_DO = Float_t(fHistRDO->GetBinContent(fHistRDO->FindBin(iPt)));
+  if(iPt > 700) fRenScale_DO = Float_t(fHistRDO->GetBinContent(fHistRDO->FindBin(700)));
+  if(iPt < 100) fRenScale_DO = Float_t(fHistRDO->GetBinContent(fHistRDO->FindBin(100)));
+  fFacScale_UP = Float_t(fHistFUP->GetBinContent(fHistFUP->FindBin(iPt)));
+  if(iPt > 700) fFacScale_UP = Float_t(fHistFUP->GetBinContent(fHistFUP->FindBin(700)));
+  if(iPt < 100) fFacScale_UP = Float_t(fHistFUP->GetBinContent(fHistFUP->FindBin(100)));
+  fFacScale_DO = Float_t(fHistFDO->GetBinContent(fHistFDO->FindBin(iPt)));
+  if(iPt > 700) fFacScale_DO = Float_t(fHistFDO->GetBinContent(fHistFDO->FindBin(700)));
+  if(iPt < 100) fFacScale_DO = Float_t(fHistFDO->GetBinContent(fHistFDO->FindBin(100)));
+
 }

@@ -41,7 +41,8 @@ public:
 		   std::string iHist0,
 		   std::string iHist1,
 		   std::string iHist2,
-		   std::string ikfactor="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconAna/DataFormats/data/kfactors.root");
+		   std::string iNLO,
+                   std::string ikfactor="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconAna/DataFormats/data/kfactors.root");
   //MET
   void         correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr);
   void         fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes);
@@ -69,9 +70,10 @@ public:
   float fevtWeight;
   float fScale;
 
-  float fkFactor_CENT, fkFactor_UP, fkFactor_DO;
+  float fkFactor_CENT;
   float fEwkCorr_CENT, fEwkCorr_UP, fEwkCorr_DO;
   float fkfactor;
+  float fRenScale_UP, fRenScale_DO, fFacScale_UP, fFacScale_DO;
 
   double fEffTrigger;
   double fLepWeight;
@@ -90,6 +92,10 @@ protected:
   TH1F         *fHist0;
   TH1F         *fHist1;
   TH1F         *fHist2;
+  TH1F         *fHistRUP;
+  TH1F         *fHistRDO;
+  TH1F         *fHistFUP;
+  TH1F         *fHistFDO;
 
   std::vector<std::vector<std::string>> fTrigString;
 
