@@ -34,18 +34,24 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then
     ./sub.sh mc $eos ZZ_13TeV_pythia8                                                                                31.8  $dir $exec $option1 $option2; 
 fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "W") ]]; then
-    ./sub.sh mc $eos WJetsToQQ_HT_600ToInf_13TeV                                                                    95.14  $dir $exec $option1 $option2
+if [[ ($sample = "All") || ($sample != "All" && $sample = "WLF") ]]; then
+    ./sub.sh mcwlf $eos WJetsToQQ_HT_600ToInf_13TeV                                                                 95.14  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos WJetsToQQ_HT_600ToInf_13TeV                                                                    93.38  $dir $exec $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "WCS") ]]; then
+    ./sub.sh mcwcs $eos WJetsToQQ_HT_600ToInf_13TeV                                                                 95.14  $dir $exec $option1 $option2
 fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "Z") ]]; then
 #     ./sub.sh mc $eos Spring15_a25ns_ZJetsToQQ_HT600toInf_MINIAOD                                                     5.67  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Spring15_a25ns_ZJetsToQQ_HT600toInf_MINIAOD                                                     5.67  $dir $exec $option1 $option2
 #     ./sub.sh mc $eos Spring15_a25ns_ZJetsToQQ_HT600toInf_MINIAOD                                                     5.67  $dir $exec $option1 $option2
 # fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "DY") ]]; then
+if [[ ($sample = "All") || ($sample != "All" && $sample = "DYbb") ]]; then
 #    ./sub.sh mc $eos DYJetsToQQ_HT180_13TeVRunIIFall15MiniAODv2_PU25nsData2015v1_76X_mcRun2_asymptotic_v12_v1      1187.0  $dir $exec $option1 $option2
-    ./sub.sh mc $eos DYJetsToQQ_HT180_13TeVRunIIFall15MiniAODv2_PU25nsData2015v1_76X_mcRun2_asymptotic_v12_v1      1338.95  $dir $exec $option1 $option2
+    ./sub.sh mczbb $eos DYJetsToQQ_HT180_13TeVRunIIFall15MiniAODv2_PU25nsData2015v1_76X_mcRun2_asymptotic_v12_v1      1338.95  $dir $exec $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "DYcc") ]]; then
+    ./sub.sh mczcc $eos DYJetsToQQ_HT180_13TeVRunIIFall15MiniAODv2_PU25nsData2015v1_76X_mcRun2_asymptotic_v12_v1      1338.95  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
     ./sub.sh mc $eos ZPrimeToQQ_100GeV_v4                                                                               1  $dir $exec $option1 $option2
@@ -54,6 +60,22 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
     ./sub.sh mc $eos ZPrimeToQQ_250GeV_v4                                                                               1  $dir $exec $option1 $option2
     ./sub.sh mc $eos ZPrimeToQQ_300GeV_v4                                                                               1  $dir $exec $option1 $option2
     ./sub.sh mc $eos ZPrimeToQQ_50GeV_v4                                                                                1  $dir $exec $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprimebb") ]]; then
+    ./sub.sh mcZprimebb $eos ZPrimeToQQ_100GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimebb $eos ZPrimeToQQ_150GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimebb $eos ZPrimeToQQ_200GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimebb $eos ZPrimeToQQ_250GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimebb $eos ZPrimeToQQ_300GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimebb $eos ZPrimeToQQ_50GeV_v4                                                                        1  $dir $exec $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprimecc") ]]; then
+    ./sub.sh mcZprimecc $eos ZPrimeToQQ_100GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimecc $eos ZPrimeToQQ_150GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimecc $eos ZPrimeToQQ_200GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimecc $eos ZPrimeToQQ_250GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimecc $eos ZPrimeToQQ_300GeV_v4                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimecc $eos ZPrimeToQQ_50GeV_v4                                                                        1  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then
     ./sub.sh data $eos JetHTRun2015D_16Dec2015_v1_2                                                                     1  $dir $exec $option1 $option2
