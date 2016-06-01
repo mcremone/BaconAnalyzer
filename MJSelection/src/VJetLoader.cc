@@ -97,7 +97,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch(pSiT.str().c_str() ,&fisHadronicTop ,(pSiT.str()+"/I").c_str());
   fTree->Branch(pSTM.str().c_str() ,&ftopMatching   ,(pSTM.str()+"/D").c_str());
   fTree->Branch(pSTS.str().c_str() ,&ftopSize       ,(pSTS.str()+"/D").c_str());
-  fTree->Branch(pSiV.str().c_str() ,&fisHadronicV   ,(pSiT.str()+"/I").c_str());
+  fTree->Branch(pSiV.str().c_str() ,&fisHadronicV   ,(pSiV.str()+"/I").c_str());
   fTree->Branch(pSVM.str().c_str() ,&fvMatching     ,(pSVM.str()+"/D").c_str());
   fTree->Branch(pSVS.str().c_str() ,&fvSize         ,(pSVS.str()+"/D").c_str());
 }
