@@ -15,6 +15,12 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoHbb") ]]; then
         hadd ../monoxbits/$x.root ../monoxbits/$x/*.root
     done
 fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "TTDM") ]]; then
+    for x in `ls ../monoxbits | grep TTbarDMJets_pseudoscalar_Mchi_ | grep -v .root`; do
+	rm ../monoxbits/$x.root
+        hadd ../monoxbits/$x.root ../monoxbits/$x/*.root
+    done
+fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYHF") ]]; then rm ../monoxbits/DYHF.root;    hadd  ../monoxbits/DYHF.root     ../monoxbits/*DYJets*_HT*mcdyplushf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYLF") ]]; then rm ../monoxbits/DYLF.root;    hadd  ../monoxbits/DYLF.root     ../monoxbits/*DYJets*_HT*mcdypluslf/*.root; fi
