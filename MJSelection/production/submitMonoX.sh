@@ -168,3 +168,6 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTDM") ]]; then
     ./sub.sh mc $eos TTbarDMJets_pseudoscalar_Mchi_1_Mphi_100_13TeV                                                 1  $dir $exec $option1 $option2
 fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "ZH") ]]; then
+    ./sub.sh mc $eos ZH_HToBB_ZToNuNu_M125_13TeV_powheg_pythia8                                                 0.501  $dir $exec $option1 $option2
+fi

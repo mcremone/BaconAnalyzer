@@ -314,6 +314,7 @@ bool GenLoader::isType(std::string boson,std::string mode)
   int iPDGID,iId;
   if (boson.find("Z")==0) iPDGID = 23;
   if (boson.find("W")==0) iPDGID = 24;
+  if (boson.find("H")==0) iPDGID = 25;
   if (boson.find("Zprime")==0) iPDGID = 10031;
   
   if (mode.find("bb")==0) iId = 5;
@@ -556,7 +557,7 @@ int GenLoader::ismatchedJet(TLorentzVector jet0, double dR,double &matching, dou
     TLorentzVector mcMom; mcMom.SetPtEtaPhiM(genp0->pt,genp0->eta,genp0->phi,genp0->mass);
     if (mcMom.DeltaR(jet0) < dR) {
       if(iId == 6 && isHadronicTop(genp0,i0,jet0,dR,matching,size)==1) return 1;
-      if(iId == 24 || iId == 23 || iId ==10031){
+      if(iId == 24 || iId == 23 || iId == 10031 || iId == 25){
         if (isHadronicV(genp0,i0,iId,jet0,dR,matching,size)==1) return 1;
       }
     }
@@ -594,7 +595,7 @@ void GenLoader::findBoson(int iId, int lOption){
       }      
     }
     
-    // find last boson Z(23),W(24),Z'(10031)
+    // find last boson Z(23),W(24),Z'(10031),H(25)
     if(lOption == 1){
       if(fabs(genp0->pdgId)==iId){
         int iL0 = findLastBoson(i0,iId);
