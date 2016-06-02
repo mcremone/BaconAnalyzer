@@ -75,7 +75,7 @@ int main( int argc, char **argv ) {
   fTau      = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
-  fVJetPuppi= new VJetLoader    (lTree,"CA8Puppi","AddCA8Puppi",2);                      // fVJets, fVJetBr => CA8PUPPI
+  fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi",2);                      // fVJets, fVJetBr => CA8PUPPI
   fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
   if(lOption.compare("data")!=0) fGen      = new GenLoader     (lTree);                  // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
