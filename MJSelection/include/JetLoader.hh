@@ -24,7 +24,7 @@ public:
   void setupTreeRazor(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
   void selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMet,float iMetPhi,float iFMet,float iFMetPhi);
-  void fillGoodJets(std::vector<TLorentzVector> &iVJets,std::vector<const TJet*> &iGoodJets);
+  void fillGoodJets(std::vector<TLorentzVector> iVJets,double dR, std::vector<const TJet*> &iGoodJets);
   std::vector<TJet*> fSelJets;
   std::vector<const TJet*> fGoodJets;
   //Fillers
@@ -79,14 +79,26 @@ protected:
   TClonesArray *fJets;
   TBranch      *fJetBr;
   TTree        *fTree;
-  int           fNJetsdR2;
   int           fNBTags;
   int           fNBTagsL;
   int           fNBTagsM;
   int           fNBTagsT;
+
+  int           fNJetsdR2;
   int           fNBTagsLdR2;
   int           fNBTagsMdR2;
   int           fNBTagsTdR2;
+
+  int           fNJetsdR08;
+  int           fNBTagsLdR08;
+  int           fNBTagsMdR08;
+  int           fNBTagsTdR08;
+
+  int           fNJetsdR15;
+  int           fNBTagsLdR15;
+  int           fNBTagsMdR15;
+  int           fNBTagsTdR15;
+
   int           fN;
   std::vector<double>      fVars;
   FactorizedJetCorrector   *fJetCorr;
