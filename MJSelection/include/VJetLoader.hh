@@ -42,11 +42,11 @@ public:
   int  trigger(TJet *iJet);
   float pullDot(float iY1,float iY2,float iPhi1,float iPhi2);
   TJet* getLargeJet(TJet *iMatch);
-  double dPhi(TLorentzVector v1, TLorentzVector v2);
+  double dPhi(TLorentzVector v1, TLorentzVector v2, TLorentzVector v3);
 
   double ftopSize, ftopMatching, fvSize, fvMatching;
   int fisHadronicTop, fisHadronicV;
-  float fVMT;
+  float fVMT,fdR_sj0dR,fdPhi_sj0dPhi, fdPhiJRF_sj0dPhiJRF;
 
   const double CSVL = 0.460; // CSVv2SubJet WP 
   const double CSVM = 0.800;
