@@ -237,9 +237,9 @@ void JetLoader::fillGoodJets(std::vector<TLorentzVector> iVJets,double dR, std::
   }
  if(dR == 1.5){
     fNJetsdR15        = lCountdR2;
-    fNBTagsLdR08      = lNBTagLdR2;
-    fNBTagsMdR08      = lNBTagMdR2;
-    fNBTagsTdR08      = lNBTagTdR2;
+    fNBTagsLdR15      = lNBTagLdR2;
+    fNBTagsMdR15      = lNBTagMdR2;
+    fNBTagsTdR15      = lNBTagTdR2;
   }
 }
 void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 

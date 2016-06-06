@@ -7,6 +7,27 @@
 
 using namespace baconhep;
 
+class sjpair {
+public:
+  sjpair (float d, float p){
+    dR = (d>-1) ? d : 999;
+    dPhi = (p>-1) ? p : -999;
+  }
+  ~sjpair() { }
+  float dR=999;
+  float dPhi=-999;
+};
+bool compsjpairs(sjpair p1, sjpair p2){
+  return p1.dR<p2.dR;
+}
+bool compsjpairsdPhi(sjpair p1, sjpair p2){
+  return p1.dPhi>p2.dPhi;
+}
+double clean(double x, double def=-1) {
+  if (!(x==x)) return def;
+  else return x;
+}
+
 VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN, std::string subjetbtagScaleFactorFilename) { 
   fVJets         = new TClonesArray("baconhep::TJet");
   // fFatJets       = new TClonesArray("baconhep::TJet");
@@ -77,6 +98,8 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("maxsubcsv");
   fLabels.push_back("doublecsv");
   fLabels.push_back("fatjetcsv");
+  fLabels.push_back("dR_sj0dR");
+  fLabels.push_back("dPhi_sj0dPhi");
 
   std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
   std::stringstream pSNJ;   pSNJ << iJetLabel << "s";
@@ -169,10 +192,45 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
     // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+14] = pLargeJet->pt - iObjects[i0]->pt;
     // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+15] = pullDot(pLargeJet->pullY,iObjects[i0]->pullY,pLargeJet->pullPhi,iObjects[i0]->pullPhi);
   
-    TLorentzVector vSJ1; vSJ1.SetPtEtaPhiM(pAddJet->sj1_pt, pAddJet->sj1_eta, pAddJet->sj1_phi, pAddJet->sj1_m); if(pAddJet->sj1_pt>0) fGoodVSubJets.push_back(vSJ1); 
-    TLorentzVector vSJ2; vSJ2.SetPtEtaPhiM(pAddJet->sj2_pt, pAddJet->sj2_eta, pAddJet->sj2_phi, pAddJet->sj2_m); if(pAddJet->sj2_pt>0) fGoodVSubJets.push_back(vSJ2);
-    TLorentzVector vSJ3; vSJ3.SetPtEtaPhiM(pAddJet->sj3_pt, pAddJet->sj3_eta, pAddJet->sj3_phi, pAddJet->sj3_m); if(pAddJet->sj3_pt>0) fGoodVSubJets.push_back(vSJ3);
-    TLorentzVector vSJ4; vSJ4.SetPtEtaPhiM(pAddJet->sj4_pt, pAddJet->sj4_eta, pAddJet->sj4_phi, pAddJet->sj4_m); if(pAddJet->sj4_pt>0) fGoodVSubJets.push_back(vSJ4);
+    // SubJets
+    int lNSubJets(0);
+    TLorentzVector vSJ1; vSJ1.SetPtEtaPhiM(pAddJet->sj1_pt, pAddJet->sj1_eta, pAddJet->sj1_phi, pAddJet->sj1_m); if(pAddJet->sj1_pt>0){ lNSubJets++; fGoodVSubJets.push_back(vSJ1);}
+    TLorentzVector vSJ2; vSJ2.SetPtEtaPhiM(pAddJet->sj2_pt, pAddJet->sj2_eta, pAddJet->sj2_phi, pAddJet->sj2_m); if(pAddJet->sj2_pt>0){ lNSubJets++; fGoodVSubJets.push_back(vSJ2);}
+    TLorentzVector vSJ3; vSJ3.SetPtEtaPhiM(pAddJet->sj3_pt, pAddJet->sj3_eta, pAddJet->sj3_phi, pAddJet->sj3_m); if(pAddJet->sj3_pt>0){ lNSubJets++; fGoodVSubJets.push_back(vSJ3);}
+    TLorentzVector vSJ4; vSJ4.SetPtEtaPhiM(pAddJet->sj4_pt, pAddJet->sj4_eta, pAddJet->sj4_phi, pAddJet->sj4_m); if(pAddJet->sj4_pt>0){ lNSubJets++; fGoodVSubJets.push_back(vSJ4);}
+
+    float sj12dR(-1), sj13dR(-1), sj23dR(-1), sj14dR(-1), sj24dR(-1), sj34dR(-1);
+    float sj12dPhi(-1), sj13dPhi(-1),sj23dPhi(-1), sj14dPhi(-1), sj24dPhi(-1), sj34dPhi(-1);
+
+    if (lNSubJets>1) {
+      sj12dR = vSJ1.DeltaR(vSJ2);  sj12dPhi = dPhi(vSJ1,vSJ2);
+      if (lNSubJets>2) {
+	sj13dR = vSJ1.DeltaR(vSJ3);  sj13dPhi = dPhi(vSJ1,vSJ3); 
+	sj23dR = vSJ2.DeltaR(vSJ3);  sj23dPhi = dPhi(vSJ2,vSJ3); 
+	if (lNSubJets>3) {
+	  sj14dR = vSJ1.DeltaR(vSJ4);  sj14dPhi = dPhi(vSJ1,vSJ4); 
+	  sj24dR = vSJ2.DeltaR(vSJ4);  sj24dPhi = dPhi(vSJ2,vSJ4); 
+	  sj34dR = vSJ3.DeltaR(vSJ4);  sj34dPhi = dPhi(vSJ3,vSJ4); 
+	}
+      }
+    }
+
+    std::vector<sjpair> sjpairs;
+    sjpairs.push_back(sjpair(clean(sj12dR),clean(sj12dPhi)));
+    sjpairs.push_back(sjpair(clean(sj13dR),clean(sj13dPhi)));
+    sjpairs.push_back(sjpair(clean(sj23dR),clean(sj23dPhi)));
+    sjpairs.push_back(sjpair(clean(sj14dR),clean(sj14dPhi)));
+    sjpairs.push_back(sjpair(clean(sj24dR),clean(sj24dPhi)));
+    sjpairs.push_back(sjpair(clean(sj34dR),clean(sj34dPhi)));
+
+    float ldR_sj0dR(999), ldPhi_sj0dPhi(-999);
+    std::sort(sjpairs.begin(),sjpairs.end(),compsjpairs);
+    ldR_sj0dR = sjpairs[0].dR;
+    std::sort(sjpairs.begin(),sjpairs.end(),compsjpairsdPhi);
+    ldPhi_sj0dPhi = sjpairs[0].dPhi;
+
+    iVals[lBase+i0*lNLabel+15] = ldR_sj0dR;
+    iVals[lBase+i0*lNLabel+16] = ldPhi_sj0dPhi;
   }
 }
 void VJetLoader::addBoson(TGenParticle *iBoson) { 
@@ -275,4 +333,29 @@ TJet* VJetLoader::getLargeJet(TJet *iMatch) {
     break;
   }
   return lFatJet;
+}
+double VJetLoader::dPhi(TLorentzVector v1, TLorentzVector v2) {
+
+  TLorentzVector vsum = v1 + v2; // vector sum in the lab frame
+  TVector3 hVelocity = vsum.BoostVector();
+
+  // Create a boost to the subjet pair rest frame
+  TLorentzRotation Boost(hVelocity);
+  TLorentzRotation tosubjetRest = Boost.Inverse();
+
+  // Get the direction of v1 and v2 in the subjet pair rest frame
+  TVector3 v1Dir = (tosubjetRest*v1).Vect().Unit();
+  TVector3 v2Dir = (tosubjetRest*v2).Vect().Unit();
+
+  float x1 = v1.Px();
+  float x2 = v2.Px();
+  float y1 = v1.Py();
+  float y2 = v2.Py();
+
+  float angle_mht = atan2((y1+y2),(x1+x2)) + TMath::Pi();
+
+  Float_t a1 = TMath::Pi() - acos(cos(v1Dir.Phi()-angle_mht));
+  Float_t a2 = TMath::Pi() - acos(cos(v2Dir.Phi()-angle_mht));
+
+  return TMath::Min(a1,a2);
 }

@@ -2,6 +2,8 @@
 #define VJetLoader_H
 #include "TTree.h"
 #include "TLorentzVector.h"
+#include "TLorentzRotation.h"
+#include "TVector3.h"
 #include "TBranch.h"
 #include "TClonesArray.h"
 #include "BaconAna/DataFormats/interface/TGenParticle.hh"
@@ -40,6 +42,7 @@ public:
   int  trigger(TJet *iJet);
   float pullDot(float iY1,float iY2,float iPhi1,float iPhi2);
   TJet* getLargeJet(TJet *iMatch);
+  double dPhi(TLorentzVector v1, TLorentzVector v2);
 
   double ftopSize, ftopMatching, fvSize, fvMatching;
   int fisHadronicTop, fisHadronicV;
