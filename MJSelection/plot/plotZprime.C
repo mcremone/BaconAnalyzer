@@ -339,16 +339,16 @@ void plotZprime(const string selection, const string algo, const string jet, flo
 
   char ylabel[100];
 
-  sprintf(ylabel,"Events / GeV",hFatJetPtv[0]->GetBinWidth(1));
+  sprintf(ylabel,"Events / %.1f GeV",hFatJetPtv[0]->GetBinWidth(1));
   makePlot(c, "fjpt", "Jet p_{T} [GeV]", ylabel, hFatJetPtv, samplev, hFatJetPtMC, hFatJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetPtMC->GetBinContent(hFatJetPtMC->GetMaximumBin()))/(hFatJetPtMC->GetBinWidth(hFatJetPtMC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events / GeV",hFatJetPtLogv[0]->GetBinWidth(1));
+  sprintf(ylabel,"Events / %.1f GeV",hFatJetPtLogv[0]->GetBinWidth(1));
   makePlot(c, "fjptl", "Jet p_{T} [GeV/c^{2}]", ylabel, hFatJetPtLogv, samplev, hFatJetPtLogMC, hFatJetPtLogPull, doBlind, LUMI, true, 0.0, -0.03,
            2e-5*(hFatJetPtLogMC->GetBinContent(hFatJetPtLogMC->GetMaximumBin()))/(hFatJetPtLogMC->GetBinWidth(hFatJetPtLogMC->GetMaximumBin())),
            4e2*(hFatJetPtLogMC->GetBinContent(hFatJetPtLogMC->GetMaximumBin()))/(hFatJetPtLogMC->GetBinWidth(hFatJetPtLogMC->GetMaximumBin())), selection);
   
-  sprintf(ylabel,"Events",hFatJetEtav[0]->GetBinWidth(1));
+  sprintf(ylabel,"Events /%.1f",hFatJetEtav[0]->GetBinWidth(1));
   makePlot(c, "fjeta", "Jet #eta", ylabel, hFatJetEtav, samplev, hFatJetEtaMC, hFatJetEtaPull, doBlind, LUMI, false, 0.05, -0.03,
            0.1, 3.5*(hFatJetEtaMC->GetBinContent(hFatJetEtaMC->GetMaximumBin())), selection);
 
@@ -363,20 +363,19 @@ void plotZprime(const string selection, const string algo, const string jet, flo
            2e-5*(hFatJetMassNewMC->GetBinContent(hFatJetMassNewMC->GetMaximumBin()))/(hFatJetMassNewMC->GetBinWidth(hFatJetMassNewMC->GetMaximumBin())),
            4e2*(hFatJetMassNewMC->GetBinContent(hFatJetMassNewMC->GetMaximumBin()))/(hFatJetMassNewMC->GetBinWidth(hFatJetMassNewMC->GetMaximumBin())), selection);
 
-
-  sprintf(ylabel,"Events",hFatJetTau21v[0]->GetBinWidth(10));
+  sprintf(ylabel,"Events / %.1f ",hFatJetTau21v[0]->GetBinWidth(10));
   makePlot(c, "tau21", "#tau_{21}", ylabel, hFatJetTau21v, samplev, hFatJetTau21MC, hFatJetTau21Pull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetTau21MC->GetBinContent(hFatJetTau21MC->GetMaximumBin()))/(hFatJetTau21MC->GetBinWidth(hFatJetTau21MC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events",hFatJetTau21DDTv[0]->GetBinWidth(10));
+  sprintf(ylabel,"Events / %.1f",hFatJetTau21DDTv[0]->GetBinWidth(10));
   makePlot(c, "tau21DDT", "#tau_{21}^{DDT}", ylabel, hFatJetTau21DDTv, samplev, hFatJetTau21DDTMC, hFatJetTau21DDTPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetTau21DDTMC->GetBinContent(hFatJetTau21DDTMC->GetMaximumBin()))/(hFatJetTau21DDTMC->GetBinWidth(hFatJetTau21DDTMC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events",hSubjetBtagv[0]->GetBinWidth(10));
+  sprintf(ylabel,"Events / %.1f",hSubjetBtagv[0]->GetBinWidth(10));
   makePlot(c, "btag", "Max subjet csv", ylabel, hSubjetBtagv, samplev, hSubjetBtagMC, hBtagPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hSubjetBtagMC->GetBinContent(hSubjetBtagMC->GetMaximumBin()))/(hSubjetBtagMC->GetBinWidth(hSubjetBtagMC->GetMaximumBin())), selection);
 
-  sprintf(ylabel,"Events",hFatjetBtagv[0]->GetBinWidth(10));
+  sprintf(ylabel,"Events / %.1f",hFatjetBtagv[0]->GetBinWidth(10));
   makePlot(c, "fjbtag", "Doublecsv", ylabel, hFatjetBtagv, samplev, hFatjetBtagMC, hBtagPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hFatjetBtagMC->GetBinContent(hFatjetBtagMC->GetMaximumBin()))/(hFatjetBtagMC->GetBinWidth(hFatjetBtagMC->GetMaximumBin())), selection);
 

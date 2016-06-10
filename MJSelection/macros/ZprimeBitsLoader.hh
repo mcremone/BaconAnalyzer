@@ -25,6 +25,7 @@ class ZprimeBitsLoader {
 public:
   ZprimeBitsLoader(TTree *iTree=0,TString algo="PUPPI", TString jet="jet0");		
   ~ZprimeBitsLoader();
+  bool isPho();
   bool selectJetAlgoAndSize(TString algo);
   bool passBoostedZprimePreselection();
   bool passBoostedZprimeSR(float ddtcut);
@@ -42,8 +43,10 @@ public:
   double triggerEff;                                                               // trigger efficiency
   float evtWeight, puWeight;                                                       // pu and evt weight
   unsigned int npu, npv;                                                           // PU, PV multiplicity
+  int nmu, nele, ntau, npho;                                                       // object multiplicity
   int njets;                                                                       // jet multiplicity 
   float scale1fb;                                                                  // cross section scale factor per 1/fb
+  float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                     // MET and fake MET
 
   //
   // Jets with pT-ordering:
@@ -54,15 +57,14 @@ public:
   double           bst_jet0_maxsubcsv, bst_jet0_minsubcsv;                         // subjet btag                            
   double           bst_jet0_CHF, bst_jet0_NHF, bst_jet0_NEMF;                      // boosted jet variables
   float            bst_mt;                                                         // mT
-  double            bst_jet0_doublecsv;                                             // doublecsv variable for leading jet
+  double           bst_jet0_doublecsv;                                             // doublecsv variable for leading jet
 protected:
 
   const unsigned int kBOOSTED8PUPPI = 2;
   const float RHO_CUT = 0.38;
 
-  const unsigned int kSingleElectron = 4;
-  const unsigned int kSinglePhoton  = 8;
-  const unsigned int kBOOSTED15PUPPI = 2;
+  const unsigned int kHT  = 2;
+  const unsigned int kSinglePhoton  = 4;
 
 };
 #endif
