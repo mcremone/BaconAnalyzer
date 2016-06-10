@@ -88,6 +88,9 @@ public:
   double tau32DDT(string selection);
   double tau21DDT(string selection);
   double getMsdSqPt(string selection);
+  double getdRsj0dR(string selection);
+  double getdRsj0dRpt(string selection);
+  double getdPsj0dP(string selection);
 
   //
   // variables to read in bacon bits
@@ -152,6 +155,7 @@ public:
   double           bst15_jet0_rho, bst15_jet0_phil;                                  // msd and pt dependent variables
   double           bst15_jet0_CHF, bst15_jet0_NHF, bst15_jet0_NEMF;                  // boosted jet variables
   float            bst15_jet0_mT;                                                    // bst jet mT
+  float            bst15_jet0_dRsj0dR, bst15_jet0_dPhiJRFsj0dPhiJRF;                 // dRs and dPhis
 
   double           bst8_jet0_pt,bst8_jet0_eta,bst8_jet0_phi,bst8_jet0_mass;          // leading boosted jet
   double           bst8_jet0_msd, bst8_jet0_tau32, bst8_jet0_tau21;                  // boosted tagger variables
@@ -160,7 +164,8 @@ public:
   double           bst8_jet0_rho, bst8_jet0_phil;                                    // msd and pt dependent variables
   double           bst8_jet0_CHF, bst8_jet0_NHF, bst8_jet0_NEMF;                     // boosted jet variables
   float            bst8_jet0_mT;                                                     // bst jet mT
-   
+  float            bst8_jet0_dRsj0dR,bst8_jet0_dPhiJRFsj0dPhiJRF;                    // dRs and dPhis                                                                                         
+
   const float ToptagSF     = 1.1318;                                                 // ToptagSF
   const float TopmistagSF  = 1.1639;                                                 // TopmistagSF 
   const float btagSF       = 0.9851;                                                 // btagSF

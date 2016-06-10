@@ -47,6 +47,9 @@ void EvtLoader::reset() {
   fkFactor_CENT = 0;
   fEwkCorr_CENT = 0;
 
+  fPDF          = 0;
+  fPDF_UP       = 0;
+  fPDF_DO       = 0;
   fRenScale_UP  = 0;
   fRenScale_DO  = 0;
   fFacScale_UP  = 0;
@@ -81,6 +84,9 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
   fTree->Branch("kfactor"         ,&fkfactor        ,"fkfactor/F");
 
+  fTree->Branch("PDF"             ,&fPDF            ,"fPDF/F");
+  fTree->Branch("PDF_UP"          ,&fPDF_UP         ,"fPDF_UP/F");
+  fTree->Branch("PDF_DO"          ,&fPDF_DO         ,"fPDF_DO/F");
   fTree->Branch("RenScale_UP"     ,&fRenScale_UP    ,"fRenScale_UP/F");
   fTree->Branch("RenScale_DO"     ,&fRenScale_DO    ,"fRenScale_DO/F");
   fTree->Branch("FacScale_UP"     ,&fFacScale_UP    ,"fFacScale_UP/F");
@@ -234,7 +240,8 @@ void EvtLoader::fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLore
 void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std::string iHist2,std::string iNLO,std::string ikfactor){
   std::string isuffix = "";
   if(iNLO.find("G")!=std::string::npos) isuffix ="_G";
-  std::stringstream pRUP,pRDO,pFUP,pFDO;
+  std::stringstream pPDF,pRUP,pRDO,pFUP,pFDO;
+  pPDF << iNLO << "/PDF";
   pRUP << iNLO << "/ren_up" << isuffix;
   pRDO << iNLO << "/ren_down" << isuffix;
   pFUP << iNLO << "/fact_up" << isuffix;
@@ -247,6 +254,8 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
   fHist1->SetDirectory(0);
   fHist2 =  (TH1F*) lFile->Get(iHist2.c_str()); // EWK
   fHist2->SetDirectory(0);
+  fHistPDF = (TH1F*) lFile->Get(pPDF.str().c_str());
+  fHistPDF->SetDirectory(0);
   fHistRUP = (TH1F*) lFile->Get(pRUP.str().c_str());
   fHistRUP->SetDirectory(0);
   fHistRDO = (TH1F*) lFile->Get(pRDO.str().c_str());
@@ -270,6 +279,11 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
 
   fkfactor = fEwkCorr_CENT; //(NLO*ewk/LO)
 
+  fPDF = Float_t(fHistPDF->GetBinContent(fHistPDF->FindBin(iPt)));
+  if(iPt > 700) fPDF = Float_t(fHistPDF->GetBinContent(fHistPDF->FindBin(700)));
+  if(iPt < 100) fPDF = Float_t(fHistPDF->GetBinContent(fHistPDF->FindBin(100)));
+  fPDF_UP = 1 + fPDF;
+  fPDF_DO = 1 - fPDF;
   fRenScale_UP = Float_t(fHistRUP->GetBinContent(fHistRUP->FindBin(iPt)));
   if(iPt > 700) fRenScale_UP = Float_t(fHistRUP->GetBinContent(fHistRUP->FindBin(700)));
   if(iPt < 100) fRenScale_UP = Float_t(fHistRUP->GetBinContent(fHistRUP->FindBin(100)));
