@@ -73,6 +73,7 @@ public:
   float fkFactor_CENT;
   float fEwkCorr_CENT, fEwkCorr_UP, fEwkCorr_DO;
   float fkfactor;
+  float fPDF, fPDF_UP, fPDF_DO;
   float fRenScale_UP, fRenScale_DO, fFacScale_UP, fFacScale_DO;
 
   double fEffTrigger;
@@ -92,6 +93,7 @@ protected:
   TH1F         *fHist0;
   TH1F         *fHist1;
   TH1F         *fHist2;
+  TH1F         *fHistPDF;
   TH1F         *fHistRUP;
   TH1F         *fHistRDO;
   TH1F         *fHistFUP;

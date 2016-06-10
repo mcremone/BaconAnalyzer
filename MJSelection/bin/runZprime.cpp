@@ -122,10 +122,11 @@ int main( int argc, char **argv ) {
     // triggerbits for PFJet
     unsigned int trigbits=1;   
     if(fEvt ->passTrigger("HLT_AK8PFJet360_TrimMass30_v*") ||
-       fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*") //||
-       // fEvt ->passTrigger("HLT_PFHT800_v*")
-       ) 
-      trigbits = trigbits | 2; 
+       fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*") ||
+       fEvt ->passTrigger("HLT_PFHT800_v*")
+       ) trigbits = trigbits | 2; 
+    if(fEvt ->passTrigger("HLT_Photon175_v*") ||
+       fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 4;
     // if(trigbits==1) continue;
     fEvt      ->fillEvent(trigbits,lWeight);
     
@@ -155,7 +156,7 @@ int main( int argc, char **argv ) {
     // AK4Puppi Jets
     fJet      ->load(i0);
     fJet      ->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
-    //    if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
+    // if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
     // Select only Puppi Jets                                       
     if(!(fEvt->fselectBits & 2)) continue;
