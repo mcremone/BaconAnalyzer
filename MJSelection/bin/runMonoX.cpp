@@ -243,7 +243,7 @@ int main( int argc, char **argv ) {
         fVJetCHS15->fillSubJetBTag(fGen->fGens,fVJetCHS15->fGoodVSubJets);
       }
       fEvt->fselectBits = fEvt->fselectBits | 4;
-      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet15,fVJetCHS15->fVMT);
+      fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lVJet15,fVJetCHS15->fVMT);
     }
 
     // CA8Puppi Jets
@@ -269,16 +269,16 @@ int main( int argc, char **argv ) {
         fVJetCHS8->fillSubJetBTag(fGen->fGens,fVJetCHS8->fGoodVSubJets);
       }
       fEvt->fselectBits =  fEvt->fselectBits | 16;
-      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJetCHS8,fVJetCHS8->fVMT);
+      fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lVJetCHS8,fVJetCHS8->fVMT);
     }
 
     // AK4Puppi Jets
     fJet->load(i0); 
     fJet->selectJets(lVetoes,lVJets15,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     if(lJets.size()>0){
+      fJet->fillGoodJets(lVJets15,1.5,lGoodJets15);
+      fJet->fillGoodJets(lVJets8T,0.8,lGoodJets8T);
       if(lOption.find("data")==std::string::npos){
-	fJet->fillGoodJets(lVJets15,1.5,lGoodJets15);
-	fJet->fillGoodJets(lVJets8T,0.8,lGoodJets8T);
 	fBTag->fillBTag(fJet->fGoodJets);
         fBTag15->fillBTag(lGoodJets15);
         fBTag8T->fillBTag(lGoodJets8T);
@@ -289,17 +289,17 @@ int main( int argc, char **argv ) {
 
     // AK4CHS Jets
     fJetCHS->load(i0);
-    fJetCHS->selectJets(lVetoes,lVJetsCHS15,lJetsCHS,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
+    fJetCHS->selectJets(lVetoes,lVJetsCHS15,lJetsCHS,fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi);
     if(lJetsCHS.size()>0){
+      fJetCHS->fillGoodJets(lVJetsCHS15,1.5,lGoodJetsCHS15);
+      fJetCHS->fillGoodJets(lVJetsCHS8,0.8,lGoodJetsCHS8);
       if(lOption.find("data")==std::string::npos){
-        fJetCHS->fillGoodJets(lVJetsCHS15,1.5,lGoodJetsCHS15);
-        fJetCHS->fillGoodJets(lVJetsCHS8,0.8,lGoodJetsCHS8);
         fBTagCHS->fillBTag(fJetCHS->fGoodJets);
         fBTagCHS15->fillBTag(lGoodJetsCHS15);
         fBTagCHS8->fillBTag(lGoodJetsCHS8);
       }
       fEvt->fselectBits =  fEvt->fselectBits | 64;
-      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJetsCHS,fJetCHS->fMT);
+      fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lJetsCHS,fJetCHS->fMT);
     }
 
     // Select at least one Jet
