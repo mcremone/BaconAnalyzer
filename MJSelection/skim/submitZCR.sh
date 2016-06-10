@@ -25,28 +25,19 @@ fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ResZmmMonoHbb") ]]; then
         ./skimMonoX.sh Zmm ResMonoHbb ${reg} ${combo} ${algo} CENT jet jetT
-        ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} CENT jet jetT
         ./skimMonoX.sh Pho ResMonoHbb ${reg} ${combo} ${algo} CENT jet jetT
-        # ./skimMonoX.sh Zmm ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
-        # ./skimMonoX.sh Zmm ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
-        # ./skimMonoX.sh Zmm ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
-        # ./skimMonoX.sh Zmm ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
+        ./skimMonoX.sh Zmm ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
+        ./skimMonoX.sh Zmm ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
+        ./skimMonoX.sh Zmm ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        ./skimMonoX.sh Zmm ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
 fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ResZeeMonoHbb") ]]; then
         ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} CENT jet jetT
-        # ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
-        # ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
-        # ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
-        # ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
+        ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
+        ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
+        ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        ./skimMonoX.sh Zee ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
 fi
 
-if [[ ($sample = "All") || ($sample != "All" && $sample = "ResPhoMonoHbb") ]]; then
-        ./skimMonoX.sh Pho ResMonoHbb ${reg} ${combo} ${algo} CENT jet jetT
-        # ./skimMonoX.sh Pho ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
-        # ./skimMonoX.sh Pho ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
-        # ./skimMonoX.sh Pho ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
-        # ./skimMonoX.sh Pho ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
-
-fi
 

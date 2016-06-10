@@ -76,16 +76,16 @@ fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MuoResMonoHbb") ]]; then
         ./skimMonoX.sh Muo ResMonoHbb ${reg} ${combo} ${algo} CENT jet jetT
-        # ./skimMonoX.sh Muo ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
-        # ./skimMonoX.sh Muo ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
-        # ./skimMonoX.sh Muo ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
-        # ./skimMonoX.sh Muo ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
+        ./skimMonoX.sh Muo ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
+        ./skimMonoX.sh Muo ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
+        ./skimMonoX.sh Muo ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        ./skimMonoX.sh Muo ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
 fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "EleResMonoHbb") ]]; then
         ./skimMonoX.sh Ele ResMonoHbb ${reg} ${combo} ${algo} CENT jet jetT
-        # ./skimMonoX.sh Ele ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
-        # ./skimMonoX.sh Ele ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
-        # ./skimMonoX.sh Ele ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
-        # ./skimMonoX.sh Ele ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
+        ./skimMonoX.sh Ele ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
+        ./skimMonoX.sh Ele ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
+        ./skimMonoX.sh Ele ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        ./skimMonoX.sh Ele ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
 fi

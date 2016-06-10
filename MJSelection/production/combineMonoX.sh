@@ -33,7 +33,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "TZ") ]]; then rm ../m
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TT") ]]; then rm ../monoxbits/TT.root;    hadd  ../monoxbits/TT.root     ../monoxbits/TTJets_13TeV_amcatnloFXFX_pythia8_2_mctt/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTZ") ]]; then rm ../monoxbits/TTZ.root;   hadd  ../monoxbits/TTZ.root ../monoxbits/*TTZ*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTG") ]]; then rm ../monoxbits/TTG.root;   hadd  ../monoxbits/TTG.root ../monoxbits/*TTG*/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "THQ") ]]; then rm ../monoxbits/THQ.root;   hadd  ../monoxbits/THQ.root ../monoxbits/*THQ*/*.root; fi
+# if [[ ($sample = "All") || ($sample != "All" && $sample = "THQ") ]]; then rm ../monoxbits/THQ.root;   hadd  ../monoxbits/THQ.root ../monoxbits/*THQ*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WW") ]]; then rm ../monoxbits/WW.root;   hadd  ../monoxbits/WW.root    ../monoxbits/*WW*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WZ") ]]; then rm ../monoxbits/WZ.root;   hadd  ../monoxbits/WZ.root    ../monoxbits/*WZ*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then rm ../monoxbits/ZZ.root;   hadd  ../monoxbits/ZZ.root    ../monoxbits/*ZZ*/*.root; fi
@@ -42,4 +42,5 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then rm ../
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then rm ../monoxbits/MET.root; hadd  ../monoxbits/MET.root   ../monoxbits/MET*_data/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then rm ../monoxbits/SingleElectron.root; hadd  ../monoxbits/SingleElectron.root   ../monoxbits/SingleElectron*_data/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then rm ../monoxbits/SinglePhoton.root; hadd  ../monoxbits/SinglePhoton.root   ../monoxbits/SinglePhoton*_data/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then rm ../monoxbits/SingleMuon.root; hadd  ../monoxbits/SingleMuon.root   ../monoxbits/SingleMuon*_data/*.root; fi
+# if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then rm ../monoxbits/SingleMuon.root; hadd  ../monoxbits/SingleMuon.root   ../monoxbits/SingleMuon*_data/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "ZH") ]]; then rm ../monoxbits/ZH_amcatnlo.root; hadd  ../monoxbits/ZH_amcatnlo.root   ../monoxbits/ZH_HToBB_ZToNuNu_M125_13TeV_amcatnloFXFX_madspin_pythia8_mc/*.root; fi

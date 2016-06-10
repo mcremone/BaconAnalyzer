@@ -47,8 +47,8 @@ fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ResMonoHbb") ]]; then
         ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} CENT jet jetT
-        # ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
-        # ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
-        # ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
-        # ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
+        ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} BTAGUP jet jetT
+        ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} BTAGDO jet jetT
+        ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        ./skimMonoX.sh Had ResMonoHbb ${reg} ${combo} ${algo} MISTAGDO jet jetT
 fi

@@ -79,6 +79,10 @@ void skimMonoX(const string preselection, const string selection, const string s
       samplev.push_back(new CSample("ZllLO", kCyan - 9, kCyan - 9));
       samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/DYHF.root");
       samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/DYLF.root");
+      if(selection.find("MonoHbb")!=std::string::npos){
+	samplev.push_back(new CSample("ZH", kRed - 9, kRed - 9));
+	samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZH_amcatnlo.root");
+      }
   }
   if (preselection.compare("Pho")==0){
       samplev.push_back(new CSample("Photon", kCyan - 9, kCyan - 9));
@@ -117,7 +121,7 @@ void skimMonoX(const string preselection, const string selection, const string s
     samplev.push_back(new CSample("tHq", kCyan - 9, kCyan - 9));
     samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/THQ.root");
   }
-  if (subsample.find("SR")!=std::string::npos && (selection.compare("Bst15MonoHbb")==0 || selection.compare("Bst8MonoHbb")==0 ||  selection.compare("ResMonoHbb")==0)){
+  if (subsample.find("SR")!=std::string::npos && selection.find("MonoHbb")!=std::string::npos){
     samplev.push_back(new CSample("MZ-1000_MA0-300", kBlue, kBlue));
     samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_300_13TeV_madgraph_mc.root");
     // samplev.push_back(new CSample("MZ-1000_MA0-400", kBlue, kBlue));
@@ -215,7 +219,7 @@ void skimMonoX(const string preselection, const string selection, const string s
   // Declare output TTrees                                                                                                                                                                 
   //                                                                                                                                                                                         
 
-  float met_, metphi_, genVpt_, genVphi_, weight_, mt_;
+  float met_, metphi_, genVpt_, genVphi_, weight_, mt_, dR_;
   vector<TTree*> outtreesv;
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     string tname = samplev[isam]->label;
@@ -257,6 +261,7 @@ void skimMonoX(const string preselection, const string selection, const string s
     outtreesv.back()->Branch("genVphi",  &genVphi_,  "genVphi/F");
     outtreesv.back()->Branch("weight",   &weight_,   "weight/F");
     outtreesv.back()->Branch("mt",       &mt_,       "mt/F");
+    outtreesv.back()->Branch("dR",       &dR_,       "dR/F");
   }
 
   TFile *infile=0;
@@ -268,7 +273,8 @@ void skimMonoX(const string preselection, const string selection, const string s
     bool isData   = (isam==0);
     bool isSignal = false;
     if(selection.compare("BstMonoTop")==0 && subsample.compare("SR")==0) isSignal  = (isam==samplev.size()-1 || isam==samplev.size()-2);
-    if(((selection.compare("Bst15MonoHbb")==0) || (selection.compare("Bst8MonoHbb")==0) || (selection.compare("ResMonoHbb")==0))  && subsample.find("SR")!=std::string::npos) isSignal  = (isam==samplev.size()-1 || isam==samplev.size()-2 || isam==samplev.size()-3 || isam==samplev.size()-4 || isam==samplev.size()-5 || isam==samplev.size()-6 || isam==samplev.size()-7 || isam==samplev.size()-8);
+    if(((selection.compare("Bst15MonoHbb")==0) || (selection.compare("Bst8MonoHbb")==0) || (selection.compare("ResMonoHbb")==0) || (selection.compare("Bst8MonoHbbCMS")==0) || (selection.compare("ResMonoHbbCMS")==0))
+       && subsample.find("SR")!=std::string::npos) isSignal  = (isam==samplev.size()-1 || isam==samplev.size()-2 || isam==samplev.size()-3 || isam==samplev.size()-4 || isam==samplev.size()-5 || isam==samplev.size()-6 || isam==samplev.size()-7 || isam==samplev.size()-8);
     
     for(unsigned int ifile=0; ifile<sample->fnamev.size(); ifile++) {
       string infilename = sample->fnamev[ifile];
@@ -296,7 +302,7 @@ void skimMonoX(const string preselection, const string selection, const string s
 	double wgt = 1;
 	if(!isData) {
           wgt *= LUMI*fBits->evtWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
-          if(preselection.compare("Had")!=0) wgt *= fBits->triggerEff;
+          if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->triggerEff;
 	  if(selection.compare("BstMonoTop")==0){
 	    if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){
 	      wgt *= fBits->ToptagSF;
@@ -326,7 +332,7 @@ void skimMonoX(const string preselection, const string selection, const string s
 	  // 	wgt *= fBits->bmistagSF;
 	  //     }
 	  //   }
-	  // }
+	  // } 
 	  
 	  if(sample->label=="Photon") {
 	    if(ifile==0) { 
@@ -370,6 +376,7 @@ void skimMonoX(const string preselection, const string selection, const string s
         metphi_  = fBits->getMET(preselection).Phi();
         weight_  = wgt;
 	mt_      = fBits->transverse_mass(selection);
+        dR_      = fBits->getdRsj0dR(selection);
 	genVpt_  = fBits->genVpt;
 	genVphi_ = fBits->genVphi;
 

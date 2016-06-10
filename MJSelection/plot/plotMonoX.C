@@ -49,7 +49,8 @@ void plotMonoX(const string preselection, const string selection, const string s
   // Settings
   //==============================================================================================================
 
-  const bool doBlind = false;
+  //const bool doBlind = false;
+  const bool doBlind = true;
 
   // Create output directory 
   const string outputDir("monoxplots/"+preselection+"_"+selection+"_"+subsample+"_"+combo+"_"+algo);
@@ -69,6 +70,10 @@ void plotMonoX(const string preselection, const string selection, const string s
   samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/QCD.root");
   if (preselection.compare("Pho")!=0) {
+    if(selection.find("MonoHbb")!=std::string::npos){
+      samplev.push_back(new CSample("VH(125)", kViolet-9, kViolet-9));
+      samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZH_amcatnlo.root");
+    }
     samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
     samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/T.root");
     samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/TZ.root");
@@ -100,7 +105,7 @@ void plotMonoX(const string preselection, const string selection, const string s
     samplev.push_back(new CSample("M_{V} 300 X 5", kRed, kRed));
     samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/Monotop_S4_Mchi_300_13TeV_madgraph_pythia8_mc.root");
   }
-  if (subsample.find("SR")!=std::string::npos && (selection.compare("Bst15MonoHbb")==0 || selection.compare("Bst8MonoHbb")==0 || selection.compare("ResMonoHbb")==0)){
+  if (subsample.find("SR")!=std::string::npos && (selection.find("MonoHbb")!=std::string::npos)){ 
     samplev.push_back(new CSample("M_{Z} 600, MA0 300", kBlue, kBlue));
     samplev.back()->fnamev.push_back("/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/monoxbits/ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_300_13TeV_madgraph_mc.root");
     samplev.push_back(new CSample("M_{Z} 800, MA0 300", kGreen, kGreen));
@@ -135,7 +140,7 @@ void plotMonoX(const string preselection, const string selection, const string s
   char hname[100];
   vector<TH1D*> hMETv, hMETLogv;
   vector<TH1D*> hTransverseMassv, hTransverseMassLv;
-  vector<TH1D*> hFatJetMassv, hFatJetPtv, hFatJetTau32v, hFatJetTau32DDTv, hFatJetRhov, hFatJetMsdSqPtv;
+  vector<TH1D*> hFatJetMassv, hFatJetPtv, hFatJetTau32v, hFatJetTau32DDTv, hFatJetRhov, hdRv, hdRptv, hFatJetdPsj0dPv;
   vector<TH1D*> hFatJetTau21v, hFatJetTau21DDTv;
   vector<TH1D*> hBtagv, hMinSubJetcsvv, hDoublecsvv;
   vector<TH1D*> hMinDPhiJetsMetv, hMinDPhiFatJetMetv, hNFJetsv, hNJetsv, hNBJetsv;
@@ -147,10 +152,10 @@ void plotMonoX(const string preselection, const string selection, const string s
   
   const Int_t NBINS = 3; //for MonoH                                                                                                                                                                                            
   Double_t edges[NBINS + 1] = {170,200,300,3000};
-  const Int_t NBINSMT = 2; //for MonoH                                                                                                                                                                                          
-  Double_t edgesMT[NBINSMT + 1] = {400,750,3000};
+  const Int_t NBINSMT = 3; //for MonoH                                                                                                                                                                                          
+  Double_t edgesMT[NBINSMT + 1] = {350,550,750,3000};
   /*
-  //if(selection.compare("Bst8MonoHbb")==0){
+  //if(selection.compare("Bst8MonoHbb")==0 || selection.compare("Bst8MonoHbbCMS")==0){
   const Int_t NBINS = 3; //for MonoH
   Double_t edges[NBINS + 1] = {300,500,600,3000};
   const Int_t NBINSMT = 2; //for MonoH 
@@ -167,7 +172,9 @@ void plotMonoX(const string preselection, const string selection, const string s
     sprintf(hname,"hFatJetTau32_%i",isam);    hFatJetTau32v.push_back(new TH1D(hname,"",15,0.2,1));           hFatJetTau32v[isam]->Sumw2();
     sprintf(hname,"hFatJetTau32DDT_%i",isam); hFatJetTau32DDTv.push_back(new TH1D(hname,"",25,0,1));          hFatJetTau32DDTv[isam]->Sumw2();
     sprintf(hname,"hFatJetRho_%i",isam);      hFatJetRhov.push_back(new TH1D(hname,"",30,-10,10));            hFatJetRhov[isam]->Sumw2();
-    sprintf(hname,"hFatJetMsdSqPt_%i",isam);  hFatJetMsdSqPtv.push_back(new TH1D(hname,"",20,-300,300));      hFatJetMsdSqPtv[isam]->Sumw2();
+    sprintf(hname,"hdR_%i",isam);             hdRv.push_back(new TH1D(hname,"",10,0,1.5));                    hdRv[isam]->Sumw2();
+    sprintf(hname,"hdRpt_%i",isam);           hdRptv.push_back(new TH1D(hname,"",20,0,40));                   hdRptv[isam]->Sumw2();
+    sprintf(hname,"hFatJetdPsj0dP_%i",isam);  hFatJetdPsj0dPv.push_back(new TH1D(hname,"",20,0,3));           hFatJetdPsj0dPv[isam]->Sumw2();
     sprintf(hname,"hFatJetTau21_%i",isam);    hFatJetTau21v.push_back(new TH1D(hname,"",25,0,1));             hFatJetTau21v[isam]->Sumw2();
     sprintf(hname,"hFatJetTau21DDT_%i",isam); hFatJetTau21DDTv.push_back(new TH1D(hname,"",25,0,1));          hFatJetTau21DDTv[isam]->Sumw2();
     sprintf(hname,"hBtag_%i",isam);           hBtagv.push_back(new TH1D(hname,"",15,0.1,1.));                 hBtagv[isam]->Sumw2();
@@ -196,7 +203,9 @@ void plotMonoX(const string preselection, const string selection, const string s
   TH1D *hFatJetTau32MC     = (TH1D*)hFatJetTau32v[0]    ->Clone("hFatJetTau32MC");
   TH1D *hFatJetTau32DDTMC  = (TH1D*)hFatJetTau32DDTv[0] ->Clone("hFatJetTau32DDTMC");
   TH1D *hFatJetRhoMC       = (TH1D*)hFatJetRhov[0]      ->Clone("hFatJetRhoMC");
-  TH1D *hFatJetMsdSqPtMC   = (TH1D*)hFatJetMsdSqPtv[0]  ->Clone("hFatJetMsdSqPtMC");
+  TH1D *hdRMC              = (TH1D*)hdRv[0]             ->Clone("hdRMC");
+  TH1D *hdRptMC            = (TH1D*)hdRptv[0]           ->Clone("hdRptMC");
+  TH1D *hFatJetdPsj0dPMC   = (TH1D*)hFatJetdPsj0dPv[0]  ->Clone("hFatJetdPsj0dPMC");
   TH1D *hFatJetTau21MC     = (TH1D*)hFatJetTau21v[0]    ->Clone("hFatJetTau21MC");
   TH1D *hFatJetTau21DDTMC  = (TH1D*)hFatJetTau21DDTv[0] ->Clone("hFatJetTau21DDTMC");
   TH1D *hBtagMC            = (TH1D*)hBtagv[0]           ->Clone("hBtagMC");
@@ -229,6 +238,14 @@ void plotMonoX(const string preselection, const string selection, const string s
   TH1D *hTransverseMassSig6= (TH1D*)hTransverseMassv[0] ->Clone("hTransverseMassSig6");
   TH1D *hTransverseMassSig7= (TH1D*)hTransverseMassv[0] ->Clone("hTransverseMassSig7");
   TH1D *hTransverseMassSig8= (TH1D*)hTransverseMassv[0] ->Clone("hTransverseMassSig8");
+  TH1D *hdRSig1            = (TH1D*)hdRv[0] ->Clone("hdRSig1");
+  TH1D *hdRSig2            = (TH1D*)hdRv[0] ->Clone("hdRSig2");
+  TH1D *hdRSig3            = (TH1D*)hdRv[0] ->Clone("hdRSig3");
+  TH1D *hdRSig4            = (TH1D*)hdRv[0] ->Clone("hdRSig4");
+  TH1D *hdRSig5            = (TH1D*)hdRv[0] ->Clone("hdRSig5");
+  TH1D *hdRSig6            = (TH1D*)hdRv[0] ->Clone("hdRSig6");
+  TH1D *hdRSig7            = (TH1D*)hdRv[0] ->Clone("hdRSig7");
+  TH1D *hdRSig8            = (TH1D*)hdRv[0] ->Clone("hdRSig8");
   double neventsMC = 0;
 
   TFile *infile=0;
@@ -277,7 +294,7 @@ void plotMonoX(const string preselection, const string selection, const string s
         double wgt = 1;
 	if(!isData) {
 	  wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
-	  if(preselection.compare("Had")!=0) wgt *= fBits->triggerEff;
+          if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->triggerEff;
 	  if(selection.compare("Bst15MonoTop")==0 || selection.compare("Bst8MonoTop")==0){
 	    if(sample->label=="t#bar{t}" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0) {
 	      wgt *= fBits->ToptagSF;
@@ -303,7 +320,12 @@ void plotMonoX(const string preselection, const string selection, const string s
 
 	nevts += wgt;
 	noweight++;
-	
+	/*
+	if(sample->label=="VH(125)"){
+	  //cout << wgt << " " << btagw << " " <<  endl;
+	  //cout << LUMI << "scale1fb " << fBits->scale1fb << "evtWeight " << fBits->evtWeight << "kfactor " << fBits->kfactor << "btag " << btagw << "lepSFs " << fBits->eleSF1 << " " << fBits->eleSF2 << " " << fBits->muoSF1 << " " << fBits->muoSF2 << endl;
+	}
+	*/
         neventsv[isam]+=wgt;
         hMETv[isam]            ->Fill(fBits->getMET(preselection).Pt(),       wgt);
         hMETLogv[isam]         ->Fill(fBits->getMET(preselection).Pt(),       wgt);
@@ -316,7 +338,9 @@ void plotMonoX(const string preselection, const string selection, const string s
         hFatJetRhov[isam]      ->Fill(fBits->rho(selection),                  wgt);
         hFatJetTau21v[isam]    ->Fill(fBits->tau21(selection),                wgt);
         hFatJetTau21DDTv[isam] ->Fill(fBits->tau21DDT(selection),             wgt);
-        hFatJetMsdSqPtv[isam]  ->Fill(fBits->getMsdSqPt(selection),           wgt);
+        hdRv[isam]             ->Fill(fBits->getdRsj0dR(selection),           wgt);
+        hdRptv[isam]           ->Fill(fBits->getdRsj0dRpt(selection),         wgt);
+        hFatJetdPsj0dPv[isam]  ->Fill(fBits->getdPsj0dP(selection),           wgt);
         hBtagv[isam]           ->Fill(fBits->maxsubcsv(selection),            wgt);
         hMinSubJetcsvv[isam]   ->Fill(fBits->minsubcsv(selection),            wgt);
         hDoublecsvv[isam]      ->Fill(fBits->doublecsv(selection),            wgt);
@@ -345,7 +369,9 @@ void plotMonoX(const string preselection, const string selection, const string s
 	  hFatJetTau21MC    ->Fill(fBits->tau21(selection),                   wgt);
 	  hFatJetTau21DDTMC ->Fill(fBits->tau21DDT(selection),                wgt);
 	  hFatJetRhoMC      ->Fill(fBits->rho(selection),                     wgt);
-	  hFatJetMsdSqPtMC  ->Fill(fBits->getMsdSqPt(selection),              wgt);
+	  hdRMC             ->Fill(fBits->getdRsj0dR(selection),              wgt);
+          hdRptMC           ->Fill(fBits->getdRsj0dRpt(selection),            wgt);
+	  hFatJetdPsj0dPMC  ->Fill(fBits->getdPsj0dP(selection),              wgt);
 	  hBtagMC           ->Fill(fBits->maxsubcsv(selection),               wgt);
 	  hMinSubJetcsvMC   ->Fill(fBits->minsubcsv(selection),               wgt);
           hDoublecsvMC      ->Fill(fBits->doublecsv(selection),               wgt);
@@ -365,34 +391,42 @@ void plotMonoX(const string preselection, const string selection, const string s
 	  if(isSignal1){
 	    hMETSig1           ->Fill(fBits->getMET(preselection).Pt(),       wgt);
 	    hTransverseMassSig1->Fill(fBits->transverse_mass(selection),      wgt);
+	    hdRSig1            ->Fill(fBits->getdRsj0dR(selection),           wgt);
 	  }
 	  if(isSignal2){ 
 	    hMETSig2           ->Fill(fBits->getMET(preselection).Pt(),       wgt);
 	    hTransverseMassSig2->Fill(fBits->transverse_mass(selection),      wgt);
+            hdRSig2            ->Fill(fBits->getdRsj0dR(selection),           wgt);
 	  }
           if(isSignal3){
             hMETSig3           ->Fill(fBits->getMET(preselection).Pt(),       wgt);
             hTransverseMassSig3->Fill(fBits->transverse_mass(selection),      wgt);
+            hdRSig3            ->Fill(fBits->getdRsj0dR(selection),           wgt);
           }
           if(isSignal4){
             hMETSig4           ->Fill(fBits->getMET(preselection).Pt(),       wgt);
             hTransverseMassSig4->Fill(fBits->transverse_mass(selection),      wgt);
+            hdRSig4            ->Fill(fBits->getdRsj0dR(selection),           wgt);
           }
           if(isSignal5){
             hMETSig5           ->Fill(fBits->getMET(preselection).Pt(),       wgt);
             hTransverseMassSig5->Fill(fBits->transverse_mass(selection),      wgt);
+            hdRSig5            ->Fill(fBits->getdRsj0dR(selection),           wgt);
           }
           if(isSignal6){
             hMETSig6           ->Fill(fBits->getMET(preselection).Pt(),       wgt);
             hTransverseMassSig6->Fill(fBits->transverse_mass(selection),      wgt);
+            hdRSig6            ->Fill(fBits->getdRsj0dR(selection),           wgt);
           }
           if(isSignal7){
             hMETSig7           ->Fill(fBits->getMET(preselection).Pt(),       wgt);
             hTransverseMassSig7->Fill(fBits->transverse_mass(selection),      wgt);
+            hdRSig7            ->Fill(fBits->getdRsj0dR(selection),           wgt);
           }
           if(isSignal8){
             hMETSig8           ->Fill(fBits->getMET(preselection).Pt(),       wgt);
             hTransverseMassSig8->Fill(fBits->transverse_mass(selection),      wgt);
+            hdRSig8            ->Fill(fBits->getdRsj0dR(selection),           wgt);
           }
 	}
       }
@@ -422,7 +456,9 @@ void plotMonoX(const string preselection, const string selection, const string s
   TH1D *hFatJetRhoPull      = makePullHist(hFatJetRhov[0],      hFatJetRhoMC,      "hFatJetRhoPull",       doBlind, selection);
   TH1D *hFatJetTau21Pull    = makePullHist(hFatJetTau21v[0],    hFatJetTau21MC,    "hFatJetTau21Pull",     doBlind, selection);
   TH1D *hFatJetTau21DDTPull = makePullHist(hFatJetTau21DDTv[0], hFatJetTau21DDTMC, "hFatJetTau21DDTPull",  doBlind, selection);
-  TH1D *hFatJetMsdSqPtPull  = makePullHist(hFatJetMsdSqPtv[0],  hFatJetMsdSqPtMC,  "hFatJetMsdSqPtPull",   doBlind, selection);
+  TH1D *hdRPull             = makePullHist(hdRv[0],             hdRMC,             "hdRPull",              doBlind, selection);
+  TH1D *hdRptPull           = makePullHist(hdRptv[0],           hdRptMC,           "hdRptPull",            doBlind, selection);
+  TH1D *hFatJetdPsj0dPPull  = makePullHist(hFatJetdPsj0dPv[0],  hFatJetdPsj0dPMC,  "hFatJetdPsj0dPPull",   doBlind, selection);
   TH1D *hBtagPull           = makePullHist(hBtagv[0],           hBtagMC,           "hBtagPull",            doBlind, selection);
   TH1D *hMinSubJetcsvPull   = makePullHist(hMinSubJetcsvv[0],   hMinSubJetcsvMC,   "hMinSubJetcsvPull",    doBlind, selection);
   TH1D *hDoublecsvPull      = makePullHist(hDoublecsvv[0],      hDoublecsvMC,      "hDoublecsvPull",       doBlind, selection);
@@ -441,7 +477,7 @@ void plotMonoX(const string preselection, const string selection, const string s
   //                                                                                                                                                                                                    
   // Calculate significance                                                                                                                                                                               
   //                 
-  vector<float> significance, significanceMT;                                                                                                                                                                                
+  vector<float> significance, significanceMT, significancedR;
   significance.push_back(CalcSig(hMETSig1, hMETMC));
   significance.push_back(CalcSig(hMETSig2, hMETMC));
   significance.push_back(CalcSig(hMETSig3, hMETMC));
@@ -458,6 +494,15 @@ void plotMonoX(const string preselection, const string selection, const string s
   significanceMT.push_back(CalcSig(hTransverseMassSig6, hTransverseMassMC));
   significanceMT.push_back(CalcSig(hTransverseMassSig7, hTransverseMassMC));
   significanceMT.push_back(CalcSig(hTransverseMassSig8, hTransverseMassMC));
+  significancedR.push_back(CalcSig(hdRSig1, hdRMC));
+  significancedR.push_back(CalcSig(hdRSig2, hdRMC));
+  significancedR.push_back(CalcSig(hdRSig3, hdRMC));
+  significancedR.push_back(CalcSig(hdRSig4, hdRMC));
+  significancedR.push_back(CalcSig(hdRSig5, hdRMC));
+  significancedR.push_back(CalcSig(hdRSig6, hdRMC));
+  significancedR.push_back(CalcSig(hdRSig7, hdRMC));
+  significancedR.push_back(CalcSig(hdRSig8, hdRMC));
+
 
   //--------------------------------------------------------------------------------------------------------------
   // Output
@@ -491,6 +536,8 @@ void plotMonoX(const string preselection, const string selection, const string s
       txtfile << setw(15) << significance[samplev.size()-isam-1] << endl;
       txtfile << setw(35) << "Significance MT: ";
       txtfile << setw(15) << significanceMT[samplev.size()-isam-1] << endl;
+      txtfile << setw(35) << "Significance dR: ";
+      txtfile << setw(15) << significancedR[samplev.size()-isam-1] << endl;
     }
   }
   //   txtfile << setw(35) << "S/sqrt(B)["+samplev[isam]->label+"]:" << setw(15) << neventsv[isam]/sqrt(neventsMC) << endl;
@@ -557,9 +604,17 @@ void plotMonoX(const string preselection, const string selection, const string s
   makePlot(c, "rho", "log(m_{SD}^{2}/p_{T})", ylabel, hFatJetRhov, samplev, hFatJetRhoMC, hFatJetRhoPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetRhoMC->GetBinContent(hFatJetRhoMC->GetMaximumBin()))/(hFatJetRhoMC->GetBinWidth(hFatJetRhoMC->GetMaximumBin())), selection, subsample);
 
-  sprintf(ylabel,"Events / GeV/c^{2}");
-  makePlot(c, "msdsqpt", "msd+f(sqrt(p_{T}))", ylabel, hFatJetMsdSqPtv, samplev, hFatJetMsdSqPtMC, hFatJetMsdSqPtPull, doBlind, LUMI, false, -0.45, -0.03,
-           0.1, 2.1*(hFatJetMsdSqPtMC->GetBinContent(hFatJetMsdSqPtMC->GetMaximumBin()))/(hFatJetMsdSqPtMC->GetBinWidth(hFatJetMsdSqPtMC->GetMaximumBin())), selection, subsample);
+  sprintf(ylabel,"Events / %.1f",hdRv[0]->GetBinWidth(10));
+  makePlot(c, "dRsj0dR", "#DeltaR_{sj0}^{#DeltaR}", ylabel, hdRv, samplev, hdRMC, hdRPull, doBlind, LUMI, false, -0.45, -0.03,
+           0.1, 2.1*(hdRMC->GetBinContent(hdRMC->GetMaximumBin()))/(hdRMC->GetBinWidth(hdRMC->GetMaximumBin())), selection, subsample);
+
+  sprintf(ylabel,"Events / %.1f",hdRptv[0]->GetBinWidth(10));
+  makePlot(c, "dRsj0dRpt", "#DeltaR_{sj0}^{#DeltaR}*#sqrt{p_{T}}", ylabel, hdRptv, samplev, hdRptMC, hdRptPull, doBlind, LUMI, false, -0.45, -0.03,
+           0.1, 2.1*(hdRptMC->GetBinContent(hdRptMC->GetMaximumBin()))/(hdRptMC->GetBinWidth(hdRptMC->GetMaximumBin())), selection, subsample);
+
+  sprintf(ylabel,"Events / %.1f",hFatJetdPsj0dPv[0]->GetBinWidth(10));
+  makePlot(c, "dPsj0dP", "#Delta#phi_{sj0}^{#Delta#phi}", ylabel, hFatJetdPsj0dPv, samplev, hFatJetdPsj0dPMC, hFatJetdPsj0dPPull, doBlind, LUMI, false, -0.45, -0.03,
+           0.1, 2.1*(hFatJetdPsj0dPMC->GetBinContent(hFatJetdPsj0dPMC->GetMaximumBin()))/(hFatJetdPsj0dPMC->GetBinWidth(hFatJetdPsj0dPMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / %1f",hFatJetTau21v[0]->GetBinWidth(10));
   makePlot(c, "tau21", "#tau_{21}", ylabel, hFatJetTau21v, samplev, hFatJetTau21MC, hFatJetTau21Pull, doBlind, LUMI, false, 0.0, -0.03,
@@ -722,11 +777,11 @@ TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind
   
   const Int_t NBINS = 3; //for MonoH                                                                                                                                                                                             
   Double_t edges[NBINS + 1] = {170,200,300,3000};
-  const Int_t NBINSMT = 2; //for MonoH                                                                                                                                                                                           
-  Double_t edgesMT[NBINSMT + 1] = {400,750,3000};
+  const Int_t NBINSMT = 3; //for MonoH                                                                                                                                                                                           
+  Double_t edgesMT[NBINSMT + 1] = {350,550,750,3000};
 
   /*  
-  //if(selection.compare("Bst8MonoHbb")==0){
+  //if(selection.compare("Bst8MonoHbb")==0 || selection.compare("Bst8MonoHbbCMS")==0){
   const Int_t NBINS = 3; //for MonoH                                                                                                                         
   Double_t edges[NBINS + 1] = {300,500,600,3000};
   const Int_t NBINSMT = 2; //for MonoH                                                                                                                                        
@@ -751,7 +806,7 @@ TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind
     
     if(doBlind) {
       pull = 0;
-      err  = 1;
+      err  = 0;
     }
 
     hPull->SetBinContent(ibin,pull);
