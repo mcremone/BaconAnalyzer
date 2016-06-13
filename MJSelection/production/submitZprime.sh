@@ -40,13 +40,16 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYcc") ]]; then
     ./sub.sh mczcc $eos DYJetsToQQ_HT180_13TeV                                                                    1338.95  $dir $exec $option1 $option2
 fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
-    ./sub.sh mc $eos ZPrimeToQQ_100GeV_v4                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZPrimeToQQ_150GeV_v4                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZPrimeToQQ_200GeV_v4                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZPrimeToQQ_250GeV_v4                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZPrimeToQQ_300GeV_v4                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos ZPrimeToQQ_50GeV_v4                                                                                1  $dir $exec $option1 $option2
+if [[ ($sample = "All") || ($sample != "All" && $sample = "DYlf") ]]; then
+    ./sub.sh mczlf $eos DYJetsToQQ_HT180_13TeV                                                                    1338.95  $dir $exec $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprimelf") ]]; then
+    ./sub.sh mcZprimelf $eos ZPrimeToQQ_100GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimelf $eos ZPrimeToQQ_150GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimelf $eos ZPrimeToQQ_200GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimelf $eos ZPrimeToQQ_250GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimelf $eos ZPrimeToQQ_300GeV_v4                                                                               1  $dir $exec $option1 $option2
+    ./sub.sh mcZprimelf $eos ZPrimeToQQ_50GeV_v4                                                                                1  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprimebb") ]]; then
     ./sub.sh mcZprimebb $eos ZPrimeToQQ_100GeV_v4                                                                       1  $dir $exec $option1 $option2
