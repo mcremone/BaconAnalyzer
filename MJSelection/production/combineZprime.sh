@@ -2,18 +2,33 @@
 
 sample=$1
 
-if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]; then
-    for x in `ls ../zprimebits | grep ZPrimeToQQ | grep -v .root`; do
-	rm ../zprimebits/$x.root
-	hadd ../zprimebits//$x.root ../zprimebits/$x/*.root
+declare -a mass=("50" "100" "150" "200" "250" "300")
+declare -a vmass=("10" "25" "50" "75" "100" "125" "150" "200" "250" "300")
+declare -a type=("bb" "cc" "lf")
+
+if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprime") ]]
+ then
+   for i in "${mass[@]}"
+    do 
+     for j in "${type[@]}"
+      do
+        rm ../zprimebits/Zprime"$i""$j".root; hadd ../zprimebits/Zprime"$i""$j".root ../zprimebits/*_"$i"GeV*Zprime"$j"/*.root
+      done
     done
+
+
 fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "VectorDiJet") ]]; then
-    for x in `ls ../zprimebits | grep VectorDiJet | grep -v .root`; do
-        rm ../zprimebits/$x.root
-        hadd ../zprimebits//$x.root ../zprimebits/$x/*.root
+
+if [[ ($sample = "All") || ($sample != "All" && $sample = "VectorDiJet") ]]
+ then 
+   for k in "${vmass[@]}"
+    do 
+      rm ../zprimebits/VectorDiJet"$k".root; hadd ../zprimebits/VectorDiJet"$k".root ../zprimebits/*VectorDiJet*M"$k"_*/*.root     
     done
-fi
+fi    
+
+
+
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then rm ../zprimebits/QCD.root;     hadd  ../zprimebits/QCD.root    ../zprimebits/*QCD*mc/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DY") ]]; then rm ../zprimebits/DY.root;       hadd  ../zprimebits/DY.root     ../zprimebits/*DYJets*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYbb") ]]; then rm ../zprimebits/DYbb.root;   hadd  ../zprimebits/DYbb.root   ../zprimebits/DYJetsToQQ*mczbb/*.root; fi
