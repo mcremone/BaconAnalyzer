@@ -79,7 +79,6 @@ protected:
   TClonesArray *fJets;
   TBranch      *fJetBr;
   TTree        *fTree;
-  int           fNBTags;
   int           fNBTagsL;
   int           fNBTagsM;
   int           fNBTagsT;
