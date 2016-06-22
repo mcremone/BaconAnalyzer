@@ -49,13 +49,13 @@ bool ZprimeBitsLoader::selectJetAlgoAndSize(TString algo){
 }
 bool ZprimeBitsLoader::isPho(){
   bool lPass = false;
-  if((triggerBits & kSinglePhoton) && nmu==0 && nele==0 && npho==1 && ntau==0 && (vfakemetpt!=0)) lPass = true;
+  if((triggerBits & kSinglePhoton) && nmu==0 && nele==0 && npho==1 && ntau==0) lPass = true;
   return lPass;
 }
 bool ZprimeBitsLoader::passBoostedZprimePreselection(){
- if((bst_jet0_msd>60) && (bst_jet0_msd<100)){ 
- return njets>0 & bst_jet0_pt>500;}
- else {return false;}
+  //if((bst_jet0_msd>60) && (bst_jet0_msd<100)){ 
+ return njets>0 & bst_jet0_pt>500;
+ //else {return false;}
 }
 bool ZprimeBitsLoader::passBoostedZprimeSR(float ddtcut){
   
