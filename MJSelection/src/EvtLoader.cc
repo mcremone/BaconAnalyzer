@@ -83,6 +83,7 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("evtWeight"       ,&fevtWeight      ,"fevtWeight/F");
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
   fTree->Branch("kfactor"         ,&fkfactor        ,"fkfactor/F");
+  fTree->Branch("kfactorNLO"      ,&fkFactor_CENT   ,"fkFactor_CENT/F");
 
   fTree->Branch("PDF"             ,&fPDF            ,"fPDF/F");
   fTree->Branch("PDF_UP"          ,&fPDF_UP         ,"fPDF_UP/F");
@@ -252,7 +253,7 @@ void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std:
   fHist0->SetDirectory(0);
   fHist1 =  (TH1F*) lFile->Get(iHist1.c_str()); // LO
   fHist1->SetDirectory(0);
-  fHist2 =  (TH1F*) lFile->Get(iHist2.c_str()); // EWK
+  fHist2 =  (TH1F*) lFile->Get(iHist2.c_str()); // NLO*EWK
   fHist2->SetDirectory(0);
   fHistPDF = (TH1F*) lFile->Get(pPDF.str().c_str());
   fHistPDF->SetDirectory(0);
