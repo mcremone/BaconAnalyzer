@@ -19,19 +19,24 @@
 #include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
 #include "BTagCalibrationStandalone.h"
 
+// JEC
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+
 using namespace baconhep;
 
 class VJetLoader { 
 public:
   VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN=1, std::string subjetbtagScaleFactorFilename ="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/include/CSVv2_subjets.csv");
   ~VJetLoader();
+  double correction(TJet &iJet,double iRho);
   void reset();
   void resetSubJetBTag();
   void setupTree(TTree *iTree,std::string iJetLabel);
   void setupTreeSubJetBTag(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
-  void selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, std::string iJetID="looseJetID");
-  void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals);
+  void selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho = 0, std::string iJetID="looseJetID");
+  void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals, double iRho = 0);
   std::vector<TJet*> fSelVJets;
   std::vector<TLorentzVector> fGoodVSubJets;
   void addBoson(TGenParticle *iBoson);
@@ -76,6 +81,8 @@ protected:
   std::vector<BTagCalibrationReader*> fSubJetreadersL;
   std::vector<BTagCalibrationReader*> fSubJetreadersM;
   std::vector<std::vector<BTagCalibrationReader*>> fSubJetreaders;
+
+  FactorizedJetCorrector   *fJetCorr;
 
   int           fN;
 };
