@@ -42,4 +42,4 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "TT") ]]; then rm ../z
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WW") ]]; then rm ../zprimebits/WW.root;       hadd  ../zprimebits/WW.root     ../zprimebits/*WW*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WZ") ]]; then rm ../zprimebits/WZ.root;       hadd  ../zprimebits/WZ.root     ../zprimebits/*WZ*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then rm ../zprimebits/ZZ.root;       hadd  ../zprimebits/ZZ.root     ../zprimebits/*ZZ*/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then rm ../zprimebits/JetHT.root; hadd  ../zprimebits/JetHT.root  ../zprimebits/JetHT*_data/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then rm ../zprimebits/JetHT.root; hadd  ../zprimebits/JetHT.root  ../zprimebits/JetHTRun2015D_16Dec2015_v1_data/*.root;fi

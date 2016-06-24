@@ -68,7 +68,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "Zprimecc") ]]; then
     ./sub.sh mcZprimecc $eos ZPrimeToQQ_50GeV_v4                                                                        1  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then
-    ./sub.sh data $eos JetHTRun2015D_16Dec2015_v1_2                                                                     1  $dir $exec $option1 $option2
+    ./sub.sh data $eos JetHTRun2015D_16Dec2015_v1                                                                       1  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "VectorDiJet") ]]; then
     ./sub.sh mc $eos VectorDiJet1Jet_M10                                                                                1  $dir $exec $option1 $option2
