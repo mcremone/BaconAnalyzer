@@ -11,12 +11,12 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet) {
     iTree->SetBranchAddress("triggerBits",                       &triggerBits);
     iTree->SetBranchAddress("selectBits",                        &selectBits);
     iTree->SetBranchAddress("triggerEff",                        &triggerEff);
-    iTree->SetBranchAddress("npu",                               &npu);
-    iTree->SetBranchAddress("npv",                               &npv);
-    iTree->SetBranchAddress("nmu",                               &nmu);
-    iTree->SetBranchAddress("nele",                              &nele);
-    iTree->SetBranchAddress("ntau",                              &ntau);
-    iTree->SetBranchAddress("npho",                              &npho);
+    //iTree->SetBranchAddress("npu",                               &npu);
+    //iTree->SetBranchAddress("npv",                               &npv);
+ //   iTree->SetBranchAddress("nmu",                               &nmu);
+ //   iTree->SetBranchAddress("nele",                              &nele);
+ //   iTree->SetBranchAddress("ntau",                              &ntau);
+ //   iTree->SetBranchAddress("npho",                              &npho);
     iTree->SetBranchAddress("puWeight",                          &puWeight);
     iTree->SetBranchAddress("scale1fb",                          &scale1fb);
     iTree->SetBranchAddress("evtWeight",                         &evtWeight);
