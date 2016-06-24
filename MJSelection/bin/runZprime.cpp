@@ -145,7 +145,7 @@ int main( int argc, char **argv ) {
         
     // CA8Puppi Jets
     fVJetPuppi->load(i0);
-    fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,0.8);
+    fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,0.8,fEvt->fRho);
     if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 2;}
     
     // AK8CHS Jets

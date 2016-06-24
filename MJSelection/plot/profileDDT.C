@@ -9,15 +9,15 @@
 
 void profileDDT()
 {
-  std::string iName="/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/QCD.root";
+  std::string iName="/afs/cern.ch/work/m/mcremone/public/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/zprimebits/JetHT.root";
   TFile *lFile = new TFile(iName.c_str());
   TTree *lTree = (TTree*) lFile->FindObjectAny("Events");
   //TProfile  *hprofilemsd   = new TProfile("hprofilemsd"," m_{SD} vs sqrt(p_{T}) QCD",20,0,40,0,300);
   //TH2D *hmsd = new TH2D("hmsd","m_{SD} vs p_{T} QCD",20.,0.,1000.,20.,0.,300.);
   // TProfile  *hprofilerho   = new TProfile("hprofilerho","#tau_{3}/#tau_{2} vs #rho QCD",20,-5,0,0,1);
   // TProfile  *hprofilephil  = new TProfile("hprofilephil","#tau_{3}/#tau_{2} vs #phil SD} QCD",20,0,30,0,1);
-  TProfile  *hprofilenhan  = new TProfile("hprofilenhan","#tau_{2}/#tau_{1} vs #rho^{DDT} QCD",20,-5,6,0,1);
-
+  //TProfile  *hprofilenhan  = new TProfile("hprofilenhan","#tau_{2}/#tau_{1} vs #rho^{DDT} QCD",20,-5,6,0,1);
+  TH1F *h = new TH1F("h","pT<400 Old",50,0,600);
   // variables to read in baconbits
   int metfilter;
   float evtWeight, puWeight, scale1fb;
@@ -48,17 +48,23 @@ void profileDDT()
   // fill profile plots
   for(int i0 = 0; i0 < lTree->GetEntries(); i0++) {
     lTree->GetEntry(i0);
-    if(metfilter!=0)    continue;
-    if(bst_jet0_pt<500) continue; 
+    //if(metfilter!=0)    continue;
+    if(bst_jet0_pt>400) continue; 
     double wgt=1; 
-    wgt *= LUMI*scale1fb;
-    double bst_jet0_nhan = log(bst_jet0_msd*bst_jet0_msd/bst_jet0_pt);
+    //wgt *= LUMI*scale1fb;
+    //double bst_jet0_nhan = log(bst_jet0_msd*bst_jet0_msd/bst_jet0_pt);
     //hprofilemsd->Fill(bst_jet0_pt, bst_jet0_msd, wgt);
     //hprofilemsd->Fill(sqrt(bst_jet0_pt), bst_jet0_msd, wgt);
     //hprofilerho->Fill(bst_jet0_rho, bst_jet0_tau32, wgt);
     //hprofilephil->Fill(bst_jet0_phil, bst_jet0_tau32, wgt);
-    hprofilenhan->Fill(bst_jet0_nhan, bst_jet0_tau21, wgt);
+    //hprofilenhan->Fill(bst_jet0_nhan, bst_jet0_tau21, wgt);
+    h->Fill(bst_jet0_pt,wgt);
   }
+  h->GetXaxis()->SetTitle("p_{T} [GeV]");
+  h->Scale(1/(h->Integral()));
+  TCanvas *c1 = new TCanvas("c1","");                                                                                                                                                                    
+  h->Draw("");
+  c1->SaveAs("old3.png");
   /*
   // fit dependence and plot
   TCanvas *c1 = new TCanvas("c1","");
@@ -85,7 +91,7 @@ void profileDDT()
   c1->SaveAs("hprofilemsd_QCD_msdvssqpt.png");
   c1->SaveAs("hprofilemsd_QCD_msdvssqpt.pdf");
   */
-  TFile f("histos.root","new");
-  hprofilenhan->Write();
-  f.Close();
+  //TFile f("histos.root","new");
+  //h->Write();
+  //f.Close();
 }

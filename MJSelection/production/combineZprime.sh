@@ -25,9 +25,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "VectorDiJet") ]]
     do 
       rm ../zprimebits/VectorDiJet"$k".root; hadd ../zprimebits/VectorDiJet"$k".root ../zprimebits/*VectorDiJet*M"$k"_*/*.root     
     done
-fi    
-
-
+fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then rm ../zprimebits/QCD.root;     hadd  ../zprimebits/QCD.root    ../zprimebits/*QCD*mc/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DY") ]]; then rm ../zprimebits/DY.root;       hadd  ../zprimebits/DY.root     ../zprimebits/*DYJets*/*.root; fi
@@ -42,4 +40,5 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "TT") ]]; then rm ../z
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WW") ]]; then rm ../zprimebits/WW.root;       hadd  ../zprimebits/WW.root     ../zprimebits/*WW*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WZ") ]]; then rm ../zprimebits/WZ.root;       hadd  ../zprimebits/WZ.root     ../zprimebits/*WZ*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then rm ../zprimebits/ZZ.root;       hadd  ../zprimebits/ZZ.root     ../zprimebits/*ZZ*/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then rm ../zprimebits/JetHT.root; hadd  ../zprimebits/JetHT.root  ../zprimebits/JetHTRun2015D_16Dec2015_v1_data/*.root;fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then rm /tmp/cmantill/JetHT.root; hadd  /tmp/cmantill/JetHT.root  ../zprimebits/JetHT*_data/*.root; fi
+

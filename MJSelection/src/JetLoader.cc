@@ -39,7 +39,6 @@ void JetLoader::reset() {
   fMT              = 0;
   fMinDPhi         = 1000;
   fMinDFPhi        = 1000; 
-  fNBTags          = 0;
   fNBTagsL         = 0;
   fNBTagsM         = 0;
   fNBTagsT         = 0;
@@ -98,8 +97,7 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch(pSdPhi.str().c_str()        ,&fMinDPhi         ,(pSdPhi.str()+"/D").c_str());
   fTree->Branch(pSdFPhi.str().c_str()       ,&fMinDFPhi        ,(pSdFPhi.str()+"/D").c_str());
   fTree->Branch(pSMT.str().c_str()          ,&fMT              ,(pSMT.str()+"/F").c_str());
-  fTree->Branch(pSb.str().c_str()           ,&fNBTags          ,(pSb.str()+"/I").c_str());  // b tags
-  fTree->Branch(pSbL.str().c_str()          ,&fNBTagsL         ,(pSbL.str()+"/I").c_str());
+  fTree->Branch(pSbL.str().c_str()          ,&fNBTagsL         ,(pSbL.str()+"/I").c_str()); // b tags
   fTree->Branch(pSbM.str().c_str()          ,&fNBTagsM         ,(pSbM.str()+"/I").c_str());
   fTree->Branch(pSbT.str().c_str()          ,&fNBTagsT         ,(pSbT.str()+"/I").c_str());
 
@@ -155,13 +153,12 @@ void JetLoader::load(int iEvent) {
 }
 void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iVJets,std::vector<TLorentzVector> &iJets,float iMet,float iMetPhi,float iFMet,float iFMetPhi){ 
   reset(); 
-  int lCount = 0,lCountAbove80GeV = 0,lCountdR2 = 0,lNBTag = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0,lNBTagMdR2 = 0,lNBTagTdR2 = 0;
+  int lCount = 0,lCountAbove80GeV = 0,lCountdR2 = 0,lNBTagL = 0,lNBTagM = 0,lNBTagT = 0,lNBTagLdR2 = 0,lNBTagMdR2 = 0,lNBTagTdR2 = 0;
   double pDPhi(999),pDFPhi(999);
   float  pMhtX(0.), pMhtY(0.);
 
   for  (int i0 = 0; i0 < fJets->GetEntriesFast(); i0++) { 
     TJet *pJet = (TJet*)((*fJets)[i0]);
-    if(pJet->csv > 0.89 && fabs(pJet->eta) < 2.5 && pJet->pt  > 15 && passJet04Sel(pJet) && !passVeto(pJet->eta,pJet->phi,0.4,iVetoes)) lNBTag++;
     if(passVeto(pJet->eta,pJet->phi,0.4,iVetoes)) continue;
     if(pJet->pt        <=  30)                    continue;
     if(fabs(pJet->eta) >= 4.5)                    continue;
@@ -200,7 +197,6 @@ void JetLoader::selectJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLor
   fNJetsdR2        = lCountdR2;
   fMinDPhi         = pDPhi;
   fMinDFPhi        = pDFPhi;
-  fNBTags          = lNBTag;
   fNBTagsL         = lNBTagL;
   fNBTagsM         = lNBTagM;
   fNBTagsT         = lNBTagT;

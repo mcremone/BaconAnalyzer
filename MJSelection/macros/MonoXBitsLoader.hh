@@ -37,6 +37,7 @@ public:
   TLorentzVector getTop();
   TLorentzVector getHiggs();
   bool passBoostedMonoTopPreselection(string preselection);
+  bool passSemiBoostedMonoTopPreselection(string preselection);
   bool passBoosted8MonoHbbPreselection(string preselection);
   bool passBoosted15MonoHbbPreselection(string preselection);
   bool passResolvedMonoHbbPreselection(string preselection);
@@ -50,6 +51,11 @@ public:
   bool passBoostedMonoTopTopCRminusBtag(string preselection);
   bool passBoostedMonoTopWCR(string preselection);
   bool passBoostedMonoTopZCR(string preselection);
+
+  bool passSemiBoostedMonoTopSR(string preselection);
+  bool passSemiBoostedMonoTopTopCR(string preselection);
+  bool passSemiBoostedMonoTopWCR(string preselection);
+  bool passSemiBoostedMonoTopZCR(string preselection);
 
   bool passBoosted15MonoHbbSR(string preselection, float csvb0 = 0.3, float csvb1 = 1000);
   bool passBoosted15MonoHbbTopCR(string preselection, float csvb0 = 0.3, float csvb1 = 1000);
@@ -107,7 +113,7 @@ public:
   unsigned int npu, npv;                                                             // PU, PV multiplicity
   int nmu, nele, ntau, npho;                                                         // object multiplicity
   int njets, njetsdR2, njetsdR15, nfjets15, nfjets8, nfjets15T, nfjets8T;            // jet multiplicity 
-  int nbtags, nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2, nbjetsLdR15;        // b-jet multiplicity
+  int nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2, nbjetsLdR15;                // b-jet multiplicity
   float scale1fb;                                                                    // cross section scale factor per 1/fb
   float kfactor;                                                                     // kFactor and EWK correction
   float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2;                     // btag SF

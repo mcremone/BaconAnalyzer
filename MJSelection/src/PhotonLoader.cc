@@ -46,7 +46,7 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
 
     if(pPhoton->pt        <=  15)                       continue;
     if(fabs(pPhoton->eta) >=  2.5)                      continue;
-    if(passVeto(pPhoton->eta,pPhoton->phi,0.4,iVetoes)) continue;    // clean electrons from photons (only e-)?
+    if(passVeto(pPhoton->eta,pPhoton->phi,0.4,iVetoes)) continue;
     if(!passPhoLooseSel(pPhoton,iRho))                  continue;
     lCount++;
 

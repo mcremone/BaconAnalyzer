@@ -220,9 +220,11 @@ int main( int argc, char **argv ) {
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
     
+    fEvt->fillVetoes(lPhotons,lVetoes);
+
     // CA15Puppi Jets
     fVJet15->load(i0);
-    fVJet15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,"looseJetID");
+    fVJet15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,fEvt->fRho,"looseJetID");
     if(lVJets15.size()>0) { 
       if(lOption.find("data")==std::string::npos){
 	fVJet15->fisHadronicTop = fGen->ismatchedJet(lVJet15[0],1.5,fVJet15->ftopMatching,fVJet15->ftopSize);
@@ -235,7 +237,7 @@ int main( int argc, char **argv ) {
     
     // CA15CHS Jets
     fVJetCHS15->load(i0);
-    fVJetCHS15->selectVJets(lVetoes,lVJetsCHS15,lVJetCHS15,1.5,"looseJetID");
+    fVJetCHS15->selectVJets(lVetoes,lVJetsCHS15,lVJetCHS15,1.5,fEvt->fRho,"looseJetID");
     if(lVJetsCHS15.size()>0) {
       if(lOption.find("data")==std::string::npos){
         fVJetCHS15->fisHadronicTop = fGen->ismatchedJet(lVJetCHS15[0],1.5,fVJetCHS15->ftopMatching,fVJetCHS15->ftopSize);
@@ -248,7 +250,7 @@ int main( int argc, char **argv ) {
 
     // CA8Puppi Jets
     fVJet8T->load(i0);
-    fVJet8T->selectVJets(lVetoes,lVJets8T,lVJet8T,0.8,"tightJetID");
+    fVJet8T->selectVJets(lVetoes,lVJets8T,lVJet8T,0.8,fEvt->fRho,"tightJetID");
     if(lVJets8T.size()>0) {
       if(lOption.find("data")==std::string::npos){
         fVJet8T->fisHadronicTop = fGen->ismatchedJet(lVJet8T[0],0.8,fVJet8T->ftopMatching,fVJet8T->ftopSize);
@@ -261,7 +263,7 @@ int main( int argc, char **argv ) {
 
     // AK8CHS Jets
     fVJetCHS8->load(i0);
-    fVJetCHS8->selectVJets(lVetoes,lVJetsCHS8,lVJetCHS8,0.8,"tightJetID");
+    fVJetCHS8->selectVJets(lVetoes,lVJetsCHS8,lVJetCHS8,0.8,fEvt->fRho,"tightJetID");
     if(lVJetsCHS8.size()>0) {
       if(lOption.find("data")==std::string::npos){
         fVJetCHS8->fisHadronicTop = fGen->ismatchedJet(lVJetCHS8[0],0.8,fVJetCHS8->ftopMatching,fVJetCHS8->ftopSize);

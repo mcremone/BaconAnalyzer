@@ -59,6 +59,12 @@ VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN,
   }
   fSubJetreaders.push_back(fSubJetreadersL); fSubJetreaders.push_back(fSubJetreadersM);
 
+  std::vector<JetCorrectorParameters> corrParams;
+  corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt"));
+  corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt"));
+  corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt"));
+  corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"));
+  fJetCorr = new FactorizedJetCorrector(corrParams);
 }
 VJetLoader::~VJetLoader() { 
   delete fVJets;
@@ -67,6 +73,17 @@ VJetLoader::~VJetLoader() {
   delete fVAddJetBr;
   // delete fFatJets;
   // delete fFatJetBr;
+}
+double VJetLoader::correction(TJet &iJet,double iRho) {
+  TLorentzVector lVec; lVec.SetPtEtaPhiM(iJet.ptRaw,iJet.eta,iJet.phi,iJet.mass);
+  fJetCorr->setJetEta(iJet.eta);
+  fJetCorr->setJetPt (iJet.ptRaw);
+  fJetCorr->setJetPhi(iJet.phi);
+  fJetCorr->setJetE  (lVec.E());
+  fJetCorr->setRho   (iRho);
+  fJetCorr->setJetA  (iJet.area);
+  fJetCorr->setJetEMF(-99.0);
+  return ((fJetCorr->getCorrection())*iJet.ptRaw);
 }
 void VJetLoader::resetSubJetBTag() {
   for(unsigned int i0 = 0; i0 < fSubJetBTagVars.size(); i0++) fSubJetBTagVars[i0] = 1;
@@ -106,6 +123,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fLabels.push_back("maxsubcsv");
   fLabels.push_back("doublecsv");
   fLabels.push_back("fatjetcsv");
+  fLabels.push_back("pttrue");
 
   std::stringstream pSMT;   pSMT << iJetLabel << "0_mT";
   std::stringstream pSdR;   pSdR << iJetLabel << "0_dR_sj0dR";
@@ -154,7 +172,7 @@ void VJetLoader::load(int iEvent) {
   // fFatJets     ->Clear();
   // fFatJetBr    ->GetEntry(iEvent);
 }
-void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, std::string iJetID){
+void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho, std::string iJetID){
   reset(); 
   iJets.clear(); iVJet.clear();
   int lCount = 0; 
@@ -175,9 +193,9 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
   }
   fNVJets = lCount;
   fillJet( fN,fSelVJets,fVars);
-  fillVJet(fN,fSelVJets,fVars); 
+  fillVJet(fN,fSelVJets,fVars,iRho); 
 }
-void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){ 
+void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals, double iRho){ 
   int lBase = 3.*fN;
   int lMin = iObjects.size();
   int lNLabel = int(fLabels.size());
@@ -201,6 +219,8 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
 
     TJet *pLargeJet = getLargeJet(iObjects[i0]); 
     if(pLargeJet != 0) iVals[lBase+i0*lNLabel+14] = pLargeJet->csv;
+    iVals[lBase+i0*lNLabel+15]  = correction(*(iObjects[i0]),iRho);
+
     // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+14] = pLargeJet->pt - iObjects[i0]->pt;
     // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+15] = pullDot(pLargeJet->pullY,iObjects[i0]->pullY,pLargeJet->pullPhi,iObjects[i0]->pullPhi);
   
