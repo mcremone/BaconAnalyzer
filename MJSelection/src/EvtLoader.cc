@@ -114,6 +114,7 @@ void EvtLoader::load(int iEvent) {
   fLumi  = fEvt->lumiSec;
 }
 bool EvtLoader::passTrigger(std::string iTrigger) {
+  //std::cout << fEvt->triggerBits << std::endl;
   return fTrigger->pass(iTrigger,fEvt->triggerBits);
 }
 bool EvtLoader::passSkim() { 

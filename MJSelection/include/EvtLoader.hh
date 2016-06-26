@@ -18,8 +18,8 @@ using namespace baconhep;
 class EvtLoader { 
 public:
   EvtLoader(TTree *iTree,std::string iName,
-	    //std::string iHLTFile="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAna/DataFormats/data/HLTFile_25ns",
-	    std::string iHLTFile="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAna/DataFormats/data/HLTFile_25ns_new",
+	    std::string iHLTFile="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_8_0_10/src/BaconAna/DataFormats/data/HLTFile_25ns",
+	    //std::string iHLTFile="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAna/DataFormats/data/HLTFile_25ns_new",
 	    std::string iPUWeight="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_12_patch1/src/BaconAnalyzer/MJSelection/Json/puWeights_13TeV_25ns.root");
   ~EvtLoader(); 
   void reset();

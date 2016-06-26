@@ -99,7 +99,7 @@ int main( int argc, char **argv ) {
   fBTagCHS8 = new BTagWeightLoader(lTree);
   fVJet15   = new VJetLoader      (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
   fVJetCHS15= new VJetLoader      (lTree,"CA15CHS","AddCA15CHS");
-  fVJet8T   = new VJetLoader      (lTree,"CA8Puppi","AddCA8Puppi");
+  fVJet8T   = new VJetLoader      (lTree,"AK8Puppi","AddAK8Puppi");
   fVJetCHS8 = new VJetLoader      (lTree,"AK8CHS","AddAK8CHS");
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);       // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
@@ -166,20 +166,22 @@ int main( int argc, char **argv ) {
     
     // Triggerbits for MET, Electrons and Photons
     unsigned int trigbits=1;    
-    if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
-       fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2; 
-    if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
-       fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
-    if(fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
-       fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 8;
-    if(fEvt ->passTrigger("HLT_Photon175_v*") ||
-       fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 16;
-    if(trigbits==1) continue;
-    
+    if(lOption.find("data")!=std::string::npos){
+      if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
+	 fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
+	 fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
+	 fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
+	 fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
+	 fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2;
+      if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
+      	 fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
+      if(fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
+      	 fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 8;
+      if(fEvt ->passTrigger("HLT_Photon175_v*") ||
+	 fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 16;
+      if(trigbits==1) continue;
+    }
+
     // Objects
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lJetsCHS, lVJet15, lVJets15, lVJetCHS15, lVJetsCHS15, lVJet8T, lVJets8T, lVJetCHS8, lVJetsCHS8, lVetoes;
     std::vector<const TJet*> lGoodJets15, lGoodJetsCHS15, lGoodJets8T, lGoodJetsCHS8;
