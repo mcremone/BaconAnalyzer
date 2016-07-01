@@ -88,7 +88,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
 
   vector<string> mass;
   mass.push_back("50");
-  mass.push_back("100");
+//  mass.push_back("100");
   mass.push_back("150");
   mass.push_back("200");
   mass.push_back("250");
@@ -109,7 +109,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   type.push_back("cc");
   type.push_back("bb");
 
-  for(int j=0;j<6;j++){
+  for(int j=0;j<5;j++){
      for(int k=0;k<3;k++){
 
        samplev.push_back(new CSample("Zprime"+mass[j]+type[k],kRed,kRed));
@@ -160,7 +160,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   vector<TH1D*> hSubjetBtagv, hFatjetBtagv;  
   vector<double> neventsv;
   
-  for(unsigned int isam=0; isam<8; isam++) {
+  for(unsigned int isam=0; isam<23; isam++) {
     sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",40,500,2000));        hFatJetPtv[isam]->Sumw2();
     sprintf(hname,"hFatJetPtLog_%i",isam);    hFatJetPtLogv.push_back(new TH1D(hname,"",40,500,2000));     hFatJetPtLogv[isam]->Sumw2();
     sprintf(hname,"hFatJetEta_%i",isam);      hFatJetEtav.push_back(new TH1D(hname,"",30,-4.5,4.5));       hFatJetEtav[isam]->Sumw2();
@@ -195,8 +195,8 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   TTree *intree=0;
 
   // Loop over samples
-
-  for(unsigned int isam=0; isam<8; isam++) {
+ 
+  for(unsigned int isam=0; isam<23; isam++) {
     CSample *sample  = samplev[isam];
     cout << "Sample: " << sample->label << endl;
     bool isData    = (isam==0);
@@ -251,10 +251,10 @@ void plotZprime(const string selection, const string algo, const string jet, flo
         
 	//if(isSignal1 || isSignal2 || isSignal3 || isSignal4 || isSignal5 || isSignal6)
 	
-	if(isam==7){ 
-	  hFatJetMassSig         ->Fill(fBits->bst_jet0_msd,            wgt);
+      // 	if(isam==7){ 
+//	  hFatJetMassSig         ->Fill(fBits->bst_jet0_msd,            wgt);
 
-        }
+  //      }
 	//}
       }
 
@@ -288,7 +288,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   hSubjetBtagv[1]     ->Scale(QCDSF);
   hFatjetBtagv[1]     ->Scale(QCDSF);
 
-  for(unsigned int isam=1; isam<7; isam++) {
+/*  for(unsigned int isam=1; isam<8; isam++) {
 
     cout << "Adding " << samplev[isam]->label <<" to MC"<<endl;
     hFatJetPtMC       ->Add(hFatJetPtv[isam]);
@@ -302,7 +302,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
     hFatJetRhoDDTlMC ->Add(hFatJetRhoDDTlv[isam]);
     hSubjetBtagMC     ->Add(hSubjetBtagv[isam]);
     hFatjetBtagMC     ->Add(hFatjetBtagv[isam]);
-  }
+  }*/
   /*
   hFatJetRhoDDTv[7] ->Scale(100);
   hFatJetRhoDDTv[8] ->Scale(100);
@@ -331,11 +331,11 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   //                                                                                                                                                                                                    
   // Calculate significance                                                                                                                                                                               
   //                 
-  vector<float> significance;                                                                                                                                                                               
- significance.push_back(CalcSig1(hFatJetMassSig,  hFatJetMassMC));
- significance.push_back(CalcSig2(hFatJetMassSig,  hFatJetMassMC));
- significance.push_back(CalcSig3(hFatJetMassSig,  hFatJetMassMC));
- significance.push_back(CalcSig4(hFatJetMassSig,  hFatJetMassMC));
+ // vector<float> significance;                                                                                                                                                                               
+ //significance.push_back(CalcSig1(hFatJetMassSig,  hFatJetMassMC));
+ //significance.push_back(CalcSig2(hFatJetMassSig,  hFatJetMassMC));
+ //significance.push_back(CalcSig3(hFatJetMassSig,  hFatJetMassMC));
+ //significance.push_back(CalcSig4(hFatJetMassSig,  hFatJetMassMC));
   //--------------------------------------------------------------------------------------------------------------
   // Output
   //==============================================================================================================
@@ -351,7 +351,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   txtfile.open(txtfname,std::ios_base::app);
   txtfile << setprecision(6) << fixed;
   float max = samplev.size();
-  for(unsigned int isam=1; isam<8; isam++) {
+  for(unsigned int isam=1; isam<23; isam++) {
     txtfile << setw(35) << samplev[isam]->label;
     txtfile << setw(15) << neventsv[isam] << endl;
   }
@@ -370,10 +370,10 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   //}
   txtfile << setw(15) << "DDT cut value is : "<< cut << endl;
   txtfile << setw(15) << "csv cut value is : "<< csv << endl;
-  txtfile << setw(15) << "Type 1 Significance : "<< significance[0] << endl;
-  txtfile << setw(15) << "Type 2 Significance : "<< significance[1] << endl;
-  txtfile << setw(15) << "Type 3 Significance : "<< significance[2] << endl;
-  txtfile << setw(15) << "Type 4 Significance : "<< significance[3] << endl;
+  //txtfile << setw(15) << "Type 1 Significance : "<< significance[0] << endl;
+  //txtfile << setw(15) << "Type 2 Significance : "<< significance[1] << endl;
+  //txtfile << setw(15) << "Type 3 Significance : "<< significance[2] << endl;
+  //txtfile << setw(15) << "Type 4 Significance : "<< significance[3] << endl;
   //  }
   //   txtfile << setw(35) << "S/sqrt(B)["+samplev[isam]->label+"]:" << setw(15) << neventsv[isam]/sqrt(neventsMC) << endl;
 
