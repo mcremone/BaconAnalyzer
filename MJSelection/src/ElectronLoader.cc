@@ -13,9 +13,9 @@ ElectronLoader::ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename)
   fElectronBr  = iTree->GetBranch("Electron");
   fN = 2;
   TFile *fEleSF = new TFile(ieleScaleFactorFilename.c_str());
-  fhEleVeto =  (TH2D*) fEleSF->Get("scalefactors_Veto_ele");
+  fhEleVeto = (TH2D*) fEleSF->Get("scaleFactor_electron_vetoid_RooCMSShape");
+  fhEleTight = (TH2D*) fEleSF->Get("scaleFactor_electron_tightid_RooCMSShape");
   fhEleVeto->SetDirectory(0);
-  fhEleTight = (TH2D*) fEleSF->Get("scalefactors_Tight_ele");
   fhEleTight->SetDirectory(0);
   fEleSF->Close();
 
@@ -39,8 +39,9 @@ void ElectronLoader::reset() {
 void ElectronLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("nele",&fNElectrons,"fNElectrons/I");
-  fTree->Branch("neleTight",&fNElectrons,"fNElectronsTight/I");
+  fTree->Branch("nele"      ,&fNElectrons ,"fNElectrons/I");
+  fTree->Branch("neleTight" ,&fNElectrons ,"fNElectronsTight/I");
+  fTree->Branch("isDiele  " ,&fisDiele    ,"fisDiele/I");
   // fTree->Branch("vele0_iso",&fIso1,"fIso1/D");
   // fTree->Branch("vele1_iso",&fIso2,"fIso2/D");
   setupNtuple  ("vele",iTree,fN,fVars);        // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
@@ -85,7 +86,7 @@ void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iV
     }
   }
   if(fNElectrons <= 2 && lVeto.size()==2){
-    fillDiElectron(iRho,lVeto,iVetoes);
+    fillDiElectron(iRho,lVeto,iVetoes,fisDiele);
   }
 
 }
@@ -102,27 +103,26 @@ void ElectronLoader::addDiElectron(std::string iHeader,TTree *iTree,int iN,std::
    iTree->Branch(pSY    .str().c_str(),&iVals[iBase+3],(pSY    .str()+"/D").c_str());
  }
 }
-void ElectronLoader::fillDiElectron(double iRho, std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes) { 
+void ElectronLoader::fillDiElectron(double iRho, std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes, int & isDiele) { 
   TLorentzVector lVec; lVec.SetPtEtaPhiM(0,0,0,0);
-  //TElectron *vEle1,*vEle2;
+  TElectron *vEle0,*vEle1;
   if((lVeto[1]->q)  *  (lVeto[0]->q) < 0){ //opposite charge dielectron 
-    if((passEleTightSel(lVeto[0], iRho) && lVeto[0]->pt > 40) || (passEleTightSel(lVeto[1], iRho) && lVeto[1]->pt > 40)){ // at least one electron must pass tight selection                                                     
-      //if(lVeto[0]->pt > lVeto[1]->pt){ //lep1 is the leading lepton 
-      //vEle1 = lVeto[0];
-      //vEle2 = lVeto[1];
-      //}
-      //else{
-      //vEle2 = lVeto[0];
-      //vEle1 = lVeto[1];
-      //}
-      TLorentzVector pVec0; pVec0.SetPtEtaPhiM(lVeto[0]->pt,lVeto[0]->eta,lVeto[0]->phi,0.000510998910);
-      TLorentzVector pVec1; pVec1.SetPtEtaPhiM(lVeto[1]->pt,lVeto[1]->eta,lVeto[1]->phi,0.000510998910);
+    if(lVeto[0]->pt > lVeto[1]->pt){
+      vEle0 = lVeto[0];
+      vEle1 = lVeto[1];
+    }
+    else{
+      vEle1 = lVeto[0];
+      vEle0 = lVeto[1]; 
+    }
+    if((passEleTightSel(vEle0, iRho) && vEle0->pt > 40) && (passEleSel(vEle1, iRho) && vEle1->pt > 40)){ // at least one electron must pass tight selection                       
+      TLorentzVector pVec0; pVec0.SetPtEtaPhiM(vEle0->pt,vEle0->eta,vEle0->phi,0.000510998910);
+      TLorentzVector pVec1; pVec1.SetPtEtaPhiM(vEle1->pt,vEle1->eta,vEle1->phi,0.000510998910);
       lVec = pVec0+pVec1;
       if(lVec.M() > 60 && lVec.M() < 120){
 	iVetoes.push_back(pVec0);
 	iVetoes.push_back(pVec1);
-        //addVElectron(vEle1,iVetoes,0.000510998910);
-        //addVElectron(vEle2,iVetoes,0.000510998910);
+	isDiele = 1;
       }
       int lBase = 3.*fN;
       fVars[lBase+0] = lVec.Pt();

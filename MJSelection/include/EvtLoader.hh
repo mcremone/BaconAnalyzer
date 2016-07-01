@@ -57,6 +57,8 @@ public:
   float fMet;
   float fPuppEtPhi;
   float fPuppEt;
+  float fCaloMet;
+  float fCaloMetPhi;
 
   float fFMetPhi;
   float fFMet;

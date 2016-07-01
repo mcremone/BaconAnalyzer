@@ -59,6 +59,8 @@ void EvtLoader::reset() {
   fMetPhi       = 0; 
   fPuppEt       = 0; 
   fPuppEtPhi    = 0; 
+  fCaloMet      = 0;
+  fCaloMetPhi   = 0;
 
   fFMet         = 0;
   fFMetPhi      = 0;
@@ -97,6 +99,8 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("pfmetphi"        ,&fMetPhi         ,"fMetPhi/F");
   fTree->Branch("puppet"          ,&fPuppEt         ,"fPuppEt/F");
   fTree->Branch("puppetphi"       ,&fPuppEtPhi      ,"fPuppEtPhi/F");
+  fTree->Branch("calomet"         ,&fCaloMet        ,"fCaloMet/F");
+  fTree->Branch("calometphi"      ,&fCaloMetPhi     ,"fCaloMetPhi/F");
 
   fTree->Branch("fakepfmet"       ,&fFMet           ,"fFMet/F");
   fTree->Branch("fakepfmetphi"    ,&fFMetPhi        ,"fFMetPhi/F");
@@ -139,6 +143,8 @@ void EvtLoader::fillEvent(unsigned int trigBit,float lWeight) {
   fkfactor      = 1;
   fMet          = fEvt->pfMETC;
   fMetPhi       = fEvt->pfMETCphi;
+  //fCaloMet      = fEvt->caloMET;
+  //fCaloMetPhi   = fEvt->caloMETphi;
   fPuppEt       = fEvt->puppETC;
   fPuppEtPhi    = fEvt->puppETCphi;
   return;
@@ -206,8 +212,8 @@ void EvtLoader::triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<T
   fEffTrigger = ((0.975+(fEvt->pfMETC-200)*0.025*0.025)*(fEvt->pfMETC<240)+1*(fEvt->pfMETC>=240));
   if(iElectrons.size() > 0){
     if(fITrigger & 4)                                            fEffTrigger = getEle27TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
-    if(!(fITrigger & 4) && (fITrigger & 8))                      fEffTrigger = getEle23TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
-    if(!(fITrigger & 4) && !(fITrigger & 8) && (fITrigger & 16)) fEffTrigger = 1;
+    //if(!(fITrigger & 4) && (fITrigger & 8))                      fEffTrigger = getEle23TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
+    if(!(fITrigger & 4) && (fITrigger & 8))                      fEffTrigger = 1;
   }
   if(iPhotons.size()   > 0){
     if(fITrigger & 16)                                           fEffTrigger = 1;

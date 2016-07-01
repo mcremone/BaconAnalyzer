@@ -90,17 +90,17 @@ int main( int argc, char **argv ) {
   fTau      = new TauLoader       (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader    (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader       (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
-  fJetCHS   = new JetLoader       (lTree,"AK4CHS");
+  //fJetCHS   = new JetLoader       (lTree,"AK4CHS");
   fBTag     = new BTagWeightLoader(lTree);
   fBTag15   = new BTagWeightLoader(lTree);
-  fBTagCHS15= new BTagWeightLoader(lTree);
-  fBTagCHS  = new BTagWeightLoader(lTree);
-  fBTag8T   = new BTagWeightLoader(lTree);
-  fBTagCHS8 = new BTagWeightLoader(lTree);
+  //fBTagCHS15= new BTagWeightLoader(lTree);
+  //fBTagCHS  = new BTagWeightLoader(lTree);
+  //fBTag8T   = new BTagWeightLoader(lTree);
+  //fBTagCHS8 = new BTagWeightLoader(lTree);
   fVJet15   = new VJetLoader      (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
-  fVJetCHS15= new VJetLoader      (lTree,"CA15CHS","AddCA15CHS");
-  fVJet8T   = new VJetLoader      (lTree,"AK8Puppi","AddAK8Puppi");
-  fVJetCHS8 = new VJetLoader      (lTree,"AK8CHS","AddAK8CHS");
+  //fVJetCHS15= new VJetLoader      (lTree,"CA15CHS","AddCA15CHS");
+  //fVJet8T   = new VJetLoader      (lTree,"AK8Puppi","AddAK8Puppi");
+  //fVJetCHS8 = new VJetLoader      (lTree,"AK8CHS","AddAK8CHS");
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);       // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
@@ -113,21 +113,21 @@ int main( int argc, char **argv ) {
   fTau      ->setupTree           (lOut);
   fPhoton   ->setupTree           (lOut);
   fJet      ->setupTree           (lOut,"res_PUPPIjet"); 
-  fJetCHS   ->setupTree           (lOut,"res_CHSjet");
+  //fJetCHS   ->setupTree           (lOut,"res_CHSjet");
   fBTag     ->setupTree           (lOut,"res_PUPPIjet");
   fBTag15   ->setupTree           (lOut,"res_PUPPIjetbst15");
-  fBTagCHS15->setupTree           (lOut,"res_CHSjetbst15");
-  fBTagCHS  ->setupTree           (lOut,"res_CHSjet");
-  fBTag8T   ->setupTree           (lOut,"res_PUPPIjetbst8T");
-  fBTagCHS8 ->setupTree           (lOut,"res_CHSjetbst8");
+  //fBTagCHS15->setupTree           (lOut,"res_CHSjetbst15");
+  //fBTagCHS  ->setupTree           (lOut,"res_CHSjet");
+  //fBTag8T   ->setupTree           (lOut,"res_PUPPIjetbst8T");
+  //fBTagCHS8 ->setupTree           (lOut,"res_CHSjetbst8");
   fVJet15   ->setupTree           (lOut,"bst15_PUPPIjet"); 
   fVJet15   ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
-  fVJetCHS15->setupTree           (lOut,"bst15_CHSjet");
-  fVJetCHS15->setupTreeSubJetBTag (lOut,"bst15_CHSjet");
-  fVJet8T   ->setupTree           (lOut,"bst8_PUPPIjetT");
-  fVJet8T   ->setupTreeSubJetBTag (lOut,"bst8_PUPPIjetT");
-  fVJetCHS8 ->setupTree           (lOut,"bst8_CHSjet");
-  fVJetCHS8 ->setupTreeSubJetBTag (lOut,"bst8_CHSjet");
+  //fVJetCHS15->setupTree           (lOut,"bst15_CHSjet");
+  //fVJetCHS15->setupTreeSubJetBTag (lOut,"bst15_CHSjet");
+  //fVJet8T   ->setupTree           (lOut,"bst8_PUPPIjetT");
+  //fVJet8T   ->setupTreeSubJetBTag (lOut,"bst8_PUPPIjetT");
+  //fVJetCHS8 ->setupTree           (lOut,"bst8_CHSjet");
+  //fVJetCHS8 ->setupTreeSubJetBTag (lOut,"bst8_CHSjet");
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
   //
@@ -142,6 +142,7 @@ int main( int argc, char **argv ) {
     fEvt->load(i0);
     float lWeight = 1;
     if(lOption.find("data")!=std::string::npos){
+      //std::cout << fEvt->fRun << " " << fEvt->fLumi << std::endl;
       if(!passEvent(fEvt->fRun,fEvt->fLumi))                                                              continue;
     }
     else{
@@ -167,19 +168,21 @@ int main( int argc, char **argv ) {
     // Triggerbits for MET, Electrons and Photons
     unsigned int trigbits=1;    
     if(lOption.find("data")!=std::string::npos){
-      if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
+      if(fEvt ->passTrigger("HLT_PFMET170_NoiseCleaned_v*")||
+	 fEvt ->passTrigger("HLT_PFMET170_JetIdCleaned_v*") ||
+	 fEvt ->passTrigger("HLT_PFMET170_HBHECleaned_v*") ||
+	 fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2;
-      if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
+      if(fEvt ->passTrigger("HLT_Ele27_eta2p1_WPLoose_Gsf_v*") ||
       	 fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
-      if(fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
-      	 fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 8;
       if(fEvt ->passTrigger("HLT_Photon175_v*") ||
-	 fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 16;
-      if(trigbits==1) continue;
+	 fEvt ->passTrigger("HLT_Photon165_HE10_v*") ||
+	 fEvt ->passTrigger("HLT_Photon300_NoHE_v*")) trigbits = trigbits | 8;
+      //if(trigbits==1) continue;
     }
 
     // Objects
@@ -221,12 +224,11 @@ int main( int argc, char **argv ) {
     
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
-    
     fEvt->fillVetoes(lPhotons,lVetoes);
 
     // CA15Puppi Jets
     fVJet15->load(i0);
-    fVJet15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,fEvt->fRho,"looseJetID");
+    fVJet15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,fEvt->fRho,"tightJetID");
     if(lVJets15.size()>0) { 
       if(lOption.find("data")==std::string::npos){
 	fVJet15->fisHadronicTop = fGen->ismatchedJet(lVJet15[0],1.5,fVJet15->ftopMatching,fVJet15->ftopSize);
@@ -236,7 +238,7 @@ int main( int argc, char **argv ) {
       fEvt->fselectBits = fEvt->fselectBits | 2;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet15,fVJet15->fVMT);
     }
-    
+    /*
     // CA15CHS Jets
     fVJetCHS15->load(i0);
     fVJetCHS15->selectVJets(lVetoes,lVJetsCHS15,lVJetCHS15,1.5,fEvt->fRho,"looseJetID");
@@ -275,22 +277,22 @@ int main( int argc, char **argv ) {
       fEvt->fselectBits =  fEvt->fselectBits | 16;
       fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lVJetCHS8,fVJetCHS8->fVMT);
     }
-
+    */
     // AK4Puppi Jets
     fJet->load(i0); 
     fJet->selectJets(lVetoes,lVJets15,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     if(lJets.size()>0){
       fJet->fillGoodJets(lVJets15,1.5,lGoodJets15);
-      fJet->fillGoodJets(lVJets8T,0.8,lGoodJets8T);
+      //fJet->fillGoodJets(lVJets8T,0.8,lGoodJets8T);
       if(lOption.find("data")==std::string::npos){
 	fBTag->fillBTag(fJet->fGoodJets);
         fBTag15->fillBTag(lGoodJets15);
-        fBTag8T->fillBTag(lGoodJets8T);
+        //fBTag8T->fillBTag(lGoodJets8T);
       }
-      fEvt->fselectBits =  fEvt->fselectBits | 32;
+      fEvt->fselectBits =  fEvt->fselectBits | 4;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJets,fJet->fMT);
     }
-
+    /*
     // AK4CHS Jets
     fJetCHS->load(i0);
     fJetCHS->selectJets(lVetoes,lVJetsCHS15,lJetsCHS,fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi);
@@ -305,9 +307,9 @@ int main( int argc, char **argv ) {
       fEvt->fselectBits =  fEvt->fselectBits | 64;
       fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lJetsCHS,fJetCHS->fMT);
     }
-
+    */
     // Select at least one Jet
-    if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4) && !(fEvt->fselectBits & 8) & !(fEvt->fselectBits & 16) & !(fEvt->fselectBits & 32) & !(fEvt->fselectBits & 64)) continue;
+    //if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4)) continue; // && !(fEvt->fselectBits & 8) & !(fEvt->fselectBits & 16) & !(fEvt->fselectBits & 32) & !(fEvt->fselectBits & 64)) continue;
     
     // ttbar, EWK and kFactor correction
     if(lOption.find("mcg")!=std::string::npos){

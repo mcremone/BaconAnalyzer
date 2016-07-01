@@ -12,17 +12,18 @@ using namespace baconhep;
 
 class MuonLoader { 
 public:
-  MuonLoader(TTree *iTree,std::string imuScaleFactorFilename="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconSkim/Utils/data/scalefactors_mu_74x_2016-03-09.root");
+  MuonLoader(TTree *iTree,std::string imuScaleFactorFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scalefactors_mu_80x.root");
   ~MuonLoader();
   void reset();
   void setupTree(TTree *iTree);
   void load(int iEvent);
   void selectMuons(std::vector<TLorentzVector> &iVetoes);
-  void fillDiMuon(std::vector<TMuon*> lVeto, std::vector<TLorentzVector> &iVetoes);
+  void fillDiMuon(std::vector<TMuon*> lVeto, std::vector<TLorentzVector> &iVetoes, int &isDimuon);
   void addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase);
   std::vector<TMuon*> fSelMuons;
   std::vector<double> fmuoSFVars;
   int           fNMuons;
+  int           fisDimuon;
   TH2D         *fhMuLoose;
   TH2D         *fhMuTight;
   const double MUON_MASS = 0.105658369;

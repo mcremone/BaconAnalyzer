@@ -13,20 +13,21 @@ using namespace baconhep;
 
 class ElectronLoader { 
 public:
-  ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_7_4_14/src/BaconSkim/Utils/data/scalefactors_ele_74x_2016-03-09.root");
+  ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scalefactors_ele_80x_UCSD.root");
   ~ElectronLoader();
   void reset();
   void setupTree(TTree *iTree);
   void load(int iEvent);
   void selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes);
   void addDiElectron(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase);
-  void fillDiElectron(double iRho,std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes);
+  void fillDiElectron(double iRho,std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes, int & isDiele);
   std::vector<TElectron*> fSelElectrons;
   std::vector<double>     feleSFVars;
   TH2D         *fhEleVeto;
   TH2D         *fhEleTight;
   int           fNElectrons;
   int           fNElectronsTight;
+  int           fisDiele;
 
 protected: 
   TClonesArray *fElectrons;

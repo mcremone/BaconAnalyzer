@@ -50,7 +50,7 @@ void plotMonoX(const string preselection, const string selection, const string s
   //==============================================================================================================
 
   const bool doBlind = false;
-  //const bool doBlind = true;
+  bool isBacon = false;
 
   // Create output directory 
   const string outputDir("monoxplots/"+preselection+"_"+selection+"_"+subsample+"_"+combo+"_"+algo);
@@ -62,82 +62,128 @@ void plotMonoX(const string preselection, const string selection, const string s
   // Note: macro assumes samplev[0] is data
   //
   vector<CSample*> samplev;
-
-  samplev.push_back(new CSample("data",0,0));
-  if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/MET.root");
-  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectron.root");
-  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
-  samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-  samplev.back()->fnamev.push_back("/tmp/cmantill/QCD.root");
-  if (preselection.compare("Pho")!=0) {
-    if(selection.find("MonoHbb")!=std::string::npos){
-      samplev.push_back(new CSample("VH(125)", kViolet-9, kViolet-9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/ZH_amcatnlo.root");
+  if(isBacon){
+    samplev.push_back(new CSample("data",0,0));
+    if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/MET.root");
+    if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectron.root");
+    if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
+    samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
+    samplev.back()->fnamev.push_back("/tmp/cmantill/QCD.root");
+    if (preselection.compare("Pho")!=0) {
+      if(selection.find("MonoHbb")!=std::string::npos){
+	samplev.push_back(new CSample("VH(125)", kViolet-9, kViolet-9));
+	samplev.back()->fnamev.push_back("/tmp/cmantill/ZH_amcatnlo.root");
+      }
+      samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/T.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/TZ.root");
+      samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/TT.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/TTZ.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/TTG.root");
+      samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/WW.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/WZ.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZZ.root");
+      samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/WHF.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/WLF.root");
+      samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZHF.root");   
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZLF.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/DYHF.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/DYLF.root");
     }
-    samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/T.root");
-    samplev.back()->fnamev.push_back("/tmp/cmantill/TZ.root");
-    samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/TT.root");
-    samplev.back()->fnamev.push_back("/tmp/cmantill/TTZ.root");
-    samplev.back()->fnamev.push_back("/tmp/cmantill/TTG.root");
-    samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/WW.root");
-    samplev.back()->fnamev.push_back("/tmp/cmantill/WZ.root");
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZZ.root");
-    samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/WHF.root");
-    samplev.back()->fnamev.push_back("/tmp/cmantill/WLF.root");
-    samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZHF.root");   
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZLF.root");
-    samplev.back()->fnamev.push_back("/tmp/cmantill/DYHF.root");
-    samplev.back()->fnamev.push_back("/tmp/cmantill/DYLF.root");
+    if (preselection.compare("Pho")==0){
+      samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/GHF.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/GLF.root");
+    }
+    if (subsample.compare("SR")==0 && (selection.compare("Bst15MonoTop")==0  || selection.compare("Bst15SemMonoTop")==0|| selection.compare("Bst8MonoTop")==0)){   
+      samplev.push_back(new CSample("M_{S} 1100, M#chi 100", kBlue, kBlue));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{V} 300 X 5", kGreen, kGreen));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_300_13TeV_madgraph_pythia8_mc.root");
+      samplev.push_back(new CSample("M_{S} 1300, M#chi 100", kTeal-1, kTeal-1));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{S} 1500, M#chi 100", kOrange+8, kOrange+8));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1500_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{S} 1700, M#chi 100", kViolet, kViolet));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1700_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{S} 1900, M#chi 100", kGray, kGray));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1900_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{V} 500 X 5", kRed-9, kRed-9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_500_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{V} 700 X 5", kRed, kRed));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_700_13TeV_madgraph_pythia8_2_mc.root");
+    }
+    if (subsample.find("SR")!=std::string::npos && (selection.find("MonoHbb")!=std::string::npos)){ 
+      samplev.push_back(new CSample("M_{Z} 600, MA0 300", kBlue, kBlue));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_300_13TeV_madgraph_mc.root");
+      samplev.push_back(new CSample("M_{Z} 800, MA0 300", kGreen, kGreen));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_300_13TeV_madgraph_mc.root");
+      samplev.push_back(new CSample("M_{Z} 1000, MA0 300", kTeal-1, kTeal-1));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_300_13TeV_madgraph_mc.root");
+      samplev.push_back(new CSample("M_{Z} 1200, MA0 300", kOrange+8, kOrange+8));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_300_13TeV_madgraph_mc.root");
+      samplev.push_back(new CSample("M_{Z} 1400, MA0 300", kViolet, kViolet));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_300_13TeV_madgraph_mc.root");
+      samplev.push_back(new CSample("M_{Z} 1700, MA0 300", kGray, kGray));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_300_13TeV_madgraph_mc.root");
+      samplev.push_back(new CSample("M_{Z} 2000, MA0 300", kRed-9, kRed-9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_300_13TeV_madgraph_mc.root");
+      samplev.push_back(new CSample("M_{V} 2500, MA0 300", kRed, kRed));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_300_13TeV_madgraph_2_mc.root");
+    }
   }
-  if (preselection.compare("Pho")==0){
-    samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/GHF.root");
-    samplev.back()->fnamev.push_back("/tmp/cmantill/GLF.root");
-  }
-  if (subsample.compare("SR")==0 && (selection.compare("Bst15MonoTop")==0  || selection.compare("Bst15SemMonoTop")==0|| selection.compare("Bst8MonoTop")==0)){   
-    samplev.push_back(new CSample("M_{S} 1100, M#chi 100", kBlue, kBlue));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
-    samplev.push_back(new CSample("M_{V} 300 X 5", kGreen, kGreen));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_300_13TeV_madgraph_pythia8_mc.root");
-    samplev.push_back(new CSample("M_{S} 1300, M#chi 100", kTeal-1, kTeal-1));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
-    samplev.push_back(new CSample("M_{S} 1500, M#chi 100", kOrange+8, kOrange+8));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1500_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
-    samplev.push_back(new CSample("M_{S} 1700, M#chi 100", kViolet, kViolet));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1700_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
-    samplev.push_back(new CSample("M_{S} 1900, M#chi 100", kGray, kGray));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1900_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
-    samplev.push_back(new CSample("M_{V} 500 X 5", kRed-9, kRed-9));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_500_13TeV_madgraph_pythia8_2_mc.root");
-    samplev.push_back(new CSample("M_{V} 700 X 5", kRed, kRed));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_700_13TeV_madgraph_pythia8_2_mc.root");
-  }
-  if (subsample.find("SR")!=std::string::npos && (selection.find("MonoHbb")!=std::string::npos)){ 
-    samplev.push_back(new CSample("M_{Z} 600, MA0 300", kBlue, kBlue));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_600_MA0_300_13TeV_madgraph_mc.root");
-    samplev.push_back(new CSample("M_{Z} 800, MA0 300", kGreen, kGreen));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_800_MA0_300_13TeV_madgraph_mc.root");
-    samplev.push_back(new CSample("M_{Z} 1000, MA0 300", kTeal-1, kTeal-1));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_300_13TeV_madgraph_mc.root");
-    samplev.push_back(new CSample("M_{Z} 1200, MA0 300", kOrange+8, kOrange+8));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_1200_MA0_300_13TeV_madgraph_mc.root");
-    samplev.push_back(new CSample("M_{Z} 1400, MA0 300", kViolet, kViolet));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_1400_MA0_300_13TeV_madgraph_mc.root");
-    samplev.push_back(new CSample("M_{Z} 1700, MA0 300", kGray, kGray));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_1700_MA0_300_13TeV_madgraph_mc.root");
-    samplev.push_back(new CSample("M_{Z} 2000, MA0 300", kRed-9, kRed-9));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_2000_MA0_300_13TeV_madgraph_mc.root");
-    samplev.push_back(new CSample("M_{V} 2500, MA0 300", kRed, kRed));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/ZprimeToA0hToA0chichihbb_2HDM_MZp_2500_MA0_300_13TeV_madgraph_2_mc.root");
+  else{
+    samplev.push_back(new CSample("data",0,0));
+    if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/MET.roo\
+t");
+    if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectron.root");
+    if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
+    samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
+    samplev.back()->fnamev.push_back("/tmp/cmantill/QCD.root");
+    if (preselection.compare("Pho")!=0) {
+      samplev.push_back(new CSample("SingleTop",kRed - 9,kRed - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/SingleTop.root");
+      samplev.push_back(new CSample("ttbar",kOrange - 4,kOrange - 4));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/TTbar_MLM.root");
+      samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Diboson.root");
+      samplev.push_back(new CSample("Wjets",kGreen - 10,kGreen - 10));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/WJets.root");
+      samplev.push_back(new CSample("ZnunuLO", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZtoNuNu.root");
+      samplev.push_back(new CSample("ZllLO", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZJets.root");
+    }
+    if (preselection.compare("Pho")==0){
+      samplev.push_back(new CSample("Photon", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/GJets.root");
+    }
+    if (subsample.compare("SR")==0 && selection.compare("Bst15MonoTop")==0){
+      samplev.push_back(new CSample("Mres-1100_Mchi-100", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8_mc.root");
+      samplev.push_back(new CSample("Mres-1300_Mchi-100", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("Mres-1500_Mchi-100", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1500_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("Mchi-1100", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_1100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("Mchi-1300", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_1300_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("Mchi-1500", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_1500_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("Mchi-300", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_300_13TeV_madgraph_pythia8_mc.root");
+      samplev.push_back(new CSample("Mchi-500", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_500_13TeV_madgraph_pythia8_2_mc.root");
+    }
   }
 
   // integrated luminosity to scale MC
-  const double LUMI = 2.32;
+  const double LUMI = 2.6;
   
   // histograms for various corrections
   const string cmssw_base = getenv("CMSSW_BASE");
@@ -153,6 +199,7 @@ void plotMonoX(const string preselection, const string selection, const string s
   vector<TH1D*> hMETv, hMETLogv;
   vector<TH1D*> hTransverseMassv, hTransverseMassLv;
   vector<TH1D*> hFatJetMassv, hFatJetMassLv, hFatJetPtv, hFatJetTau32v, hFatJetTau32DDTv, hFatJetRhov, hdRv, hdRptv, hFatJetdPsj0dPv;
+  vector<TH1D*> hvJetMassv, hvJetMassLv, hvJetPtv;
   vector<TH1D*> hFatJetTau21v, hFatJetTau21DDTv, hFatJetTau21DDTLv;
   vector<TH1D*> hBtagv, hMinSubJetcsvv, hDoublecsvv;
   vector<TH1D*> hMinDPhiJetsMetv, hMinDPhiJetsMetLv, hMinDPhiFatJetMetv, hNFJetsv, hNJetsv, hNBJetsv;
@@ -182,6 +229,9 @@ void plotMonoX(const string preselection, const string selection, const string s
     sprintf(hname,"hFatJetMass_%i",isam);     hFatJetMassv.push_back(new TH1D(hname,"",20,0,300));            hFatJetMassv[isam]->Sumw2();
     sprintf(hname,"hFatJetMassL_%i",isam);    hFatJetMassLv.push_back(new TH1D(hname,"",20,0,300));           hFatJetMassLv[isam]->Sumw2();
     sprintf(hname,"hFatJetPt_%i",isam);       hFatJetPtv.push_back(new TH1D(hname,"",20,250,1000));           hFatJetPtv[isam]->Sumw2();
+    sprintf(hname,"hvJetMass_%i",isam);       hvJetMassv.push_back(new TH1D(hname,"",20,0,300));              hvJetMassv[isam]->Sumw2();
+    sprintf(hname,"hvJetMassL_%i",isam);      hvJetMassLv.push_back(new TH1D(hname,"",20,0,300));             hvJetMassLv[isam]->Sumw2();
+    sprintf(hname,"hvJetPt_%i",isam);         hvJetPtv.push_back(new TH1D(hname,"",20,250,1000));             hvJetPtv[isam]->Sumw2();
     sprintf(hname,"hTransverseMass_%i",isam); hTransverseMassv.push_back(new TH1D(hname,"",NBINSMT,edgesMT)); hTransverseMassv[isam]->Sumw2();
     sprintf(hname,"hTransverseMassL_%i",isam);hTransverseMassLv.push_back(new TH1D(hname,"",NBINSMT,edgesMT));hTransverseMassLv[isam]->Sumw2();
     sprintf(hname,"hFatJetTau32_%i",isam);    hFatJetTau32v.push_back(new TH1D(hname,"",15,0.2,1));           hFatJetTau32v[isam]->Sumw2();
@@ -216,6 +266,9 @@ void plotMonoX(const string preselection, const string selection, const string s
   TH1D *hFatJetMassMC      = (TH1D*)hFatJetMassv[0]     ->Clone("hFatJetMassMC");
   TH1D *hFatJetMassLMC     = (TH1D*)hFatJetMassLv[0]    ->Clone("hFatJetMassLMC");
   TH1D *hFatJetPtMC        = (TH1D*)hFatJetPtv[0]       ->Clone("hFatJetPtMC");
+  TH1D *hvJetMassMC        = (TH1D*)hvJetMassv[0]       ->Clone("hvJetMassMC");
+  TH1D *hvJetMassLMC       = (TH1D*)hvJetMassLv[0]      ->Clone("hvJetMassLMC");
+  TH1D *hvJetPtMC          = (TH1D*)hvJetPtv[0]         ->Clone("hvJetPtMC");
   TH1D *hTransverseMassMC  = (TH1D*)hTransverseMassv[0 ]->Clone("hTransverseMassMC");
   TH1D *hTransverseMassLMC = (TH1D*)hTransverseMassLv[0]->Clone("hTransverseMassLMC");
   TH1D *hFatJetTau32MC     = (TH1D*)hFatJetTau32v[0]    ->Clone("hFatJetTau32MC");
@@ -276,8 +329,22 @@ void plotMonoX(const string preselection, const string selection, const string s
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
     CSample *sample = samplev[isam];
     cout << "Sample: " << sample->label << endl;
-    bool isData    = (isam==0);
-    bool isSignal  = false;
+    bool isData = false;
+    if(sample->label.compare("data")==0) isData=true;
+    bool isSignal = false;
+    if((selection.compare("Bst15MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0) && subsample.compare("SR")==0){
+      if (isam==samplev.size()-1 ||
+          isam==samplev.size()-2 ||
+          isam==samplev.size()-3 ||
+          isam==samplev.size()-4 ||
+          isam==samplev.size()-5 ||
+          isam==samplev.size()-6 ||
+          isam==samplev.size()-7 ||
+          isam==samplev.size()-8){
+        isSignal = true;
+	isBacon = true;
+      }
+    }
     if(subsample.find("SR")!=std::string::npos && (isam==samplev.size()-1 || isam==samplev.size()-2 || isam==samplev.size()-3 || isam==samplev.size()-4 || isam==samplev.size()-5 || isam==samplev.size()-6 || isam==samplev.size()-7 || isam==samplev.size()-8)) isSignal = true;
     bool isSignal1 = (isam==samplev.size()-1);
     bool isSignal2 = (isam==samplev.size()-2);
@@ -293,7 +360,7 @@ void plotMonoX(const string preselection, const string selection, const string s
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
       intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits  = new MonoXBitsLoader(intree,bst15jetID,bst8jetID,algo,syst,preselection,isData);
+      fBits  = new MonoXBitsLoader(intree,bst15jetID,bst8jetID,algo,syst,preselection,isData,isBacon);
       double nevts=0;
       int noweight=0;
 
@@ -301,21 +368,28 @@ void plotMonoX(const string preselection, const string selection, const string s
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
 	// if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
-	if(!fBits->selectJetAlgoAndSize(selection,algo,bst15jetID,bst8jetID)) continue;
-	// common selection
-	if(fBits->metfilter!=0)                   continue;
+        if(isBacon){
+          if(!fBits->selectJetAlgoAndSize(selection,algo,bst15jetID,bst8jetID)) continue;
+          if(fBits->metfilter!=0)                   continue;
+        }
+        else{
+          if(isData && fBits->metfilter==0)                   continue;
+	}
 	//preselection
-	if(!fBits->passPreSelection(preselection)) continue;
-	//selection
+        if(!fBits->passPreSelection(preselection,isData,isBacon)) continue;
+        //selection                                                                                                                                                                     
 	float btagw=1;
-	if(!fBits->passSelection(preselection,selection,subsample,combo,btagw,syst,isSignal)) continue;
+        if(!fBits->passSelection(preselection,selection,subsample,combo,btagw,syst,isSignal,isBacon)) continue;
         double wgt = 1;
 	if(!isData) {
 	  wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
           if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->triggerEff;
 	  if(selection.compare("Bst15MonoTop")==0 || selection.compare("Bst8MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0){
-	    if(sample->label=="t#bar{t}" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0) {
-	      wgt *= fBits->ToptagSF;
+	    if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){
+	      wgt *= 1.107;//fBits->ToptagSF;                                                                                                                                                             
+	    }
+	    if(sample->label=="ttbar" && (fBits->topSize15>=0.8 || fBits->isHadronicTop15!=1 || fBits->topMatching15 >1.4 || fBits->topMatching15 <= 0 || fBits->topSize15 <= 0)){
+	      wgt *= 0.966;
 	    }
 	  }
 	  /*
@@ -345,11 +419,15 @@ void plotMonoX(const string preselection, const string selection, const string s
 	}
 	*/
         neventsv[isam]+=wgt;
+	
         hMETv[isam]            ->Fill(fBits->getMET(preselection).Pt(),       wgt);
         hMETLogv[isam]         ->Fill(fBits->getMET(preselection).Pt(),       wgt);
 	hFatJetMassv[isam]     ->Fill(fBits->fjet_mass(selection),            wgt);
 	hFatJetMassLv[isam]    ->Fill(fBits->fjet_mass(selection),            wgt);
 	hFatJetPtv[isam]       ->Fill(fBits->fjet_pt(selection),              wgt);
+	hvJetMassv[isam]       ->Fill(fBits->getTopRes().M(),                 wgt);
+        hvJetMassLv[isam]      ->Fill(fBits->getTopRes().M(),                 wgt);
+        hvJetPtv[isam]         ->Fill(fBits->getTopRes().Pt(),                wgt);
 	hTransverseMassv[isam] ->Fill(fBits->transverse_mass(selection),      wgt);
         hTransverseMassLv[isam]->Fill(fBits->transverse_mass(selection),      wgt);
 	hFatJetTau32v[isam]    ->Fill(fBits->tau32(selection),                wgt);
@@ -368,7 +446,7 @@ void plotMonoX(const string preselection, const string selection, const string s
         hMinDPhiJetsMetLv[isam]->Fill(fBits->min_dphijetsmet,                 wgt);
         hNFJetsv[isam]         ->Fill(fBits->nfjets(selection),               wgt);
         hNJetsv[isam]          ->Fill(fBits->njets,                           wgt);
-        hNBJetsv[isam]         ->Fill(fBits->nbjetsLdR2,                      wgt);
+        hNBJetsv[isam]         ->Fill(fBits->nbjetsLdR15,                     wgt);
 	hJet1CHFv[isam]        ->Fill(fBits->chf(selection),                  wgt);
         hJet1NHFv[isam]        ->Fill(fBits->nhf(selection),                  wgt);
         hJet1NEMFv[isam]       ->Fill(fBits->nemf(selection),                 wgt);
@@ -384,6 +462,9 @@ void plotMonoX(const string preselection, const string selection, const string s
 	  hFatJetMassMC     ->Fill(fBits->fjet_mass(selection),               wgt);
 	  hFatJetMassLMC    ->Fill(fBits->fjet_mass(selection),               wgt);
 	  hFatJetPtMC       ->Fill(fBits->fjet_pt(selection),                 wgt);
+	  hvJetMassMC       ->Fill(fBits->getTopRes().M(),                    wgt);
+	  hvJetMassLMC      ->Fill(fBits->getTopRes().M(),                    wgt);
+	  hvJetPtMC         ->Fill(fBits->getTopRes().Pt(),                   wgt);
 	  hTransverseMassMC ->Fill(fBits->transverse_mass(selection),         wgt);
           hTransverseMassLMC->Fill(fBits->transverse_mass(selection),         wgt);
 	  hFatJetTau32MC    ->Fill(fBits->tau32(selection),                   wgt);
@@ -474,6 +555,9 @@ void plotMonoX(const string preselection, const string selection, const string s
   TH1D *hFatJetMassPull     = makePullHist(hFatJetMassv[0],     hFatJetMassMC,     "hFatJetMassPull",      doBlind, selection);
   TH1D *hFatJetMassLPull    = makePullHist(hFatJetMassLv[0],    hFatJetMassLMC,    "hFatJetMassLPull",     doBlind, selection);
   TH1D *hFatJetPtPull       = makePullHist(hFatJetPtv[0],       hFatJetPtMC,       "hFatJetPtPull",        doBlind, selection);
+  TH1D *hvJetMassPull       = makePullHist(hvJetMassv[0],       hvJetMassMC,       "hvJetMassPull",        doBlind, selection);
+  TH1D *hvJetMassLPull      = makePullHist(hvJetMassLv[0],      hvJetMassLMC,      "hvJetMassLPull",       doBlind, selection);
+  TH1D *hvJetPtPull         = makePullHist(hvJetPtv[0],         hvJetPtMC,         "hvJetPtPull",          doBlind, selection);
   TH1D *hTransverseMassPull = makePullHist(hTransverseMassv[0], hTransverseMassMC, "hTransverseMassPull",  doBlind, selection);
   TH1D *hTransverseMassLPull= makePullHist(hTransverseMassLv[0],hTransverseMassLMC,"hTransverseMassLPull", doBlind, selection);
   TH1D *hFatJetTau32Pull    = makePullHist(hFatJetTau32v[0],    hFatJetTau32MC,    "hFatJetTau32Pull",     doBlind, selection);
@@ -611,9 +695,22 @@ void plotMonoX(const string preselection, const string selection, const string s
 	   2e-5*(hFatJetMassLMC->GetBinContent(hFatJetMassLMC->GetMaximumBin()))/(hFatJetMassLMC->GetBinWidth(hFatJetMassLMC->GetMaximumBin())),
            4e2*(hFatJetMassLMC->GetBinContent(hFatJetMassLMC->GetMaximumBin()))/(hFatJetMassLMC->GetBinWidth(hFatJetMassLMC->GetMaximumBin())), selection, subsample);
 
-  sprintf(ylabel,"Events / %.1f GeV/c^{2}",hFatJetPtv[0]->GetBinWidth(1));
-  makePlot(c, "fjpt", "Jet p_{T} [GeV/c^{2}]", ylabel, hFatJetPtv, samplev, hFatJetPtMC, hFatJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
+  sprintf(ylabel,"Events / %.1f GeV",hFatJetPtv[0]->GetBinWidth(1));
+  makePlot(c, "fjpt", "Jet p_{T} [GeV]", ylabel, hFatJetPtv, samplev, hFatJetPtMC, hFatJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
            0.1, 2.1*(hFatJetPtMC->GetBinContent(hFatJetPtMC->GetMaximumBin()))/(hFatJetPtMC->GetBinWidth(hFatJetPtMC->GetMaximumBin())), selection, subsample);
+
+  sprintf(ylabel,"Events / GeV/c^{2}");
+  makePlot(c, "vmass", "CA15 + AK4Lbjet Mass [GeV/c^{2}]", ylabel, hvJetMassv, samplev, hvJetMassMC, hvJetMassPull, doBlind, LUMI, false, -0.45, -0.03,
+           0.1, 2.1*(hvJetMassMC->GetBinContent(hvJetMassMC->GetMaximumBin()))/(hvJetMassMC->GetBinWidth(hvJetMassMC->GetMaximumBin())), selection, subsample);
+
+  sprintf(ylabel,"Events / GeV/c^{2}");
+  makePlot(c, "vmassl", "CA15 + AK4Lbjet Mass [GeV/c^{2}]", ylabel, hvJetMassLv, samplev, hvJetMassLMC, hvJetMassLPull, doBlind, LUMI, true, -0.45, -0.03,
+           2e-5*(hvJetMassLMC->GetBinContent(hvJetMassLMC->GetMaximumBin()))/(hvJetMassLMC->GetBinWidth(hvJetMassLMC->GetMaximumBin())),
+           4e2*(hvJetMassLMC->GetBinContent(hvJetMassLMC->GetMaximumBin()))/(hvJetMassLMC->GetBinWidth(hvJetMassLMC->GetMaximumBin())), selection, subsample);
+
+  sprintf(ylabel,"Events / %.1f GeV",hvJetPtv[0]->GetBinWidth(1));
+  makePlot(c, "vfjpt", "CA15 + AK4Lbjet p_{T} [GeV]", ylabel, hvJetPtv, samplev, hvJetPtMC, hvJetPtPull, doBlind, LUMI, false, 0.0, -0.03,
+           0.1, 2.1*(hvJetPtMC->GetBinContent(hvJetPtMC->GetMaximumBin()))/(hvJetPtMC->GetBinWidth(hvJetPtMC->GetMaximumBin())), selection, subsample);
 
   sprintf(ylabel,"Events / GeV/c^{2}");
   makePlot(c, "mtl", "MT[GeV/c^{2}]", ylabel, hTransverseMassv, samplev, hTransverseMassMC, hTransverseMassPull, doBlind, LUMI, false, 0.0, -0.03,

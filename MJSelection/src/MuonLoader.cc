@@ -13,9 +13,9 @@ MuonLoader::MuonLoader(TTree *iTree,std::string imuScaleFactorFilename) {
   fMuonBr  = iTree->GetBranch("Muon");
   fN = 2;
   TFile *fMuSF = new TFile(imuScaleFactorFilename.c_str());
-  fhMuLoose =  (TH2D*) fMuSF->Get("scalefactors_Loose_mu");
+  fhMuLoose =  (TH2D*) fMuSF->Get("scalefactors_Loose_Muon");
   fhMuLoose->SetDirectory(0);
-  fhMuTight =  (TH2D*) fMuSF->Get("scalefactors_Tight_mu");
+  fhMuTight =  (TH2D*) fMuSF->Get("scalefactors_Tight_Muon");
   fhMuTight->SetDirectory(0);
   fMuSF->Close();
 
@@ -30,6 +30,7 @@ MuonLoader::~MuonLoader() {
 void MuonLoader::reset() { 
   fNMuons      = 0; 
   fNMuonsTight = 0; 
+  fisDimuon    = 0;
   fSelMuons.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
   for(unsigned int i0 = 0; i0 < fmuoSFVars.size(); i0++) fmuoSFVars[i0] = 1;
@@ -37,8 +38,10 @@ void MuonLoader::reset() {
 void MuonLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("nmu",&fNMuons,"fNMuons/I"); 
-  fTree->Branch("nmuTight",&fNMuonsTight,"fNMuonsTight/I");
+  fTree->Branch("nmu",     &fNMuons      ,"fNMuons/I"); 
+  fTree->Branch("nmuTight",&fNMuonsTight ,"fNMuonsTight/I");
+  fTree->Branch("isDimuon",&fisDimuon    ,"fisDimuon/I");
+
   setupNtuple("vmuo",iTree,fN,fVars);        // add leading 2 muons: pt,eta,phi,mass (2*4=8)
   addDiMuon  ("vdimuo",iTree,1, fVars,fN*3); // add dimuon system: *_pt,mass,phi,y for dimuo0 (1*4)
   addSF      ("muoSF",iTree,fmuoSFVars,3);   // add lepSF: muoSF0,muoSF1,muoSF2
@@ -73,7 +76,7 @@ void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
     if(passMuonTightSel(lVeto[0]) && lVeto[0]->pt > 20) addVMuon(lVeto[0],iVetoes,MUON_MASS);
   }
   if(fVars.size() > 0)                fillMuon(fN,fSelMuons,fVars);
-  if(fNMuons <= 2 && lVeto.size()==2) fillDiMuon(lVeto,iVetoes);
+  if(fNMuons <= 2 && lVeto.size()==2) fillDiMuon(lVeto,iVetoes,fisDimuon);
 }
 // DIMUON
 void MuonLoader::addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase) { 
@@ -89,26 +92,27 @@ void MuonLoader::addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<d
    iTree->Branch(pSY    .str().c_str(),&iVals[iBase+3],(pSY    .str()+"/D").c_str());
  }
 }
-void MuonLoader::fillDiMuon(std::vector<TMuon*> lVeto, std::vector<TLorentzVector> &iVetoes) {
+void MuonLoader::fillDiMuon(std::vector<TMuon*> lVeto, std::vector<TLorentzVector> &iVetoes, int &isDimuon) {
   TLorentzVector lVec; lVec.SetPtEtaPhiM(0,0,0,0);
-  //TMuon *vMuo1,*vMuo2;
-  if((lVeto[1]->q) * (lVeto[0]->q) < 0){ //  opposite charge dimuons 
-    if((passMuonTightSel(lVeto[0]) && lVeto[0]->pt > 20) || (passMuonTightSel(lVeto[1]) && lVeto[1]->pt > 20)){ // at least one muon must pass tight selection
-      // if(lVeto[0]->pt > lVeto[1]->pt){ //lep1 is the leading lepton 
-      //   vMuo1 = lVeto[0];
-      //   vMuo2 = lVeto[1];
-      // }
-      // else{
-      //   vMuo2 = lVeto[0];
-      //   vMuo1 = lVeto[1];
-      // }
-      TLorentzVector pVec0; pVec0.SetPtEtaPhiM(lVeto[0]->pt,lVeto[0]->eta,lVeto[0]->phi,MUON_MASS);
-      TLorentzVector pVec1; pVec1.SetPtEtaPhiM(lVeto[1]->pt,lVeto[1]->eta,lVeto[1]->phi,MUON_MASS);
+  TMuon *vMuo0,*vMuo1;
+  if((lVeto[1]->q) * (lVeto[0]->q) < 0){ //  opposite charge dimuons
+    if(lVeto[0]->pt > lVeto[1]->pt){ 
+      vMuo0 = lVeto[0];
+      vMuo1 = lVeto[1];
+    }
+    else{
+      vMuo1 = lVeto[0];
+      vMuo0 = lVeto[1];
+    }
+    TLorentzVector pVec0; pVec0.SetPtEtaPhiM(vMuo0->pt,vMuo0->eta,vMuo0->phi,MUON_MASS);
+    TLorentzVector pVec1; pVec1.SetPtEtaPhiM(vMuo1->pt,vMuo1->eta,vMuo1->phi,MUON_MASS);
+    if((passMuonTightSel(vMuo0) && vMuo0->pt > 20) && (passMuonLooseSel(vMuo1) && vMuo1->pt > 20)){ // at least one muon must pass tight selection
       lVec = pVec0+pVec1;
-      //if(lVec.M() > 60 && lVec.M() < 120){
-      iVetoes.push_back(pVec0);
-      iVetoes.push_back(pVec1);
-      //}
+      if(lVec.M() > 60 && lVec.M() < 120){
+	iVetoes.push_back(pVec0);
+	iVetoes.push_back(pVec1);
+	isDimuon = 1;
+      }
       int lBase = 3.*fN;
       fVars[lBase+0] = lVec.Pt();
       fVars[lBase+1] = lVec.M();
