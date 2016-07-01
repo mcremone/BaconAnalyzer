@@ -61,19 +61,6 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
   }
   if(photon) addVPhoton(photon,iPhotons,0.);
 
-
-  //if (isData && lCount>0) {
-  //  if (loosePho1Pt>=175 && loosePho1Pt<200)
-  //    photonPurityWeight = 0.04802;
-  //  else if (loosePho1Pt>=200 && loosePho1Pt<250)
-  //    photonPurityWeight = 0.04241;
-  //  else if (loosePho1Pt>=250 && loosePho1Pt<300)
-  //    photonPurityWeight = 0.03641;
-  //  else if (loosePho1Pt>=300 && loosePho1Pt<350)
-  //    photonPurityWeight = 0.0333;
-  //  else if (loosePho1Pt>=350)
-  //    photonPurityWeight = 0.02544;
-  // }
   fNPhotons = lCount;
   fNPhotonsMedium = lTCount;
   if(fVars.size() > 0) fillPhoton(fN,fSelPhotons,fVars);
