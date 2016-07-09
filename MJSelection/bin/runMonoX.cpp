@@ -173,15 +173,27 @@ int main( int argc, char **argv ) {
 	 fEvt ->passTrigger("HLT_PFMET170_HBHECleaned_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
-	 fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
+	 //fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu100_NoiseCleaned_PFMHTNoMu100_IDTight_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu100_JetIdCleaned_PFMHTNoMu100_IDTight_v*") ||
+         //fEvt ->passTrigger("HLT_PFMETNoMu100_NoiseCleaned_PFMHTNoMu100_NoID_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu110_NoiseCleaned_PFMHTNoMu110_IDTight_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu110_JetIdCleaned_PFMHTNoMu110_IDTight_v*") ||
+         //fEvt ->passTrigger("HLT_PFMETNoMu110_NoiseCleaned_PFMHTNoMu110_NoID_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
-	 fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
-	 fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2;
+	 fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*")) trigbits = trigbits | 2; // ||
+	 //fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2;
       if(fEvt ->passTrigger("HLT_Ele27_eta2p1_WPLoose_Gsf_v*") ||
-      	 fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
-      if(fEvt ->passTrigger("HLT_Photon175_v*") ||
+	 fEvt ->passTrigger("HLT_Ele25_eta2p1_WPTight_Gsf_v*") ||
+	 fEvt ->passTrigger("HLT_Ele35_WPLoose_Gsf_v*") ||
+      	 fEvt ->passTrigger("HLT_Ele27_WPTight_Gsf_v*") ||
+	 fEvt ->passTrigger("HLT_ECALHT800_v*")) trigbits= trigbits | 4;
+      if(fEvt ->passTrigger("HLT_ECALHT800_v*") ||
+	 fEvt ->passTrigger("HLT_Photon175_v*") ||
 	 fEvt ->passTrigger("HLT_Photon165_HE10_v*") ||
-	 fEvt ->passTrigger("HLT_Photon300_NoHE_v*")) trigbits = trigbits | 8;
+	 fEvt ->passTrigger("HLT_Photon300_NoHE_v*") ||
+         fEvt ->passTrigger("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*") ||
+         fEvt ->passTrigger("HLT_Photon135_PFMET100_v*")) trigbits= trigbits | 8;
       //if(trigbits==1) continue;
     }
 

@@ -50,7 +50,8 @@ void plotMonoX(const string preselection, const string selection, const string s
   //==============================================================================================================
 
   const bool doBlind = false;
-  bool isBacon = false;
+  bool isBacon = true;
+  bool isBacon76 = false;
 
   // Create output directory 
   const string outputDir("monoxplots/"+preselection+"_"+selection+"_"+subsample+"_"+combo+"_"+algo);
@@ -64,11 +65,11 @@ void plotMonoX(const string preselection, const string selection, const string s
   vector<CSample*> samplev;
   if(isBacon){
     samplev.push_back(new CSample("data",0,0));
-    if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/MET.root");
-    if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectron.root");
-    if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
+    if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/METtrig.root");
+    if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectrontrig.root");
+    if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhotontrig.root");
     samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/QCD.root");
+    samplev.back()->fnamev.push_back("/tmp/cmantill/QCD80.root");
     if (preselection.compare("Pho")!=0) {
       if(selection.find("MonoHbb")!=std::string::npos){
 	samplev.push_back(new CSample("VH(125)", kViolet-9, kViolet-9));
@@ -78,7 +79,7 @@ void plotMonoX(const string preselection, const string selection, const string s
       samplev.back()->fnamev.push_back("/tmp/cmantill/T.root");
       samplev.back()->fnamev.push_back("/tmp/cmantill/TZ.root");
       samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/TT.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/TTFXFXtrig.root");
       samplev.back()->fnamev.push_back("/tmp/cmantill/TTZ.root");
       samplev.back()->fnamev.push_back("/tmp/cmantill/TTG.root");
       samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
@@ -138,47 +139,49 @@ void plotMonoX(const string preselection, const string selection, const string s
   }
   else{
     samplev.push_back(new CSample("data",0,0));
-    if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/MET.roo\
-t");
-    if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectron.root");
-    if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
-    samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/QCD.root");
+    if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/MET.root");
+    if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/SingleElectron.root");
+    if (preselection.compare("Pho")==0) samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/SinglePhoton.root");
     if (preselection.compare("Pho")!=0) {
+      samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
+      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/QCD.root");
       samplev.push_back(new CSample("SingleTop",kRed - 9,kRed - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/SingleTop.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/SingleTop.root");
       samplev.push_back(new CSample("ttbar",kOrange - 4,kOrange - 4));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/TTbar_MLM.root");
+      //samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/TTbar.root");                                                                    
+      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/TTbar_Powheg.root");
       samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/Diboson.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/Diboson.root");
       samplev.push_back(new CSample("Wjets",kGreen - 10,kGreen - 10));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/WJets.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/WJets.root");
       samplev.push_back(new CSample("ZnunuLO", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/ZtoNuNu.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/ZtoNuNu.root");
       samplev.push_back(new CSample("ZllLO", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/ZJets.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/ZJets.root");
     }
     if (preselection.compare("Pho")==0){
+      samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
+      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/SinglePhoton.root");
       samplev.push_back(new CSample("Photon", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/GJets.root");
+      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v3/GJets.root");
     }
-    if (subsample.compare("SR")==0 && selection.compare("Bst15MonoTop")==0){
-      samplev.push_back(new CSample("Mres-1100_Mchi-100", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8_mc.root");
-      samplev.push_back(new CSample("Mres-1300_Mchi-100", kCyan - 9, kCyan - 9));
+    if (subsample.compare("SR")==0 && (selection.compare("Bst15MonoTop")==0  || selection.compare("Bst15SemMonoTop")==0|| selection.compare("Bst8MonoTop")==0)){
+      samplev.push_back(new CSample("M_{S} 1100, M#chi 100", kBlue, kBlue));
       samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
-      samplev.push_back(new CSample("Mres-1500_Mchi-100", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1500_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
-      samplev.push_back(new CSample("Mchi-1100", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_1100_13TeV_madgraph_pythia8_2_mc.root");
-      samplev.push_back(new CSample("Mchi-1300", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_1300_13TeV_madgraph_pythia8_2_mc.root");
-      samplev.push_back(new CSample("Mchi-1500", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_1500_13TeV_madgraph_pythia8_2_mc.root");
-      samplev.push_back(new CSample("Mchi-300", kCyan - 9, kCyan - 9));
+      samplev.push_back(new CSample("M_{V} 300 X 5", kGreen, kGreen));
       samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_300_13TeV_madgraph_pythia8_mc.root");
-      samplev.push_back(new CSample("Mchi-500", kCyan - 9, kCyan - 9));
+      samplev.push_back(new CSample("M_{S} 1300, M#chi 100", kTeal-1, kTeal-1));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{S} 1500, M#chi 100", kOrange+8, kOrange+8));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1500_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{S} 1700, M#chi 100", kViolet, kViolet));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1700_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{S} 1900, M#chi 100", kGray, kGray));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S1_Mres_1900_Mchi_100_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{V} 500 X 5", kRed-9, kRed-9));
       samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_500_13TeV_madgraph_pythia8_2_mc.root");
+      samplev.push_back(new CSample("M_{V} 700 X 5", kRed, kRed));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Monotop_S4_Mchi_700_13TeV_madgraph_pythia8_2_mc.root");
     }
   }
 
@@ -208,7 +211,9 @@ t");
   vector<double> neventsv;
  
   const Int_t NBINS = 5, NBINSMT = 3; // MonoTop
+  //const Int_t NBINS = 16, NBINSMT =3;
   Double_t edges[NBINS+1] = {250,300,350,400,500,1000};
+  //Double_t edges[NBINS+1] = {250,285,310,350,390,430,460,505,550,595,645,695,745,795,845,900,1000};
   Double_t edgesMT[NBINSMT + 1] = {350,550,750,3000};
 
   //const Int_t NBINS = 3, NBINSMT = 3; 
@@ -344,6 +349,9 @@ t");
         isSignal = true;
 	isBacon = true;
       }
+      if(isBacon){
+	if (isam==1) isBacon76 = true;
+      }
     }
     if(subsample.find("SR")!=std::string::npos && (isam==samplev.size()-1 || isam==samplev.size()-2 || isam==samplev.size()-3 || isam==samplev.size()-4 || isam==samplev.size()-5 || isam==samplev.size()-6 || isam==samplev.size()-7 || isam==samplev.size()-8)) isSignal = true;
     bool isSignal1 = (isam==samplev.size()-1);
@@ -359,8 +367,10 @@ t");
       string infilename = sample->fnamev[ifile];
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
-      intree = (TTree*)infile->Get("Events"); assert(intree);
-      fBits  = new MonoXBitsLoader(intree,bst15jetID,bst8jetID,algo,syst,preselection,isData,isBacon);
+      if(isBacon){ intree = (TTree*)infile->Get("Events"); assert(intree);}
+      else{ intree = (TTree*)infile->Get("events"); assert(intree);}
+      fBits     = new MonoXBitsLoader(intree,bst15jetID,bst8jetID,algo,syst,preselection,isData,isBacon);
+
       double nevts=0;
       int noweight=0;
 
@@ -370,7 +380,9 @@ t");
 	// if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
         if(isBacon){
           if(!fBits->selectJetAlgoAndSize(selection,algo,bst15jetID,bst8jetID)) continue;
-          if(fBits->metfilter!=0)                   continue;
+
+	  if(isData && ((fBits->metfilter & 1) || (fBits->metfilter & 2) || (fBits->metfilter & 8) || (fBits->metfilter & 32) || (fBits->metfilter & 1024) || (fBits->metfilter & 2048) || (fBits->metfilter & 32768))) continue;
+	  
         }
         else{
           if(isData && fBits->metfilter==0)                   continue;
@@ -382,42 +394,59 @@ t");
         if(!fBits->passSelection(preselection,selection,subsample,combo,btagw,syst,isSignal,isBacon)) continue;
         double wgt = 1;
 	if(!isData) {
-	  wgt *= LUMI*fBits->scale1fb*fBits->evtWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
-          if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->triggerEff;
-	  if(selection.compare("Bst15MonoTop")==0 || selection.compare("Bst8MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0){
-	    if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){
-	      wgt *= 1.107;//fBits->ToptagSF;                                                                                                                                                             
-	    }
-	    if(sample->label=="ttbar" && (fBits->topSize15>=0.8 || fBits->isHadronicTop15!=1 || fBits->topMatching15 >1.4 || fBits->topMatching15 <= 0 || fBits->topSize15 <= 0)){
-	      wgt *= 0.966;
-	    }
-	  }
-	  /*
-	  if(subsample.find("SR")!=std::string::npos){
-	    if(isam==samplev.size()-8) wgt *= 0.0260;
-            if(isam==samplev.size()-7) wgt *= 0.0288;
-            if(isam==samplev.size()-6) wgt *= 0.0234;
-            if(isam==samplev.size()-5) wgt *= 0.0183;
-            if(isam==samplev.size()-4) wgt *= 0.0136;
-            if(isam==samplev.size()-3) wgt *= 0.00871;
-            if(isam==samplev.size()-2) wgt *= 0.00561;
-            if(isam==samplev.size()-1) wgt *= 0.00280;
-	  }
-	  */
-	  // if(sample->label!="t#bar{t}" || ifile!=0 || fBits->isHadronicTop15==0 || fBits->topSize15>=0.8 || fBits->topSize15<0 || fBits->topMatching15>=1.4 || fBits->topMatching15<0){
-	  //   wgt *= fBits->TopmistagSF;
-	  /// }
+          if(isBacon){
+            wgt *= LUMI*fBits->evtWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
+            if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->triggerEff;
+	    if(preselection.compare("Pho")!=0 && isam==2) fBits->getPhotonPurity();
+            if(selection.compare("Bst15MonoTop")==0 || selection.compare("Bst8MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0){
+              if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){
+                wgt *= 1.107;//fBits->ToptagSF;                                                                                                                                                             
+              }
+              if(sample->label=="ttbar" && (fBits->topSize15>=0.8 || fBits->isHadronicTop15!=1 || fBits->topMatching15 >1.4 || fBits->topMatching15 <= 0 || fBits->topSize15 <= 0)){
+                wgt *= 0.966;
+              }
+            }
+            if(subsample.find("SR")!=std::string::npos && selection.compare("Bst15MonoHbb")==0){
+              if(isam==samplev.size()-8) wgt *= 0.01;
+              else if(isam==samplev.size()-7) wgt *= 0.01;
+              else if(isam==samplev.size()-6) wgt *= 0.01;
+              else if(isam==samplev.size()-5) wgt *= 0.01;
+              else if(isam==samplev.size()-4) wgt *= 0.01;
+              else if(isam==samplev.size()-3) wgt *= 0.01;
+              else if(isam==samplev.size()-2) wgt *= 0.01;
+              else if(isam==samplev.size()-1) wgt *= 0.01;
+              else wgt *=fBits->scale1fb;
+            }
+            else wgt *=fBits->scale1fb;
+          }
+          else{
+	    if(preselection.compare("Pho")==0 && sample->label.compare("QCD")==0) wgt *=fBits->photonPurity;
+            else{
+              wgt *= LUMI*fBits->normalizedWeight*1000*fBits->sf_ewkZ*fBits->sf_qcdZ*fBits->sf_ewkW*fBits->sf_qcdW*fBits->sf_ewkA*fBits->sf_qcdA*fBits->sf_tt*fBits->sf_lep*btagw;
+              if(preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0) wgt *= fBits->sf_metTrig;
+              if(preselection.compare("Pho")==0) wgt *= fBits->sf_phoTrig;
+              if(preselection.compare("Ele")==0) wgt *= fBits->sf_eleTrig;
+              if(preselection.compare("Zee")==0) wgt *= fBits->sf_eleTrig*fBits->sf_phoTrig;
+
+              if(selection.compare("Bst15MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0){
+                if(sample->label=="ttbar" && fBits->bst15_jet1_isMatched==1){
+                  wgt *= 1.107;
+                }
+                else if(sample->label=="ttbar" && fBits->bst15_jet1_isMatched!=1){
+                  wgt *= 0.966;
+                }
+                else{
+                  wgt *= 0.966;
+                }
+              }
+            }
+          }
 	  
 	}
-
+	
 	nevts += wgt;
 	noweight++;
-	/*
-	if(sample->label=="VH(125)"){
-	  //cout << wgt << " " << btagw << " " <<  endl;
-	  //cout << LUMI << "scale1fb " << fBits->scale1fb << "evtWeight " << fBits->evtWeight << "kfactor " << fBits->kfactor << "btag " << btagw << "lepSFs " << fBits->eleSF1 << " " << fBits->eleSF2 << " " << fBits->muoSF1 << " " << fBits->muoSF2 << endl;
-	}
-	*/
+
         neventsv[isam]+=wgt;
 	
         hMETv[isam]            ->Fill(fBits->getMET(preselection).Pt(),       wgt);

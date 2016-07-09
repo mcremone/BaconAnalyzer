@@ -4,7 +4,7 @@ using namespace std;
 MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString bst15jetID, TString bst8jetID, TString algo,TString syst, string preselection, bool isData, bool isBacon) {
   if(iTree){
     if(isBacon){
-      TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
+      TString vmet = "puppet"; if (algo!="PUPPI") vmet = "pfmet";
       if(preselection.compare("Had")==0){
 	iTree->SetBranchAddress("res_"+algo+"jetmindPhi",                       &min_dphijetsmet);
       }
@@ -34,10 +34,11 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString bst15jetID, TString bst8j
       iTree->SetBranchAddress("scale1fb",                                       &scale1fb);
       iTree->SetBranchAddress("evtWeight",                                      &evtWeight);
       iTree->SetBranchAddress("kfactor",                                        &kfactor);
-      iTree->SetBranchAddress(met,                                              &vmetpt);
-      iTree->SetBranchAddress(met+"phi",                                        &vmetphi);
-      iTree->SetBranchAddress("fake"+met,                                       &vfakemetpt);
-      iTree->SetBranchAddress("fake"+met+"phi",                                 &vfakemetphi);
+      iTree->SetBranchAddress("pfmet",                                          &met);
+      iTree->SetBranchAddress(vmet,                                             &vmetpt);
+      iTree->SetBranchAddress(vmet+"phi",                                       &vmetphi);
+      iTree->SetBranchAddress("fake"+vmet,                                      &vfakemetpt);
+      iTree->SetBranchAddress("fake"+vmet+"phi",                                &vfakemetphi);
       iTree->SetBranchAddress("res_"+algo+"jets",                               &njets);
       iTree->SetBranchAddress("res_"+algo+"jetsdR2",                            &njetsdR2);
       iTree->SetBranchAddress("res_"+algo+"jetsdR15",                           &njetsdR15);
@@ -129,6 +130,7 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString bst15jetID, TString bst8j
       iTree->SetBranchAddress("nele",                                           &nele);
       iTree->SetBranchAddress("ntau",                                           &ntau);
       iTree->SetBranchAddress("npho",                                           &npho);
+      iTree->SetBranchAddress("vpho0_pt",                                       &vpho0_pt);
       // With JetID
       iTree->SetBranchAddress("bst15_"+algo+bst15jetID+"0_isHadronicTop",       &isHadronicTop15);
       iTree->SetBranchAddress("bst15_"+algo+bst15jetID+"0_topSize",             &topSize15);
@@ -356,7 +358,14 @@ bool MonoXBitsLoader::selectJetAlgoAndSize(string selection, TString algo, TStri
 bool MonoXBitsLoader::isHad(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if((triggerBits & kMET) && nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true;
+    if(nmu==0 && nele==0 && npho==0 && ntau==0 && met>175){
+      if(isData){
+        if((triggerBits & kMET)!=0) lPass = true;
+      }
+      else{
+      lPass = true;
+      }
+    }
   }
   else{
     if((nLooseMuon+nLooseElectron+nLoosePhoton+ntau)==0){
@@ -373,7 +382,14 @@ bool MonoXBitsLoader::isHad(bool isData, bool isBacon){
 bool MonoXBitsLoader::isMuo(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if((triggerBits & kMET) && nmu==1 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
+    if(nmu==1 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)){
+      if(isData){
+        if((triggerBits & kMET)!=0) lPass = true;
+      }
+      else{
+	lPass = true;
+      }
+    }
   }
   else{
     if((nLooseElectron+nLoosePhoton+ntau)==0 && nLooseMuon==1 && looseLep1IsTight==1){
@@ -390,7 +406,14 @@ bool MonoXBitsLoader::isMuo(bool isData, bool isBacon){
 bool MonoXBitsLoader::isZmm(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if((triggerBits & kMET) && nmu==2 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
+    if(nmu==2 && nele==0 && npho==0 && ntau==0 && (vfakemetpt!=0)){
+      if(isData){
+        if((triggerBits & kMET)!=0) lPass = true;
+      }
+      else{
+        lPass = true;
+      }
+    }
   }
   else{
     if((nLooseElectron+nLoosePhoton+ntau)==0 && nLooseMuon==2 && looseLep1IsTight==1){
@@ -407,10 +430,18 @@ bool MonoXBitsLoader::isZmm(bool isData, bool isBacon){
 bool MonoXBitsLoader::isEle(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if(((triggerBits & kSingleElectron23) || (triggerBits & kSingleElectron27) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==1 && npho==0 && ntau==0 && vmetpt>50 && (vfakemetpt!=0)) lPass = true;
+    //if(((triggerBits & kSingleElectron23) || (triggerBits & kSingleElectron27) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==1 && npho==0 && ntau==0 && vmetpt>50 && (vfakemetpt!=0)) lPass = true;
+    if(nmu==0 && nele==1 && npho==0 && ntau==0 && vmetpt>40 && (vfakemetpt!=0)){    
+      if(isData){
+	if((triggerBits & 4) || (triggerBits & 8)) lPass = true;
+      }
+      else{
+	lPass = true;
+      }
+    }
   }
   else{
-    if((nLooseMuon+nLoosePhoton+ntau)==0 && nLooseElectron==1 && looseLep1IsTight==1){
+    if((nLooseMuon+nLoosePhoton+ntau)==0 && nLooseElectron==1 && looseLep1IsTight==1 && vmetpt>40){
       if(isData){
         if((trigger & 2)) lPass = true;
       }
@@ -424,7 +455,15 @@ bool MonoXBitsLoader::isEle(bool isData, bool isBacon){
 bool MonoXBitsLoader::isZee(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if(((triggerBits & kSingleElectron23) || (triggerBits & kSingleElectron27) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==2 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
+    //if(((triggerBits & kSingleElectron23) || (triggerBits & kSingleElectron27) || (triggerBits & kSinglePhoton)) && nmu==0 && nele==2 && npho==0 && ntau==0 && (vfakemetpt!=0)) lPass = true;
+    if(nmu==0 && nele==2 && npho==0 && ntau==0 && (vfakemetpt!=0)){
+      if(isData){
+        if((triggerBits & 4) || (triggerBits & 8)) lPass = true;
+      } 
+      else{
+        lPass = true;
+      }
+    }
   }
   else{
     if((nLooseMuon+nLoosePhoton+ntau)==0 && nLooseElectron==2 && looseLep1IsTight==1){
@@ -441,7 +480,15 @@ bool MonoXBitsLoader::isZee(bool isData, bool isBacon){
 bool MonoXBitsLoader::isPho(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if((triggerBits & kSinglePhoton) && nmu==0 && nele==0 && npho==1 && ntau==0 && (vfakemetpt!=0)) lPass = true;
+    //if((triggerBits & kSinglePhoton) && nmu==0 && nele==0 && npho==1 && ntau==0 && (vfakemetpt!=0)) lPass = true;
+    if(nmu==0 && nele==0 && npho==1 && ntau==0 && (vfakemetpt!=0)){
+      if(isData){
+        if(triggerBits & 8) lPass = true;
+      }
+      else{
+	lPass = true;
+      }
+    }
   }
   else{
     if((nLooseMuon+nLooseElectron+ntau)==0 && nLoosePhoton==1 && loosePho1IsTight==1){
@@ -601,7 +648,7 @@ bool MonoXBitsLoader::passBoostedMonoTopSR(string preselection){
   //& (bst15_jet0_msd>135) & (bst15_jet0_msd<210) & (bst15_jet0_tau32 < (-0.018*bst15_jet0_rho + RHO_CUT));
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCR(string preselection){ 
-  return passBoostedMonoTopPreselection(preselection) & (nbjetsLdR15>0) & (bst15_jet0_maxsubcsv>CSVL);
+  return passBoostedMonoTopPreselection(preselection) & (nbjetsLdR15==1) & (bst15_jet0_maxsubcsv>CSVL);
 // & (bst15_jet0_msd>135) & (bst15_jet0_msd<210) & (bst15_jet0_tau32 < (-0.018*bst15_jet0_rho + RHO_CUT));
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCRminusTau32(string preselection){
@@ -726,16 +773,16 @@ bool MonoXBitsLoader::passSelection(string preselection, string selection, strin
 	}
 	if (subsample == "TopCR" && passBoostedMonoTopTopCR(preselection) 
 	    && (combo=="ONLY" || combo=="COMBO")) {
-	  btagw=resbst15_btagwL1*bst15_btagwL1;  
-          if(syst=="CENT"){btagw=resbst15_btagwL1*bst15_btagwL1; }
-          if(syst=="BTAGUP"){btagw=resbst15_btagwL1BTAGUP*bst15_btagwL1; }
-          if(syst=="BTAGDO"){btagw=resbst15_btagwL1BTAGDO*bst15_btagwL1; }
-          if(syst=="MISTAGUP"){btagw=resbst15_btagwL1MISTAGUP*bst15_btagwL1;}
-          if(syst=="MISTAGDO"){btagw=resbst15_btagwL1MISTAGDO*bst15_btagwL1; }
-          if(syst=="SJBTAGUP"){btagw=resbst15_btagwL1*bst15_btagwL1BTAGUP; }
-          if(syst=="SJBTAGDO"){btagw=resbst15_btagwL1*bst15_btagwL1BTAGDO; }
-          if(syst=="SJMISTAGUP"){btagw=resbst15_btagwL1*bst15_btagwL1MISTAGUP;}
-          if(syst=="SJMISTAGDO"){btagw=resbst15_btagwL1*bst15_btagwL1MISTAGDO;}
+	  btagw=resbst15_btagwLminus1*bst15_btagwL1;  
+          if(syst=="CENT"){btagw=resbst15_btagwLminus1*bst15_btagwL1; }
+          if(syst=="BTAGUP"){btagw=resbst15_btagwLminus1BTAGUP*bst15_btagwL1; }
+          if(syst=="BTAGDO"){btagw=resbst15_btagwLminus1BTAGDO*bst15_btagwL1; }
+          if(syst=="MISTAGUP"){btagw=resbst15_btagwLminus1MISTAGUP*bst15_btagwL1;}
+          if(syst=="MISTAGDO"){btagw=resbst15_btagwLminus1MISTAGDO*bst15_btagwL1; }
+          if(syst=="SJBTAGUP"){btagw=resbst15_btagwLminus1*bst15_btagwL1BTAGUP; }
+          if(syst=="SJBTAGDO"){btagw=resbst15_btagwLminus1*bst15_btagwL1BTAGDO; }
+          if(syst=="SJMISTAGUP"){btagw=resbst15_btagwLminus1*bst15_btagwL1MISTAGUP;}
+          if(syst=="SJMISTAGDO"){btagw=resbst15_btagwLminus1*bst15_btagwL1MISTAGDO;}
 	  lPass = true;}
 	if (subsample == "WCR" && passBoostedMonoTopWCR(preselection) 
 	    && (combo=="ONLY" || combo=="COMBO")) {
@@ -1211,4 +1258,12 @@ double MonoXBitsLoader::getdPsj0dP(string selection){
   if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return bst15_jet0_dPhiJRFsj0dPhiJRF;
   else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb") return bst8_jet0_dPhiJRFsj0dPhiJRF;
   return bst15_jet0_dPhiJRFsj0dPhiJRF;
+}
+float MonoXBitsLoader::getPhotonPurity(){
+  if (vpho0_pt>=175 && vpho0_pt<200) return 0.04802;
+  else if (loosePho1Pt>=200 && loosePho1Pt<250) return 0.04241;
+  else if (loosePho1Pt>=250 && loosePho1Pt<300) return 0.03641;
+  else if (loosePho1Pt>=300 && loosePho1Pt<350) return 0.0333;
+  else if (loosePho1Pt>=350)			return 0.02544;
+  else return 1;
 }

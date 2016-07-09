@@ -80,6 +80,8 @@ public:
   float fRenScale_UP, fRenScale_DO, fFacScale_UP, fFacScale_DO;
 
   double fEffTrigger;
+  double fEffTriggerE;
+  double fEffTriggerP;
   double fLepWeight;
 
   int fselectBits;
@@ -101,6 +103,10 @@ protected:
   TH1F         *fHistRDO;
   TH1F         *fHistFUP;
   TH1F         *fHistFDO;
+  
+  TH1D         *hEleTrigB;
+  TH1D         *hEleTrigE;
+  TH1D         *hPhoTrig;
 
   std::vector<std::vector<std::string>> fTrigString;
 

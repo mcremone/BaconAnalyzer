@@ -104,6 +104,7 @@ public:
   double getdRsj0dR(string selection);
   double getdRsj0dRpt(string selection);
   double getdPsj0dP(string selection);
+  float getPhotonPurity();
 
   //
   // variables to read in bacon bits
@@ -133,6 +134,8 @@ public:
   float looseLep2Pt, looseLep2Eta, looseLep2Phi;
   int loosePho1IsTight;
   float loosePho1Pt, loosePho1Eta, loosePho1Phi;
+
+  double vpho0_pt;
 
   int njets, njetsdR2, njetsdR15, nfjets15, nfjets8, nfjets15T, nfjets8T;            // jet multiplicity 
   int nbtags, nisobtags;

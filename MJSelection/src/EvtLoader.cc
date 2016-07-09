@@ -25,6 +25,22 @@ EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::st
   fPUWeightHist->SetDirectory(0);
   lFile->Close();
   fSample = (char*) (iName.c_str());
+
+  TFile *fEleTrigB = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_jetht_barrel.root");
+  hEleTrigB = (TH1D*) fEleTrigB->Get("h_num");
+  hEleTrigB->SetDirectory(0);
+  fEleTrigB->Close();
+
+  TFile *fEleTrigE = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_jetht_endcap.root");
+  hEleTrigE = (TH1D*) fEleTrigE->Get("h_num");
+  hEleTrigE->SetDirectory(0);
+  fEleTrigE->Close();
+
+  TFile *fPhoTrig  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/pho_trig.root");
+  hPhoTrig = (TH1D*) fPhoTrig->Get("h_num");
+  hPhoTrig->SetDirectory(0);
+  fPhoTrig->Close();
+
 }
 EvtLoader::~EvtLoader() { 
   delete  fEvt;
@@ -37,6 +53,8 @@ void EvtLoader::reset() {
   fRho          = 0; 
   fITrigger     = 0; 
   fEffTrigger   = 0;
+  fEffTriggerE  = 1;
+  fEffTriggerP  = 1;
   fselectBits   = 0;
   fNVtx         = 0; 
   fNPU          = 0;
@@ -77,6 +95,8 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("triggerBits"     ,&fITrigger       ,"fITrigger/i");
   fTree->Branch("selectBits"      ,&fselectBits     ,"fselectBits/i");
   fTree->Branch("triggerEff"      ,&fEffTrigger     ,"fEffTrigger/D");
+  fTree->Branch("triggerEffE"     ,&fEffTriggerE    ,"fEffTriggerE/D");
+  fTree->Branch("triggerEffP"     ,&fEffTriggerP    ,"fEffTriggerP/D");
 
   fTree->Branch("npu"             ,&fNPU            ,"fNPU/i");
   fTree->Branch("npv"             ,&fNVtx           ,"fNVtx/i");
@@ -211,12 +231,22 @@ bool EvtLoader::PV(){
 void EvtLoader::triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<TLorentzVector> iPhotons) {
   fEffTrigger = ((0.975+(fEvt->pfMETC-200)*0.025*0.025)*(fEvt->pfMETC<240)+1*(fEvt->pfMETC>=240));
   if(iElectrons.size() > 0){
-    if(fITrigger & 4)                                            fEffTrigger = getEle27TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
+    //if(fITrigger & 4)                                            fEffTrigger = getEle27TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
     //if(!(fITrigger & 4) && (fITrigger & 8))                      fEffTrigger = getEle23TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
-    if(!(fITrigger & 4) && (fITrigger & 8))                      fEffTrigger = 1;
+    //if ((fITrigger & 4)){
+    float eff1=0, eff2=0;
+    if (TMath::Abs(iElectrons[0].Eta())<1.4442)        eff1 = getVal(hEleTrigB,iElectrons[0].Pt());
+    if (1.5660<TMath::Abs(iElectrons[0].Eta()) && TMath::Abs(iElectrons[0].Eta())<2.5)        eff1 = getVal(hEleTrigE,iElectrons[0].Pt());
+    if (iElectrons.size()>1) {
+      if (TMath::Abs(iElectrons[1].Eta())<1.4442)
+	eff2 = getVal(hEleTrigB,iElectrons[1].Pt());
+      if (1.5660<TMath::Abs(iElectrons[1].Eta()) && TMath::Abs(iElectrons[1].Eta())<2.5)
+	eff2 = getVal(hEleTrigE,iElectrons[1].Pt());
+    }
+    fEffTriggerE = 1 - (1-eff1)*(1-eff2);
   }
   if(iPhotons.size()   > 0){
-    if(fITrigger & 16)                                           fEffTrigger = 1;
+    fEffTriggerP = getVal(hPhoTrig,iPhotons[0].Pt());
   }
 }
 // puWeight
