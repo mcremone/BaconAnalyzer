@@ -121,13 +121,19 @@ int main( int argc, char **argv ) {
     
     // triggerbits for PFJet
     unsigned int trigbits=1;   
-    if(fEvt ->passTrigger("HLT_AK8PFJet360_TrimMass30_v*") ||
-       fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*") ||
-       fEvt ->passTrigger("HLT_PFHT800_v*")
-       ) trigbits = trigbits | 2; 
-    if(fEvt ->passTrigger("HLT_Photon175_v*") ||
-       fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 4;
-    // if(trigbits==1) continue;
+    if(lOption.find("data")!=std::string::npos){
+      if(fEvt ->passTrigger("HLT_AK8PFJet360_TrimMass30_v*") ||
+	 fEvt ->passTrigger("HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v*") ||
+	 fEvt ->passTrigger("HLT_PFHT800_v*")
+	 ) trigbits = trigbits | 2; 
+      if(fEvt ->passTrigger("HLT_ECALHT800_v*") ||
+	 fEvt ->passTrigger("HLT_Photon175_v*") ||
+	 fEvt ->passTrigger("HLT_Photon165_HE10_v*") ||
+	 fEvt ->passTrigger("HLT_Photon300_NoHE_v*") ||
+	 fEvt ->passTrigger("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*") ||
+	 fEvt ->passTrigger("HLT_Photon135_PFMET100_v*")) trigbits= trigbits | 4;
+      // if(trigbits==1) continue;
+    }
     fEvt      ->fillEvent(trigbits,lWeight);
     
     // Objects
