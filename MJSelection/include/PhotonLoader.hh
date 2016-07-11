@@ -17,20 +17,17 @@ public:
   void setupTree(TTree *iTree);
   void load(int iEvent);
   void selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons);
-  std::vector<TPhoton*> fSelPhotons;
+  std::vector<TPhoton*> fSelPhotons, fSelPhotonsMVA;
   std::vector<double>   fphoSFVars;
   int           fNPhotons;
   int           fNPhotonsMedium;
   int           fNPhotonsMVA;
-  double fphoMVApt;
-  double fphoMVAeta;
-  double fphoMVAphi;
 
 protected: 
   TClonesArray *fPhotons;
   TBranch      *fPhotonBr;
   TTree        *fTree;
-  std::vector<double> fVars;
+  std::vector<double> fVars, fVarsMVA;
   int           fN;
   double        fIso;
 };

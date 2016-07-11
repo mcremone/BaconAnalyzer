@@ -21,6 +21,7 @@ void PhotonLoader::reset() {
   fNPhotonsMedium = 0; 
   fSelPhotons.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
+  for(unsigned int i0 = 0; i0 < fVarsMVA.size(); i0++) fVarsMVA[i0] = 0;
   for(unsigned int i0 = 0; i0 < fphoSFVars.size(); i0++) fphoSFVars[i0] = 1;
 }
 void PhotonLoader::setupTree(TTree *iTree) { 
@@ -30,11 +31,9 @@ void PhotonLoader::setupTree(TTree *iTree) {
   fTree->Branch("nphoMedium", &fNPhotonsMedium,"fNPhotonsMedium/I"); // medium photon multiplicity
   fTree->Branch("nphoMVA",    &fNPhotonsMVA,   "fNPhotonsMVA/I");    // MVA-based selection
   fTree->Branch("vpho0_iso",  &fIso,           "fIso/D");            // photon isolation
-  fTree->Branch("vphoMVA_pt", &fphoMVApt,      "fphoMVApt/D");
-  fTree->Branch("vphoMVA_eta", &fphoMVAeta,     "fphoMVAeta/D");
-  fTree->Branch("vphoMVA_phi", &fphoMVAphi,     "fphoMVAphi/D");
 
   setupNtuple("vpho",iTree,fN,fVars);                                // pho0_pt,_eta,_phi (1*3=3)
+  setupNtuple("vphoMVA",iTree,fN,fVarsMVA);
   addSF      ("phoSF",iTree,fphoSFVars,1);                           // phoSF0
 }
 void PhotonLoader::load(int iEvent) { 
@@ -45,7 +44,7 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
   reset(); 
   int lCount(0), lTCount(0), lMVACount(0);
   std::vector<TPhoton*> lVeto; 
-  TPhoton* photon = 0;
+  TPhoton* photon = 0;// photonMVA =0;
   for  (int i0 = 0; i0 < fPhotons->GetEntriesFast(); i0++) { 
     TPhoton *pPhoton = (TPhoton*)((*fPhotons)[i0]);
 
@@ -59,9 +58,7 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
     if(fabs(pPhoton->eta) >= 1.4442)                    continue;
     if(pPhoton->mva > 0.374 && pPhoton->pt > 180){
       lMVACount++;
-      fphoMVApt = pPhoton->pt;
-      fphoMVAeta = pPhoton->eta;
-      fphoMVAphi = pPhoton->phi;
+      addPhoton(pPhoton,fSelPhotonsMVA);
     }
     if(!passPhoMediumSel(pPhoton, iRho))                continue;
     lTCount++;
@@ -77,5 +74,6 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
   fNPhotonsMVA = lMVACount;
 
   if(fVars.size() > 0) fillPhoton(fN,fSelPhotons,fVars);
+  if(fVarsMVA.size() > 0) fillPhoton(fN,fSelPhotonsMVA,fVarsMVA);
   if(fSelPhotons.size() > 0) fIso = TMath::Max(fSelPhotons[0]->chHadIso  - iRho*phoEffArea(fSelPhotons[0]->scEta, 0), (double)0.);
 }
