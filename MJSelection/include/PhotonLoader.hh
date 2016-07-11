@@ -22,6 +22,9 @@ public:
   int           fNPhotons;
   int           fNPhotonsMedium;
   int           fNPhotonsMVA;
+  double fphoMVApt;
+  double fphoMVAeta;
+  double fphoMVAphi;
 
 protected: 
   TClonesArray *fPhotons;
