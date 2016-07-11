@@ -113,7 +113,7 @@ int main( int argc, char **argv ) {
       if(lOption.find("bb")!=std::string::npos && !(fGen->isType("Z","bb") || fGen->isType("Zprime","bb"))) continue;
       if(lOption.find("cc")!=std::string::npos && !(fGen->isType("Z","cc") || fGen->isType("Zprime","cc"))) continue;
       if(lOption.find("cs")!=std::string::npos && !(fGen->isType("W","cs"))) continue;
-      if(lOption.find("lf")!=std::string::npos && (fGen->isType("W","cs") || fGen->isType("Z","bb") || fGen->isType("Z","cc"))) continue;
+      if(lOption.find("lf")!=std::string::npos && (fGen->isType("W","cs") || fGen->isType("Z","bb") || fGen->isType("Z","cc")|| fGen->isType("Zprime","bb")|| fGen->isType("Zprime","cc"))) continue;
     }
     else{
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;

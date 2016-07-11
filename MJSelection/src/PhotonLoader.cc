@@ -28,6 +28,7 @@ void PhotonLoader::setupTree(TTree *iTree) {
   fTree = iTree;
   fTree->Branch("npho",       &fNPhotons,      "fNPhotons/I");       // photon multiplicity 
   fTree->Branch("nphoMedium", &fNPhotonsMedium,"fNPhotonsMedium/I"); // medium photon multiplicity
+  fTree->Branch("nphoMVA",    &fNPhotonsMVA,   "fNPhotonsMVA/I");    // MVA-based selection
   fTree->Branch("vpho0_iso",  &fIso,           "fIso/D");            // photon isolation
   setupNtuple("vpho",iTree,fN,fVars);                                // pho0_pt,_eta,_phi (1*3=3)
   addSF      ("phoSF",iTree,fphoSFVars,1);                           // phoSF0
@@ -38,11 +39,13 @@ void PhotonLoader::load(int iEvent) {
 }
 void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons) {
   reset(); 
-  int lCount = 0,lTCount =0; 
+  int lCount(0), lTCount(0), lMVACount(0);
   std::vector<TPhoton*> lVeto; 
   TPhoton* photon = 0;
   for  (int i0 = 0; i0 < fPhotons->GetEntriesFast(); i0++) { 
     TPhoton *pPhoton = (TPhoton*)((*fPhotons)[i0]);
+
+    if(pPhoton->mva > 0.374 && pPhoton->pt > 180) lMVACount++; 
 
     if(pPhoton->pt        <=  15)                       continue;
     if(fabs(pPhoton->eta) >=  2.5)                      continue;
@@ -63,6 +66,8 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
 
   fNPhotons = lCount;
   fNPhotonsMedium = lTCount;
+  fNPhotonsMVA = lMVACount;
+
   if(fVars.size() > 0) fillPhoton(fN,fSelPhotons,fVars);
   if(fSelPhotons.size() > 0) fIso = TMath::Max(fSelPhotons[0]->chHadIso  - iRho*phoEffArea(fSelPhotons[0]->scEta, 0), (double)0.);
 }

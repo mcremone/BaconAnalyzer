@@ -21,6 +21,7 @@ public:
   std::vector<double>   fphoSFVars;
   int           fNPhotons;
   int           fNPhotonsMedium;
+  int           fNPhotonsMVA;
 
 protected: 
   TClonesArray *fPhotons;
