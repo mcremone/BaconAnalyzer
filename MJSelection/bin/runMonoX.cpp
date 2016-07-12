@@ -223,7 +223,7 @@ int main( int argc, char **argv ) {
     
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
-    fEvt->fillVetoes(lPhotons,lVetoes);
+    //fEvt->fillVetoes(lPhotons,lVetoes);
 
     // CA15Puppi Jets
     fVJet15->load(i0);

@@ -180,8 +180,7 @@ void VJetLoader::load(int iEvent) {
 void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho, std::vector<TLorentzVector> &iPhotons, std::vector<TLorentzVector> &iPhotonsMVA, std::string iJetID){
   reset(); 
   iJets.clear(); iVJet.clear();
-  int lCount = 0; 
-  unsigned int lvetoPhoton=1;
+  int lCount(0), lvetoPhoton(0);
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
     TJet *pVJet = (TJet*)((*fVJets)[i0]);
     if(pVJet->pt        <=  150)                                           continue;
@@ -194,8 +193,8 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
     lCount++;
   }
   if(iJets.size() > 0){
-    if(passVeto(fSelVJets[0]->eta,fSelVJets[0]->phi,dR,iPhotons))                lvetoPhoton = lvetoPhoton | 2;
-    if(passVeto(fSelVJets[0]->eta,fSelVJets[0]->phi,dR,iPhotonsMVA))             lvetoPhoton = lvetoPhoton | 4;
+    if(passVeto(fSelVJets[0]->eta,fSelVJets[0]->phi,dR,iPhotons))                lvetoPhoton = 1;
+    if(passVeto(fSelVJets[0]->eta,fSelVJets[0]->phi,dR,iPhotonsMVA))             lvetoPhoton = 2;
     TLorentzVector ivJ; ivJ.SetPtEtaPhiM(fSelVJets[0]->pt,fSelVJets[0]->eta,fSelVJets[0]->phi,fSelVJets[0]->mass);
     iVJet.push_back(ivJ);
   }

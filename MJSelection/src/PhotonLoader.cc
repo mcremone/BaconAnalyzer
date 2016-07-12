@@ -18,10 +18,15 @@ PhotonLoader::~PhotonLoader() {
 }
 void PhotonLoader::reset() { 
   fNPhotons      = 0; 
-  fNPhotonsMedium = 0; 
+  fNPhotonsMedium = 0;
+  fNPhotonsMVA = 0; 
+  fphoMVA_pt = 0;
+  fphoMVA_eta = 0;
+  fphoMVA_phi = 0;
+
   fSelPhotons.clear();
+  fSelPhotonsMVA.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
-  for(unsigned int i0 = 0; i0 < fVarsMVA.size(); i0++) fVarsMVA[i0] = 0;
   for(unsigned int i0 = 0; i0 < fphoSFVars.size(); i0++) fphoSFVars[i0] = 1;
 }
 void PhotonLoader::setupTree(TTree *iTree) { 
@@ -31,9 +36,12 @@ void PhotonLoader::setupTree(TTree *iTree) {
   fTree->Branch("nphoMedium", &fNPhotonsMedium,"fNPhotonsMedium/I"); // medium photon multiplicity
   fTree->Branch("nphoMVA",    &fNPhotonsMVA,   "fNPhotonsMVA/I");    // MVA-based selection
   fTree->Branch("vpho0_iso",  &fIso,           "fIso/D");            // photon isolation
+  fTree->Branch("vphoMVA_pt", &fphoMVA_pt,     "fphoMVA_pt/D"); 
+  fTree->Branch("vphoMVA_eta",&fphoMVA_eta,    "fphoMVA_eta/D");
+  fTree->Branch("vphoMVA_phi",&fphoMVA_phi,    "fphoMVA_phi/D");
 
   setupNtuple("vpho",iTree,fN,fVars);                                // pho0_pt,_eta,_phi (1*3=3)
-  setupNtuple("vphoMVA",iTree,fN,fVarsMVA);
+  //setupNtuple("vphoMVA",iTree,fN,fVarsMVA);
   addSF      ("phoSF",iTree,fphoSFVars,1);                           // phoSF0
 }
 void PhotonLoader::load(int iEvent) { 
@@ -72,7 +80,7 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
   if(fSelPhotons.size() > 0) fIso = TMath::Max(fSelPhotons[0]->chHadIso  - iRho*phoEffArea(fSelPhotons[0]->scEta, 0), (double)0.);
 }
 void PhotonLoader::selectPhotonsMVA(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons) {
-  reset(); 
+  //reset(); 
   int lCount(0), lMVACount(0);
   std::vector<TPhoton*> lVeto; 
   TPhoton* photonMVA =0;
@@ -90,13 +98,16 @@ void PhotonLoader::selectPhotonsMVA(double iRho,std::vector<TLorentzVector> &iVe
     lMVACount++;
 
     lVeto.push_back(pPhoton);
-    addPhoton(pPhoton,fSelPhotons);
+    addPhoton(pPhoton,fSelPhotonsMVA);
     if(!photonMVA || (pPhoton->pt > photonMVA->pt))  photonMVA = pPhoton;
   }
-  if(photonMVA) addVPhoton(photonMVA,iPhotons,0.);
-
+  if(photonMVA){
+    addVPhoton(photonMVA,iPhotons,0.);
+    fphoMVA_pt = photonMVA->pt;
+    fphoMVA_eta = photonMVA->eta;
+    fphoMVA_phi = photonMVA->phi;
+  }
   fNPhotons = lCount;
   fNPhotonsMVA = lMVACount;
   
-  if(fVarsMVA.size() > 0) fillPhoton(fN,fSelPhotonsMVA,fVarsMVA);
 }

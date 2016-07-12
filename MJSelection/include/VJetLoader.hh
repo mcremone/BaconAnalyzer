@@ -50,7 +50,8 @@ public:
   double dPhi(TLorentzVector v1, TLorentzVector v2, TLorentzVector v3);
 
   double ftopSize, ftopMatching, fvSize, fvMatching;
-  int fisHadronicTop, fisHadronicV, fvetoPhoton;
+  int fisHadronicTop, fisHadronicV;
+  int fvetoPhoton;
   float fVMT,fdR_sj0dR,fdPhi_sj0dPhi, fdPhiJRF_sj0dPhiJRF;
 
   const double CSVL = 0.460; // CSVv2SubJet WP 

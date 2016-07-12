@@ -29,8 +29,10 @@ protected:
   TClonesArray *fPhotons;
   TBranch      *fPhotonBr;
   TTree        *fTree;
-  std::vector<double> fVars, fVarsMVA;
+  
+  std::vector<double> fVars;// fVarsMVA;
   int           fN;
   double        fIso;
+  double fphoMVA_pt, fphoMVA_eta, fphoMVA_phi;
 };
 #endif
