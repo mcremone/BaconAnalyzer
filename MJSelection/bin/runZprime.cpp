@@ -140,7 +140,7 @@ int main( int argc, char **argv ) {
     fEvt      ->fillEvent(trigbits,lWeight);
     
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lVJets, lVJet, lVJets15, lVJet15, lVetoes;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lPhotonsMVA, lJets, lVJets, lVJet, lVJets15, lVJet15, lVetoes;
     fMuon     ->load(i0);
     fMuon     ->selectMuons(lMuons);
     fElectron ->load(i0);
@@ -151,10 +151,11 @@ int main( int argc, char **argv ) {
     fTau      ->selectTaus(lVetoes);
     fPhoton   ->load(i0);
     fPhoton   ->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
+    fPhoton   ->selectPhotonsMVA(fEvt->fRho,lElectrons,lPhotonsMVA);
         
     // AK8Puppi Jets
     fVJetPuppi->load(i0);
-    fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,0.8,fEvt->fRho);
+    fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,0.8,fEvt->fRho,lPhotons,lPhotonsMVA);
     if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 2;}
     
     // AK8CHS Jets
@@ -164,7 +165,7 @@ int main( int argc, char **argv ) {
 
     // CA15Puppi Jets
     fVJetPuppi15->load(i0);
-    fVJetPuppi15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,fEvt->fRho);
+    fVJetPuppi15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,fEvt->fRho,lPhotons,lPhotonsMVA);
     if(lVJets15.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
     // AK4Puppi Jets

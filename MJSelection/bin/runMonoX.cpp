@@ -150,16 +150,6 @@ int main( int argc, char **argv ) {
       lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
       if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
       if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
-      /*
-      if(lOption.find("tt")!=std::string::npos){
-        int nlep = fGen->isttbarType();
-        if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
-        if(lOption.find("tt1l")!=std::string::npos && nlep!=1)                                            continue;
-        if(lOption.find("tthad")!=std::string::npos && nlep!=0)                                           continue;
-        if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
-        if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
-      }
-      */
     }
 
     // Primary vertex requirement
@@ -173,16 +163,12 @@ int main( int argc, char **argv ) {
 	 fEvt ->passTrigger("HLT_PFMET170_HBHECleaned_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
-	 //fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
          fEvt ->passTrigger("HLT_PFMETNoMu100_NoiseCleaned_PFMHTNoMu100_IDTight_v*") ||
          fEvt ->passTrigger("HLT_PFMETNoMu100_JetIdCleaned_PFMHTNoMu100_IDTight_v*") ||
-         //fEvt ->passTrigger("HLT_PFMETNoMu100_NoiseCleaned_PFMHTNoMu100_NoID_v*") ||
          fEvt ->passTrigger("HLT_PFMETNoMu110_NoiseCleaned_PFMHTNoMu110_IDTight_v*") ||
          fEvt ->passTrigger("HLT_PFMETNoMu110_JetIdCleaned_PFMHTNoMu110_IDTight_v*") ||
-         //fEvt ->passTrigger("HLT_PFMETNoMu110_NoiseCleaned_PFMHTNoMu110_NoID_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
 	 fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*")) trigbits = trigbits | 2; // ||
-	 //fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2;
       if(fEvt ->passTrigger("HLT_Ele27_eta2p1_WPLoose_Gsf_v*") ||
 	 fEvt ->passTrigger("HLT_Ele25_eta2p1_WPTight_Gsf_v*") ||
 	 fEvt ->passTrigger("HLT_Ele35_WPLoose_Gsf_v*") ||
@@ -198,7 +184,7 @@ int main( int argc, char **argv ) {
     }
 
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lJets, lJetsCHS, lVJet15, lVJets15, lVJetCHS15, lVJetsCHS15, lVJet8T, lVJets8T, lVJetCHS8, lVJetsCHS8, lVetoes;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lPhotonsMVA, lJets, lJetsCHS, lVJet15, lVJets15, lVJetCHS15, lVJetsCHS15, lVJet8T, lVJets8T, lVJetCHS8, lVJetsCHS8, lVetoes;
     std::vector<const TJet*> lGoodJets15, lGoodJetsCHS15, lGoodJets8T, lGoodJetsCHS8;
 
     // Muons
@@ -222,6 +208,7 @@ int main( int argc, char **argv ) {
     // Photons
     fPhoton->load(i0);
     fPhoton->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
+    fPhoton->selectPhotonsMVA(fEvt->fRho,lElectrons,lPhotonsMVA);
     
     // Lepton and Photon SF
     if(lOption.find("data")==std::string::npos){
@@ -240,7 +227,7 @@ int main( int argc, char **argv ) {
 
     // CA15Puppi Jets
     fVJet15->load(i0);
-    fVJet15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,fEvt->fRho,"tightJetID");
+    fVJet15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,fEvt->fRho,lPhotons,lPhotonsMVA,"tightJetID");
     if(lVJets15.size()>0) { 
       if(lOption.find("data")==std::string::npos){
 	fVJet15->fisHadronicTop = fGen->ismatchedJet(lVJet15[0],1.5,fVJet15->ftopMatching,fVJet15->ftopSize);
@@ -250,76 +237,20 @@ int main( int argc, char **argv ) {
       fEvt->fselectBits = fEvt->fselectBits | 2;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet15,fVJet15->fVMT);
     }
-    /*
-    // CA15CHS Jets
-    fVJetCHS15->load(i0);
-    fVJetCHS15->selectVJets(lVetoes,lVJetsCHS15,lVJetCHS15,1.5,fEvt->fRho,"looseJetID");
-    if(lVJetsCHS15.size()>0) {
-      if(lOption.find("data")==std::string::npos){
-        fVJetCHS15->fisHadronicTop = fGen->ismatchedJet(lVJetCHS15[0],1.5,fVJetCHS15->ftopMatching,fVJetCHS15->ftopSize);
-        fVJetCHS15->fisHadronicV = fGen->ismatchedJet(lVJetCHS15[0],0.8,fVJetCHS15->fvMatching,fVJetCHS15->fvSize,25);
-        fVJetCHS15->fillSubJetBTag(fGen->fGens,fVJetCHS15->fGoodVSubJets);
-      }
-      fEvt->fselectBits = fEvt->fselectBits | 4;
-      fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lVJet15,fVJetCHS15->fVMT);
-    }
 
-    // CA8Puppi Jets
-    fVJet8T->load(i0);
-    fVJet8T->selectVJets(lVetoes,lVJets8T,lVJet8T,0.8,fEvt->fRho,"tightJetID");
-    if(lVJets8T.size()>0) {
-      if(lOption.find("data")==std::string::npos){
-        fVJet8T->fisHadronicTop = fGen->ismatchedJet(lVJet8T[0],0.8,fVJet8T->ftopMatching,fVJet8T->ftopSize);
-        fVJet8T->fisHadronicV = fGen->ismatchedJet(lVJet8T[0],0.8,fVJet8T->fvMatching,fVJet8T->fvSize,25);
-        fVJet8T->fillSubJetBTag(fGen->fGens,fVJet8T->fGoodVSubJets);
-      }
-      fEvt->fselectBits =  fEvt->fselectBits | 8;
-      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet8T,fVJet8T->fVMT);
-    }
-
-    // AK8CHS Jets
-    fVJetCHS8->load(i0);
-    fVJetCHS8->selectVJets(lVetoes,lVJetsCHS8,lVJetCHS8,0.8,fEvt->fRho,"tightJetID");
-    if(lVJetsCHS8.size()>0) {
-      if(lOption.find("data")==std::string::npos){
-        fVJetCHS8->fisHadronicTop = fGen->ismatchedJet(lVJetCHS8[0],0.8,fVJetCHS8->ftopMatching,fVJetCHS8->ftopSize);
-        fVJetCHS8->fisHadronicV = fGen->ismatchedJet(lVJetCHS8[0],0.8,fVJetCHS8->fvMatching,fVJetCHS8->fvSize,25);
-        fVJetCHS8->fillSubJetBTag(fGen->fGens,fVJetCHS8->fGoodVSubJets);
-      }
-      fEvt->fselectBits =  fEvt->fselectBits | 16;
-      fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lVJetCHS8,fVJetCHS8->fVMT);
-    }
-    */
     // AK4Puppi Jets
     fJet->load(i0); 
     fJet->selectJets(lVetoes,lVJets15,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     if(lJets.size()>0){
       fJet->fillGoodJets(lVJets15,1.5,lGoodJets15);
-      //fJet->fillGoodJets(lVJets8T,0.8,lGoodJets8T);
       if(lOption.find("data")==std::string::npos){
 	fBTag->fillBTag(fJet->fGoodJets);
         fBTag15->fillBTag(lGoodJets15);
-        //fBTag8T->fillBTag(lGoodJets8T);
       }
       fEvt->fselectBits =  fEvt->fselectBits | 4;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJets,fJet->fMT);
     }
-    /*
-    // AK4CHS Jets
-    fJetCHS->load(i0);
-    fJetCHS->selectJets(lVetoes,lVJetsCHS15,lJetsCHS,fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi);
-    if(lJetsCHS.size()>0){
-      fJetCHS->fillGoodJets(lVJetsCHS15,1.5,lGoodJetsCHS15);
-      fJetCHS->fillGoodJets(lVJetsCHS8,0.8,lGoodJetsCHS8);
-      if(lOption.find("data")==std::string::npos){
-        fBTagCHS->fillBTag(fJetCHS->fGoodJets);
-        fBTagCHS15->fillBTag(lGoodJetsCHS15);
-        fBTagCHS8->fillBTag(lGoodJetsCHS8);
-      }
-      fEvt->fselectBits =  fEvt->fselectBits | 64;
-      fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lJetsCHS,fJetCHS->fMT);
-    }
-    */
+
     // Select at least one Jet
     //if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4)) continue; // && !(fEvt->fselectBits & 8) & !(fEvt->fselectBits & 16) & !(fEvt->fselectBits & 32) & !(fEvt->fselectBits & 64)) continue;
     

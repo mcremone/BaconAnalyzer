@@ -35,7 +35,7 @@ public:
   void setupTree(TTree *iTree,std::string iJetLabel);
   void setupTreeSubJetBTag(TTree *iTree, std::string iJetLabel);
   void load(int iEvent);
-  void selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho = 0, std::string iJetID="looseJetID");
+  void selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho, std::vector<TLorentzVector> &iPhotons, std::vector<TLorentzVector> &iPhotonsMVA, std::string iJetID="looseJetID");
   void fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals, double iRho = 0);
   std::vector<TJet*> fSelVJets;
   std::vector<TLorentzVector> fGoodVSubJets;
@@ -50,7 +50,7 @@ public:
   double dPhi(TLorentzVector v1, TLorentzVector v2, TLorentzVector v3);
 
   double ftopSize, ftopMatching, fvSize, fvMatching;
-  int fisHadronicTop, fisHadronicV;
+  int fisHadronicTop, fisHadronicV, fvetoPhoton;
   float fVMT,fdR_sj0dR,fdPhi_sj0dPhi, fdPhiJRF_sj0dPhiJRF;
 
   const double CSVL = 0.460; // CSVv2SubJet WP 

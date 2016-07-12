@@ -41,11 +41,11 @@ void PhotonLoader::load(int iEvent) {
   fPhotonBr ->GetEntry(iEvent);
 }
 void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons) {
-  reset(); 
-  int lCount(0), lTCount(0), lMVACount(0);
-  std::vector<TPhoton*> lVeto; 
-  TPhoton* photon = 0;// photonMVA =0;
-  for  (int i0 = 0; i0 < fPhotons->GetEntriesFast(); i0++) { 
+  reset();
+  int lCount(0), lTCount(0);
+  std::vector<TPhoton*> lVeto;
+  TPhoton* photon = 0;  
+  for  (int i0 = 0; i0 < fPhotons->GetEntriesFast(); i0++) {
     TPhoton *pPhoton = (TPhoton*)((*fPhotons)[i0]);
 
     if(pPhoton->pt        <=  15)                       continue;
@@ -56,10 +56,6 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
 
     if(pPhoton->pt        <= 175)                       continue;
     if(fabs(pPhoton->eta) >= 1.4442)                    continue;
-    if(pPhoton->mva > 0.374 && pPhoton->pt > 180){
-      lMVACount++;
-      addPhoton(pPhoton,fSelPhotonsMVA);
-    }
     if(!passPhoMediumSel(pPhoton, iRho))                continue;
     lTCount++;
 
@@ -71,9 +67,36 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
 
   fNPhotons = lCount;
   fNPhotonsMedium = lTCount;
-  fNPhotonsMVA = lMVACount;
 
   if(fVars.size() > 0) fillPhoton(fN,fSelPhotons,fVars);
-  if(fVarsMVA.size() > 0) fillPhoton(fN,fSelPhotonsMVA,fVarsMVA);
   if(fSelPhotons.size() > 0) fIso = TMath::Max(fSelPhotons[0]->chHadIso  - iRho*phoEffArea(fSelPhotons[0]->scEta, 0), (double)0.);
+}
+void PhotonLoader::selectPhotonsMVA(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons) {
+  reset(); 
+  int lCount(0), lMVACount(0);
+  std::vector<TPhoton*> lVeto; 
+  TPhoton* photonMVA =0;
+  for  (int i0 = 0; i0 < fPhotons->GetEntriesFast(); i0++) { 
+    TPhoton *pPhoton = (TPhoton*)((*fPhotons)[i0]);
+
+    if(pPhoton->pt        <=  15)                       continue;
+    if(fabs(pPhoton->eta) >=  2.5)                      continue;
+    if(passVeto(pPhoton->eta,pPhoton->phi,0.4,iVetoes)) continue;
+    if(!passPhoLooseSel(pPhoton,iRho))                  continue;
+    lCount++;
+
+    if(pPhoton->mva <= 0.374)                              continue;
+    if(pPhoton->pt <= 180)                                 continue;
+    lMVACount++;
+
+    lVeto.push_back(pPhoton);
+    addPhoton(pPhoton,fSelPhotons);
+    if(!photonMVA || (pPhoton->pt > photonMVA->pt))  photonMVA = pPhoton;
+  }
+  if(photonMVA) addVPhoton(photonMVA,iPhotons,0.);
+
+  fNPhotons = lCount;
+  fNPhotonsMVA = lMVACount;
+  
+  if(fVarsMVA.size() > 0) fillPhoton(fN,fSelPhotonsMVA,fVarsMVA);
 }

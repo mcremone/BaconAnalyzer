@@ -67,14 +67,14 @@ void plotMonoX(const string preselection, const string selection, const string s
     samplev.push_back(new CSample("data",0,0));
     if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/METtrig.root");
     if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectrontrig.root");
-    if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhotontrig.root");
-    samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-    samplev.back()->fnamev.push_back("/tmp/cmantill/QCD80.root");
+    if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhotontrig_2.root");
     if (preselection.compare("Pho")!=0) {
       if(selection.find("MonoHbb")!=std::string::npos){
 	samplev.push_back(new CSample("VH(125)", kViolet-9, kViolet-9));
 	samplev.back()->fnamev.push_back("/tmp/cmantill/ZH_amcatnlo.root");
       }
+      samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/QCD80.root");
       samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
       samplev.back()->fnamev.push_back("/tmp/cmantill/T.root");
       samplev.back()->fnamev.push_back("/tmp/cmantill/TZ.root");
@@ -96,6 +96,8 @@ void plotMonoX(const string preselection, const string selection, const string s
       samplev.back()->fnamev.push_back("/tmp/cmantill/DYLF.root");
     }
     if (preselection.compare("Pho")==0){
+      samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
+      samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhotontrig_2.root");
       samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
       samplev.back()->fnamev.push_back("/tmp/cmantill/GHF.root");
       samplev.back()->fnamev.push_back("/tmp/cmantill/GLF.root");
@@ -336,6 +338,7 @@ void plotMonoX(const string preselection, const string selection, const string s
     cout << "Sample: " << sample->label << endl;
     bool isData = false;
     if(sample->label.compare("data")==0) isData=true;
+    if(preselection.compare("Pho")==0 && sample->label.compare("QCD")==0) isData=true;
     bool isSignal = false;
     if((selection.compare("Bst15MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0) && subsample.compare("SR")==0){
       if (isam==samplev.size()-1 ||
@@ -393,31 +396,31 @@ void plotMonoX(const string preselection, const string selection, const string s
 	float btagw=1;
         if(!fBits->passSelection(preselection,selection,subsample,combo,btagw,syst,isSignal,isBacon)) continue;
         double wgt = 1;
+	if(isBacon && preselection.compare("Pho")==0 && isam==1) wgt *= fBits->getPhotonPurity();
 	if(!isData) {
           if(isBacon){
-            wgt *= LUMI*fBits->evtWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
-            if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->triggerEff;
-	    if(preselection.compare("Pho")!=0 && isam==2) fBits->getPhotonPurity();
-            if(selection.compare("Bst15MonoTop")==0 || selection.compare("Bst8MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0){
-              if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){
-                wgt *= 1.107;//fBits->ToptagSF;                                                                                                                                                             
-              }
-              if(sample->label=="ttbar" && (fBits->topSize15>=0.8 || fBits->isHadronicTop15!=1 || fBits->topMatching15 >1.4 || fBits->topMatching15 <= 0 || fBits->topSize15 <= 0)){
-                wgt *= 0.966;
-              }
-            }
-            if(subsample.find("SR")!=std::string::npos && selection.compare("Bst15MonoHbb")==0){
-              if(isam==samplev.size()-8) wgt *= 0.01;
-              else if(isam==samplev.size()-7) wgt *= 0.01;
-              else if(isam==samplev.size()-6) wgt *= 0.01;
-              else if(isam==samplev.size()-5) wgt *= 0.01;
-              else if(isam==samplev.size()-4) wgt *= 0.01;
-              else if(isam==samplev.size()-3) wgt *= 0.01;
-              else if(isam==samplev.size()-2) wgt *= 0.01;
-              else if(isam==samplev.size()-1) wgt *= 0.01;
-              else wgt *=fBits->scale1fb;
-            }
-            else wgt *=fBits->scale1fb;
+	    wgt *= LUMI*fBits->evtWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2;
+	    if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->triggerEff;
+	    if(selection.compare("Bst15MonoTop")==0 || selection.compare("Bst8MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0){
+	      if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){
+		wgt *= 1.107;//fBits->ToptagSF;                                                                                                                                                             
+	      }
+	      if(sample->label=="ttbar" && (fBits->topSize15>=0.8 || fBits->isHadronicTop15!=1 || fBits->topMatching15 >1.4 || fBits->topMatching15 <= 0 || fBits->topSize15 <= 0)){
+		wgt *= 0.966;
+	      }
+	    }
+	    if(subsample.find("SR")!=std::string::npos && selection.compare("Bst15MonoHbb")==0){
+	      if(isam==samplev.size()-8) wgt *= 0.01;
+	      else if(isam==samplev.size()-7) wgt *= 0.01;
+	      else if(isam==samplev.size()-6) wgt *= 0.01;
+	      else if(isam==samplev.size()-5) wgt *= 0.01;
+	      else if(isam==samplev.size()-4) wgt *= 0.01;
+	      else if(isam==samplev.size()-3) wgt *= 0.01;
+	      else if(isam==samplev.size()-2) wgt *= 0.01;
+	      else if(isam==samplev.size()-1) wgt *= 0.01;
+	      else wgt *=fBits->scale1fb;
+	    }
+	    else wgt *=fBits->scale1fb;
           }
           else{
 	    if(preselection.compare("Pho")==0 && sample->label.compare("QCD")==0) wgt *=fBits->photonPurity;

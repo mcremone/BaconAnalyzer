@@ -100,6 +100,8 @@ void VJetLoader::reset() {
   fvSize              = 999;
   fvMatching          = 999;
   fisHadronicV        = 0;
+  fvetoPhoton         = 0;
+
   fSelVJets.clear();
   fGoodVSubJets.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
@@ -136,6 +138,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   std::stringstream pSiV;   pSiV << iJetLabel << "0_isHadronicV";
   std::stringstream pSVM;   pSVM << iJetLabel << "0_vMatching";
   std::stringstream pSVS;   pSVS << iJetLabel << "0_vSize";
+  std::stringstream pSvP;   pSvP << iJetLabel << "0_vetoPhoton";
 
   fTree = iTree;
   for(int i0 = 0; i0 < fN*4.;                    i0++) {double pVar = 0; fVars.push_back(pVar);} // declare array of vars
@@ -153,6 +156,8 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch(pSiV.str().c_str() ,&fisHadronicV         ,(pSiV.str()+"/I").c_str());
   fTree->Branch(pSVM.str().c_str() ,&fvMatching           ,(pSVM.str()+"/D").c_str());
   fTree->Branch(pSVS.str().c_str() ,&fvSize               ,(pSVS.str()+"/D").c_str());
+  fTree->Branch(pSvP.str().c_str() ,&fvetoPhoton          ,(pSvP.str()+"/I").c_str());
+
 }
 void VJetLoader::setupTreeSubJetBTag(TTree *iTree, std::string iJetLabel) {
   resetSubJetBTag();
@@ -172,10 +177,11 @@ void VJetLoader::load(int iEvent) {
   // fFatJets     ->Clear();
   // fFatJetBr    ->GetEntry(iEvent);
 }
-void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho, std::string iJetID){
+void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho, std::vector<TLorentzVector> &iPhotons, std::vector<TLorentzVector> &iPhotonsMVA, std::string iJetID){
   reset(); 
   iJets.clear(); iVJet.clear();
   int lCount = 0; 
+  unsigned int lvetoPhoton=1;
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
     TJet *pVJet = (TJet*)((*fVJets)[i0]);
     if(pVJet->pt        <=  150)                                           continue;
@@ -188,10 +194,13 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
     lCount++;
   }
   if(iJets.size() > 0){
+    if(passVeto(fSelVJets[0]->eta,fSelVJets[0]->phi,dR,iPhotons))                lvetoPhoton = lvetoPhoton | 2;
+    if(passVeto(fSelVJets[0]->eta,fSelVJets[0]->phi,dR,iPhotonsMVA))             lvetoPhoton = lvetoPhoton | 4;
     TLorentzVector ivJ; ivJ.SetPtEtaPhiM(fSelVJets[0]->pt,fSelVJets[0]->eta,fSelVJets[0]->phi,fSelVJets[0]->mass);
     iVJet.push_back(ivJ);
   }
   fNVJets = lCount;
+  fvetoPhoton = lvetoPhoton;
   fillJet( fN,fSelVJets,fVars);
   fillVJet(fN,fSelVJets,fVars,iRho); 
 }

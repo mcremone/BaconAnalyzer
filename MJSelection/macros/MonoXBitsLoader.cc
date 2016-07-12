@@ -1261,9 +1261,9 @@ double MonoXBitsLoader::getdPsj0dP(string selection){
 }
 float MonoXBitsLoader::getPhotonPurity(){
   if (vpho0_pt>=175 && vpho0_pt<200) return 0.04802;
-  else if (loosePho1Pt>=200 && loosePho1Pt<250) return 0.04241;
-  else if (loosePho1Pt>=250 && loosePho1Pt<300) return 0.03641;
-  else if (loosePho1Pt>=300 && loosePho1Pt<350) return 0.0333;
-  else if (loosePho1Pt>=350)			return 0.02544;
+  else if (vpho0_pt>=200 && vpho0_pt<250) return 0.04241;
+  else if (vpho0_pt>=250 && vpho0_pt<300) return 0.03641;
+  else if (vpho0_pt>=300 && vpho0_pt<350) return 0.0333;
+  else if (vpho0_pt>=350)		  return 0.02544;
   else return 1;
 }

@@ -17,6 +17,8 @@ public:
   void setupTree(TTree *iTree);
   void load(int iEvent);
   void selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons);
+  void selectPhotonsMVA(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons);
+
   std::vector<TPhoton*> fSelPhotons, fSelPhotonsMVA;
   std::vector<double>   fphoSFVars;
   int           fNPhotons;
