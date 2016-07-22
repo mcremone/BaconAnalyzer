@@ -149,7 +149,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   TTree *intree=0;
 
   // Loop over samples
-  for(unsigned int isam=1; isam<2; isam++) {
+  for(unsigned int isam=1; isam<samplev.size(); isam++) {
     CSample *sample  = samplev[isam];
     cout << "Sample: " << sample->label << endl;
     bool isData    = (isam==0);
