@@ -57,6 +57,26 @@ bool ZprimeBitsLoader::isPho(bool isData){
  }
  return lPass;
 }
+bool ZprimeBitsLoader::isHad(bool isData){
+  bool lPass = false;
+    if(nmu==0 && nele==0 && npho==0 && ntau==0 && met>175){
+      if(isData){
+        if((triggerBits & kMET)!=0) lPass = true;
+      }
+      else{
+      lPass = true;
+      }
+    }
+   return lPass;
+}
+
+bool ZprimeBitsLoader::passPreSelection(string preselection, bool isData){
+  bool lPass = false;
+  if(preselection.compare("Had")==0 && isHad(isData)) lPass = true;
+  if(preselection.compare("Pho")==0 && isPho(isData)) lPass = true;
+  return lPass;
+}
+
 bool ZprimeBitsLoader::passBoostedZprimePreselection(){
   //if((bst_jet0_msd>60) && (bst_jet0_msd<100)){ 
  return njets>0 & bst_jet0_pt>500;

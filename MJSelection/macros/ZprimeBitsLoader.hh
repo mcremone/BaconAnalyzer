@@ -26,7 +26,9 @@ public:
   ZprimeBitsLoader(TTree *iTree=0,TString algo="PUPPI", TString jet="jet0",TString number="8");		
   ~ZprimeBitsLoader();
   bool isPho(bool isData);
+  bool isHad(bool isData);
   bool selectJetAlgoAndSize(TString algo);
+  bool passPreSelection(string preselection, bool isData);
   bool passBoostedZprimePreselection();
   bool passBoostedZprimeSR(float ddtcut);
   bool passSelection(bool isData,string selection,float ddt,float csv1);
