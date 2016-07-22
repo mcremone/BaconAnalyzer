@@ -110,10 +110,12 @@ int main( int argc, char **argv ) {
     if(lOption.compare("data")!=0){
       fGen->load(i0);
       lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
-      if(lOption.find("bb")!=std::string::npos && !(fGen->isType("Z","bb") || fGen->isType("Zprime","bb"))) continue;
-      if(lOption.find("cc")!=std::string::npos && !(fGen->isType("Z","cc") || fGen->isType("Zprime","cc"))) continue;
-      if(lOption.find("cs")!=std::string::npos && !(fGen->isType("W","cs"))) continue;
-      if(lOption.find("lf")!=std::string::npos && (fGen->isType("W","cs") || fGen->isType("Z","bb") || fGen->isType("Z","cc")|| fGen->isType("Zprime","bb")|| fGen->isType("Zprime","cc"))) continue;
+//      if(lOption.find("bb")!=std::string::npos && !(fGen->isType("Z","bb") || fGen->isType("Zprime","bb"))) continue;
+//      if(lOption.find("cc")!=std::string::npos && !(fGen->isType("Z","cc") || fGen->isType("Zprime","cc"))) continue;
+//      if(lOption.find("cs")!=std::string::npos && !(fGen->isType("W","cs"))) continue;
+//      if(lOption.find("lf")!=std::string::npos && (fGen->isType("W","cs") || fGen->isType("Z","bb") || fGen->isType("Z","cc")|| fGen->isType("Zprime","bb")|| fGen->isType("Zprime","cc"))) continue;
+      if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
+      if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
     }
     else{
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
@@ -153,6 +155,17 @@ int main( int argc, char **argv ) {
     fPhoton   ->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
     fPhoton   ->selectPhotonsMVA(fEvt->fRho,lElectrons,lPhotonsMVA);
         
+    //Lepton and Photon SF    
+    if(lOption.find("data")==std::string::npos){
+      fillLepSF(13,fMuon->fNMuons,lMuons,fMuon->fhMuTight,fMuon->fhMuLoose,fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars);
+      fillLepSF(11,fElectron->fNElectrons,lElectrons,fElectron->fhEleTight,fElectron->fhEleVeto,fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars);
+      fillPhoSF(22,fPhoton->fNPhotonsMedium,lPhotons,fGen->lepmatched(22,lPhotons,0.3),fPhoton->fphoSFVars);
+    }
+
+
+    fEvt->fillModifiedMet(lVetoes,lPhotons);
+    fEvt->triggerEff(lElectrons, lPhotons);
+
     // AK8Puppi Jets
     fVJetPuppi->load(i0);
     fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,0.8,fEvt->fRho,lPhotons,lPhotonsMVA);
@@ -176,8 +189,13 @@ int main( int argc, char **argv ) {
     // Select only Puppi Jets                                       
     if(!(fEvt->fselectBits & 2)) continue;
 
-    // ttbar, EWK and kFactor correction                                                                                                                                                    
-    if(lName.find("ZJets")!=std::string::npos || lName.find("DYJets")!=std::string::npos){
+    // ttbar, EWK and kFactor correction
+
+    if(lOption.find("mcg")!=std::string::npos){
+      fGen->findBoson(22,0);
+      if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"GJets_1j_NLO/nominal_G","GJets_LO/inv_pt_G","EWKcorr/photon","GJets_1j_NLO");
+    }
+                                                                                                                                                                             if(lName.find("ZJets")!=std::string::npos || lName.find("DYJets")!=std::string::npos){
       fGen->findBoson(23,0);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z","ZJets_012j_NLO");
       if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,23);

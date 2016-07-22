@@ -23,13 +23,13 @@ using namespace std;
 
 class ZprimeBitsLoader {
 public:
-  ZprimeBitsLoader(TTree *iTree=0,TString algo="PUPPI", TString jet="jet0");		
+  ZprimeBitsLoader(TTree *iTree=0,TString algo="PUPPI", TString jet="jet0",TString number="8");		
   ~ZprimeBitsLoader();
-  bool isPho();
+  bool isPho(bool isData);
   bool selectJetAlgoAndSize(TString algo);
   bool passBoostedZprimePreselection();
   bool passBoostedZprimeSR(float ddtcut);
-  bool passSelection(string selection,float ddt,float csv1);
+  bool passSelection(bool isData,string selection,float ddt,float csv1);
   bool passBoostedZprimeBTag(float csvcut);
   double getWgt(bool isData, TString algo, double LUMI);
   double tau21DDT();
