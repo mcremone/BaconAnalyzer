@@ -42,11 +42,11 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString bst15jetID, TString bst8j
       iTree->SetBranchAddress("res_"+algo+"jets",                               &njets);
       iTree->SetBranchAddress("res_"+algo+"jetsdR2",                            &njetsdR2);
       iTree->SetBranchAddress("res_"+algo+"jetsdR15",                           &njetsdR15);
-      iTree->SetBranchAddress("res_"+algo+"jetsL",                              &nbjetsL);
-      iTree->SetBranchAddress("res_"+algo+"jetsM",                              &nbjetsM);
+      iTree->SetBranchAddress("res_"+algo+"jetsbtagL",                              &nbjetsL);
+      iTree->SetBranchAddress("res_"+algo+"jetsbtagM",                              &nbjetsM);
       iTree->SetBranchAddress("res_"+algo+"jetsLdR2",                           &nbjetsLdR2);
       iTree->SetBranchAddress("res_"+algo+"jetsLdR15",                          &nbjetsLdR15);
-      iTree->SetBranchAddress("res_"+algo+"jetsT",                              &nbjetsT);
+      iTree->SetBranchAddress("res_"+algo+"jetsbtagT",                              &nbjetsT);
       iTree->SetBranchAddress("res_"+algo+"jetmT",                              &res_jet0_mT);
       iTree->SetBranchAddress("res_"+algo+"jet0_pt",                            &res_jet0_pt);
       iTree->SetBranchAddress("res_"+algo+"jet0_eta",                           &res_jet0_eta);
