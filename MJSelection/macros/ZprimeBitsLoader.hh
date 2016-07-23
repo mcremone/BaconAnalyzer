@@ -30,7 +30,9 @@ public:
   bool selectJetAlgoAndSize(TString algo);
   bool passPreSelection(string preselection, bool isData);
   bool passBoostedZprimePreselection();
+  bool passBoostedGammaZprimePreselection();
   bool passBoostedZprimeSR(float ddtcut);
+  bool passBoostedGammaZprimeSR(float ddtcut);
   bool passSelection(bool isData,string selection,float ddt,float csv1);
   bool passBoostedZprimeBTag(float csvcut);
   double getWgt(bool isData, TString algo, double LUMI);
