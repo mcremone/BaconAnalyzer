@@ -139,21 +139,29 @@ int main( int argc, char **argv ) {
     if(!fEvt->PV()) continue;
     
     // Triggerbits for MET, Electrons and Photons
-    unsigned int trigbits=1;    
+    unsigned int trigbits=1;   
+    
     if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2; 
+
     if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
-       fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*")) trigbits= trigbits | 4;
-    if(fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
-       fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits= trigbits | 8;
-    if(fEvt ->passTrigger("HLT_Photon175_v*") ||
-       fEvt ->passTrigger("HLT_Photon165_HE10_v*")) trigbits = trigbits | 16;
+       fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*") || 
+       fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
+       fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits = trigbits | 4;
+      
+    if(fEvt ->passTrigger("HLT_ECALHT800_v*") ||
+	   fEvt ->passTrigger("HLT_Photon175_v*") ||
+	   fEvt ->passTrigger("HLT_Photon165_HE10_v*") ||
+	   fEvt ->passTrigger("HLT_Photon300_NoHE_v*") ||
+       fEvt ->passTrigger("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*") ||
+       fEvt ->passTrigger("HLT_Photon135_PFMET100_v*")) trigbits = trigbits | 8;
     
-    // Triggerbits for MR and Rsq
+       
+       // Triggerbits for MR and Rsq
     if(fEvt ->passTrigger("HLT_RsqMR240_Rsq0p09_MR200_v*") ||
        fEvt ->passTrigger("HLT_RsqMR240_Rsq0p09_MR200_4jet_v*") ||
        fEvt ->passTrigger("HLT_RsqMR270_Rsq0p09_MR200_v*") ||
@@ -166,7 +174,7 @@ int main( int argc, char **argv ) {
        fEvt ->passTrigger("HLT_Rsq0p30_v*") ||
        fEvt ->passTrigger("HLT_Rsq0p36_v*") || 
        fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_BTagCSV_p063_p20_Mbb60_200_v*") ||
-       fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 32;
+       fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 16;
     //    if(trigbits==1) continue;
     
     // Event info
