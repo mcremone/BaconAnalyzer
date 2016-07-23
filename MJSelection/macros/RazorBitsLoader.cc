@@ -8,7 +8,7 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
       iTree->SetBranchAddress("mindPhi",                             &min_dphijetsmet);
     }
     else{
-      iTree->SetBranchAddress("mindFPhi",                            &min_dphijetsmet);
+      iTree->SetBranchAddress("mindPhi",                            &min_dphijetsmet);
     }
     iTree->SetBranchAddress("runNum",                            &runNum);
     iTree->SetBranchAddress("lumiSec",                           &lumiSec);
@@ -27,12 +27,10 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress(met+"phi",                           &vmetphi);
     iTree->SetBranchAddress("fake"+met,                          &vfakemetpt);
     iTree->SetBranchAddress("fake"+met+"phi",                    &vfakemetphi);
-    iTree->SetBranchAddress("n"+algo+"jets",                     &njets);
-    iTree->SetBranchAddress("nbtags",                            &nbtags);
-    iTree->SetBranchAddress("nb"+algo+"jetsL",                   &nbjetsL);
-    iTree->SetBranchAddress("nb"+algo+"jetsM",                   &nbjetsM);
-    iTree->SetBranchAddress("nb"+algo+"jetsLdR2",                &nbjetsLdR2);
-    iTree->SetBranchAddress("nb"+algo+"jetsT",                   &nbjetsT);
+    iTree->SetBranchAddress("res_"+algo+"jets",                     &njets);
+    iTree->SetBranchAddress("res_"+algo+"jetsbtagL",                   &nbjetsL);
+    iTree->SetBranchAddress("res_"+algo+"jetsbtagM",                   &nbjetsM);
+    iTree->SetBranchAddress("res_"+algo+"jetsbtagT",                   &nbjetsT);
     iTree->SetBranchAddress("res_"+algo+"jetmT",                 &res_mt);
     iTree->SetBranchAddress("res_"+algo+"jet0_pt",               &res_jet0_pt);
     iTree->SetBranchAddress("res_"+algo+"jet0_eta",              &res_jet0_eta);
@@ -67,24 +65,24 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("muoSF0",                            &muoSF0);
     iTree->SetBranchAddress("muoSF1",                            &muoSF1);
     iTree->SetBranchAddress("muoSF2",                            &muoSF2);
-    iTree->SetBranchAddress("alphaT",                            &alphaT);
-    iTree->SetBranchAddress("MR",                                &MR);
-    iTree->SetBranchAddress("Rsq",                               &Rsq);
-    iTree->SetBranchAddress("deltaPhi",                          &deltaPhi);
-    iTree->SetBranchAddress("HT",                                &HT);
-    iTree->SetBranchAddress("MHT",                               &MHT);
+    iTree->SetBranchAddress("res_"+algo+"jetsAbove80GeV",                            &nJetsAbove80GeV);
+    iTree->SetBranchAddress("res_"+algo+"jetMR",                                &MR);
+    iTree->SetBranchAddress("res_"+algo+"jetRsq",                               &Rsq);
+    iTree->SetBranchAddress("res_"+algo+"jetdeltaPhi",                          &deltaPhi);
+    iTree->SetBranchAddress("res_"+algo+"jetHT",                                &HT);
+    iTree->SetBranchAddress("res_"+algo+"jetMHT",                               &MHT);
   }
 }
 RazorBitsLoader::~RazorBitsLoader(){}
 bool RazorBitsLoader::selectJetAlgoAndSize(TString algo){
   bool lPass = false;
-  if((selectBits & kRESOLVEDPUPPI) && algo=="PUPPI") lPass = true;
+//  if((selectBits & kRESOLVEDPUPPI) && algo=="PUPPI") lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::isHad(){
   bool lPass = false;
   //  if((triggerBits & kHad) && nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true;
-  if (nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true; 
+    if (nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true; 
   return lPass;
 }
 bool RazorBitsLoader::isMET(){
@@ -130,6 +128,12 @@ bool RazorBitsLoader::passPreSelection(string preselection){
 }
 bool RazorBitsLoader::passRazorPreselection(){
   bool lPass = false;
+  if ((triggerBits & kRazor) && 
+          MR > 200. && 
+          nbjetsL == 0 && 
+          Rsq > 0 && 
+          nJetsAbove80GeV > 1 && 
+          deltaPhi < 2.5) lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::passMonojetPreselection(){

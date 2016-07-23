@@ -54,7 +54,7 @@ public:
   float evtWeight, puWeight;                                                       // pu and evt weight
   unsigned int npu, npv;                                                           // PU, PV multiplicity
   int njets;                                                                       // jet multiplicity 
-  int nbtags, nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2;                   // b-jet multiplicity
+  int nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2;                   // b-jet multiplicity
   int nmu, nele, ntau, npho;                                                       // object multiplicity
   float scale1fb;                                                                  // cross section scale factor per 1/fb
   float kfactor;                                                                   // kFactor and EWK correction
@@ -73,16 +73,18 @@ public:
   double           res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet3_mass;
   double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF;                      // jet variables
   float            res_mt;                                                         // mT
-  float            alphaT, mindFPhi, MR, Rsq, deltaPhi;                            // razor variables
+  float            MR, Rsq, deltaPhi;                                           // razor variables
+  int              nJetsAbove80GeV;
   float            HT, MHT;                                                        // HT and MHT
 
 protected:
 
-  const unsigned int kRESOLVEDPUPPI = 2;
+  //const unsigned int kRESOLVEDPUPPI = 2;
   const unsigned int kMET  = 2;
   const unsigned int kSingleElectron = 4;
-  const unsigned int kSinglePhoton  = 8;
-  const unsigned int kSingleMuon  = 16;
+  const unsigned int kSingleMuon = 8;
+  const unsigned int kSinglePhoton  = 16;
+  const unsigned int kRazor  = 32;
 
 };
 #endif
