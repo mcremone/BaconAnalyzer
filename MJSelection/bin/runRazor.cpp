@@ -138,7 +138,7 @@ int main( int argc, char **argv ) {
     // Primary vertex requirement
     if(!fEvt->PV()) continue;
     
-    // Triggerbits for MET, Electrons and Photons
+    // Triggerbits for MET, Electrons, Muons, and Photons
     unsigned int trigbits=1;   
     
     if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
@@ -152,13 +152,17 @@ int main( int argc, char **argv ) {
        fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*") || 
        fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
        fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits = trigbits | 4;
+    
+    if(fEvt ->passTrigger("HLT_IsoMu20_v*") ||
+       fEvt ->passTrigger("HLT_IsoMu27_v*") ||
+       fEvt ->passTrigger("HLT_IsoTkMu20_v*")) trigbits= trigbits | 8;
       
     if(fEvt ->passTrigger("HLT_ECALHT800_v*") ||
 	   fEvt ->passTrigger("HLT_Photon175_v*") ||
 	   fEvt ->passTrigger("HLT_Photon165_HE10_v*") ||
 	   fEvt ->passTrigger("HLT_Photon300_NoHE_v*") ||
        fEvt ->passTrigger("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*") ||
-       fEvt ->passTrigger("HLT_Photon135_PFMET100_v*")) trigbits = trigbits | 8;
+       fEvt ->passTrigger("HLT_Photon135_PFMET100_v*")) trigbits = trigbits | 16;
     
        
        // Triggerbits for MR and Rsq
@@ -174,7 +178,7 @@ int main( int argc, char **argv ) {
        fEvt ->passTrigger("HLT_Rsq0p30_v*") ||
        fEvt ->passTrigger("HLT_Rsq0p36_v*") || 
        fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_BTagCSV_p063_p20_Mbb60_200_v*") ||
-       fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 16;
+       fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 32;
     //    if(trigbits==1) continue;
     
     // Event info
