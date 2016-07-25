@@ -28,9 +28,9 @@ public:
   bool isPho(bool isData);
   bool isHad(bool isData);
   bool selectJetAlgoAndSize(TString algo);
-  bool passPreSelection(string preselection, bool isData);
-  bool passBoostedZprimePreselection();
-  bool passBoostedGammaZprimePreselection();
+  bool passPreSelection(bool isData, string preselection);
+  bool passBoostedZprimePreSelection();
+  bool passBoostedGammaZprimePreSelection();
   bool passBoostedZprimeSR(float ddtcut);
   bool passBoostedGammaZprimeSR(float ddtcut);
   bool passSelection(bool isData,string selection,float ddt,float csv1);
@@ -66,7 +66,7 @@ protected:
 
   const unsigned int kBOOSTED8PUPPI = 2;
   const float RHO_CUT = 0.38;
-
+  const unsigned int kMET  = 2;
   const unsigned int kHT  = 2;
   const unsigned int kSinglePhoton  = 4;
 

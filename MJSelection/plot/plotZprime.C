@@ -64,8 +64,8 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   samplev.push_back(new CSample("data",0,0));
   samplev.back()->fnamev.push_back("../zprimebits/SinglePhotontrig4.root");
   samplev.push_back(new CSample("G+Jets",kMagenta - 10,kMagenta - 10));
-  samplev.back()->fnamev.push_back("/tmp/cmantill/GHF80_2.root");
-  samplev.back()->fnamev.push_back("/tmp/cmantill/GLF80_2.root");
+  samplev.back()->fnamev.push_back("../zprimebits/GHF80_2.root");
+  samplev.back()->fnamev.push_back("../zprimebits/GLF80_2.root");
   samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/r/rapte/public/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/zprimebits/Wcs.root");
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/r/rapte/public/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/zprimebits/Wlf.root");
@@ -149,7 +149,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
   TTree *intree=0;
 
   // Loop over samples
-  for(unsigned int isam=1; isam<samplev.size(); isam++) {
+  for(unsigned int isam=1; isam<2; isam++) {
     CSample *sample  = samplev[isam];
     cout << "Sample: " << sample->label << endl;
     bool isData    = (isam==0);
@@ -183,7 +183,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
 
 	if(!fBits->selectJetAlgoAndSize(algo))   continue;
 	if(fBits->metfilter!=0)                  continue;
-	if(!fBits->passSelection(isData,selection,cut,csv)) continue;
+	if(!fBits->passPreSelection(isData,selection)) continue;
 
 	// Apply weigths
         double wgt = 1;
