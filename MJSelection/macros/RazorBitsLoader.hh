@@ -35,10 +35,11 @@ public:
   bool isPho();
   bool passPreSelection(string preselection);
   bool passRazorPreselection();
-  bool passMonojetPreselection();
   bool passRazorSR(string preselection);
-  bool passMonojetPreSelection();
-  bool passMonojetSR(string preselection);
+  bool passRazorCR(string preselection);
+  bool passRazorWCR(string preselection);
+  bool passRazorZCR(string preselection);
+  
   bool passSelection(string preselection, string subsample, string combo);
 
   double getWgt(bool isData, TString algo, double LUMI);

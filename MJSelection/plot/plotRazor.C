@@ -100,7 +100,7 @@ void plotRazor(const string preselection, const string subsample, const string c
   // }
 
   // integrated luminosity to scale MC
-  const double LUMI = 2.32;
+  const double LUMI = 12.9;
   
   // histograms for various corrections
   const string cmssw_base = getenv("CMSSW_BASE");
@@ -189,7 +189,7 @@ void plotRazor(const string preselection, const string subsample, const string c
 	//preselection
 	if(!fBits->passPreSelection(preselection)) continue;
 	//selection
-	if(!fBits->passSelection(preselection,subsample,combo)) continue;
+	if(!fBits->passRazorSR(preselection)) continue;
 
 	// Apply weigths                                                                                                                                                                            
         double wgt = 1;

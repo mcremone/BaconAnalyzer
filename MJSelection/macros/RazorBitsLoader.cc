@@ -128,7 +128,8 @@ bool RazorBitsLoader::passPreSelection(string preselection){
 }
 bool RazorBitsLoader::passRazorPreselection(){
   bool lPass = false;
-  if ((triggerBits & kRazor) && 
+  if (
+          //(triggerBits & kRazor) && 
           MR > 200. && 
           nbjetsL == 0 && 
           Rsq > 0 && 
@@ -136,24 +137,13 @@ bool RazorBitsLoader::passRazorPreselection(){
           deltaPhi < 2.5) lPass = true;
   return lPass;
 }
-bool RazorBitsLoader::passMonojetPreselection(){
-  bool lPass = false;
-  if(njets>0 && 
-     res_jet0_pt>100 &&
-     min_dphijetsmet>0.5 &&
-     nbjetsL==0) lPass = true;
-  return lPass;
-}
 bool RazorBitsLoader::passRazorSR(string preselection){ 
   return passPreSelection(preselection) & passRazorPreselection();
-}
-bool RazorBitsLoader::passMonojetSR(string preselection){
-  return passPreSelection(preselection) & (vmetpt>200) & passMonojetPreselection();
 }
 bool RazorBitsLoader::passSelection(string preselection, string subsample, string combo){
   bool lPass = false;	
   if (subsample == "SR" && passRazorSR(preselection) 
-      && (combo=="ONLY" || (combo=="COMBO" && !passMonojetSR(preselection)))) lPass = true;
+      && (combo=="ONLY" || (combo=="COMBO" && !passRazorSR(preselection)))) lPass = true;
   return lPass;
 }
 double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){
