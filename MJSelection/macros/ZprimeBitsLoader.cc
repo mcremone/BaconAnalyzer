@@ -108,20 +108,15 @@ bool ZprimeBitsLoader::passBoostedZprimeBTag(float csvcut){
 }
 
 
-bool ZprimeBitsLoader::passSelection(bool isData,string preselection, string selection,string subsample, float ddt,float csv1){
+bool ZprimeBitsLoader::passSelection(bool isData,string selection,string subsample, float ddt,float csv1){
   bool lPass = false;
   if(selection=="BoostedZprimeGamma"){
-   if(subsample=="SR"){
-    if(preselection=="Pho"){ 
-     if(isPho(isData) && passBoostedGammaZprimeSR(ddt)) lPass=true;
-    }
-    //if(preselection=="Had"){
-    // if(isHad(isData) && passBoostedGammaZprimeSR(ddt)) lPass=true;
-    //}
-  }
+   if((subsample=="SR") &&  passBoostedGammaZprimeSR(ddt)) lPass=true;
 }
 return lPass;
 }
+
+
 double ZprimeBitsLoader::getWgt(bool isData, TString algo, double LUMI){
   float wgt = 1;
   if(!isData) {     
