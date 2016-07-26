@@ -82,8 +82,8 @@ int main( int argc, char **argv ) {
   fTau       = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton    = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJetCHS    = new JetLoader     (lTree,"AK4CHS");                                        // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
-//  fJetPuppi  = new JetLoader     (lTree,"AK4Puppi"); 
-  fBTagCHS   = new BTagWeightLoader(lTree);
+  fJetPuppi  = new JetLoader     (lTree,"AK4Puppi"); 
+  //fBTagCHS   = new BTagWeightLoader(lTree);
 //  fBTagPuppi = new BTagWeightLoader(lTree);
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
@@ -97,12 +97,12 @@ int main( int argc, char **argv ) {
   fTau       ->setupTree      (lOut);
   fPhoton    ->setupTree      (lOut);
   fJetCHS    ->setupTree      (lOut,"res_CHSjet");
-  fJetCHS    ->setupTreeDiJet (lOut,"res_CHSjet");
+ // fJetCHS    ->setupTreeDiJet (lOut,"res_CHSjet");
   fJetCHS    ->setupTreeRazor (lOut,"res_CHSjet"); 
-//  fJetPuppi  ->setupTree      (lOut,"res_PUPPIjet");
-//  fJetPuppi  ->setupTreeDiJet (lOut,"res_PUPPIjet");
-//  fJetPuppi  ->setupTreeRazor (lOut,"res_PUPPIjet");
-  fBTagCHS   ->setupTree      (lOut,"res_CHSjet");
+  fJetPuppi  ->setupTree      (lOut,"res_PUPPIjet");
+  fJetPuppi  ->setupTreeDiJet (lOut,"res_PUPPIjet");
+  fJetPuppi  ->setupTreeRazor (lOut,"res_PUPPIjet");
+//  fBTagCHS   ->setupTree      (lOut,"res_CHSjet");
 //  fBTagPuppi ->setupTree      (lOut,"res_PUPPIjet");
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
