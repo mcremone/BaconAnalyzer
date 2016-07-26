@@ -61,15 +61,16 @@ void plotRazor(const string preselection, const string subsample, const string c
   // Note: macro assumes samplev[0] is data
   //
   vector<CSample*> samplev;
-
+  //cout <<"preselection = " <<  preselection.c_str() << endl;
   samplev.push_back(new CSample("data",0,0));
   if (preselection.compare("Had")==0) samplev.back()->fnamev.push_back("../razorbits/Razor.root");
   if (preselection.compare("MET")==0) samplev.back()->fnamev.push_back("../razorbits/MET.root"); 
   if (preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("../razorbits/SingleMuon.root");
   if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("../razorbits/SingleElectron.root");
-  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("../razorbits/SinglePhoton.root");
+  if (preselection.compare("Pho")==0) { samplev.back()->fnamev.push_back("../razorbits/SinglePhoton.root");
   samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
   samplev.back()->fnamev.push_back("../razorbits/QCD.root");
+  }
   if (preselection.compare("Pho")!=0) {
     samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
     samplev.back()->fnamev.push_back("../razorbits/T.root");
@@ -115,7 +116,7 @@ void plotRazor(const string preselection, const string subsample, const string c
   vector<TH1D*> hMETv, hMETLogv;
   vector<TH1D*> hHTv, hMHTv;
   vector<TH1D*> hNJetsv;
-  vector<TH1D*> halphaTv, hmindFPhiv, hMRv, hRsqv, hdeltaPhiv;
+  vector<TH1D*> hMRv, hRsqv, hdeltaPhiv;
   vector<double> neventsv;
   const Int_t NBINS = 5;
   Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
@@ -125,10 +126,10 @@ void plotRazor(const string preselection, const string subsample, const string c
     sprintf(hname,"hHT_%i",isam);             hHTv.push_back(new TH1D(hname,"",20,100,600));              hHTv[isam]->Sumw2();
     sprintf(hname,"hMHT_%i",isam);            hMHTv.push_back(new TH1D(hname,"",30,300,2000));            hMHTv[isam]->Sumw2();
     sprintf(hname,"hNJets_%i",isam);          hNJetsv.push_back(new TH1D(hname,"",10,0,10));              hNJetsv[isam]->Sumw2();
-    sprintf(hname,"halphaT_%i",isam);         halphaTv.push_back(new TH1D(hname,"",20,0,2.5));            halphaTv[isam]->Sumw2();
-    sprintf(hname,"hmindFPhi_%i",isam);       hmindFPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hmindFPhiv[isam]->Sumw2();
+    ///sprintf(hname,"halphaT_%i",isam);         halphaTv.push_back(new TH1D(hname,"",20,0,2.5));            halphaTv[isam]->Sumw2();
+    //sprintf(hname,"hmindFPhi_%i",isam);       hmindFPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hmindFPhiv[isam]->Sumw2();
     sprintf(hname,"hMR_%i",isam);             hMRv.push_back(new TH1D(hname,"",20,500,3500));             hMRv[isam]->Sumw2();
-    sprintf(hname,"hRsq_%i",isam);            hRsqv.push_back(new TH1D(hname,"",20,0.2,1.2));             hRsqLogv[isam]->Sumw2();
+    sprintf(hname,"hRsq_%i",isam);            hRsqv.push_back(new TH1D(hname,"",20,0.2,1.2));             hRsqv[isam]->Sumw2();
     sprintf(hname,"hdeltaPhi_%i",isam);       hdeltaPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hdeltaPhiv[isam]->Sumw2();
 
     neventsv.push_back(0);
@@ -139,8 +140,8 @@ void plotRazor(const string preselection, const string subsample, const string c
   TH1D *hHTMC              = (TH1D*)hHTv[0]->Clone("hHTMC");
   TH1D *hMHTMC             = (TH1D*)hMHTv[0]->Clone("hMHTMC");
   TH1D *hNJetsMC           = (TH1D*)hNJetsv[0]->Clone("hNJetsMC");
-  TH1D *halphaTMC          = (TH1D*)halphaTv[0]->Clone("halphaTMC");
-  TH1D *hmindFPhiMC        = (TH1D*)hmindFPhiv[0]->Clone("hmindFPhiMC");
+  //TH1D *halphaTMC          = (TH1D*)halphaTv[0]->Clone("halphaTMC");
+  //TH1D *hmindFPhiMC        = (TH1D*)hmindFPhiv[0]->Clone("hmindFPhiMC");
   TH1D *hMRMC              = (TH1D*)hMRv[0]->Clone("hMRMC");
   TH1D *hRsqMC             = (TH1D*)hRsqv[0]->Clone("hRsqMC");
   TH1D *hdeltaPhiMC        = (TH1D*)hdeltaPhiv[0]->Clone("hdeltaPhiMC");
@@ -156,7 +157,6 @@ void plotRazor(const string preselection, const string subsample, const string c
 
   TFile *infile=0;
   TTree *intree=0;
-
   // Loop over samples
 
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
@@ -170,21 +170,20 @@ void plotRazor(const string preselection, const string subsample, const string c
     // bool isSignal4 = (isam==samplev.size()-4);
     // bool isSignal5 = (isam==samplev.size()-5);
     // bool isSignal6 = (isam==samplev.size()-6);
- 
     for(unsigned int ifile=0; ifile<sample->fnamev.size(); ifile++) {
       string infilename = sample->fnamev[ifile];
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
+      infile->ls();
       intree = (TTree*)infile->Get("Events"); assert(intree);
       fBits  = new RazorBitsLoader(intree,algo,syst,preselection);
       double nevts=0;
       int noweight=0;
-
       std::cout << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
 	if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
-	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
+	//if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
 	// common selection
 	if(fBits->metfilter!=0)                   continue;
 	//preselection
@@ -205,22 +204,21 @@ void plotRazor(const string preselection, const string subsample, const string c
         hHTv[isam]             ->Fill(fBits->HT,                              wgt);
         hMHTv[isam]            ->Fill(fBits->MHT,                             wgt);
         hNJetsv[isam]          ->Fill(fBits->njets,                           wgt);
-        halphaTv[isam]         ->Fill(fBits->alphaT,                          wgt);
-        hmindFPhiv[isam]       ->Fill(fBits->mindFPhi,                        wgt);
+       // halphaTv[isam]         ->Fill(fBits->alphaT,                          wgt);
+       // hmindFPhiv[isam]       ->Fill(fBits->mindFPhi,                        wgt);
         hMRv[isam]             ->Fill(fBits->MR,                              wgt);
         hRsqv[isam]            ->Fill(fBits->Rsq,                             wgt);
         hdeltaPhiv[isam]       ->Fill(fBits->deltaPhi,                        wgt);
-
 	//	if((!isData && subsample.compare("SR")!=0) || (!isData  && !isSignal && subsample.compare("SR")==0)){
 	if(!isData){
           neventsMC+=wgt;
           hMETMC            ->Fill(fBits->vmetpt,       wgt);
           hMETLogMC         ->Fill(fBits->vmetpt,       wgt);
 	  hHTMC             ->Fill(fBits->HT,                              wgt);
-	  hMHMC             ->Fill(fBits->MHT,                             wgt);
+	  hMHTMC             ->Fill(fBits->MHT,                             wgt);
 	  hNJetsMC          ->Fill(fBits->njets,                           wgt);
-	  halphaTMC         ->Fill(fBits->alphaT,                          wgt);
-	  hmindFPhiMC       ->Fill(fBits->mindFPhi,                        wgt);
+	  //halphaTMC         ->Fill(fBits->alphaT,                          wgt);
+	 // hmindFPhiMC       ->Fill(fBits->mindFPhi,                        wgt);
 	  hMRMC             ->Fill(fBits->MR,                              wgt);
 	  hRsqMC            ->Fill(fBits->Rsq,                             wgt);
 	  hdeltaPhiMC       ->Fill(fBits->deltaPhi,                        wgt);
@@ -245,7 +243,6 @@ void plotRazor(const string preselection, const string subsample, const string c
       intree=0;
     }
   }
-
   //
   // Make pull histograms
   //
@@ -254,8 +251,8 @@ void plotRazor(const string preselection, const string subsample, const string c
   TH1D *hHTPull             = makePullHist(hHTv[0],             hHTMC,             "hHTPull",              doBlind);
   TH1D *hMHTPull            = makePullHist(hMHTv[0],            hMHTMC,            "hMHTPull",             doBlind);
   TH1D *hNJetsPull          = makePullHist(hNJetsv[0],          hNJetsMC,          "hNJetsPull",           doBlind);
-  TH1D *halphaTPull         = makePullHist(halphaTv[0],         halphaTMC,         "halphaTPull",          doBlind);
-  TH1D *hmindFPhiPull       = makePullHist(hmindFPhiv[0],       hmindFPhiMC,       "hmindFPhiPull",        doBlind);
+ // TH1D *halphaTPull         = makePullHist(halphaTv[0],         halphaTMC,         "halphaTPull",          doBlind);
+ // TH1D *hmindFPhiPull       = makePullHist(hmindFPhiv[0],       hmindFPhiMC,       "hmindFPhiPull",        doBlind);
   TH1D *hMRPull             = makePullHist(hMRv[0],             hMRMC,             "hMRPull",              doBlind);
   TH1D *hRsqPull            = makePullHist(hRsqv[0],            hRsqMC,            "hRsqPull",             doBlind);
   TH1D *hdeltaPhiPull       = makePullHist(hdeltaPhiv[0],       hdeltaPhiMC,       "hdeltaPhiPull",        doBlind);
@@ -274,12 +271,12 @@ void plotRazor(const string preselection, const string subsample, const string c
   //--------------------------------------------------------------------------------------------------------------
   // Output
   //==============================================================================================================
-   
+  
+
   cout << "*" << endl;
   cout << "* SUMMARY" << endl;
   cout << "*--------------------------------------------------" << endl;
   cout << endl;
-
   ofstream txtfile;
   char txtfname[200];
   sprintf(txtfname,"%s/summary.txt",outputDir.c_str());
@@ -300,12 +297,11 @@ void plotRazor(const string preselection, const string subsample, const string c
       txtfile << setw(35) << samplev[isam]->label;
       txtfile << setw(15) << neventsv[isam] << endl;
       txtfile << setw(35) << "Significance: ";
-      txtfile << setw(15) << significance[samplev.size()-isam-1] << endl;
+      //txtfile << setw(15) << significance[samplev.size()-isam-1] << endl;
     }
   }
   //   txtfile << setw(35) << "S/sqrt(B)["+samplev[isam]->label+"]:" << setw(15) << neventsv[isam]/sqrt(neventsMC) << endl;
   txtfile.close();
-
    //--------------------------------------------------------------------------------------------------------------
   // Make plots
   //==============================================================================================================
@@ -358,12 +354,12 @@ void plotRazor(const string preselection, const string subsample, const string c
            0.1, 2.1*(hNJetsMC->GetBinContent(hNJetsMC->GetMaximumBin()))/(hNJetsMC->GetBinWidth(hNJetsMC->GetMaximumBin())), subsample);
 
   sprintf(ylabel,"Events / GeV");
-  makePlot(c, "alphat", "#alpha_{T} [GeV]", ylabel, halphaTv, samplev, halphaTMC, halphaTPull, doBlind, LUMI, false, 0.0, -0.03,
-           0.1, 2.1*(halphaTMC->GetBinContent(halphaTMC->GetMaximumBin()))/(halphaTMC->GetBinWidth(halphaTMC->GetMaximumBin())), subsample);
+//  makePlot(c, "alphat", "#alpha_{T} [GeV]", ylabel, halphaTv, samplev, halphaTMC, halphaTPull, doBlind, LUMI, false, 0.0, -0.03,
+ //          0.1, 2.1*(halphaTMC->GetBinContent(halphaTMC->GetMaximumBin()))/(halphaTMC->GetBinWidth(halphaTMC->GetMaximumBin())), subsample);
 
-  sprintf(ylabel,"Events / %.1f ",hmindFPhiv[0]->GetBinWidth(1));
-  makePlot(c, "mindfphi", "#Delta#phi*_{min}", ylabel, hmindFPhiv, samplev, hmindFPhiMC, hmindFPhiPull, doBlind, LUMI, false, -0.4, -0.15,
-           0.1, 2.1*(hmindFPhiMC->GetBinContent(hmindFPhiMC->GetMaximumBin()))/(hmindFPhiMC->GetBinWidth(hmindFPhiMC->GetMaximumBin())), subsample);
+//  sprintf(ylabel,"Events / %.1f ",hmindFPhiv[0]->GetBinWidth(1));
+//  makePlot(c, "mindfphi", "#Delta#phi*_{min}", ylabel, hmindFPhiv, samplev, hmindFPhiMC, hmindFPhiPull, doBlind, LUMI, false, -0.4, -0.15,
+//           0.1, 2.1*(hmindFPhiMC->GetBinContent(hmindFPhiMC->GetMaximumBin()))/(hmindFPhiMC->GetBinWidth(hmindFPhiMC->GetMaximumBin())), subsample);
 
   sprintf(ylabel,"Events / %.1f ",hMRv[0]->GetBinWidth(1));
   makePlot(c, "mr", "M_{R} [GeV]", ylabel, hMRv, samplev, hMRMC, hMRPull, doBlind, LUMI, false, -0.4, -0.15,

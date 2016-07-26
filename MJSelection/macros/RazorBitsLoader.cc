@@ -5,10 +5,10 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0 || preselection.compare("MET")==0){
-      iTree->SetBranchAddress("mindPhi",                             &min_dphijetsmet);
+   //   iTree->SetBranchAddress("mindPhi",                             &min_dphijetsmet);
     }
     else{
-      iTree->SetBranchAddress("mindPhi",                            &min_dphijetsmet);
+   //   iTree->SetBranchAddress("mindPhi",                            &min_dphijetsmet);
     }
     iTree->SetBranchAddress("runNum",                            &runNum);
     iTree->SetBranchAddress("lumiSec",                           &lumiSec);

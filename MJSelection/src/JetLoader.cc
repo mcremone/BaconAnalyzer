@@ -74,10 +74,10 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   pSdPhi  << iJetLabel << "mindPhi";
   pSdFPhi << iJetLabel << "mindFPhi";
   pSMT    << iJetLabel << "mT";
-  pSb     << iJetLabel << "btags";
-  pSbL    << iJetLabel << "sL";
-  pSbM    << iJetLabel << "sM";
-  pSbT    << iJetLabel << "sT";
+  pSb     << iJetLabel << "sbtag";
+  pSbL    << iJetLabel << "sbtagL";
+  pSbM    << iJetLabel << "sbtagM";
+  pSbT    << iJetLabel << "sbtagT";
   pSbLdR  << iJetLabel << "sLdR2";
   pSbMdR  << iJetLabel << "sMdR2";
   pSbTdR  << iJetLabel << "sTdR2";
@@ -129,17 +129,17 @@ void JetLoader::setupTreeDiJet(TTree *iTree, std::string iJetLabel) {
 void JetLoader::setupTreeRazor(TTree *iTree, std::string iJetLabel) {
   reset();
   fTree = iTree;
-  std::stringstream pSalphaT,pSdPhiMin,pSMR,pSRsq,pSdeltaPhi,pSHT,pSMHT;//,pSMT2;
-  pSalphaT   << iJetLabel << "alphaT";
-  pSdPhiMin  << iJetLabel << "mindFPhi";
+  std::stringstream pSMR,pSRsq,pSdeltaPhi,pSHT,pSMHT;//,pSalphaT,pSdPhiMin,pSMT2;
+//  pSalphaT   << iJetLabel << "alphaT";   // Razor doesn't use it.
+//  pSdPhiMin  << iJetLabel << "mindPhi";  // This variable (mindPhi) is defined before, plus Razor doesn't use it.
   pSMR       << iJetLabel << "MR";
   pSRsq      << iJetLabel << "Rsq";
   pSdeltaPhi << iJetLabel << "deltaPhi";
   pSHT       << iJetLabel << "HT";
   pSMHT      << iJetLabel << "MHT";
   // pSMT2      << iJetLabel << "MT2";
-  iTree->Branch(pSalphaT  .str().c_str(),&falphaT  ,(pSalphaT  .str()+"/F").c_str());     // alphaT
-  iTree->Branch(pSdPhiMin .str().c_str(),&fdPhiMin ,(pSdPhiMin .str()+"/F").c_str());     // dPhi Min
+//  iTree->Branch(pSalphaT  .str().c_str(),&falphaT  ,(pSalphaT  .str()+"/F").c_str());     // alphaT
+//  iTree->Branch(pSdPhiMin .str().c_str(),&fdPhiMin ,(pSdPhiMin .str()+"/F").c_str());     // dPhi Min
   iTree->Branch(pSMR      .str().c_str(),&fMR      ,(pSMR      .str()+"/F").c_str());     // MR
   iTree->Branch(pSRsq     .str().c_str(),&fRsq     ,(pSRsq     .str()+"/F").c_str());     // Rsq
   iTree->Branch(pSdeltaPhi.str().c_str(),&fdeltaPhi,(pSdeltaPhi.str()+"/F").c_str());     // deltaPhi
