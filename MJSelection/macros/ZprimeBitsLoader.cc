@@ -51,20 +51,21 @@ bool ZprimeBitsLoader::isPho(bool isData){
   bool lPass = false;
   if (nmu==0 && nele==0 && npho==1 && ntau==0){
    if(isData){
-    if((triggerBits & kSinglePhoton)& (passBoostedGammaZprimePreSelection()) ) lPass = true;}
+    if(triggerBits & kSinglePhoton)  lPass = true;}
    else{
-    if (passBoostedGammaZprimePreSelection()) lPass = true;}
+    lPass = true;}
  }
  return lPass;
 }
+
 /*bool ZprimeBitsLoader::isHad(bool isData){
   bool lPass = false;
     if(nmu==0 && nele==0 && npho==0 && ntau==0 && met>175){
       if(isData){
-        if(((triggerBits & kMET)!=0) & (passBoostedGammaZprimePreSelection())) lPass = true;
+        if((triggerBits & kMET)!=0)  lPass = true;
       }
       else{
-      if(passBoostedGammaZprimePreSelection())lPass = true;
+       lPass = true;
       }
     }
    return lPass;
@@ -83,7 +84,7 @@ bool ZprimeBitsLoader::passPreSelection(bool isData, string preselection){
   return lPass;
 }
 
-bool ZprimeBitsLoader::passBoostedGammaZprimePreSelection(){
+bool ZprimeBitsLoader::passBoostedGammaZprimeSelection(){
   //if((bst_jet0_msd>60) && (bst_jet0_msd<100)){ 
  return njets>0 & bst_jet0_pt>175;
  //else {return false;}
@@ -91,7 +92,7 @@ bool ZprimeBitsLoader::passBoostedGammaZprimePreSelection(){
 
 bool ZprimeBitsLoader::passBoostedGammaZprimeSR(float ddtcut){
   
-  return passBoostedGammaZprimePreSelection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
+  return passBoostedGammaZprimeSelection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
 }
 
 
@@ -100,20 +101,26 @@ bool ZprimeBitsLoader::passBoostedZprimeSR(float ddtcut){
   
   return passBoostedZprimePreSelection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
 }
+
+
 bool ZprimeBitsLoader::passBoostedZprimeBTag(float csvcut){
   return passBoostedZprimePreSelection() & (bst_jet0_doublecsv > csvcut);
 }
-bool ZprimeBitsLoader::passSelection(bool isData,string selection,float ddt,float csv1){
-  bool lPass = false;	
-  if (selection.compare("Pho")==0 && isPho(isData)) lPass = true;
-  if (selection.find("PreSel")==0 && passBoostedZprimePreSelection()){ lPass = true;}
-  if (selection.find("Sr")==0 && passBoostedZprimeSR(ddt)) {lPass = true;}
-  if (selection.find("B")==0 && passBoostedZprimeBTag(csv1)) {lPass = true;}
-  if (selection.find("SRB")==0)
-     {   
-       if (passBoostedZprimeSR(ddt) && passBoostedZprimeBTag(csv1)) {lPass = true;}
-     }
-  return lPass;
+
+
+bool ZprimeBitsLoader::passSelection(bool isData,string preselection, string selection,string subsample, float ddt,float csv1){
+  bool lPass = false;
+  if(selection=="BoostedZprimeGamma"){
+   if(subsample=="SR"){
+    if(preselection=="Pho"){ 
+     if(isPho(isData) && passBoostedGammaZprimeSR(ddt)) lPass=true;
+    }
+    //if(preselection=="Had"){
+    // if(isHad(isData) && passBoostedGammaZprimeSR(ddt)) lPass=true;
+    //}
+  }
+}
+return lPass;
 }
 double ZprimeBitsLoader::getWgt(bool isData, TString algo, double LUMI){
   float wgt = 1;

@@ -42,7 +42,7 @@ TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind
 
 //=== MAIN MACRO =================================================================================================
 
-void plotZprime(const string selection, const string algo, const string jet, float cut, float csv)
+void plotZprime(const string preselection,const string selection,const string subsample, const string algo, const string jet, float cut, float csv)
 {
   //--------------------------------------------------------------------------------------------------------------
   // Settings
@@ -183,7 +183,7 @@ void plotZprime(const string selection, const string algo, const string jet, flo
 
 	if(!fBits->selectJetAlgoAndSize(algo))   continue;
 	if(fBits->metfilter!=0)                  continue;
-	if(!fBits->passPreSelection(isData,selection)) continue;
+	if(!fBits->passSelection(isData,preselection,selection,subsample,cut,csv)) continue;
 
 	// Apply weigths
         double wgt = 1;
