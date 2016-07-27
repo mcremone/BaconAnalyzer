@@ -229,22 +229,22 @@ int main( int argc, char **argv ) {
     }
     
     // AK4Puppi Jets
-    //fJetPuppi->load(i0); 
-    //fJetPuppi->selectJets(lVetoes,lVJets,lJetsPuppi,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
-    //if(fJetPuppi->fNJetsAbove80GeV>1){
-    //  fEvt->fselectBits = fEvt->fselectBits | 2;
-    //  fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJetsPuppi,fJetPuppi->fMT);
-    //}
+    fJetPuppi->load(i0); 
+    fJetPuppi->selectJets(lVetoes,lVJets,lJetsPuppi,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
+    if(fJetPuppi->fNJetsAbove80GeV>1){
+      fEvt->fselectBits = fEvt->fselectBits | 2;
+      fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJetsPuppi,fJetPuppi->fMT);
+    }
 
     // Select at least 2 narrow Jets
     if(!(fEvt->fselectBits & 2 || fEvt->fselectBits & 4)) continue;
 
     // ttbar, EWK and kFactor correction
-    if(lOption.find("data")==std::string::npos){
-      fGen->load(i0);
-      if(lJetsCHS.size()>0)     fBTagCHS->fillBTag(fJetCHS->fGoodJets);
+//    if(lOption.find("data")==std::string::npos){
+//      fGen->load(i0);
+//      if(lJetsCHS.size()>0)     fBTagCHS->fillBTag(fJetCHS->fGoodJets);
 //      if(lJetsPuppi.size()>0)   fBTagPuppi->fillBTag(fJetPuppi->fGoodJets);
-    }
+//    }
 
     if(lOption.find("mcg")!=std::string::npos){
       fGen->findBoson(22,0); 

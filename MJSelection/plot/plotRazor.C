@@ -63,7 +63,7 @@ void plotRazor(const string preselection, const string subsample, const string c
   vector<CSample*> samplev;
   //cout <<"preselection = " <<  preselection.c_str() << endl;
   samplev.push_back(new CSample("data",0,0));
-  if (preselection.compare("Had")==0) samplev.back()->fnamev.push_back("../razorbits/Razor.root");
+  if (preselection.compare("Had")==0) samplev.back()->fnamev.push_back("../razorbits/JetHT.root");
   if (preselection.compare("MET")==0) samplev.back()->fnamev.push_back("../razorbits/MET.root"); 
   if (preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("../razorbits/SingleMuon.root");
   if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("../razorbits/SingleElectron.root");
@@ -72,25 +72,25 @@ void plotRazor(const string preselection, const string subsample, const string c
   samplev.back()->fnamev.push_back("../razorbits/QCD.root");
   }
   if (preselection.compare("Pho")!=0) {
-    samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
+    samplev.push_back(new CSample("Single Top",kBlue - 2,kBlue - 2));
     samplev.back()->fnamev.push_back("../razorbits/T.root");
-    samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
+    samplev.push_back(new CSample("t#bar{t}",kPink - 2,kPink - 2));
     samplev.back()->fnamev.push_back("../razorbits/TT.root");
-    samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
+    samplev.push_back(new CSample("Diboson",kRed - 2,kRed - 2));
     samplev.back()->fnamev.push_back("../razorbits/WW.root");
     samplev.back()->fnamev.push_back("../razorbits/WZ.root");
     samplev.back()->fnamev.push_back("../razorbits/ZZ.root");
-    samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
+    samplev.push_back(new CSample("W+jets",kGreen - 2,kGreen - 2));
     samplev.back()->fnamev.push_back("../razorbits/WHF.root");
     samplev.back()->fnamev.push_back("../razorbits/WLF.root");
-    samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
+    samplev.push_back(new CSample("Z+jets", kAzure - 2, kAzure - 2));
     samplev.back()->fnamev.push_back("../razorbits/ZHF.root");   
     samplev.back()->fnamev.push_back("../razorbits/ZLF.root");
     samplev.back()->fnamev.push_back("../razorbits/DYHF.root");
     samplev.back()->fnamev.push_back("../razorbits/DYLF.root");
   }
   if (preselection.compare("Pho")==0){
-    samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
+    samplev.push_back(new CSample("#gamma+jets", kAzure + 7, kAzure + 7));
     samplev.back()->fnamev.push_back("../razorbits/GHF.root");
     samplev.back()->fnamev.push_back("../razorbits/GLF.root");
   }
