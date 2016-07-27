@@ -78,7 +78,7 @@ int main( int argc, char **argv ) {
   fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fVJetPuppi15= new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi",2);                      // fVJets, fVJetBr => CA8PUPPI
   fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi",2);
-  fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
+  //fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
   if(lOption.compare("data")!=0) fGen      = new GenLoader     (lTree);                  // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
@@ -186,8 +186,8 @@ int main( int argc, char **argv ) {
     fJet      ->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     // if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
-    // Select only Puppi Jets                                       
-    if(!(fEvt->fselectBits & 2)) continue;
+    // Select Jets                                       
+    if(!((fEvt->fselectBits & 2) || (fEvt->fselectBits & 4))) continue;
 
     // ttbar, EWK and kFactor correction
 
