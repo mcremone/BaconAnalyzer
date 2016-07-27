@@ -64,8 +64,8 @@ void plotZprime(const string preselection,const string selection,const string su
   samplev.push_back(new CSample("data",0,0));
   samplev.back()->fnamev.push_back("../zprimebits/SinglePhotontrig4.root");
   samplev.push_back(new CSample("G+Jets",kMagenta - 10,kMagenta - 10));
-  samplev.back()->fnamev.push_back("../zprimebits/GHF80_2.root");
-  samplev.back()->fnamev.push_back("../zprimebits/GLF80_2.root");
+  samplev.back()->fnamev.push_back("/tmp/cmantill/GHF80_2.root");
+  samplev.back()->fnamev.push_back("/tmp/cmantill/GLF80_2.root");
   samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/r/rapte/public/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/zprimebits/Wcs.root");
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/r/rapte/public/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/zprimebits/Wlf.root");
@@ -183,7 +183,8 @@ void plotZprime(const string preselection,const string selection,const string su
 
 	if(!fBits->selectJetAlgoAndSize(algo))   continue;
 	if(fBits->metfilter!=0)                  continue;
-	if(!fBits->passSelection(isData,preselection,selection,subsample,cut,csv)) continue;
+        if(!fBits->passPreSelection(isData,preselection)) continue;
+	if(!fBits->passSelection(isData,selection,subsample,cut,csv)) continue;
 
 	// Apply weigths
         double wgt = 1;
@@ -419,7 +420,7 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   if(!doBlind) { plot.AddHist1D(histv[0],samplev[0]->label,"E"); }
   float max = samplev.size();//-6;
   for(unsigned int i=1; i<max; i++) {
-  //for(unsigned int i=1; i<max; i++) {
+  
     plot.AddToStack(histv[i],samplev[i]->label,samplev[i]->fillcolor,samplev[i]->linecolor);
   }
   /*
