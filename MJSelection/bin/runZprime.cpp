@@ -76,8 +76,8 @@ int main( int argc, char **argv ) {
   fTau      = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
-  fVJetPuppi15= new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi",2);                      // fVJets, fVJetBr => CA8PUPPI
-  fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi",2);
+  fVJetPuppi15= new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr => CA8PUPPI
+ // fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi",2);
   //fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
   if(lOption.compare("data")!=0) fGen      = new GenLoader     (lTree);                  // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
@@ -88,7 +88,7 @@ int main( int argc, char **argv ) {
   fEvt      ->setupTree      (lOut); 
   fJet      ->setupTree      (lOut,"res_PUPPIjet");
   fVJetPuppi15   ->setupTree      (lOut,"bst15_PUPPIjet"); 
-  fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
+  //fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
   // fVJetCHS  ->setupTree      (lOut,"bst8_CHSjet"); 
   fMuon     ->setupTree      (lOut); 
   fElectron ->setupTree      (lOut); 
@@ -187,7 +187,7 @@ int main( int argc, char **argv ) {
     // if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
     // Select Jets                                       
-    if(!((fEvt->fselectBits & 2) || (fEvt->fselectBits & 4))) continue;
+    //if(!((fEvt->fselectBits & 2) || (fEvt->fselectBits & 4))) continue;
 
     // ttbar, EWK and kFactor correction
 
