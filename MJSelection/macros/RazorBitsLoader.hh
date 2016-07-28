@@ -80,7 +80,8 @@ public:
 
 protected:
 
-  //const unsigned int kRESOLVEDPUPPI = 2;
+  const unsigned int kRESOLVEDPUPPI = 2;
+  const unsigned int kRESOLVEDCHS = 4;
   const unsigned int kMET  = 2;
   const unsigned int kSingleElectron = 4;
   const unsigned int kSingleMuon = 8;

@@ -185,7 +185,7 @@ void plotRazor(const string preselection, const string subsample, const string c
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
 	if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
-	//if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
+	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
 	// common selection
 	if(fBits->metfilter!=0)                   continue;
 	//preselection

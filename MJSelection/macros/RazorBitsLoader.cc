@@ -78,7 +78,8 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
 RazorBitsLoader::~RazorBitsLoader(){}
 bool RazorBitsLoader::selectJetAlgoAndSize(TString algo){
   bool lPass = false;
-//  if((selectBits & kRESOLVEDPUPPI) && algo=="PUPPI") lPass = true;
+    if((selectBits & kRESOLVEDPUPPI) && algo=="PUPPI") lPass = true;
+    if((selectBits & kRESOLVEDCHS) && algo=="CHS") lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::isHad(){
@@ -131,7 +132,14 @@ bool RazorBitsLoader::passPreSelection(string preselection){
 bool RazorBitsLoader::passRazorPreselection(){
   bool lPass = false;
   if (
-          //(triggerBits & kRazor) && 
+       if (isData &&
+          (triggerBits & kRazor) && 
+          MR > 200. && 
+          nbjetsL == 0 && 
+          Rsq > 0 && 
+          nJetsAbove80GeV > 1 && 
+          deltaPhi < 2.5) lPass = true;
+       else if  (!isData &&
           MR > 200. && 
           nbjetsL == 0 && 
           Rsq > 0 && 
