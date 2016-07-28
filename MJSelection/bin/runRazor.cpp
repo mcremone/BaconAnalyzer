@@ -179,7 +179,7 @@ int main( int argc, char **argv ) {
        fEvt ->passTrigger("HLT_Rsq0p36_v*") || 
        fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_BTagCSV_p063_p20_Mbb60_200_v*") ||
        fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 32;
-    //    if(trigbits==1) continue;
+        if(trigbits==1) continue;
     
     // Event info
     fEvt      ->fillEvent(trigbits,lWeight);
