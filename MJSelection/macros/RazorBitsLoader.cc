@@ -129,9 +129,9 @@ bool RazorBitsLoader::passPreSelection(string preselection){
   if(preselection.compare("Pho")==0 && isPho()) lPass = true;
   return lPass;
 }
-bool RazorBitsLoader::passRazorPreselection(){
+
+bool RazorBitsLoader::passRazorPreselection(bool isData){
   bool lPass = false;
-  if (
        if (isData &&
           (triggerBits & kRazor) && 
           MR > 200. && 
@@ -147,13 +147,13 @@ bool RazorBitsLoader::passRazorPreselection(){
           deltaPhi < 2.5) lPass = true;
   return lPass;
 }
-bool RazorBitsLoader::passRazorSR(string preselection){ 
-  return passPreSelection(preselection) & passRazorPreselection();
+bool RazorBitsLoader::passRazorSR(string preselection, bool isData){ 
+  return passPreSelection(preselection) & passRazorPreselection(isData);
 }
-bool RazorBitsLoader::passSelection(string preselection, string subsample, string combo){
+bool RazorBitsLoader::passSelection(string preselection, string subsample, string combo, bool isData){
   bool lPass = false;	
-  if (subsample == "SR" && passRazorSR(preselection) 
-      && (combo=="ONLY" || (combo=="COMBO" && !passRazorSR(preselection)))) lPass = true;
+  if (subsample == "SR" && passRazorSR(preselection, isData) 
+      && (combo=="ONLY" || (combo=="COMBO" && !passRazorSR(preselection, isData)))) lPass = true;
   return lPass;
 }
 double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){

@@ -49,7 +49,7 @@ void plotRazor(const string preselection, const string subsample, const string c
   // Settings
   //==============================================================================================================
 
-  const bool doBlind = false;
+  const bool doBlind = true;
 
   // Create output directory 
   const string outputDir("razorplots/"+preselection+"_"+subsample+"_"+combo+"_"+algo);
@@ -185,13 +185,14 @@ void plotRazor(const string preselection, const string subsample, const string c
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
 	if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
-	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
+	if(!fBits->selectJetAlgoAndSize(algo)) continue;
 	// common selection
 	if(fBits->metfilter!=0)                   continue;
 	//preselection
 	if(!fBits->passPreSelection(preselection)) continue;
 	//selection
-	if(!fBits->passRazorSR(preselection)) continue;
+	//if(!fBits->passRazorSR(preselection, isData)) continue;
+	if(!fBits->passSelection(preselection, subsample, combo, isData)) continue;
 
 	// Apply weigths                                                                                                                                                                            
         double wgt = 1;

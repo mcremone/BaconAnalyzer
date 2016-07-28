@@ -34,13 +34,13 @@ public:
   bool isZee();
   bool isPho();
   bool passPreSelection(string preselection);
-  bool passRazorPreselection();
-  bool passRazorSR(string preselection);
-  bool passRazorCR(string preselection);
-  bool passRazorWCR(string preselection);
-  bool passRazorZCR(string preselection);
+  bool passRazorPreselection(bool isData);
+  bool passRazorSR(string preselection, bool isData);
+  bool passRazorCR(string preselection, bool isData);
+  bool passRazorWCR(string preselection, bool isData);
+  bool passRazorZCR(string preselection, bool isData);
   
-  bool passSelection(string preselection, string subsample, string combo);
+  bool passSelection(string preselection, string subsample, string combo, bool isData);
 
   double getWgt(bool isData, TString algo, double LUMI);
   
