@@ -51,10 +51,12 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("res_"+algo+"jet0_CHF",              &res_jet0_CHF);
     iTree->SetBranchAddress("res_"+algo+"jet0_NHF",              &res_jet0_NHF);
     iTree->SetBranchAddress("res_"+algo+"jet0_NEMF",             &res_jet0_NEMF);
+    /*
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL0_"+syst,      &res_btagwL0);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL1_"+syst,      &res_btagwL1);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwLminus1_"+syst, &res_btagwLminus1);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL2_"+syst,      &res_btagwL2);
+    */
     iTree->SetBranchAddress("nmu",                               &nmu);
     iTree->SetBranchAddress("nele",                              &nele);
     iTree->SetBranchAddress("ntau",                              &ntau);
@@ -149,7 +151,8 @@ bool RazorBitsLoader::passSelection(string preselection, string subsample, strin
 double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){
   float wgt = 1;
   if(!isData) {     
-    wgt *= LUMI*scale1fb*kfactor*res_btagwL0*triggerEff*evtWeight;
+    //wgt *= LUMI*scale1fb*kfactor*res_btagwL0*triggerEff*evtWeight;
+    wgt *= LUMI*scale1fb*kfactor*triggerEff*evtWeight;
     if (algo == "CHS") wgt *= puWeight;
   }
   return wgt;

@@ -72,6 +72,8 @@ void plotRazor(const string preselection, const string subsample, const string c
   samplev.back()->fnamev.push_back("../razorbits/QCD.root");
   }
   if (preselection.compare("Pho")!=0) {
+    samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
+    samplev.back()->fnamev.push_back("../razorbits/QCD.root");
     samplev.push_back(new CSample("Single Top",kBlue - 2,kBlue - 2));
     samplev.back()->fnamev.push_back("../razorbits/T.root");
     samplev.push_back(new CSample("t#bar{t}",kPink - 2,kPink - 2));
