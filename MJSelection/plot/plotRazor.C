@@ -130,7 +130,7 @@ void plotRazor(const string preselection, const string subsample, const string c
     sprintf(hname,"hNJets_%i",isam);          hNJetsv.push_back(new TH1D(hname,"",10,0,10));              hNJetsv[isam]->Sumw2();
     ///sprintf(hname,"halphaT_%i",isam);         halphaTv.push_back(new TH1D(hname,"",20,0,2.5));            halphaTv[isam]->Sumw2();
     //sprintf(hname,"hmindFPhi_%i",isam);       hmindFPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hmindFPhiv[isam]->Sumw2();
-    sprintf(hname,"hMR_%i",isam);             hMRv.push_back(new TH1D(hname,"",20,500,3500));             hMRv[isam]->Sumw2();
+    sprintf(hname,"hMR_%i",isam);             hMRv.push_back(new TH1D(hname,"",50,200.,3000.));             hMRv[isam]->Sumw2();
     sprintf(hname,"hRsq_%i",isam);            hRsqv.push_back(new TH1D(hname,"",20,0.2,1.2));             hRsqv[isam]->Sumw2();
     sprintf(hname,"hdeltaPhi_%i",isam);       hdeltaPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hdeltaPhiv[isam]->Sumw2();
 
@@ -156,7 +156,6 @@ void plotRazor(const string preselection, const string subsample, const string c
   // TH1D *hMETSig6           = (TH1D*)hMETv[0]->Clone("hMETSig6"); 
 
   double neventsMC = 0;
-
   TFile *infile=0;
   TTree *intree=0;
   // Loop over samples
@@ -181,6 +180,7 @@ void plotRazor(const string preselection, const string subsample, const string c
       fBits  = new RazorBitsLoader(intree,algo,syst,preselection);
       double nevts=0;
       int noweight=0;
+      double wgt = 0;
       std::cout << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
@@ -195,7 +195,7 @@ void plotRazor(const string preselection, const string subsample, const string c
 	if(!fBits->passSelection(preselection, subsample, combo, isData)) continue;
 
 	// Apply weigths                                                                                                                                                                            
-        double wgt = 1;
+        wgt = 1;
         wgt *= fBits->getWgt(isData,algo,LUMI);
 
 	nevts += wgt;
@@ -234,17 +234,19 @@ void plotRazor(const string preselection, const string subsample, const string c
 	//   // if(isSignal5) hMETSig5->Fill(fBits->vmetpt,       wgt);
         //   // if(isSignal6) hMETSig6->Fill(fBits->vmetpt,       wgt);
 	// }
-      }
 
-      if(isData && doBlind) {
-        cout << endl;
-      } else {
-        cout << nevts << " " << noweight  <<  endl;
       }
+      if (!isData && doBlind) 
+      {
+        cout << nevts << " " << noweight  << " " << wgt << endl;
+      }
+      
       delete infile;
       infile=0;
       intree=0;
-    }
+      }
+      
+
   }
   //
   // Make pull histograms

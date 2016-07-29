@@ -135,25 +135,28 @@ bool RazorBitsLoader::passRazorPreselection(bool isData){
        if (isData &&
           (triggerBits & kRazor) && 
           MR > 200. && 
-          nbjetsL == 0 && 
-          Rsq > 0 && 
+          Rsq > 0.5 && 
           nJetsAbove80GeV > 1 && 
           deltaPhi < 2.5) lPass = true;
        else if  (!isData &&
           MR > 200. && 
-          nbjetsL == 0 && 
-          Rsq > 0 && 
+          Rsq > 0.5 && 
           nJetsAbove80GeV > 1 && 
           deltaPhi < 2.5) lPass = true;
   return lPass;
 }
+bool RazorBitsLoader::passRazorCR(string preselection, bool isData){ 
+  return passPreSelection(preselection) & passRazorPreselection(isData) & (nbjetsL == 0); // temporary
+}
 bool RazorBitsLoader::passRazorSR(string preselection, bool isData){ 
-  return passPreSelection(preselection) & passRazorPreselection(isData);
+  return passPreSelection(preselection) & passRazorPreselection(isData) & (nbjetsL == 0); 
 }
 bool RazorBitsLoader::passSelection(string preselection, string subsample, string combo, bool isData){
   bool lPass = false;	
   if (subsample == "SR" && passRazorSR(preselection, isData) 
       && (combo=="ONLY" || (combo=="COMBO" && !passRazorSR(preselection, isData)))) lPass = true;
+  if (subsample == "CR" && passRazorCR(preselection, isData) 
+      && (combo=="ONLY" || (combo=="COMBO" && !passRazorCR(preselection, isData)))) lPass = true;
   return lPass;
 }
 double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){

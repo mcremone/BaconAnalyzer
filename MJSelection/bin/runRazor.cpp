@@ -140,7 +140,8 @@ int main( int argc, char **argv ) {
     
     // Triggerbits for MET, Electrons, Muons, and Photons
     unsigned int trigbits=1;   
-    
+    if(lOption.find("data")!=std::string::npos) 
+    {
     if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
        fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
@@ -180,7 +181,7 @@ int main( int argc, char **argv ) {
        fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_BTagCSV_p063_p20_Mbb60_200_v*") ||
        fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 32;
         if(trigbits==1) continue;
-    
+    }
     // Event info
     fEvt      ->fillEvent(trigbits,lWeight);
 
