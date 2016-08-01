@@ -35,10 +35,10 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString bst15jetID, TString bst8j
       iTree->SetBranchAddress("evtWeight",                                      &evtWeight);
       iTree->SetBranchAddress("kfactor",                                        &kfactor);
       iTree->SetBranchAddress("pfmet",                                          &met);
-      iTree->SetBranchAddress(vmet,                                             &vmetpt);
-      iTree->SetBranchAddress(vmet+"phi",                                       &vmetphi);
-      iTree->SetBranchAddress("fake"+vmet,                                      &vfakemetpt);
-      iTree->SetBranchAddress("fake"+vmet+"phi",                                &vfakemetphi);
+      iTree->SetBranchAddress(vmet,                                              &vmetpt);
+      iTree->SetBranchAddress(vmet+"phi",                                        &vmetphi);
+      iTree->SetBranchAddress("fake"+vmet,                                       &vfakemetpt);
+      iTree->SetBranchAddress("fake"+vmet+"phi",                                 &vfakemetphi);
       iTree->SetBranchAddress("res_"+algo+"jets",                               &njets);
       iTree->SetBranchAddress("res_"+algo+"jetsdR2",                            &njetsdR2);
       iTree->SetBranchAddress("res_"+algo+"jetsdR15",                           &njetsdR15);
@@ -112,20 +112,6 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString bst15jetID, TString bst8j
       iTree->SetBranchAddress("res_"+algo+"jetbst15btagwT1_"+syst,              &resbst15_btagwT1);
       iTree->SetBranchAddress("res_"+algo+"jetbst15btagwTminus1_"+syst,         &resbst15_btagwTminus1);
       iTree->SetBranchAddress("res_"+algo+"jetbst15btagwT2_"+syst,              &resbst15_btagwT2);
-      /*
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwL0_"+syst,           &resbst8_btagwL0);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwL1_"+syst,           &resbst8_btagwL1);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwLminus1_"+syst,      &resbst8_btagwLminus1);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwL2_"+syst,           &resbst8_btagwL2);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwM0_"+syst,           &resbst8_btagwM0);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwM1_"+syst,           &resbst8_btagwM1);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwMminus1_"+syst,      &resbst8_btagwMminus1);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwM2_"+syst,           &resbst8_btagwM2);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwT0_"+syst,           &resbst8_btagwT0);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwT1_"+syst,           &resbst8_btagwT1);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwTminus1_"+syst,      &resbst8_btagwTminus1);
-      iTree->SetBranchAddress("res_"+algo+"jet"+bst8+"btagwT2_"+syst,           &resbst8_btagwT2);
-      */
       iTree->SetBranchAddress("nmu",                                            &nmu);
       iTree->SetBranchAddress("nele",                                           &nele);
       iTree->SetBranchAddress("ntau",                                           &ntau);
@@ -156,32 +142,6 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString bst15jetID, TString bst8j
       iTree->SetBranchAddress("bst15_"+algo+bst15jetID+"0_minsubcsv",           &bst15_jet0_minsubcsv);
       iTree->SetBranchAddress("bst15_"+algo+bst15jetID+"0_maxsubcsv",           &bst15_jet0_maxsubcsv);
       iTree->SetBranchAddress("bst15_"+algo+bst15jetID+"0_doublecsv",           &bst15_jet0_doublecsv);
-      /*
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_isHadronicTop",         &isHadronicTop8);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_topSize",               &topSize8);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_topMatching",           &topMatching8);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_isHadronicV",           &isHadronicV8);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_vSize",                 &vSize8);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_vMatching",             &vMatching8);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"s",                       &nfjets8);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_mT",                    &bst8_jet0_mT);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_dR_sj0dR",              &bst8_jet0_dRsj0dR);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_dPhiJRF_sj0dPhiJRF",    &bst8_jet0_dPhiJRFsj0dPhiJRF);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_pt",                    &bst8_jet0_pt);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_eta",                   &bst8_jet0_eta);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_phi",                   &bst8_jet0_phi);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_mass",                  &bst8_jet0_mass);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_msd",                   &bst8_jet0_msd);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_rho",                   &bst8_jet0_rho);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_tau32",                 &bst8_jet0_tau32);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_tau21",                 &bst8_jet0_tau21);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_CHF",                   &bst8_jet0_CHF);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_NHF",                   &bst8_jet0_NHF);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_NEMF",                  &bst8_jet0_NEMF);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_minsubcsv",             &bst8_jet0_minsubcsv);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_maxsubcsv",             &bst8_jet0_maxsubcsv);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"0_doublecsv",             &bst8_jet0_doublecsv);
-      */
       // SFs
       iTree->SetBranchAddress("eleSF0",                                         &eleSF0);
       iTree->SetBranchAddress("eleSF1",                                         &eleSF1);
@@ -213,16 +173,6 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString bst15jetID, TString bst8j
       iTree->SetBranchAddress("bst15_"+algo+bst15jetID+"btagwL1_BTAGDO",        &bst15_btagwL1BTAGDO);
       iTree->SetBranchAddress("bst15_"+algo+bst15jetID+"btagwL1_MISTAGUP",      &bst15_btagwL1MISTAGUP);
       iTree->SetBranchAddress("bst15_"+algo+bst15jetID+"btagwL1_MISTAGDO",      &bst15_btagwL1MISTAGDO);
-      /*
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"btagwL0_"+sy,             &bst8_btagwL0);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"btagwL1_"+sy,             &bst8_btagwL1);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"btagwLminus1_"+sy,        &bst8_btagwLminus1);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"btagwL2_"+sy,             &bst8_btagwL2);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"btagwM0_"+sy,             &bst8_btagwM0);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"btagwM1_"+sy,             &bst8_btagwM1);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"btagwMminus1_"+sy,        &bst8_btagwMminus1);
-      iTree->SetBranchAddress("bst8_"+algo+bst8jetID+"btagwM2_"+sy,             &bst8_btagwM2);
-      */
     }
     else{
       if(isData){
@@ -300,7 +250,7 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString bst15jetID, TString bst8j
       iTree->SetBranchAddress("genBosonPhi",                                    &genVphi);
       iTree->SetBranchAddress("nJet",                                           &njets);
       iTree->SetBranchAddress("jetNBtags",                                      &nbtags);
-      iTree->SetBranchAddress("jetNIsoBtags",                                   &nisobtags);
+      iTree->SetBranchAddress("jetNIsoBtags",                                   &nbjetsLdR15);
       iTree->SetBranchAddress("nCA15fj",                                        &nfjets15);
       iTree->SetBranchAddress("CA15fj1_tau2",                                   &bst15_jet1_tau2);
       iTree->SetBranchAddress("CA15fj1_tau3",                                   &bst15_jet1_tau3);
@@ -347,7 +297,6 @@ MonoXBitsLoader::~MonoXBitsLoader(){}
 bool MonoXBitsLoader::selectJetAlgoAndSize(string selection, TString algo, TString bst15jetID, TString bst8jetID){
   bool lPass = false;
   if((selectBits & kBOOSTED15PUPPI) && bst15jetID=="jet" && selection.find("Bst15")==0 && algo=="PUPPI") lPass = true;
-  //if((selectBits & 2) && bst15jetID=="jet" && selection.find("Bst15")==0 && algo=="PUPPI") lPass = true;
   if((selectBits & kBOOSTED15CHS) && bst15jetID=="jet" && selection.find("Bst15")==0 && algo=="CHS") lPass = true;
   if((selectBits & kBOOSTED8PUPPIT) && bst8jetID=="jetT" && selection.find("Bst8")==0 && algo=="PUPPI") lPass = true;
   if((selectBits & kBOOSTED8CHS) && bst8jetID=="jet" && selection.find("Bst8")==0 && algo=="CHS") lPass = true;
@@ -363,7 +312,7 @@ bool MonoXBitsLoader::isHad(bool isData, bool isBacon){
         if((triggerBits & kMET)!=0) lPass = true;
       }
       else{
-      lPass = true;
+	lPass = true;
       }
     }
   }
@@ -562,9 +511,6 @@ bool MonoXBitsLoader::passBoostedMonoTopPreselection(string preselection){
      && bst15_jet0_msd>110 
      && bst15_jet0_msd<210
      && bst15_jet0_tau32<0.61
-     //&& bst15_jet0_CHF>0.47 
-     //&& bst15_jet0_NHF<0.7 
-     //&& bst15_jet0_NEMF<0.7
      ) lPass=true;
   return lPass;
 }
@@ -645,38 +591,25 @@ bool MonoXBitsLoader::passResolvedCMSMonoHbbPreselection(string preselection){
 // MonoTop
 bool MonoXBitsLoader::passBoostedMonoTopSR(string preselection){ 
   return passBoostedMonoTopPreselection(preselection) & (min_dphijetsmet>1.1) & (nbjetsLdR15==0) & (bst15_jet0_maxsubcsv>CSVL);
-  //& (bst15_jet0_msd>135) & (bst15_jet0_msd<210) & (bst15_jet0_tau32 < (-0.018*bst15_jet0_rho + RHO_CUT));
 }
 bool MonoXBitsLoader::passBoostedMonoTopTopCR(string preselection){ 
-  return passBoostedMonoTopPreselection(preselection) & (nbjetsLdR15==1) & (bst15_jet0_maxsubcsv>CSVL);
-// & (bst15_jet0_msd>135) & (bst15_jet0_msd<210) & (bst15_jet0_tau32 < (-0.018*bst15_jet0_rho + RHO_CUT));
-}
-bool MonoXBitsLoader::passBoostedMonoTopTopCRminusTau32(string preselection){
-  TLorentzVector vMET = getMET(preselection);
-  return (vMET.Pt()>250 && nfjets15==1 && bst15_jet0_pt>250 && bst15_jet0_msd>110 && bst15_jet0_msd<210) & (bst15_jet0_maxsubcsv>CSVL) & (nbjetsLdR15>0);
-}
-bool MonoXBitsLoader::passBoostedMonoTopTopCRminusMass(string preselection){
-  TLorentzVector vMET = getMET(preselection);
-  return (vMET.Pt()>250 && nfjets15==1 && bst15_jet0_pt>250 && bst15_jet0_tau32<0.61 && bst15_jet0_msd>40) & (bst15_jet0_maxsubcsv>CSVL) & (nbjetsLdR15>0);
-}
-bool MonoXBitsLoader::passBoostedMonoTopTopCRminusBtag(string preselection){
-  return passBoostedMonoTopPreselection(preselection) & (nbjetsLdR15>0);
+  return passBoostedMonoTopPreselection(preselection) & (nbjetsLdR15>0) & (bst15_jet0_maxsubcsv>CSVL);
 }
 bool MonoXBitsLoader::passBoostedMonoTopWCR(string preselection){
-  return passBoostedMonoTopPreselection(preselection) & (nbjetsLdR15==0) & (bst15_jet0_maxsubcsv<CSVL); //& (bst15_jet0_msd>135) & (bst15_jet0_msd<210) & (bst15_jet0_tau32 < (-0.018*bst15_jet0_rho + RHO_CUT));
+  return passBoostedMonoTopPreselection(preselection) & (nbjetsLdR15==0) & (bst15_jet0_maxsubcsv<CSVL); 
 }
 bool MonoXBitsLoader::passBoostedMonoTopZCR(string preselection){
-  return passBoostedMonoTopPreselection(preselection);// & (bst15_jet0_msd>135) & (bst15_jet0_msd<210) & (bst15_jet0_tau32 < (-0.018*bst15_jet0_rho + RHO_CUT));
+  return passBoostedMonoTopPreselection(preselection);
 }
 //Bambu
 bool MonoXBitsLoader::passBoostedMonoTopBambuSR(string preselection){
-  return passBoostedMonoTopBambuPreselection(preselection) & (dPhiPuppiMET>1.1) & (bst15_jet1_maxsubcsv>0.46) & (nisobtags==0);
+  return passBoostedMonoTopBambuPreselection(preselection) & (dPhiPuppiMET>1.1) & (bst15_jet1_maxsubcsv>0.46) & (nbjetsLdR15==0);
 }
 bool MonoXBitsLoader::passBoostedMonoTopBambuTopCR(string preselection){
-  return passBoostedMonoTopBambuPreselection(preselection) & (bst15_jet1_maxsubcsv>0.46) & (nisobtags==1);
+  return passBoostedMonoTopBambuPreselection(preselection) & (bst15_jet1_maxsubcsv>0.46) & (nbjetsLdR15==1);
 }
 bool MonoXBitsLoader::passBoostedMonoTopBambuWCR(string preselection){
-  return passBoostedMonoTopBambuPreselection(preselection) & (bst15_jet1_maxsubcsv<0.46) & (nisobtags==0);
+  return passBoostedMonoTopBambuPreselection(preselection) & (bst15_jet1_maxsubcsv<0.46) & (nbjetsLdR15==0);
 }
 bool MonoXBitsLoader::passBoostedMonoTopBambuZCR(string preselection){
   return passBoostedMonoTopBambuPreselection(preselection);
@@ -773,16 +706,16 @@ bool MonoXBitsLoader::passSelection(string preselection, string selection, strin
 	}
 	if (subsample == "TopCR" && passBoostedMonoTopTopCR(preselection) 
 	    && (combo=="ONLY" || combo=="COMBO")) {
-	  btagw=resbst15_btagwLminus1*bst15_btagwL1;  
-          if(syst=="CENT"){btagw=resbst15_btagwLminus1*bst15_btagwL1; }
-          if(syst=="BTAGUP"){btagw=resbst15_btagwLminus1BTAGUP*bst15_btagwL1; }
-          if(syst=="BTAGDO"){btagw=resbst15_btagwLminus1BTAGDO*bst15_btagwL1; }
-          if(syst=="MISTAGUP"){btagw=resbst15_btagwLminus1MISTAGUP*bst15_btagwL1;}
-          if(syst=="MISTAGDO"){btagw=resbst15_btagwLminus1MISTAGDO*bst15_btagwL1; }
-          if(syst=="SJBTAGUP"){btagw=resbst15_btagwLminus1*bst15_btagwL1BTAGUP; }
-          if(syst=="SJBTAGDO"){btagw=resbst15_btagwLminus1*bst15_btagwL1BTAGDO; }
-          if(syst=="SJMISTAGUP"){btagw=resbst15_btagwLminus1*bst15_btagwL1MISTAGUP;}
-          if(syst=="SJMISTAGDO"){btagw=resbst15_btagwLminus1*bst15_btagwL1MISTAGDO;}
+	  btagw=resbst15_btagwL1*bst15_btagwL1;  
+          if(syst=="CENT"){btagw=resbst15_btagwL1*bst15_btagwL1; }
+          if(syst=="BTAGUP"){btagw=resbst15_btagwL1BTAGUP*bst15_btagwL1; }
+          if(syst=="BTAGDO"){btagw=resbst15_btagwL1BTAGDO*bst15_btagwL1; }
+          if(syst=="MISTAGUP"){btagw=resbst15_btagwL1MISTAGUP*bst15_btagwL1;}
+          if(syst=="MISTAGDO"){btagw=resbst15_btagwL1MISTAGDO*bst15_btagwL1; }
+          if(syst=="SJBTAGUP"){btagw=resbst15_btagwL1*bst15_btagwL1BTAGUP; }
+          if(syst=="SJBTAGDO"){btagw=resbst15_btagwL1*bst15_btagwL1BTAGDO; }
+          if(syst=="SJMISTAGUP"){btagw=resbst15_btagwL1*bst15_btagwL1MISTAGUP;}
+          if(syst=="SJMISTAGDO"){btagw=resbst15_btagwL1*bst15_btagwL1MISTAGDO;}
 	  lPass = true;}
 	if (subsample == "WCR" && passBoostedMonoTopWCR(preselection) 
 	    && (combo=="ONLY" || combo=="COMBO")) {
@@ -947,15 +880,25 @@ int MonoXBitsLoader::nfjets(string selection){
   else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return nfjets8;
   else return nfjets15;
 }
-float MonoXBitsLoader::fjet_mass(string selection){
-  if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return float(bst15_jet0_msd);
-  else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return float(bst8_jet0_msd);
-  else return float(bst15_jet0_msd);
+float MonoXBitsLoader::fjet_mass(string selection, bool isBacon){
+  if(isBacon){
+    if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return float(bst15_jet0_msd);
+    else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return float(bst8_jet0_msd);
+    else return float(bst15_jet0_msd);
+  }
+  else{
+    return bst15_jet1_msd;
+  }
 }
-float MonoXBitsLoader::fjet_pt(string selection){
-  if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return float(bst15_jet0_pt);
-  else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return float(bst8_jet0_pt);
-  else return float(bst15_jet0_pt);
+float MonoXBitsLoader::fjet_pt(string selection,bool isBacon){
+  if(isBacon){
+    if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return float(bst15_jet0_pt);
+    else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return float(bst8_jet0_pt);
+    else return float(bst15_jet0_pt);
+  }
+  else{
+    return bst15_jet1_pt;
+  }
 }
 float MonoXBitsLoader::transverse_mass(string selection){
   if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return float(bst15_jet0_mT);
@@ -973,20 +916,30 @@ float MonoXBitsLoader::tau21(string selection){
   else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return bst8_jet0_tau21;
   else return bst15_jet0_tau21;
 }
-float MonoXBitsLoader::tau32(string selection){
-  if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return bst15_jet0_tau32;
-  else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return bst8_jet0_tau32;
-  else return bst15_jet0_tau32;
+float MonoXBitsLoader::tau32(string selection,bool isBacon){
+  if(isBacon){
+    if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return bst15_jet0_tau32;
+    else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return bst8_jet0_tau32;
+    else return bst15_jet0_tau32;
+  }
+  else{
+    return bst15_jet1_tau3/bst15_jet1_tau2;
+  }
 }
 float MonoXBitsLoader::rho(string selection){
   if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return bst15_jet0_rho;
   else if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return bst8_jet0_rho;
   else return bst15_jet0_rho;
 }
-float MonoXBitsLoader::maxsubcsv(string selection){
-  if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return float(bst15_jet0_maxsubcsv);
-  if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return float(bst8_jet0_maxsubcsv);
-  else return bst15_jet0_maxsubcsv;
+float MonoXBitsLoader::maxsubcsv(string selection,bool isBacon){
+  if(isBacon){
+    if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return float(bst15_jet0_maxsubcsv);
+    if(selection == "Bst8MonoTop" || selection == "Bst8MonoHbb" || selection == "Bst8MonoHbbCMS") return float(bst8_jet0_maxsubcsv);
+    else return bst15_jet0_maxsubcsv;
+  }
+  else{
+    return bst15_jet1_maxsubcsv;
+  }
 }
 float MonoXBitsLoader::minsubcsv(string selection){
   if(selection == "Bst15MonoTop" || selection == "Bst15MonoHbb") return float(bst15_jet0_minsubcsv);
@@ -1264,6 +1217,6 @@ float MonoXBitsLoader::getPhotonPurity(){
   else if (vpho0_pt>=200 && vpho0_pt<250) return 0.04241;
   else if (vpho0_pt>=250 && vpho0_pt<300) return 0.03641;
   else if (vpho0_pt>=300 && vpho0_pt<350) return 0.0333;
-  else if (vpho0_pt>=350)		  return 0.02544;
+  else if (vpho0_pt>=350)                 return 0.02544;
   else return 1;
 }

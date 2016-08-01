@@ -83,3 +83,19 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "VectorDiJet") ]]; the
     ./sub.sh mc /store/cmst3/group/monojet/production/09/ VectorDiJet1Jet_M50                                                                                1  $dir $exec $option1 $option2
     ./sub.sh mc /store/cmst3/group/monojet/production/09/ VectorDiJet1Jet_M75                                                                                1  $dir $exec $option1 $option2
 fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "GHF") ]]; then
+    ./sub.sh mcgplushf $eos GJets_HT_100To200_13TeV                                                              9235  $dir $exec $option1 $option2
+    ./sub.sh mcgplushf $eos GJets_HT_200To400_13TeV                                                              2298  $dir $exec $option1 $option2
+    ./sub.sh mcgplushf $eos GJets_HT_400To600_13TeV                                                             277.6  $dir $exec $option1 $option2
+    ./sub.sh mcgplushf $eos GJets_HT_600ToInf_13TeV                                                             93.47  $dir $exec $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then
+    ./sub.sh mcgpluslf $eos GJets_HT_100To200_13TeV                                                              9235  $dir $exec $option1 $option2
+    ./sub.sh mcgpluslf $eos GJets_HT_200To400_13TeV                                                              2298  $dir $exec $option1 $option2
+    ./sub.sh mcgpluslf $eos GJets_HT_400To600_13TeV                                                             277.6  $dir $exec $option1 $option2
+    ./sub.sh mcgpluslf $eos GJets_HT_600ToInf_13TeV                                                             93.47  $dir $exec $option1 $option2
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then
+   ./sub.sh data $eos SinglePhotonRun2016B_PromptReco_v1_trig                                                            1  $dir $exec $option1 $option2
+   ./sub.sh data $eos SinglePhotonRun2016B_PromptReco_v2_trig                                                            1  $dir $exec $option1 $option2
+fi

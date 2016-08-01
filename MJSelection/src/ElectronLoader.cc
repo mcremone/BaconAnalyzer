@@ -7,17 +7,23 @@
 
 using namespace baconhep;
 
-ElectronLoader::ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename) { 
+ElectronLoader::ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename,std::string ieleScaleFactorTightFilename,std::string ieleScaleFactorTrackFilename) { 
   fElectrons  = new TClonesArray("baconhep::TElectron");
   iTree->SetBranchAddress("Electron",       &fElectrons);
   fElectronBr  = iTree->GetBranch("Electron");
   fN = 2;
   TFile *fEleSF = new TFile(ieleScaleFactorFilename.c_str());
-  fhEleVeto = (TH2D*) fEleSF->Get("scaleFactor_electron_vetoid_RooCMSShape");
-  fhEleTight = (TH2D*) fEleSF->Get("scaleFactor_electron_tightid_RooCMSShape");
-  fhEleVeto->SetDirectory(0);
-  fhEleTight->SetDirectory(0);
+  fhEleLoose =  (TH2D*) fEleSF->Get("scaleFactor_electron_vetoid_RooCMSShape");
+  fhEleLoose->SetDirectory(0);
   fEleSF->Close();
+  TFile *fEleSFTight = new TFile(ieleScaleFactorTightFilename.c_str());
+  fhEleTight =  (TH2D*) fEleSFTight->Get("scaleFactor_electron_tightid_RooCMSShape");
+  fhEleTight->SetDirectory(0);
+  fEleSFTight->Close();
+  TFile *fEleSFTrack = new TFile(ieleScaleFactorTrackFilename.c_str());
+  fhEleTrack = (TH2D*) fEleSFTrack->Get("EGamma_SF2D");
+  fhEleTrack->SetDirectory(0);
+  fEleSFTrack->Close();
 
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);}
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);}
@@ -28,40 +34,40 @@ ElectronLoader::~ElectronLoader() {
   delete fElectronBr;
 }
 void ElectronLoader::reset() { 
-  fNElectrons = 0; 
-  fNElectronsTight = 0; 
+  fNElectronsLoose = 0; 
+  fNElectronsTight = 0;
+  fisele0Tight     = 0;
+  fisDiele         = 0;
+  feleSFTrack      = 1;
   fSelElectrons.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
   for(unsigned int i0 = 0; i0 < feleSFVars.size(); i0++) feleSFVars[i0] = 1;
-  fIso1 = 0; 
-  fIso2 = 0; 
 }
 void ElectronLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("nele"      ,&fNElectrons ,"fNElectrons/I");
-  fTree->Branch("neleTight" ,&fNElectrons ,"fNElectronsTight/I");
-  fTree->Branch("isDiele  " ,&fisDiele    ,"fisDiele/I");
-  // fTree->Branch("vele0_iso",&fIso1,"fIso1/D");
-  // fTree->Branch("vele1_iso",&fIso2,"fIso2/D");
-  setupNtuple  ("vele",iTree,fN,fVars);        // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
-  addDiElectron("vdiele",iTree,1, fVars,fN*3); // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
-  addSF        ("eleSF",iTree,feleSFVars,3);   // eleSF0,eleSF1,eleSF2
+  fTree->Branch("neleLoose"   ,&fNElectronsLoose ,"fNElectronsLoose/I");
+  fTree->Branch("neleTight"   ,&fNElectronsTight ,"fNElectronsTight/I");
+  fTree->Branch("isele0Tight" ,&fisele0Tight     ,"fisele0Tight/I");
+  fTree->Branch("isDiele  "   ,&fisDiele         ,"fisDiele/I");
+  fTree->Branch("eleSFTrack"  ,&feleSFTrack      ,"feleSFTrack/D");
+  setupNtuple  ("veleLoose"   ,iTree,fN,fVars);        // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
+  addDiElectron("vdiele"      ,iTree,1,fVars,fN*3);    // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
+  addSF        ("eleSF"       ,iTree,feleSFVars,3);    // eleSF0,eleSF1,eleSF2
 }
 void ElectronLoader::load(int iEvent) { 
-  fElectrons   ->Clear();
+  fElectrons  ->Clear();
   fElectronBr ->GetEntry(iEvent);
 }
 void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes) {
   reset();
+  std::vector<TElectron*> lVeto;
 
-  // Tight electrons multiplicity
+  // Electrons multiplicity
   int lCount = 0,lTCount=0; 
-  for  (int i0 = 0; i0 < fElectrons->GetEntriesFast(); i0++) if(passEleTightSel((TElectron*)fElectrons->At(i0),iRho)) lTCount++;
   fNElectronsTight = lTCount;
 
-  // Veto electrons selection
-  std::vector<TElectron*> lVeto;  
+  // Electrons selection
   for  (int i0 = 0; i0 < fElectrons->GetEntriesFast(); i0++) { 
     TElectron *pElectron = (TElectron*)((*fElectrons)[i0]);
     if(pElectron->pt        <=  10)                                            continue;
@@ -72,20 +78,24 @@ void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iV
 
     lVeto.push_back(pElectron);
     addElectron(pElectron,fSelElectrons);
+
+    if(passEleTightSel(pElectron,iRho) && pElectron->pt>40 && fabs(pElectron->eta)<2.5){
+      if(lCount==1) fisele0Tight = 1;
+      lTCount++;
+    }
   }
-  fNElectrons = lCount;
+  fNElectronsLoose = lCount;
+  fNElectronsTight = lTCount;
+
   if(fVars.size() > 0) fillElectron(fN,fSelElectrons,fVars);
 
-  if(fSelElectrons.size() >  0) fIso1 = eleIso(fSelElectrons[0],iRho);
-  if(fSelElectrons.size() >  1) fIso2 = eleIso(fSelElectrons[1],iRho);
-
   // Save tight electrons and dielectrons as vetoes
-  if(fNElectrons <= 1 && lVeto.size()==1) {
+  if(fNElectronsLoose <= 1 && lVeto.size()==1) {
     if(passEleTightSel(lVeto[0], iRho) && lVeto[0]->pt > 40) {
       addVElectron(lVeto[0],iVetoes,0.000511);
     }
   }
-  if(fNElectrons <= 2 && lVeto.size()==2){
+  if(fNElectronsLoose <= 2 && lVeto.size()==2){
     fillDiElectron(iRho,lVeto,iVetoes,fisDiele);
   }
 

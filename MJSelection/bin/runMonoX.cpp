@@ -42,16 +42,8 @@ TauLoader        *fTau      = 0;
 PhotonLoader     *fPhoton   = 0; 
 JetLoader        *fJet      = 0; 
 JetLoader        *fJetCHS   = 0;
-BTagWeightLoader *fBTag     = 0;
 BTagWeightLoader *fBTag15   = 0;
-BTagWeightLoader *fBTagCHS15= 0;
-BTagWeightLoader *fBTagCHS  = 0;
-BTagWeightLoader *fBTag8T   = 0;
-BTagWeightLoader *fBTagCHS8 = 0;
 VJetLoader       *fVJet15   = 0;
-VJetLoader       *fVJetCHS15= 0;
-VJetLoader       *fVJet8T   = 0;
-VJetLoader       *fVJetCHS8 = 0;
 RunLumiRangeMap  *fRangeMap = 0; 
 
 TH1F *fHist                 = 0; 
@@ -90,17 +82,9 @@ int main( int argc, char **argv ) {
   fTau      = new TauLoader       (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader    (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader       (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
-  //fJetCHS   = new JetLoader       (lTree,"AK4CHS");
-  fBTag     = new BTagWeightLoader(lTree);
-  fBTag15   = new BTagWeightLoader(lTree);
-  //fBTagCHS15= new BTagWeightLoader(lTree);
-  //fBTagCHS  = new BTagWeightLoader(lTree);
-  //fBTag8T   = new BTagWeightLoader(lTree);
-  //fBTagCHS8 = new BTagWeightLoader(lTree);
+  fBTag15   = new BTagWeightLoader(lTree);                                                 // fBTag with dR=1.5
   fVJet15   = new VJetLoader      (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
-  //fVJetCHS15= new VJetLoader      (lTree,"CA15CHS","AddCA15CHS");
-  //fVJet8T   = new VJetLoader      (lTree,"AK8Puppi","AddAK8Puppi");
-  //fVJetCHS8 = new VJetLoader      (lTree,"AK8CHS","AddAK8CHS");
+
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);       // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
@@ -113,21 +97,10 @@ int main( int argc, char **argv ) {
   fTau      ->setupTree           (lOut);
   fPhoton   ->setupTree           (lOut);
   fJet      ->setupTree           (lOut,"res_PUPPIjet"); 
-  //fJetCHS   ->setupTree           (lOut,"res_CHSjet");
-  fBTag     ->setupTree           (lOut,"res_PUPPIjet");
   fBTag15   ->setupTree           (lOut,"res_PUPPIjetbst15");
-  //fBTagCHS15->setupTree           (lOut,"res_CHSjetbst15");
-  //fBTagCHS  ->setupTree           (lOut,"res_CHSjet");
-  //fBTag8T   ->setupTree           (lOut,"res_PUPPIjetbst8T");
-  //fBTagCHS8 ->setupTree           (lOut,"res_CHSjetbst8");
   fVJet15   ->setupTree           (lOut,"bst15_PUPPIjet"); 
   fVJet15   ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
-  //fVJetCHS15->setupTree           (lOut,"bst15_CHSjet");
-  //fVJetCHS15->setupTreeSubJetBTag (lOut,"bst15_CHSjet");
-  //fVJet8T   ->setupTree           (lOut,"bst8_PUPPIjetT");
-  //fVJet8T   ->setupTreeSubJetBTag (lOut,"bst8_PUPPIjetT");
-  //fVJetCHS8 ->setupTree           (lOut,"bst8_CHSjet");
-  //fVJetCHS8 ->setupTreeSubJetBTag (lOut,"bst8_CHSjet");
+
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
   //
@@ -136,14 +109,35 @@ int main( int argc, char **argv ) {
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
   //for(int i0 = 0; i0 < int(10000); i0++){ // for testing
-    // if(i0 % 10000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
-    
-    // Check json and GenInfo
+
+    // Check Json/Triggers + GenInfo
     fEvt->load(i0);
     float lWeight = 1;
+    unsigned int trigbits=1;
     if(lOption.find("data")!=std::string::npos){
-      //std::cout << fEvt->fRun << " " << fEvt->fLumi << std::endl;
-      if(!passEvent(fEvt->fRun,fEvt->fLumi))                                                              continue;
+      if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
+      if(fEvt ->passTrigger("HLT_PFMET170_NoiseCleaned_v*")||
+         fEvt ->passTrigger("HLT_PFMET170_JetIdCleaned_v*") ||
+         fEvt ->passTrigger("HLT_PFMET170_HBHECleaned_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu100_NoiseCleaned_PFMHTNoMu100_IDTight_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu100_JetIdCleaned_PFMHTNoMu100_IDTight_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu110_NoiseCleaned_PFMHTNoMu110_IDTight_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu110_JetIdCleaned_PFMHTNoMu110_IDTight_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
+         fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*")) trigbits = trigbits | 2; 
+      if(fEvt ->passTrigger("HLT_Ele27_eta2p1_WPLoose_Gsf_v*") ||
+         fEvt ->passTrigger("HLT_Ele25_eta2p1_WPTight_Gsf_v*") ||
+         fEvt ->passTrigger("HLT_Ele35_WPLoose_Gsf_v*") ||
+         fEvt ->passTrigger("HLT_Ele27_WPTight_Gsf_v*")) trigbits= trigbits | 4;
+      //fEvt ->passTrigger("HLT_ECALHT800_v*")) trigbits= trigbits | 4;
+      if(//fEvt ->passTrigger("HLT_ECALHT800_v*") ||
+         fEvt ->passTrigger("HLT_Photon175_v*") ||
+         fEvt ->passTrigger("HLT_Photon165_HE10_v*") ||
+         fEvt ->passTrigger("HLT_Photon300_NoHE_v*")) trigbits= trigbits | 8;
+         //fEvt ->passTrigger("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*") ||
+         //fEvt ->passTrigger("HLT_Photon135_PFMET100_v*")) trigbits= trigbits | 8;
     }
     else{
       fGen->load(i0);
@@ -154,44 +148,23 @@ int main( int argc, char **argv ) {
 
     // Primary vertex requirement
     if(!fEvt->PV()) continue;
-    
-    // Triggerbits for MET, Electrons and Photons
-    unsigned int trigbits=1;    
-    if(lOption.find("data")!=std::string::npos){
-      if(fEvt ->passTrigger("HLT_PFMET170_NoiseCleaned_v*")||
-	 fEvt ->passTrigger("HLT_PFMET170_JetIdCleaned_v*") ||
-	 fEvt ->passTrigger("HLT_PFMET170_HBHECleaned_v*") ||
-	 fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
-	 fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
-         fEvt ->passTrigger("HLT_PFMETNoMu100_NoiseCleaned_PFMHTNoMu100_IDTight_v*") ||
-         fEvt ->passTrigger("HLT_PFMETNoMu100_JetIdCleaned_PFMHTNoMu100_IDTight_v*") ||
-         fEvt ->passTrigger("HLT_PFMETNoMu110_NoiseCleaned_PFMHTNoMu110_IDTight_v*") ||
-         fEvt ->passTrigger("HLT_PFMETNoMu110_JetIdCleaned_PFMHTNoMu110_IDTight_v*") ||
-	 fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
-	 fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*")) trigbits = trigbits | 2; // ||
-      if(fEvt ->passTrigger("HLT_Ele27_eta2p1_WPLoose_Gsf_v*") ||
-	 fEvt ->passTrigger("HLT_Ele25_eta2p1_WPTight_Gsf_v*") ||
-	 fEvt ->passTrigger("HLT_Ele35_WPLoose_Gsf_v*") ||
-      	 fEvt ->passTrigger("HLT_Ele27_WPTight_Gsf_v*") ||
-	 fEvt ->passTrigger("HLT_ECALHT800_v*")) trigbits= trigbits | 4;
-      if(fEvt ->passTrigger("HLT_ECALHT800_v*") ||
-	 fEvt ->passTrigger("HLT_Photon175_v*") ||
-	 fEvt ->passTrigger("HLT_Photon165_HE10_v*") ||
-	 fEvt ->passTrigger("HLT_Photon300_NoHE_v*") ||
-         fEvt ->passTrigger("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*") ||
-         fEvt ->passTrigger("HLT_Photon135_PFMET100_v*")) trigbits= trigbits | 8;
-      //if(trigbits==1) continue;
-    }
 
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lPhotonsMVA, lJets, lJetsCHS, lVJet15, lVJets15, lVJetCHS15, lVJetsCHS15, lVJet8T, lVJets8T, lVJetCHS8, lVJetsCHS8, lVetoes;
-    std::vector<const TJet*> lGoodJets15, lGoodJetsCHS15, lGoodJets8T, lGoodJetsCHS8;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lPhotonsMVA, lJets, lVJet15, lVJets15, lVetoes;
+    std::vector<const TJet*> lGoodJets15;
+
+    // EvtInfo
+    if(lOption.find("data")!=std::string::npos){
+      fEvt->fillEvent(trigbits,lWeight,1);
+    }
+    else{
+      fEvt->fillEvent(trigbits,lWeight);
+    }
 
     // Muons
     fMuon->load(i0);
-    fMuon->selectMuons(lMuons);
-    
-    fEvt->fillEvent(trigbits,lWeight);
+    fMuon->selectMuons(lMuons,fEvt->fMet,fEvt->fMetPhi);
+    fEvt->fMetNoMu = fMuon->fvMetNoMu.Mod();
     
     // Electrons
     fElectron->load(i0);
@@ -212,9 +185,13 @@ int main( int argc, char **argv ) {
     
     // Lepton and Photon SF
     if(lOption.find("data")==std::string::npos){
-      fillLepSF(13,fMuon->fNMuons,lMuons,fMuon->fhMuTight,fMuon->fhMuLoose,fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars);
-      fillLepSF(11,fElectron->fNElectrons,lElectrons,fElectron->fhEleTight,fElectron->fhEleVeto,fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars);
-      fillPhoSF(22,fPhoton->fNPhotonsMedium,lPhotons,fGen->lepmatched(22,lPhotons,0.3),fPhoton->fphoSFVars);
+      fillLepSF(13,fEvt->fNVtx,fMuon->fNMuonsLoose,lMuons,
+		fMuon->fhMuTrack,fElectron->fhEleTrack,fMuon->fhMuTight,fMuon->fhMuLoose,
+		fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars,fMuon->fmuoSFTrack);
+      fillLepSF(11,fEvt->fNVtx,fElectron->fNElectronsLoose,lElectrons,
+		fMuon->fhMuTrack,fElectron->fhEleTrack,fElectron->fhEleTight,fElectron->fhEleLoose,
+		fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars,fElectron->feleSFTrack);
+      fillPhoSF(22,fPhoton->fNPhotonsTight,lPhotons,fGen->lepmatched(22,lPhotons,0.3),fPhoton->fphoSFVars);
     }
     
     // MET selection
@@ -243,16 +220,14 @@ int main( int argc, char **argv ) {
     fJet->selectJets(lVetoes,lVJets15,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     if(lJets.size()>0){
       fJet->fillGoodJets(lVJets15,1.5,lGoodJets15);
-      if(lOption.find("data")==std::string::npos){
-	fBTag->fillBTag(fJet->fGoodJets);
+      if(lOption.find("data")==std::string::npos)
         fBTag15->fillBTag(lGoodJets15);
-      }
       fEvt->fselectBits =  fEvt->fselectBits | 4;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJets,fJet->fMT);
     }
 
     // Select at least one Jet
-    //if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4)) continue; // && !(fEvt->fselectBits & 8) & !(fEvt->fselectBits & 16) & !(fEvt->fselectBits & 32) & !(fEvt->fselectBits & 64)) continue;
+    if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4)) continue;
     
     // ttbar, EWK and kFactor correction
     if(lOption.find("mcg")!=std::string::npos){
