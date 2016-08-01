@@ -3,21 +3,8 @@
 sample=$1
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then rm /tmp/cmantill/QCD.root;  hadd  /tmp/cmantill/QCD.root   ../monoxbits/*QCD*mc/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
-   for x in `ls ../monoxbits | grep Monotop | grep -v .root`; do
- 	rm /tmp/cmantill/$x.root
- 	hadd /tmp/cmantill/$x.root ../monoxbits/$x/*.root
-    done
-fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoHbb") ]]; then
-#     for x in `ls ../monoxbits | grep ZprimeToA0hToA0chichihbb_2HDM_MZp_ | grep -v .root`; do
-#         rm /tmp/cmantill/$x.root
-#         hadd /tmp/cmantill/$x.root ../monoxbits/$x/*.root
-#     done
-# fi
-
-if [[ ($sample = "All") || ($sample != "All" && $sample = "ZtoNuNu") ]]; then rm /tmp/cmantill/ZtoNuNu.root;    hadd  /tmp/cmantill/ZtoNuNu.root     ../monoxbits/*DYJets*_HT*mcdyplushf/*.root ../monoxbits/*DYJets*_HT*mcdypluslf/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "ZJets") ]]; then rm /tmp/cmantill/ZJets.root;    hadd  /tmp/cmantill/ZJets.root     ../monoxbits/*ZJets*_HT*mczplushf/*.root ../monoxbits/*ZJets*_HT*mczpluslf/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "ZJets") ]]; then rm /tmp/cmantill/ZJets.root;    hadd  /tmp/cmantill/ZJets.root     ../monoxbits/*DYJets*_HT*mcdyplushf/*.root ../monoxbits/*DYJets*_HT*mcdypluslf/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "ZtoNuNu") ]]; then rm /tmp/cmantill/ZtoNuNu.root;    hadd  /tmp/cmantill/ZtoNuNu.root     ../monoxbits/*ZJets*_HT*mczplushf/*.root ../monoxbits/*ZJets*_HT*mczpluslf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WJets") ]]; then rm /tmp/cmantill/WJets.root;    hadd  /tmp/cmantill/WJets.root     ../monoxbits/*WJets*_HT*mcwplushf/*.root ../monoxbits/*WJets*_HT*mcwpluslf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "T") ]]; then rm /tmp/cmantill/SingleTop.root;    hadd  /tmp/cmantill/SingleTop.root     ../monoxbits/ST_*/*.root ../monoxbits/tZq*/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TT") ]]; then rm /tmp/cmantill/TTbar_Powheg;    hadd  /tmp/cmantill/TTbar_Powheg.root     ../monoxbits/TT_13TeV_powheg_pythia8_ext_trig_mctt/*.root ../monoxbits/*ttZ*/*.root ../monoxbits/*TTG*/*.root;fi

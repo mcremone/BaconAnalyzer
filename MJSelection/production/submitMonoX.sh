@@ -27,49 +27,46 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "WHF") ]]; then
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WLF") ]]; then
    ./sub.sh mcwpluslf $eos WJetsToLNu_HT_100To200_13TeV_ext                                                      1343  $dir $exec $option1 $option2
-   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_200To400_13TeV                                                         359.6  $dir $exec $option1 $option2
    ./sub.sh mcwpluslf $eos WJetsToLNu_HT_200To400_13TeV_ext                                                     359.6  $dir $exec $option1 $option2  
    ./sub.sh mcwpluslf $eos WJetsToLNu_HT_400To600_13TeV                                                         48.85  $dir $exec $option1 $option2
    ./sub.sh mcwpluslf $eos WJetsToLNu_HT_600To800_13TeV                                                         12.05  $dir $exec $option1 $option2
-   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_800To1200_13TeV                                                        5.501  $dir $exec $option1 $option2
+   ./sub.sh mcwpluslf $eos WJetsToLNu_HT_800To1200_13TeV_ext                                                    5.501  $dir $exec $option1 $option2
    ./sub.sh mcwpluslf $eos WJetsToLNu_HT_1200To2500_13TeV_ext                                                   1.329  $dir $exec $option1 $option2
    ./sub.sh mcwpluslf $eos WJetsToLNu_HT_2500ToInf_13TeV                                                      0.03216  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYHF") ]]; then
-   #./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_100to200_13TeV_ext                                               148.0  $dir $exec $option1 $option2
-   #./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_200to400_13TeV_ext                                               40.94  $dir $exec $option1 $option2
-   #./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_400to600_13TeV_ext                                               5.497  $dir $exec $option1 $option2
+   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_100to200_13TeV_ext                                               148.0  $dir $exec $option1 $option2
+   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_200to400_13TeV_ext                                               40.94  $dir $exec $option1 $option2
+   ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_400to600_13TeV_ext                                               5.497  $dir $exec $option1 $option2
    ./sub.sh mcdyplushf $eos DYJetsToLL_M_50_HT_600toInf_13TeV_ext                                               2.193  $dir $exec $option1 $option2
 fi  
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYLF") ]]; then
-   #./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_100to200_13TeV_ext                                               148.0  $dir $exec $option1 $option2
-   #./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_200to400_13TeV_ext                                               40.94  $dir $exec $option1 $option2
-   #./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_400to600_13TeV_ext                                               5.497  $dir $exec $option1 $option2
+   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_100to200_13TeV_ext                                               148.0  $dir $exec $option1 $option2
+   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_200to400_13TeV_ext                                               40.94  $dir $exec $option1 $option2
+   ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_400to600_13TeV_ext                                               5.497  $dir $exec $option1 $option2
    ./sub.sh mcdypluslf $eos DYJetsToLL_M_50_HT_600toInf_13TeV_ext                                               2.193  $dir $exec $option1 $option2
 fi 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZHF") ]]; then
-#    ./sub.sh mczplushf $eos ZJetsToNuNu_HT_100To200_13TeV_madgraph_ext                                          280.5  $dir $exec $option1 $option2
+   ./sub.sh mczplushf $eos ZJetsToNuNu_HT_100To200_13TeV_madgraph_ext                                          280.5  $dir $exec $option1 $option2
    ./sub.sh mczplushf /store/cmst3/group/monojet/production/08/ ZJetsToNuNu_HT_200To400_13TeV_madgraph                                               77.7  $dir $exec $option1 $option2
    ./sub.sh mczplushf /store/cmst3/group/monojet/production/08/ ZJetsToNuNu_HT_400To600_13TeV_madgraph                                              10.71  $dir $exec $option1 $option2
-    #./sub.sh mczplushf $eos ZJetsToNuNu_HT_600ToInf_13TeV_madgraph                                              4.098  $dir $exec $option1 $option2
    ./sub.sh mczplushf $eos ZJetsToNuNu_HT_600To800_13TeV_madgraph                                              2.559  $dir $exec $option1 $option2
    ./sub.sh mczplushf $eos ZJetsToNuNu_HT_800To1200_13TeV_madgraph                                            1.1826  $dir $exec $option1 $option2
    ./sub.sh mczplushf $eos ZJetsToNuNu_HT_1200To2500_13TeV_madgraph_ext                                          0.2922  $dir $exec $option1 $option2
    ./sub.sh mczplushf $eos ZJetsToNuNu_HT_2500ToInf_13TeV_madgraph                                            0.0069  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "ZLF") ]]; then
-#    ./sub.sh mczpluslf $eos ZJetsToNuNu_HT_100To200_13TeV_madgraph_ext                                           280.5  $dir $exec $option1 $option2
+   ./sub.sh mczpluslf $eos ZJetsToNuNu_HT_100To200_13TeV_madgraph_ext                                           280.5  $dir $exec $option1 $option2
    ./sub.sh mczpluslf /store/cmst3/group/monojet/production/08/ ZJetsToNuNu_HT_200To400_13TeV_madgraph                                               77.7  $dir $exec $option1 $option2
    ./sub.sh mczpluslf /store/cmst3/group/monojet/production/08/ ZJetsToNuNu_HT_400To600_13TeV_madgraph                                              10.71  $dir $exec $option1 $option2
-    #./sub.sh mczpluslf $eos ZJetsToNuNu_HT_600ToInf_13TeV_madgraph                                              4.098  $dir $exec $option1 $option2
    ./sub.sh mczpluslf $eos ZJetsToNuNu_HT_600To800_13TeV_madgraph                                              2.559  $dir $exec $option1 $option2
    ./sub.sh mczpluslf $eos ZJetsToNuNu_HT_800To1200_13TeV_madgraph                                            1.1826  $dir $exec $option1 $option2
-   ./sub.sh mczpluslf $eos ZJetsToNuNu_HT_1200To2500_13TeV_madgraph_ext                                           0.2922  $dir $exec $option1 $option2
+   ./sub.sh mczpluslf $eos ZJetsToNuNu_HT_1200To2500_13TeV_madgraph_ext                                       0.2922  $dir $exec $option1 $option2
    ./sub.sh mczpluslf $eos ZJetsToNuNu_HT_2500ToInf_13TeV_madgraph                                            0.0069  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTZ") ]]; then
    ./sub.sh mc $eos TTZToLLNuNu_M_10_13TeV_amcatnlo_pythia8                                                   0.2529  $dir $exec $option1 $option2;
-   ./sub.sh mc $eos ttZJets_13TeV_madgraphMLM                                              0.2529  $dir $exec $option1 $option2;
+   ./sub.sh mc $eos ttZJets_13TeV_madgraphMLM                                                                 0.2529  $dir $exec $option1 $option2;
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TZ") ]]; then
    ./sub.sh mc /store/cmst3/group/monojet/production/08/ tZq_ll_4f_13TeV_amcatnlo_pythia8_TuneCUETP8M1                                             0.0758  $dir $exec $option1 $option2;
@@ -118,22 +115,6 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; th
    ./sub.sh data $eos SinglePhotonRun2016B_PromptReco_v2_trig_July9                                                            1  $dir $exec $option1 $option2
    ./sub.sh data $eos SinglePhotonRun2016C_PromptReco_v2_trig                                                            1  $dir $exec $option1 $option2
    ./sub.sh data $eos SinglePhotonRun2016D_PromptReco_v2_trig                                                            1  $dir $exec $option1 $option2
-fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8                                           1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1500_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1700_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1900_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_2100_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_900_Mchi_100_13TeV_madgraph_pythia8                                            1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_1100_13TeV_madgraph_pythia8_2                                                  1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_1300_13TeV_madgraph_pythia8_2                                                  1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_1500_13TeV_madgraph_pythia8_2                                                  1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_300_13TeV_madgraph_pythia8                                                     1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_500_13TeV_madgraph_pythia8_2                                                   1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_700_13TeV_madgraph_pythia8_2                                                   1  $dir $exec $option1 $option2
-    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_900_13TeV_madgraph_pythia8_2                                                   1  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
     ./sub.sh data $eos SingleElectronRun2016B_PromptReco_v1_trig                                                         1  $dir $exec $option1 $option2

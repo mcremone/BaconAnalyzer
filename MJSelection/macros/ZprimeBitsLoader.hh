@@ -23,13 +23,17 @@ using namespace std;
 
 class ZprimeBitsLoader {
 public:
-  ZprimeBitsLoader(TTree *iTree=0,TString algo="PUPPI", TString jet="jet0");		
+  ZprimeBitsLoader(TTree *iTree=0,TString algo="PUPPI", TString jet="jet0",TString number="8");		
   ~ZprimeBitsLoader();
-  bool isPho();
+  bool isPho(bool isData);
+  bool isHad(bool isData);
   bool selectJetAlgoAndSize(TString algo);
-  bool passBoostedZprimePreselection();
+  bool passPreSelection(bool isData, string preselection);
+  bool passBoostedZprimePreSelection();
+  bool passBoostedGammaZprimeSelection();
   bool passBoostedZprimeSR(float ddtcut);
-  bool passSelection(string selection,float ddt,float csv1);
+  bool passBoostedGammaZprimeSR(float ddtcut);
+  bool passSelection(bool isData,string selection,string subsample,float ddt,float csv1);
   bool passBoostedZprimeBTag(float csvcut);
   double getWgt(bool isData, TString algo, double LUMI);
   double tau21DDT();
@@ -62,7 +66,7 @@ protected:
 
   const unsigned int kBOOSTED8PUPPI = 2;
   const float RHO_CUT = 0.38;
-
+  const unsigned int kMET  = 2;
   const unsigned int kHT  = 2;
   const unsigned int kSinglePhoton  = 4;
 
