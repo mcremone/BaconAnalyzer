@@ -19,6 +19,7 @@
 #include <string>                     // C++ string class
 #include <cmath>                      // C++ math library
 #include <cassert>
+#include <TH2Poly.h>
 
 #include "../macros/CPlot.hh"         // helper class for plots
 #include "../macros/KStyle.hh"        // style settings for drawing
@@ -38,6 +39,8 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
               const vector<TH1D*>& histv, const vector<CSample*>& samplev, TH1D* hExp, TH1D* hPull,
               const bool doBlind, const double lumi, const bool doLogy=false, const double legdx=0, const double legdy=0,
               const double ymin=-1, const double ymax=-1, const string subsample="");
+void makePlotPoly(TCanvas *c, const string outname, const string xlabel, const string ylabel,
+              TH2Poly *hExp, const double lumi);
 TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind);
 float CalcSig(TH1D*sig, TH1D*bkg);
 
@@ -115,6 +118,7 @@ void plotRazor(const string preselection, const string subsample, const string c
   // Declare histograms
   //
   char hname[100];
+  vector<TH2Poly*> hPolyMrRsqv;
   vector<TH1D*> hMETv, hMETLogv;
   vector<TH1D*> hHTv, hMHTv;
   vector<TH1D*> hNJetsv;
@@ -123,20 +127,47 @@ void plotRazor(const string preselection, const string subsample, const string c
   const Int_t NBINS = 5;
   Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
+    sprintf(hname,"hPolyMrRsq_%i",isam);      hPolyMrRsqv.push_back(new TH2Poly(hname,"",170,1250,0.3,1.25));
+            hPolyMrRsqv[isam]->Sumw2();
+            hPolyMrRsqv[isam]->AddBin(200,0.35,300,0.42);
+            hPolyMrRsqv[isam]->AddBin(300,0.35,400,0.42);
+            hPolyMrRsqv[isam]->AddBin(400,0.35,600,0.42);
+            hPolyMrRsqv[isam]->AddBin(600,0.35,1200,0.42);
+            hPolyMrRsqv[isam]->AddBin(200,0.42,300,0.5);
+            hPolyMrRsqv[isam]->AddBin(300,0.42,400,0.5);
+            hPolyMrRsqv[isam]->AddBin(400,0.42,600,0.5);
+            hPolyMrRsqv[isam]->AddBin(600,0.42,1200,0.5);
+            hPolyMrRsqv[isam]->AddBin(200,0.5,300,0.6);
+            hPolyMrRsqv[isam]->AddBin(300,0.5,400,0.6);
+            hPolyMrRsqv[isam]->AddBin(400,0.5,600,0.6);
+            hPolyMrRsqv[isam]->AddBin(600,0.5,1200,0.6);
+            hPolyMrRsqv[isam]->AddBin(200,0.6,300,0.75);
+            hPolyMrRsqv[isam]->AddBin(300,0.6,400,0.75);
+            hPolyMrRsqv[isam]->AddBin(400,0.6,600,0.75);
+            hPolyMrRsqv[isam]->AddBin(600,0.6,1200,0.75);
+            hPolyMrRsqv[isam]->AddBin(200,0.75,300,0.9);
+            hPolyMrRsqv[isam]->AddBin(300,0.75,400,0.9);
+            hPolyMrRsqv[isam]->AddBin(400,0.75,600,0.9);
+            hPolyMrRsqv[isam]->AddBin(600,0.75,1200,0.9);
+            hPolyMrRsqv[isam]->AddBin(200,0.9,300,1.2);
+            hPolyMrRsqv[isam]->AddBin(300,0.9,400,1.2);
+            hPolyMrRsqv[isam]->AddBin(400,0.9,600,1.2);
+            hPolyMrRsqv[isam]->AddBin(600,0.9,1200,1.2);
+ 
     sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",NBINS,edges));            hMETv[isam]->Sumw2();
     sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",NBINS,edges));         hMETLogv[isam]->Sumw2();
-    sprintf(hname,"hHT_%i",isam);             hHTv.push_back(new TH1D(hname,"",20,100,600));              hHTv[isam]->Sumw2();
-    sprintf(hname,"hMHT_%i",isam);            hMHTv.push_back(new TH1D(hname,"",30,300,2000));            hMHTv[isam]->Sumw2();
+    sprintf(hname,"hHT_%i",isam);             hHTv.push_back(new TH1D(hname,"",100,100,600));              hHTv[isam]->Sumw2();
+    sprintf(hname,"hMHT_%i",isam);            hMHTv.push_back(new TH1D(hname,"",100,100,1000));            hMHTv[isam]->Sumw2();
     sprintf(hname,"hNJets_%i",isam);          hNJetsv.push_back(new TH1D(hname,"",10,0,10));              hNJetsv[isam]->Sumw2();
     ///sprintf(hname,"halphaT_%i",isam);         halphaTv.push_back(new TH1D(hname,"",20,0,2.5));            halphaTv[isam]->Sumw2();
     //sprintf(hname,"hmindFPhi_%i",isam);       hmindFPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hmindFPhiv[isam]->Sumw2();
-    sprintf(hname,"hMR_%i",isam);             hMRv.push_back(new TH1D(hname,"",50,200.,3000.));             hMRv[isam]->Sumw2();
-    sprintf(hname,"hRsq_%i",isam);            hRsqv.push_back(new TH1D(hname,"",20,0.2,1.2));             hRsqv[isam]->Sumw2();
-    sprintf(hname,"hdeltaPhi_%i",isam);       hdeltaPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hdeltaPhiv[isam]->Sumw2();
+    sprintf(hname,"hMR_%i",isam);             hMRv.push_back(new TH1D(hname,"",100,200.,1000.));             hMRv[isam]->Sumw2();
+    sprintf(hname,"hRsq_%i",isam);            hRsqv.push_back(new TH1D(hname,"",100,0.2,1.2));             hRsqv[isam]->Sumw2();
+    sprintf(hname,"hdeltaPhi_%i",isam);       hdeltaPhiv.push_back(new TH1D(hname,"",60,0,3.14));         hdeltaPhiv[isam]->Sumw2();
 
     neventsv.push_back(0);
   }
-
+  TH2Poly *hPolyMrRsqMC      = (TH2Poly*) hPolyMrRsqv[0]->Clone("hPolyMrRsq");
   TH1D *hMETMC             = (TH1D*)hMETv[0]->Clone("hMETMC");
   TH1D *hMETLogMC          = (TH1D*)hMETLogv[0]->Clone("hMETLogMC");
   TH1D *hHTMC              = (TH1D*)hHTv[0]->Clone("hHTMC");
@@ -181,7 +212,7 @@ void plotRazor(const string preselection, const string subsample, const string c
       double nevts=0;
       int noweight=0;
       double wgt = 0;
-      std::cout << intree->GetEntries() << std::endl;
+      std::cout << "NEntries: " << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
 	if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
@@ -212,6 +243,7 @@ void plotRazor(const string preselection, const string subsample, const string c
         hMRv[isam]             ->Fill(fBits->MR,                              wgt);
         hRsqv[isam]            ->Fill(fBits->Rsq,                             wgt);
         hdeltaPhiv[isam]       ->Fill(fBits->deltaPhi,                        wgt);
+        hPolyMrRsqv[isam]      ->Fill(fBits->MR, fBits->Rsq, wgt);
 	//	if((!isData && subsample.compare("SR")!=0) || (!isData  && !isSignal && subsample.compare("SR")==0)){
 	if(!isData){
           neventsMC+=wgt;
@@ -225,6 +257,7 @@ void plotRazor(const string preselection, const string subsample, const string c
 	  hMRMC             ->Fill(fBits->MR,                              wgt);
 	  hRsqMC            ->Fill(fBits->Rsq,                             wgt);
 	  hdeltaPhiMC       ->Fill(fBits->deltaPhi,                        wgt);
+        hPolyMrRsqMC      ->Fill(fBits->MR, fBits->Rsq, wgt);
         }
 	// if(!isData){
 	//   if(isSignal1) hMETSig1->Fill(fBits->vmetpt,       wgt);
@@ -377,6 +410,8 @@ void plotRazor(const string preselection, const string subsample, const string c
   sprintf(ylabel,"Events / %.1f ",hdeltaPhiv[0]->GetBinWidth(1));
   makePlot(c, "deltaphi", "#Delta#phi*", ylabel, hdeltaPhiv, samplev, hdeltaPhiMC, hdeltaPhiPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hdeltaPhiMC->GetBinContent(hdeltaPhiMC->GetMaximumBin()))/(hdeltaPhiMC->GetBinWidth(hdeltaPhiMC->GetMaximumBin())), subsample);
+  
+  makePlotPoly(c, "PolyMrRsq", "M_{R}", "R^{2}", hPolyMrRsqMC, LUMI);
 
   cout << endl;
   cout << " <> Output saved in " << outputDir << endl;
@@ -469,6 +504,26 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   plot.Draw(c,false,"pdf",1);
   plotPull.Draw(c,true,"png",2);
   plotPull.Draw(c,true,"pdf",2);
+}
+
+void makePlotPoly(TCanvas *c, const string outname, const string xlabel, const string ylabel,
+              TH2Poly *hExp, const double lumi)
+{
+  char lumitext[100];
+  sprintf(lumitext,"%.2f fb^{-1} (13 TeV)",lumi);
+  CPlot plot(outname.c_str(),"",xlabel.c_str(),ylabel.c_str());  
+  // plot.AddTextBox(lumitext,0.66,0.99,0.95,0.925,0,kBlack);
+  // plot.AddTextBox("CMS",0.68,0.88,0.80,0.82,0,kBlack,62);
+  // plot.AddTextBox("Preliminary",0.68,0.82,0.87,0.77,0,kBlack,52);
+  plot.AddTextBox(lumitext,0.66,0.99,0.95,0.925,0,kBlack);
+  plot.AddTextBox("CMS",0.18,0.88,0.30,0.82,0,kBlack,62);
+  plot.AddTextBox("Preliminary",0.18,0.82,0.37,0.77,0,kBlack,52);
+  //plot.AddTextBox("Work In Progress",0.18,0.82,0.37,0.77,0,kBlack,52);  
+  plot.AddHist2Poly(hExp,"COLZ",kBlack,kBlack); 
+
+  plot.Draw(c,true,"C",1);
+  plot.Draw(c,true,"png",1);
+  plot.Draw(c,true,"pdf",1);
 }
 
 //--------------------------------------------------------------------------------------------------

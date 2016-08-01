@@ -131,7 +131,7 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; 
 fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then
-    #./sub.sh data $eos JetHTRun2016B_PromptReco_v1_trig                                                                       1  $dir $exec $option1 $option2
+    ./sub.sh data $eos JetHTRun2016B_PromptReco_v1_trig                                                                       1  $dir $exec $option1 $option2
     ./sub.sh data $eos JetHTRun2016B_PromptReco_v2_trig_July9                                                                       1  $dir $exec $option1 $option2
 fi
 

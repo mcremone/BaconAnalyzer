@@ -24,6 +24,7 @@
 #include <TF1.h>
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TH2Poly.h>
 #include <TGraph.h>
 #include <TProfile.h>
 #include <TLine.h>
@@ -38,11 +39,12 @@ using namespace RooFit;
 
 class CPlotItem {
 public:
-  CPlotItem():hist1D(0),hist2D(0),graph(0),prof(0),drawopt(""){}
+  CPlotItem():hist1D(0),hist2D(0),hist2Poly(0),graph(0),prof(0),drawopt(""){}
   ~CPlotItem(){}
 
   TH1D* hist1D;
   TH2D* hist2D;
+  TH2Poly* hist2Poly;
   TGraph* graph;
   TProfile* prof;
   TString drawopt;
@@ -76,7 +78,8 @@ public:
   void AddToStack(TFile *f, TString histName, TString label, int color, int linecol=-1);
   
   // Adding a 2D histogram to the plot
-  void AddHist2D(TH2D *h, TString drawopt="", int fillcolor=kWhite, int linecolor=kBlack);
+  void AddHist2D(TH2D *h, TString drawopt="", int fillcolor=kWhite, int linecolor=kBlack); 
+  void AddHist2Poly(TH2Poly *h, TString drawopt="", int fillcolor=kWhite, int linecolor=kBlack); 
   void AddHist2D(TFile *f, TString histName, TString drawopt="", int fillcolor=kWhite, int linecolor=kBlack);
 
   // Adding a graph (with error bars) to the plot
