@@ -122,3 +122,19 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; 
     ./sub.sh data $eos SingleElectronRun2016C_PromptReco_v2_trig                                                         1  $dir $exec $option1 $option2
     ./sub.sh data $eos SingleElectronRun2016D_PromptReco_v2_trig                                                         1  $dir $exec $option1 $option2
 fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8                                           1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1300_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1500_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1700_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1900_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_2100_Mchi_100_13TeV_madgraph_pythia8_2                                         1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_900_Mchi_100_13TeV_madgraph_pythia8                                            1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_1100_13TeV_madgraph_pythia8_2                                                  1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_1300_13TeV_madgraph_pythia8_2                                                  1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_1500_13TeV_madgraph_pythia8_2                                                  1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_300_13TeV_madgraph_pythia8                                                     1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_500_13TeV_madgraph_pythia8_2                                                   1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_700_13TeV_madgraph_pythia8_2                                                   1  $dir $exec $option1 $option2
+    ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S4_Mchi_900_13TeV_madgraph_pythia8_2                                                   1  $dir $exec $option1 $option2
+fi

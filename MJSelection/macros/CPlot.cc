@@ -214,6 +214,23 @@ void CPlot::AddHist2D(TH2D *h, TString drawopt, int fillcolor, int linecolor)
   fItems.push_back(item);
 }
 
+void CPlot::AddHist2Poly(TH2Poly *h, TString drawopt, int fillcolor, int linecolor)
+{
+  if(!h)
+    return;
+  
+  //  h->SetLineColor(linecolor);
+  h->SetLineColor(kBlack);
+  h->SetLineWidth(1);
+  h->SetFillColor(fillcolor);
+  h->SetMarkerStyle(kFullDotMedium);
+  
+  CPlotItem item;
+  item.hist2Poly = h;
+  item.drawopt = drawopt;
+  fItems.push_back(item);
+}
+
 void CPlot::AddHist2D(TFile *f, TString histName, TString drawopt, int fillcolor, int linecolor)
 {
   if(!f)
@@ -492,10 +509,11 @@ void CPlot::Draw(TCanvas *c, bool doSave, TString format, Int_t subpad)
     fRooPlot->Draw();
   }
       
-  int nHist1D=0, nHist2D=0, nGraph=0, nProf=0;
+  int nHist1D=0, nHist2D=0, nGraph=0, nProf=0, nHist2Poly=0;
   for(uint i=0; i<fItems.size(); i++) {
     if(fItems[i].hist1D != 0) nHist1D++;
     if(fItems[i].hist2D != 0) nHist2D++;
+    if(fItems[i].hist2Poly != 0) nHist2Poly++;
     if(fItems[i].graph != 0) nGraph++;
     if(fItems[i].prof != 0) nProf++;
   }
@@ -516,6 +534,46 @@ void CPlot::Draw(TCanvas *c, bool doSave, TString format, Int_t subpad)
       fItems[i].hist2D->SetTitle(fTitle);
       fItems[i].hist2D->GetXaxis()->SetTitle(fXTitle);
       fItems[i].hist2D->GetYaxis()->SetTitle(fYTitle);
+    
+      //
+      // Set log scale if necessary
+      //
+      c->SetLogx(fLogx);
+      c->SetLogy(fLogy);
+      
+      for(uint k=0; k<fLines.size(); k++)
+        fLines[k]->Draw();
+
+      for(uint k=0; k<fBoxes.size(); k++)
+        fBoxes[k]->Draw();
+      
+      for(uint j=0; j<fTextBoxes.size(); j++)
+        fTextBoxes[j]->Draw();
+            
+      if(doSave) {
+        gSystem->mkdir(sOutDir,true);
+        TString outname = sOutDir+TString("/")+fName+TString(".");
+        if(format.CompareTo("all",TString::kIgnoreCase)==0) {
+          c->SaveAs(outname+TString("pdf"));
+          c->SaveAs(outname+TString("png"));
+          c->SaveAs(outname+TString("eps"));	
+          c->SaveAs(outname+TString("C"));
+        } else {
+          c->SaveAs(outname+format);
+        }
+      }
+      
+      return;
+    }
+  }
+  if(nHist2Poly>0) {
+    for(uint i=0; i<fItems.size(); i++) {
+      if(fItems[i].hist2Poly==0) continue;
+      
+      fItems[i].hist2Poly->Draw(fItems[i].drawopt);
+      fItems[i].hist2Poly->SetTitle(fTitle);
+      fItems[i].hist2Poly->GetXaxis()->SetTitle(fXTitle);
+      fItems[i].hist2Poly->GetYaxis()->SetTitle(fYTitle);
     
       //
       // Set log scale if necessary

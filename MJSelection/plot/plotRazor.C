@@ -19,6 +19,7 @@
 #include <string>                     // C++ string class
 #include <cmath>                      // C++ math library
 #include <cassert>
+#include <TH2Poly.h>
 
 #include "../macros/CPlot.hh"         // helper class for plots
 #include "../macros/KStyle.hh"        // style settings for drawing
@@ -38,6 +39,8 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
               const vector<TH1D*>& histv, const vector<CSample*>& samplev, TH1D* hExp, TH1D* hPull,
               const bool doBlind, const double lumi, const bool doLogy=false, const double legdx=0, const double legdy=0,
               const double ymin=-1, const double ymax=-1, const string subsample="");
+void makePlotPoly(TCanvas *c, const string outname, const string xlabel, const string ylabel,
+              TH2Poly *hExp, const double lumi);
 TH1D* makePullHist(TH1D* hData, TH1D* hMC, const string name, const bool doBlind);
 float CalcSig(TH1D*sig, TH1D*bkg);
 
@@ -49,7 +52,7 @@ void plotRazor(const string preselection, const string subsample, const string c
   // Settings
   //==============================================================================================================
 
-  const bool doBlind = false;
+  const bool doBlind = true;
 
   // Create output directory 
   const string outputDir("razorplots/"+preselection+"_"+subsample+"_"+combo+"_"+algo);
@@ -61,35 +64,38 @@ void plotRazor(const string preselection, const string subsample, const string c
   // Note: macro assumes samplev[0] is data
   //
   vector<CSample*> samplev;
-
+  //cout <<"preselection = " <<  preselection.c_str() << endl;
   samplev.push_back(new CSample("data",0,0));
-  if (preselection.compare("Had")==0) samplev.back()->fnamev.push_back("../razorbits/Razor.root");
+  if (preselection.compare("Had")==0) samplev.back()->fnamev.push_back("../razorbits/JetHT.root");
   if (preselection.compare("MET")==0) samplev.back()->fnamev.push_back("../razorbits/MET.root"); 
   if (preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("../razorbits/SingleMuon.root");
   if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("../razorbits/SingleElectron.root");
-  if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("../razorbits/SinglePhoton.root");
+  if (preselection.compare("Pho")==0) { samplev.back()->fnamev.push_back("../razorbits/SinglePhoton.root");
   samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
   samplev.back()->fnamev.push_back("../razorbits/QCD.root");
+  }
   if (preselection.compare("Pho")!=0) {
-    samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
+    samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
+    samplev.back()->fnamev.push_back("../razorbits/QCD.root");
+    samplev.push_back(new CSample("Single Top",kBlue - 2,kBlue - 2));
     samplev.back()->fnamev.push_back("../razorbits/T.root");
-    samplev.push_back(new CSample("t#bar{t}",kOrange - 3,kOrange - 3));
+    samplev.push_back(new CSample("t#bar{t}",kPink - 2,kPink - 2));
     samplev.back()->fnamev.push_back("../razorbits/TT.root");
-    samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
+    samplev.push_back(new CSample("Diboson",kRed - 2,kRed - 2));
     samplev.back()->fnamev.push_back("../razorbits/WW.root");
     samplev.back()->fnamev.push_back("../razorbits/WZ.root");
     samplev.back()->fnamev.push_back("../razorbits/ZZ.root");
-    samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
+    samplev.push_back(new CSample("W+jets",kGreen - 2,kGreen - 2));
     samplev.back()->fnamev.push_back("../razorbits/WHF.root");
     samplev.back()->fnamev.push_back("../razorbits/WLF.root");
-    samplev.push_back(new CSample("Z+jets", kCyan - 9, kCyan - 9));
+    samplev.push_back(new CSample("Z+jets", kAzure - 2, kAzure - 2));
     samplev.back()->fnamev.push_back("../razorbits/ZHF.root");   
     samplev.back()->fnamev.push_back("../razorbits/ZLF.root");
     samplev.back()->fnamev.push_back("../razorbits/DYHF.root");
     samplev.back()->fnamev.push_back("../razorbits/DYLF.root");
   }
   if (preselection.compare("Pho")==0){
-    samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
+    samplev.push_back(new CSample("#gamma+jets", kAzure + 7, kAzure + 7));
     samplev.back()->fnamev.push_back("../razorbits/GHF.root");
     samplev.back()->fnamev.push_back("../razorbits/GLF.root");
   }
@@ -99,7 +105,7 @@ void plotRazor(const string preselection, const string subsample, const string c
   // }
 
   // integrated luminosity to scale MC
-  const double LUMI = 2.32;
+  const double LUMI = 12.9;
   
   // histograms for various corrections
   const string cmssw_base = getenv("CMSSW_BASE");
@@ -112,35 +118,63 @@ void plotRazor(const string preselection, const string subsample, const string c
   // Declare histograms
   //
   char hname[100];
+  vector<TH2Poly*> hPolyMrRsqv;
   vector<TH1D*> hMETv, hMETLogv;
   vector<TH1D*> hHTv, hMHTv;
   vector<TH1D*> hNJetsv;
-  vector<TH1D*> halphaTv, hmindFPhiv, hMRv, hRsqv, hdeltaPhiv;
+  vector<TH1D*> hMRv, hRsqv, hdeltaPhiv;
   vector<double> neventsv;
   const Int_t NBINS = 5;
   Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
+    sprintf(hname,"hPolyMrRsq_%i",isam);      hPolyMrRsqv.push_back(new TH2Poly(hname,"",170,1250,0.3,1.25));
+            hPolyMrRsqv[isam]->Sumw2();
+            hPolyMrRsqv[isam]->AddBin(200,0.35,300,0.42);
+            hPolyMrRsqv[isam]->AddBin(300,0.35,400,0.42);
+            hPolyMrRsqv[isam]->AddBin(400,0.35,600,0.42);
+            hPolyMrRsqv[isam]->AddBin(600,0.35,1200,0.42);
+            hPolyMrRsqv[isam]->AddBin(200,0.42,300,0.5);
+            hPolyMrRsqv[isam]->AddBin(300,0.42,400,0.5);
+            hPolyMrRsqv[isam]->AddBin(400,0.42,600,0.5);
+            hPolyMrRsqv[isam]->AddBin(600,0.42,1200,0.5);
+            hPolyMrRsqv[isam]->AddBin(200,0.5,300,0.6);
+            hPolyMrRsqv[isam]->AddBin(300,0.5,400,0.6);
+            hPolyMrRsqv[isam]->AddBin(400,0.5,600,0.6);
+            hPolyMrRsqv[isam]->AddBin(600,0.5,1200,0.6);
+            hPolyMrRsqv[isam]->AddBin(200,0.6,300,0.75);
+            hPolyMrRsqv[isam]->AddBin(300,0.6,400,0.75);
+            hPolyMrRsqv[isam]->AddBin(400,0.6,600,0.75);
+            hPolyMrRsqv[isam]->AddBin(600,0.6,1200,0.75);
+            hPolyMrRsqv[isam]->AddBin(200,0.75,300,0.9);
+            hPolyMrRsqv[isam]->AddBin(300,0.75,400,0.9);
+            hPolyMrRsqv[isam]->AddBin(400,0.75,600,0.9);
+            hPolyMrRsqv[isam]->AddBin(600,0.75,1200,0.9);
+            hPolyMrRsqv[isam]->AddBin(200,0.9,300,1.2);
+            hPolyMrRsqv[isam]->AddBin(300,0.9,400,1.2);
+            hPolyMrRsqv[isam]->AddBin(400,0.9,600,1.2);
+            hPolyMrRsqv[isam]->AddBin(600,0.9,1200,1.2);
+ 
     sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",NBINS,edges));            hMETv[isam]->Sumw2();
     sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",NBINS,edges));         hMETLogv[isam]->Sumw2();
-    sprintf(hname,"hHT_%i",isam);             hHTv.push_back(new TH1D(hname,"",20,100,600));              hHTv[isam]->Sumw2();
-    sprintf(hname,"hMHT_%i",isam);            hMHTv.push_back(new TH1D(hname,"",30,300,2000));            hMHTv[isam]->Sumw2();
+    sprintf(hname,"hHT_%i",isam);             hHTv.push_back(new TH1D(hname,"",100,100,600));              hHTv[isam]->Sumw2();
+    sprintf(hname,"hMHT_%i",isam);            hMHTv.push_back(new TH1D(hname,"",100,100,1000));            hMHTv[isam]->Sumw2();
     sprintf(hname,"hNJets_%i",isam);          hNJetsv.push_back(new TH1D(hname,"",10,0,10));              hNJetsv[isam]->Sumw2();
-    sprintf(hname,"halphaT_%i",isam);         halphaTv.push_back(new TH1D(hname,"",20,0,2.5));            halphaTv[isam]->Sumw2();
-    sprintf(hname,"hmindFPhi_%i",isam);       hmindFPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hmindFPhiv[isam]->Sumw2();
-    sprintf(hname,"hMR_%i",isam);             hMRv.push_back(new TH1D(hname,"",20,500,3500));             hMRv[isam]->Sumw2();
-    sprintf(hname,"hRsq_%i",isam);            hRsqv.push_back(new TH1D(hname,"",20,0.2,1.2));             hRsqLogv[isam]->Sumw2();
-    sprintf(hname,"hdeltaPhi_%i",isam);       hdeltaPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hdeltaPhiv[isam]->Sumw2();
+    ///sprintf(hname,"halphaT_%i",isam);         halphaTv.push_back(new TH1D(hname,"",20,0,2.5));            halphaTv[isam]->Sumw2();
+    //sprintf(hname,"hmindFPhi_%i",isam);       hmindFPhiv.push_back(new TH1D(hname,"",20,0,3.14));         hmindFPhiv[isam]->Sumw2();
+    sprintf(hname,"hMR_%i",isam);             hMRv.push_back(new TH1D(hname,"",100,200.,1000.));             hMRv[isam]->Sumw2();
+    sprintf(hname,"hRsq_%i",isam);            hRsqv.push_back(new TH1D(hname,"",100,0.2,1.2));             hRsqv[isam]->Sumw2();
+    sprintf(hname,"hdeltaPhi_%i",isam);       hdeltaPhiv.push_back(new TH1D(hname,"",60,0,3.14));         hdeltaPhiv[isam]->Sumw2();
 
     neventsv.push_back(0);
   }
-
+  TH2Poly *hPolyMrRsqMC      = (TH2Poly*) hPolyMrRsqv[0]->Clone("hPolyMrRsq");
   TH1D *hMETMC             = (TH1D*)hMETv[0]->Clone("hMETMC");
   TH1D *hMETLogMC          = (TH1D*)hMETLogv[0]->Clone("hMETLogMC");
   TH1D *hHTMC              = (TH1D*)hHTv[0]->Clone("hHTMC");
   TH1D *hMHTMC             = (TH1D*)hMHTv[0]->Clone("hMHTMC");
   TH1D *hNJetsMC           = (TH1D*)hNJetsv[0]->Clone("hNJetsMC");
-  TH1D *halphaTMC          = (TH1D*)halphaTv[0]->Clone("halphaTMC");
-  TH1D *hmindFPhiMC        = (TH1D*)hmindFPhiv[0]->Clone("hmindFPhiMC");
+  //TH1D *halphaTMC          = (TH1D*)halphaTv[0]->Clone("halphaTMC");
+  //TH1D *hmindFPhiMC        = (TH1D*)hmindFPhiv[0]->Clone("hmindFPhiMC");
   TH1D *hMRMC              = (TH1D*)hMRv[0]->Clone("hMRMC");
   TH1D *hRsqMC             = (TH1D*)hRsqv[0]->Clone("hRsqMC");
   TH1D *hdeltaPhiMC        = (TH1D*)hdeltaPhiv[0]->Clone("hdeltaPhiMC");
@@ -153,10 +187,8 @@ void plotRazor(const string preselection, const string subsample, const string c
   // TH1D *hMETSig6           = (TH1D*)hMETv[0]->Clone("hMETSig6"); 
 
   double neventsMC = 0;
-
   TFile *infile=0;
   TTree *intree=0;
-
   // Loop over samples
 
   for(unsigned int isam=0; isam<samplev.size(); isam++) {
@@ -170,30 +202,31 @@ void plotRazor(const string preselection, const string subsample, const string c
     // bool isSignal4 = (isam==samplev.size()-4);
     // bool isSignal5 = (isam==samplev.size()-5);
     // bool isSignal6 = (isam==samplev.size()-6);
- 
     for(unsigned int ifile=0; ifile<sample->fnamev.size(); ifile++) {
       string infilename = sample->fnamev[ifile];
       cout << " ==> Processing " << infilename << "... "; cout.flush();
       infile = new TFile(infilename.c_str()); assert(infile);
+      infile->ls();
       intree = (TTree*)infile->Get("Events"); assert(intree);
       fBits  = new RazorBitsLoader(intree,algo,syst,preselection);
       double nevts=0;
       int noweight=0;
-
-      std::cout << intree->GetEntries() << std::endl;
+      double wgt = 0;
+      std::cout << "NEntries: " << intree->GetEntries() << std::endl;
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
 	if(!doBlind && subsample.compare("SR")==0 && ientry % 5 != 0) continue;
-	if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
+	if(!fBits->selectJetAlgoAndSize(algo)) continue;
 	// common selection
 	if(fBits->metfilter!=0)                   continue;
 	//preselection
 	if(!fBits->passPreSelection(preselection)) continue;
 	//selection
-	if(!fBits->passSelection(preselection,subsample,combo)) continue;
+	//if(!fBits->passRazorSR(preselection, isData)) continue;
+	if(!fBits->passSelection(preselection, subsample, combo, isData)) continue;
 
 	// Apply weigths                                                                                                                                                                            
-        double wgt = 1;
+        wgt = 1;
         wgt *= fBits->getWgt(isData,algo,LUMI);
 
 	nevts += wgt;
@@ -205,25 +238,26 @@ void plotRazor(const string preselection, const string subsample, const string c
         hHTv[isam]             ->Fill(fBits->HT,                              wgt);
         hMHTv[isam]            ->Fill(fBits->MHT,                             wgt);
         hNJetsv[isam]          ->Fill(fBits->njets,                           wgt);
-        halphaTv[isam]         ->Fill(fBits->alphaT,                          wgt);
-        hmindFPhiv[isam]       ->Fill(fBits->mindFPhi,                        wgt);
+       // halphaTv[isam]         ->Fill(fBits->alphaT,                          wgt);
+       // hmindFPhiv[isam]       ->Fill(fBits->mindFPhi,                        wgt);
         hMRv[isam]             ->Fill(fBits->MR,                              wgt);
         hRsqv[isam]            ->Fill(fBits->Rsq,                             wgt);
         hdeltaPhiv[isam]       ->Fill(fBits->deltaPhi,                        wgt);
-
+        hPolyMrRsqv[isam]      ->Fill(fBits->MR, fBits->Rsq, wgt);
 	//	if((!isData && subsample.compare("SR")!=0) || (!isData  && !isSignal && subsample.compare("SR")==0)){
 	if(!isData){
           neventsMC+=wgt;
           hMETMC            ->Fill(fBits->vmetpt,       wgt);
           hMETLogMC         ->Fill(fBits->vmetpt,       wgt);
 	  hHTMC             ->Fill(fBits->HT,                              wgt);
-	  hMHMC             ->Fill(fBits->MHT,                             wgt);
+	  hMHTMC             ->Fill(fBits->MHT,                             wgt);
 	  hNJetsMC          ->Fill(fBits->njets,                           wgt);
-	  halphaTMC         ->Fill(fBits->alphaT,                          wgt);
-	  hmindFPhiMC       ->Fill(fBits->mindFPhi,                        wgt);
+	  //halphaTMC         ->Fill(fBits->alphaT,                          wgt);
+	 // hmindFPhiMC       ->Fill(fBits->mindFPhi,                        wgt);
 	  hMRMC             ->Fill(fBits->MR,                              wgt);
 	  hRsqMC            ->Fill(fBits->Rsq,                             wgt);
 	  hdeltaPhiMC       ->Fill(fBits->deltaPhi,                        wgt);
+        hPolyMrRsqMC      ->Fill(fBits->MR, fBits->Rsq, wgt);
         }
 	// if(!isData){
 	//   if(isSignal1) hMETSig1->Fill(fBits->vmetpt,       wgt);
@@ -233,19 +267,20 @@ void plotRazor(const string preselection, const string subsample, const string c
 	//   // if(isSignal5) hMETSig5->Fill(fBits->vmetpt,       wgt);
         //   // if(isSignal6) hMETSig6->Fill(fBits->vmetpt,       wgt);
 	// }
-      }
 
-      if(isData && doBlind) {
-        cout << endl;
-      } else {
-        cout << nevts << " " << noweight  <<  endl;
       }
+      if (!isData && doBlind) 
+      {
+        cout << nevts << " " << noweight  << " " << wgt << endl;
+      }
+      
       delete infile;
       infile=0;
       intree=0;
-    }
-  }
+      }
+      
 
+  }
   //
   // Make pull histograms
   //
@@ -254,8 +289,8 @@ void plotRazor(const string preselection, const string subsample, const string c
   TH1D *hHTPull             = makePullHist(hHTv[0],             hHTMC,             "hHTPull",              doBlind);
   TH1D *hMHTPull            = makePullHist(hMHTv[0],            hMHTMC,            "hMHTPull",             doBlind);
   TH1D *hNJetsPull          = makePullHist(hNJetsv[0],          hNJetsMC,          "hNJetsPull",           doBlind);
-  TH1D *halphaTPull         = makePullHist(halphaTv[0],         halphaTMC,         "halphaTPull",          doBlind);
-  TH1D *hmindFPhiPull       = makePullHist(hmindFPhiv[0],       hmindFPhiMC,       "hmindFPhiPull",        doBlind);
+ // TH1D *halphaTPull         = makePullHist(halphaTv[0],         halphaTMC,         "halphaTPull",          doBlind);
+ // TH1D *hmindFPhiPull       = makePullHist(hmindFPhiv[0],       hmindFPhiMC,       "hmindFPhiPull",        doBlind);
   TH1D *hMRPull             = makePullHist(hMRv[0],             hMRMC,             "hMRPull",              doBlind);
   TH1D *hRsqPull            = makePullHist(hRsqv[0],            hRsqMC,            "hRsqPull",             doBlind);
   TH1D *hdeltaPhiPull       = makePullHist(hdeltaPhiv[0],       hdeltaPhiMC,       "hdeltaPhiPull",        doBlind);
@@ -274,12 +309,12 @@ void plotRazor(const string preselection, const string subsample, const string c
   //--------------------------------------------------------------------------------------------------------------
   // Output
   //==============================================================================================================
-   
+  
+
   cout << "*" << endl;
   cout << "* SUMMARY" << endl;
   cout << "*--------------------------------------------------" << endl;
   cout << endl;
-
   ofstream txtfile;
   char txtfname[200];
   sprintf(txtfname,"%s/summary.txt",outputDir.c_str());
@@ -300,12 +335,11 @@ void plotRazor(const string preselection, const string subsample, const string c
       txtfile << setw(35) << samplev[isam]->label;
       txtfile << setw(15) << neventsv[isam] << endl;
       txtfile << setw(35) << "Significance: ";
-      txtfile << setw(15) << significance[samplev.size()-isam-1] << endl;
+      //txtfile << setw(15) << significance[samplev.size()-isam-1] << endl;
     }
   }
   //   txtfile << setw(35) << "S/sqrt(B)["+samplev[isam]->label+"]:" << setw(15) << neventsv[isam]/sqrt(neventsMC) << endl;
   txtfile.close();
-
    //--------------------------------------------------------------------------------------------------------------
   // Make plots
   //==============================================================================================================
@@ -358,12 +392,12 @@ void plotRazor(const string preselection, const string subsample, const string c
            0.1, 2.1*(hNJetsMC->GetBinContent(hNJetsMC->GetMaximumBin()))/(hNJetsMC->GetBinWidth(hNJetsMC->GetMaximumBin())), subsample);
 
   sprintf(ylabel,"Events / GeV");
-  makePlot(c, "alphat", "#alpha_{T} [GeV]", ylabel, halphaTv, samplev, halphaTMC, halphaTPull, doBlind, LUMI, false, 0.0, -0.03,
-           0.1, 2.1*(halphaTMC->GetBinContent(halphaTMC->GetMaximumBin()))/(halphaTMC->GetBinWidth(halphaTMC->GetMaximumBin())), subsample);
+//  makePlot(c, "alphat", "#alpha_{T} [GeV]", ylabel, halphaTv, samplev, halphaTMC, halphaTPull, doBlind, LUMI, false, 0.0, -0.03,
+ //          0.1, 2.1*(halphaTMC->GetBinContent(halphaTMC->GetMaximumBin()))/(halphaTMC->GetBinWidth(halphaTMC->GetMaximumBin())), subsample);
 
-  sprintf(ylabel,"Events / %.1f ",hmindFPhiv[0]->GetBinWidth(1));
-  makePlot(c, "mindfphi", "#Delta#phi*_{min}", ylabel, hmindFPhiv, samplev, hmindFPhiMC, hmindFPhiPull, doBlind, LUMI, false, -0.4, -0.15,
-           0.1, 2.1*(hmindFPhiMC->GetBinContent(hmindFPhiMC->GetMaximumBin()))/(hmindFPhiMC->GetBinWidth(hmindFPhiMC->GetMaximumBin())), subsample);
+//  sprintf(ylabel,"Events / %.1f ",hmindFPhiv[0]->GetBinWidth(1));
+//  makePlot(c, "mindfphi", "#Delta#phi*_{min}", ylabel, hmindFPhiv, samplev, hmindFPhiMC, hmindFPhiPull, doBlind, LUMI, false, -0.4, -0.15,
+//           0.1, 2.1*(hmindFPhiMC->GetBinContent(hmindFPhiMC->GetMaximumBin()))/(hmindFPhiMC->GetBinWidth(hmindFPhiMC->GetMaximumBin())), subsample);
 
   sprintf(ylabel,"Events / %.1f ",hMRv[0]->GetBinWidth(1));
   makePlot(c, "mr", "M_{R} [GeV]", ylabel, hMRv, samplev, hMRMC, hMRPull, doBlind, LUMI, false, -0.4, -0.15,
@@ -376,6 +410,8 @@ void plotRazor(const string preselection, const string subsample, const string c
   sprintf(ylabel,"Events / %.1f ",hdeltaPhiv[0]->GetBinWidth(1));
   makePlot(c, "deltaphi", "#Delta#phi*", ylabel, hdeltaPhiv, samplev, hdeltaPhiMC, hdeltaPhiPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hdeltaPhiMC->GetBinContent(hdeltaPhiMC->GetMaximumBin()))/(hdeltaPhiMC->GetBinWidth(hdeltaPhiMC->GetMaximumBin())), subsample);
+  
+  makePlotPoly(c, "PolyMrRsq", "M_{R}", "R^{2}", hPolyMrRsqMC, LUMI);
 
   cout << endl;
   cout << " <> Output saved in " << outputDir << endl;
@@ -468,6 +504,26 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   plot.Draw(c,false,"pdf",1);
   plotPull.Draw(c,true,"png",2);
   plotPull.Draw(c,true,"pdf",2);
+}
+
+void makePlotPoly(TCanvas *c, const string outname, const string xlabel, const string ylabel,
+              TH2Poly *hExp, const double lumi)
+{
+  char lumitext[100];
+  sprintf(lumitext,"%.2f fb^{-1} (13 TeV)",lumi);
+  CPlot plot(outname.c_str(),"",xlabel.c_str(),ylabel.c_str());  
+  // plot.AddTextBox(lumitext,0.66,0.99,0.95,0.925,0,kBlack);
+  // plot.AddTextBox("CMS",0.68,0.88,0.80,0.82,0,kBlack,62);
+  // plot.AddTextBox("Preliminary",0.68,0.82,0.87,0.77,0,kBlack,52);
+  plot.AddTextBox(lumitext,0.66,0.99,0.95,0.925,0,kBlack);
+  plot.AddTextBox("CMS",0.18,0.88,0.30,0.82,0,kBlack,62);
+  plot.AddTextBox("Preliminary",0.18,0.82,0.37,0.77,0,kBlack,52);
+  //plot.AddTextBox("Work In Progress",0.18,0.82,0.37,0.77,0,kBlack,52);  
+  plot.AddHist2Poly(hExp,"COLZ",kBlack,kBlack); 
+
+  plot.Draw(c,true,"C",1);
+  plot.Draw(c,true,"png",1);
+  plot.Draw(c,true,"pdf",1);
 }
 
 //--------------------------------------------------------------------------------------------------
