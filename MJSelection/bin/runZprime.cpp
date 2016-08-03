@@ -35,7 +35,7 @@ TauLoader       *fTau        = 0;
 PhotonLoader    *fPhoton     = 0; 
 JetLoader       *fJet        = 0; 
 VJetLoader      *fVJetPuppi15= 0;
-//VJetLoader      *fVJetPuppi  = 0;
+VJetLoader      *fVJetPuppi  = 0;
 VJetLoader      *fVJetCHS    = 0;
 RunLumiRangeMap *fRangeMap   = 0; 
 
@@ -77,7 +77,7 @@ int main( int argc, char **argv ) {
   fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fVJetPuppi15= new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr => CA8PUPPI
- // fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi",2);
+  fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi");
   //fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
   if(lOption.compare("data")!=0) fGen      = new GenLoader     (lTree);                  // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
@@ -88,7 +88,7 @@ int main( int argc, char **argv ) {
   fEvt      ->setupTree      (lOut); 
   fJet      ->setupTree      (lOut,"res_PUPPIjet");
   fVJetPuppi15   ->setupTree      (lOut,"bst15_PUPPIjet"); 
-  //fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
+  fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
   // fVJetCHS  ->setupTree      (lOut,"bst8_CHSjet"); 
   fMuon     ->setupTree      (lOut); 
   fElectron ->setupTree      (lOut); 
@@ -110,12 +110,12 @@ int main( int argc, char **argv ) {
     if(lOption.compare("data")!=0){
       fGen->load(i0);
       lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
-//      if(lOption.find("bb")!=std::string::npos && !(fGen->isType("Z","bb") || fGen->isType("Zprime","bb"))) continue;
-//      if(lOption.find("cc")!=std::string::npos && !(fGen->isType("Z","cc") || fGen->isType("Zprime","cc"))) continue;
-//      if(lOption.find("cs")!=std::string::npos && !(fGen->isType("W","cs"))) continue;
-//      if(lOption.find("lf")!=std::string::npos && (fGen->isType("W","cs") || fGen->isType("Z","bb") || fGen->isType("Z","cc")|| fGen->isType("Zprime","bb")|| fGen->isType("Zprime","cc"))) continue;
-      if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
-      if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
+      if(lOption.find("bb")!=std::string::npos && !(fGen->isType("Z","bb") || fGen->isType("Zprime","bb"))) continue;
+      if(lOption.find("cc")!=std::string::npos && !(fGen->isType("Z","cc") || fGen->isType("Zprime","cc"))) continue;
+      if(lOption.find("cs")!=std::string::npos && !(fGen->isType("W","cs"))) continue;
+      if(lOption.find("lf")!=std::string::npos && (fGen->isType("W","cs") || fGen->isType("Z","bb") || fGen->isType("Z","cc")|| fGen->isType("Zprime","bb")|| fGen->isType("Zprime","cc"))) continue;
+      if(lOption.find("hgf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
+      if(lOption.find("lgf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
     }
     else{
       if(!passEvent(fEvt->fRun,fEvt->fLumi)) continue;
@@ -164,13 +164,13 @@ int main( int argc, char **argv ) {
 
 
     fEvt->fillModifiedMet(lVetoes,lPhotons);
-    if(fEvt->fMet < 170. && fEvt->fPuppEt < 170. && fEvt->fFPuppEt < 170. && fEvt->fFMet < 170.) continue;
+//    if(fEvt->fMet < 170. && fEvt->fPuppEt < 170. && fEvt->fFPuppEt < 170. && fEvt->fFMet < 170.) continue;
     fEvt->triggerEff(lElectrons, lPhotons);
 
-/*    // AK8Puppi Jets
+    // AK8Puppi Jets
     fVJetPuppi->load(i0);
     fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,0.8,fEvt->fRho,lPhotons,lPhotonsMVA);
-    if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 2;}*/
+    if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 2;}
     
     // AK8CHS Jets
     // fVJetCHS  ->load(i0); 
@@ -188,7 +188,7 @@ int main( int argc, char **argv ) {
     // if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
     // Select Jets                                       
-    //if(!((fEvt->fselectBits & 2) || (fEvt->fselectBits & 4))) continue;
+    if(!((fEvt->fselectBits & 2) || (fEvt->fselectBits & 4))) continue;
 
     // ttbar, EWK and kFactor correction
 
@@ -199,19 +199,19 @@ int main( int argc, char **argv ) {
                                                                                                                                                                              if(lName.find("ZJets")!=std::string::npos || lName.find("DYJets")!=std::string::npos){
       fGen->findBoson(23,0);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z","ZJets_012j_NLO");
-      //if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,23);
+      if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,23);
       if(lVJets15.size()>0)     fVJetPuppi15->fisHadronicV = fGen->ismatchedJet(lVJet15[0],1.5,fVJetPuppi15->fvMatching,fVJetPuppi15->fvSize,23);
     }
     if(lName.find("WJets")!=std::string::npos){
       fGen->findBoson(24,1);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"WJets_012j_NLO/nominal","WJets_LO/inv_pt","EWKcorr/W","WJets_012j_NLO");
-     // if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,24);
+      if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,24);
       if(lVJets15.size()>0)     fVJetPuppi15->fisHadronicV = fGen->ismatchedJet(lVJet15[0],1.5,fVJetPuppi15->fvMatching,fVJetPuppi15->fvSize,24);
     }
     if(lName.find("ZPrime")!=std::string::npos || lName.find("VectorDiJet")!=std::string::npos){
       fGen->findBoson(10031,0);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z","ZJets_012j_NLO");
-     // if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,10031);
+      if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,10031);
       if(lVJets15.size()>0)     fVJetPuppi15->fisHadronicV = fGen->ismatchedJet(lVJet15[0],1.5,fVJetPuppi15->fvMatching,fVJetPuppi15->fvSize,10031);
     }
     if(lName.find("TTJets")!=std::string::npos){

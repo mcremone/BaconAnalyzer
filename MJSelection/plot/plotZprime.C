@@ -63,9 +63,10 @@ void plotZprime(const string preselection,const string selection,const string su
 
   samplev.push_back(new CSample("data",0,0));
   samplev.back()->fnamev.push_back("../zprimebits/SinglePhotontrig4.root");
-  samplev.push_back(new CSample("G+Jets",kMagenta - 10,kMagenta - 10));
-  samplev.back()->fnamev.push_back("/tmp/cmantill/GHF80_2.root");
-  samplev.back()->fnamev.push_back("/tmp/cmantill/GLF80_2.root");
+  samplev.push_back(new CSample("G+Jets(HF)",kMagenta - 10,kMagenta - 10));
+  samplev.back()->fnamev.push_back("../zprimebits/GHF80_2.root");
+  samplev.push_back(new CSample("G+Jets(LF)",kMagenta - 6,kMagenta - 6));
+  samplev.back()->fnamev.push_back("../zprimebits/GLF80_2.root");
   samplev.push_back(new CSample("W+jets",kGreen - 10,kGreen - 10));
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/r/rapte/public/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/zprimebits/Wcs.root");
   samplev.back()->fnamev.push_back("/afs/cern.ch/work/r/rapte/public/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/zprimebits/Wlf.root");
@@ -96,7 +97,7 @@ void plotZprime(const string preselection,const string selection,const string su
   samplev.back()->fnamev.push_back("../zprimebits/VectorDiJet1Jet_M300_mc.root");
   */
   // integrated luminosity to scale MC
-  const double LUMI = 0.868;
+  const double LUMI = 12.89;
   //const double LUMI = 2.32;
 
   // histograms for various corrections
@@ -149,7 +150,7 @@ void plotZprime(const string preselection,const string selection,const string su
   TTree *intree=0;
 
   // Loop over samples
-  for(unsigned int isam=1; isam<2; isam++) {
+  for(unsigned int isam=0; isam<3; isam++) {
     CSample *sample  = samplev[isam];
     cout << "Sample: " << sample->label << endl;
     bool isData    = (isam==0);
@@ -178,11 +179,13 @@ void plotZprime(const string preselection,const string selection,const string su
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
       // for(unsigned int ientry=0; ientry<100; ientry++) {
 	// Blinding policy: keep just one fifth of the events
-	if(!doBlind && isData && ientry % 5 != 0) continue;
+	//if(!doBlind && isData && ientry % 5 != 0) continue;
         intree->GetEntry(ientry);
 
 	if(!fBits->selectJetAlgoAndSize(algo))   continue;
 	if(fBits->metfilter!=0)                  continue;
+        //if(isData && ((fBits->metfilter & 1) || (fBits->metfilter & 2) || (fBits->metfilter & 8) || (fBits->metfilter & 32) || 
+	//		(fBits->metfilter & 1024) || (fBits->metfilter & 2048) || (fBits->metfilter & 32768))) continue;
         if(!fBits->passPreSelection(isData,preselection)) continue;
 	if(!fBits->passSelection(isData,selection,subsample,cut,csv)) continue;
 
@@ -242,7 +245,7 @@ void plotZprime(const string preselection,const string selection,const string su
   hSubjetBtagv[1]     ->Scale(QCDSF);
   hFatjetBtagv[1]     ->Scale(QCDSF);
 
-  for(unsigned int isam=1; isam<2; isam++) {
+  for(unsigned int isam=1; isam<3; isam++) {
     cout << "Adding " << samplev[isam]->label <<" to MC"<<endl;
     hFatJetPtMC       ->Add(hFatJetPtv[isam]);
     hFatJetPtLogMC    ->Add(hFatJetPtLogv[isam]);

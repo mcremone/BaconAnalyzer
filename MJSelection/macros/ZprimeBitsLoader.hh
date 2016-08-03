@@ -44,10 +44,11 @@ public:
   int metfilter;                                                                   // MET filter bits          
   unsigned int runNum, lumiSec, evtNum;                                            // event ID
   unsigned int triggerBits, selectBits;                                            // trigger and jet type bits
-  double triggerEff;                                                               // trigger efficiency
-  float evtWeight, puWeight;                                                       // pu and evt weight
+  double triggerEff,triggerEffP;                                                               // trigger efficiency
+  float evtWeight, puWeight, kfactor;                                                       // pu and evt weight
   unsigned int npu, npv;                                                           // PU, PV multiplicity
-  int nmu, nele, ntau, npho;                                                       // object multiplicity
+  int nmu, nele, ntau, npho;
+  int nphoMedium;                                                                  // object multiplicity
   int njets;                                                                       // jet multiplicity 
   float scale1fb;                                                                  // cross section scale factor per 1/fb
   float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                     // MET and fake MET
@@ -69,6 +70,6 @@ protected:
   const unsigned int kMET  = 2;
   const unsigned int kHT  = 2;
   const unsigned int kSinglePhoton  = 4;
-
+  const unsigned int kBOOSTED15PUPPI = 4;
 };
 #endif

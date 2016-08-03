@@ -17,11 +17,14 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet,TString
     iTree->SetBranchAddress("nele",                              &nele);
     iTree->SetBranchAddress("ntau",                              &ntau);
     iTree->SetBranchAddress("npho",                              &npho);
+    iTree->SetBranchAddress("nphoMedium",                        &nphoMedium);
     iTree->SetBranchAddress("puWeight",                          &puWeight);
     iTree->SetBranchAddress("scale1fb",                          &scale1fb);
+    iTree->SetBranchAddress("triggerEffP",                       &triggerEffP);
     iTree->SetBranchAddress("evtWeight",                         &evtWeight);
-    iTree->SetBranchAddress(met,                                 &vmetpt);
-    iTree->SetBranchAddress(met+"phi",                           &vmetphi);
+    iTree->SetBranchAddress("kfactor",                           &kfactor);
+//    iTree->SetBranchAddress(met,                                 &vmetpt);
+//    iTree->SetBranchAddress(met+"phi",                           &vmetphi);
     iTree->SetBranchAddress("fake"+met,                          &vfakemetpt);
     iTree->SetBranchAddress("fake"+met+"phi",                    &vfakemetphi);
     iTree->SetBranchAddress("bst"+number+"_"+algo+"jets",                 &njets);
@@ -44,12 +47,12 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet,TString
 ZprimeBitsLoader::~ZprimeBitsLoader(){}
 bool ZprimeBitsLoader::selectJetAlgoAndSize(TString algo){
   bool lPass = false;
-  if((selectBits & kBOOSTED8PUPPI) && algo=="PUPPI") lPass = true;
+  if((selectBits & kBOOSTED15PUPPI) && algo=="PUPPI") lPass = true;
   return lPass;
 }
 bool ZprimeBitsLoader::isPho(bool isData){
   bool lPass = false;
-  if (nmu==0 && nele==0 && npho==1 && ntau==0){
+  if (nmu==0 && nele==0 && nphoMedium==1 && ntau==0){
    if(isData){
     if(triggerBits & kSinglePhoton)  lPass = true;}
    else{
@@ -92,7 +95,8 @@ bool ZprimeBitsLoader::passBoostedGammaZprimeSelection(){
 
 bool ZprimeBitsLoader::passBoostedGammaZprimeSR(float ddtcut){
   
-  return passBoostedGammaZprimeSelection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
+  //return passBoostedGammaZprimeSelection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
+  return passBoostedGammaZprimeSelection();
 }
 
 
@@ -120,7 +124,7 @@ return lPass;
 double ZprimeBitsLoader::getWgt(bool isData, TString algo, double LUMI){
   float wgt = 1;
   if(!isData) {     
-    wgt *= LUMI*scale1fb*evtWeight;
+    wgt *= LUMI*scale1fb*evtWeight*triggerEffP*kfactor;
     if (algo == "CHS") wgt *= puWeight;
   }
   return wgt;
