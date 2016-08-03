@@ -17,12 +17,13 @@ PhotonLoader::~PhotonLoader() {
   delete fPhotonBr;
 }
 void PhotonLoader::reset() { 
-  fNPhotons      = 0; 
-  fNPhotonsMedium = 0;
-  fNPhotonsMVA = 0; 
-  fphoMVA_pt = 0;
-  fphoMVA_eta = 0;
-  fphoMVA_phi = 0;
+  fNPhotonsLoose  = 0; 
+  fNPhotonsTight  = 0;
+  fNPhotonsMVA    = 0; 
+  fispho0Tight    = 0;
+  fphoMVA_pt      = 0;
+  fphoMVA_eta     = 0;
+  fphoMVA_phi     = 0;
 
   fSelPhotons.clear();
   fSelPhotonsMVA.clear();
@@ -32,20 +33,18 @@ void PhotonLoader::reset() {
 void PhotonLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("npho",       &fNPhotons,      "fNPhotons/I");       // photon multiplicity 
-  fTree->Branch("nphoMedium", &fNPhotonsMedium,"fNPhotonsMedium/I"); // medium photon multiplicity
-  fTree->Branch("nphoMVA",    &fNPhotonsMVA,   "fNPhotonsMVA/I");    // MVA-based selection
-  fTree->Branch("vpho0_iso",  &fIso,           "fIso/D");            // photon isolation
-  fTree->Branch("vphoMVA_pt", &fphoMVA_pt,     "fphoMVA_pt/D"); 
-  fTree->Branch("vphoMVA_eta",&fphoMVA_eta,    "fphoMVA_eta/D");
-  fTree->Branch("vphoMVA_phi",&fphoMVA_phi,    "fphoMVA_phi/D");
-
-  setupNtuple("vpho",iTree,fN,fVars);                                // pho0_pt,_eta,_phi (1*3=3)
-  //setupNtuple("vphoMVA",iTree,fN,fVarsMVA);
-  addSF      ("phoSF",iTree,fphoSFVars,1);                           // phoSF0
+  fTree->Branch("nphoLoose",   &fNPhotonsLoose, "fNPhotonsLoose/I");  // loose photon multiplicity 
+  fTree->Branch("nphoTight",   &fNPhotonsTight, "fNPhotonsTight/I");  // medium(tight) photon multiplicity
+  fTree->Branch("nphoMVA",     &fNPhotonsMVA,   "fNPhotonsMVA/I");    // MVA-based selection
+  fTree->Branch("ispho0Tight", &fispho0Tight,   "fispho0Tight/I"); 
+  fTree->Branch("vphoMVA_pt",  &fphoMVA_pt,     "fphoMVA_pt/D"); 
+  fTree->Branch("vphoMVA_eta", &fphoMVA_eta,    "fphoMVA_eta/D");
+  fTree->Branch("vphoMVA_phi", &fphoMVA_phi,    "fphoMVA_phi/D");
+  setupNtuple("vpho",iTree,fN,fVars);                                 // pho0_pt,_eta,_phi (1*3=3)
+  addSF      ("phoSF",iTree,fphoSFVars,1);                            // phoSF0
 }
 void PhotonLoader::load(int iEvent) { 
-  fPhotons   ->Clear();
+  fPhotons  ->Clear();
   fPhotonBr ->GetEntry(iEvent);
 }
 void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons) {
@@ -67,17 +66,17 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
     if(!passPhoMediumSel(pPhoton, iRho))                continue;
     lTCount++;
 
+    if(lCount ==1) fispho0Tight = 1;
     lVeto.push_back(pPhoton);
     addPhoton(pPhoton,fSelPhotons);
     if(!photon || (pPhoton->pt > photon->pt))  photon = pPhoton;
   }
   if(photon) addVPhoton(photon,iPhotons,0.);
 
-  fNPhotons = lCount;
-  fNPhotonsMedium = lTCount;
+  fNPhotonsLoose = lCount;
+  fNPhotonsTight = lTCount;
 
   if(fVars.size() > 0) fillPhoton(fN,fSelPhotons,fVars);
-  if(fSelPhotons.size() > 0) fIso = TMath::Max(fSelPhotons[0]->chHadIso  - iRho*phoEffArea(fSelPhotons[0]->scEta, 0), (double)0.);
 }
 void PhotonLoader::selectPhotonsMVA(double iRho,std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iPhotons) {
   //reset(); 
@@ -107,7 +106,7 @@ void PhotonLoader::selectPhotonsMVA(double iRho,std::vector<TLorentzVector> &iVe
     fphoMVA_eta = photonMVA->eta;
     fphoMVA_phi = photonMVA->phi;
   }
-  fNPhotons = lCount;
-  fNPhotonsMVA = lMVACount;
+  fNPhotonsLoose = lCount;
+  fNPhotonsMVA   = lMVACount;
   
 }

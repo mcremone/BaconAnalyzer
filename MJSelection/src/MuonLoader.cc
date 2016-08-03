@@ -7,17 +7,23 @@
 
 using namespace baconhep;
 
-MuonLoader::MuonLoader(TTree *iTree,std::string imuScaleFactorFilename) { 
+MuonLoader::MuonLoader(TTree *iTree,std::string imuScaleFactorFilename,std::string imuScaleFactorTightFilename,std::string imuScaleFactorTrackFilename) { 
   fMuons  = new TClonesArray("baconhep::TMuon");
   iTree->SetBranchAddress("Muon",       &fMuons);
   fMuonBr  = iTree->GetBranch("Muon");
   fN = 2;
   TFile *fMuSF = new TFile(imuScaleFactorFilename.c_str());
-  fhMuLoose =  (TH2D*) fMuSF->Get("scalefactors_Loose_Muon");
+  fhMuLoose =  (TH2D*) fMuSF->Get("scaleFactor_muon_looseid_RooCMSShape");
   fhMuLoose->SetDirectory(0);
-  fhMuTight =  (TH2D*) fMuSF->Get("scalefactors_Tight_Muon");
-  fhMuTight->SetDirectory(0);
   fMuSF->Close();
+  TFile *fMuSFTight = new TFile(imuScaleFactorTightFilename.c_str());
+  fhMuTight =  (TH2D*) fMuSFTight->Get("scaleFactor_muon_tightid_RooCMSShape");
+  fhMuTight->SetDirectory(0);
+  fMuSFTight->Close();
+  TFile *fMuSFTrack = new TFile(imuScaleFactorTrackFilename.c_str());
+  fhMuTrack = (TH1D*) fMuSFTrack->Get("htrack2");
+  fhMuTrack->SetDirectory(0);
+  fMuSFTrack->Close();
 
   for(int i0 = 0; i0 < fN*3.; i0++) {double pVar = 0; fVars.push_back(pVar);}
   for(int i0 = 0; i0 <     4; i0++) {double pVar = 0; fVars.push_back(pVar);}
@@ -28,9 +34,11 @@ MuonLoader::~MuonLoader() {
   delete fMuonBr;
 }
 void MuonLoader::reset() { 
-  fNMuons      = 0; 
-  fNMuonsTight = 0; 
+  fNMuonsLoose = 0; 
+  fNMuonsTight = 0;
+  fismu0Tight  = 0; 
   fisDimuon    = 0;
+  fmuoSFTrack  = 1;
   fSelMuons.clear();
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
   for(unsigned int i0 = 0; i0 < fmuoSFVars.size(); i0++) fmuoSFVars[i0] = 1;
@@ -38,45 +46,54 @@ void MuonLoader::reset() {
 void MuonLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("nmu",     &fNMuons      ,"fNMuons/I"); 
-  fTree->Branch("nmuTight",&fNMuonsTight ,"fNMuonsTight/I");
-  fTree->Branch("isDimuon",&fisDimuon    ,"fisDimuon/I");
-
-  setupNtuple("vmuo",iTree,fN,fVars);        // add leading 2 muons: pt,eta,phi,mass (2*4=8)
-  addDiMuon  ("vdimuo",iTree,1, fVars,fN*3); // add dimuon system: *_pt,mass,phi,y for dimuo0 (1*4)
-  addSF      ("muoSF",iTree,fmuoSFVars,3);   // add lepSF: muoSF0,muoSF1,muoSF2
+  fTree->Branch("nmuLoose"  ,&fNMuonsLoose ,"fNMuonsLoose/I"); 
+  fTree->Branch("nmuTight"  ,&fNMuonsTight ,"fNMuonsTight/I");
+  fTree->Branch("ismu0Tight",&fismu0Tight  ,"fismu0Tight/I");
+  fTree->Branch("isDimuon"  ,&fisDimuon    ,"fisDimuon/I");
+  fTree->Branch("muoSFTrack",&fmuoSFTrack  ,"fmuoSFTrack/D");
+  setupNtuple("vmuoLoose"   ,iTree,fN,fVars);       // add leading 2 muons: pt,eta,phi,mass (2*4=8)
+  addDiMuon  ("vdimuo"      ,iTree,1, fVars,fN*3);  // add dimuon system: *_pt,mass,phi,y for dimuo0 (1*4)
+  addSF      ("muoSF"       ,iTree,fmuoSFVars,3);   // add lepSF: muoSF0,muoSF1,muoSF2
 }
 void MuonLoader::load(int iEvent) { 
-  fMuons   ->Clear();
+  fMuons  ->Clear();
   fMuonBr ->GetEntry(iEvent);
 }
-void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes) {
+void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes, float met, float metPhi) {
   reset(); 
-  // Tight multiplicity
-  int lCount = 0,lTCount =0; 
-  for  (int i0 = 0; i0 < fMuons->GetEntriesFast(); i0++) if(passMuonTightSel((TMuon*)fMuons->At(i0))) lTCount++; 
-  fNMuonsTight = lTCount; 
-
-  // Loose selection
+  // Muon multiplicity
   std::vector<TMuon*> lVeto;
+  int lCount = 0,lTCount =0; 
+  fvMetNoMu.SetMagPhi(met,metPhi);
+
+  // Muon selection
   for  (int i0 = 0; i0 < fMuons->GetEntriesFast(); i0++) { 
     TMuon *pMuon = (TMuon*)((*fMuons)[i0]);
     if(pMuon->pt        <=  10)                      continue;
     if(fabs(pMuon->eta) >=  2.4)                     continue;
-    // if(passVeto(pMuon->eta,pMuon->phi,0.4,iVetoes))  continue;
     if(!passMuonLooseSel(pMuon))                     continue;
     lCount++;
+
+    TVector2 vMu; vMu.SetMagPhi(pMuon->pt, pMuon->phi);
+    fvMetNoMu = fvMetNoMu + vMu;
+
     lVeto.push_back(pMuon);
     addMuon(pMuon,fSelMuons);
+
+    if(pMuon->pt>20 && fabs(pMuon->eta)< 2.4 && passMuonTightSel(pMuon)){
+      if(lCount==1) fismu0Tight = 1;
+      lTCount++;
+    }
   }
-  fNMuons = lCount; 
-  
-  // Add selected tight Muons to iVetoes
-  if(fNMuons <= 1 && lVeto.size()==1){
+  fNMuonsLoose = lCount; 
+  fNMuonsTight = lTCount;
+
+  // Add Selected Tight Muons to iVetoes
+  if(fNMuonsLoose <= 1 && lVeto.size()==1){
     if(passMuonTightSel(lVeto[0]) && lVeto[0]->pt > 20) addVMuon(lVeto[0],iVetoes,MUON_MASS);
   }
-  if(fVars.size() > 0)                fillMuon(fN,fSelMuons,fVars);
-  if(fNMuons <= 2 && lVeto.size()==2) fillDiMuon(lVeto,iVetoes,fisDimuon);
+  if(fVars.size() > 0)                     fillMuon(fN,fSelMuons,fVars);
+  if(fNMuonsLoose <= 2 && lVeto.size()==2) fillDiMuon(lVeto,iVetoes,fisDimuon);
 }
 // DIMUON
 void MuonLoader::addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase) { 

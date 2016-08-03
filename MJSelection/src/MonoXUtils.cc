@@ -377,17 +377,20 @@ void addSF(std::string iHeader,TTree *iTree,std::vector<double> &iVals, int iN) 
   }
 }
 //--------------------------------------------------------------------------------------------------
-void fillLepSF(int iId, int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals) {
+void fillLepSF(int iId,int nLep,int npv,std::vector<TLorentzVector> iLeptons,TH1D *trackHist1,TH2D *trackHist2,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals, double &fTrack){
   std::vector <double> flepSFtight, flepSFloose, flepEfftight, flepEffloose;
   flepSFtight.clear(); flepSFloose.clear(); 
   for(unsigned int i0=0; i0<iLeptons.size(); i0++){
-    flepSFtight.push_back(getVal2D(tightHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt())); //getTightMuonSF(iMuons[i0].Pt(),iMuons[i0].Eta()) - getTightEleSF(iElectrons[i0].Pt(),iElectrons[i0].Eta())
-    flepSFloose.push_back(getVal2D(looseHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt())); //getLooseMuonSF(iMuons[i0].Pt(),iMuons[i0].Eta()) - getVetoEleSF(iElectrons[i0].Pt(),iElectrons[i0].Eta()))
+    flepSFtight.push_back(getVal2D(tightHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
+    flepSFloose.push_back(getVal2D(looseHist,fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
     if(iId == 13){
+      fTrack *= getVal(trackHist1,npv);
       flepEfftight.push_back(getTightMuonDataIDEff(fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
       flepEffloose.push_back(getLooseMuonDataIDEff(fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
+
     }
     if(iId == 11){
+      fTrack *= getVal2D(trackHist2,fabs(iLeptons[i0].Eta()),npv);
       flepEfftight.push_back(getTightEleDataIDEff(fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
       flepEffloose.push_back(getVetoEleDataIDEff(fabs(iLeptons[i0].Eta()),iLeptons[i0].Pt()));
     }

@@ -21,20 +21,30 @@ EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::st
   fVertexBr     = iTree->GetBranch("PV");
   
   TFile *lFile = new TFile(iPUWeight.c_str()); 
-  fPUWeightHist =  (TH1F*) lFile->Get("puWeights");
+  fPUWeightHist =  (TH1F*) lFile->Get("hPU");
   fPUWeightHist->SetDirectory(0);
   lFile->Close();
   fSample = (char*) (iName.c_str());
 
-  TFile *fEleTrigB = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_jetht_barrel.root");
+  TFile *fEleTrigB = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_lowpt_rebinned.root");
   hEleTrigB = (TH1D*) fEleTrigB->Get("h_num");
   hEleTrigB->SetDirectory(0);
   fEleTrigB->Close();
 
-  TFile *fEleTrigE = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_jetht_endcap.root");
+  TFile *fEleTrigE = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_lowpt_rebinned.root");
   hEleTrigE = (TH1D*) fEleTrigE->Get("h_num");
   hEleTrigE->SetDirectory(0);
   fEleTrigE->Close();
+
+  TFile *fEleTrigLow  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_lowpt.root");
+  hEleTrigLow = (TH2D*) fEleTrigLow->Get("hEffEtaPt");
+  hEleTrigLow->SetDirectory(0);
+  fEleTrigLow->Close();
+
+  TFile *fMetTrig  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/met_trig.root");
+  hMetTrig = (TH1D*) fMetTrig->Get("numer");
+  hMetTrig->SetDirectory(0);
+  fMetTrig->Close();
 
   TFile *fPhoTrig  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/pho_trig.root");
   hPhoTrig = (TH1D*) fPhoTrig->Get("h_num");
@@ -52,9 +62,9 @@ void EvtLoader::reset() {
   fEvtV         = 0; 
   fRho          = 0; 
   fITrigger     = 0; 
-  fEffTrigger   = 0;
-  fEffTriggerE  = 1;
-  fEffTriggerP  = 1;
+  fsf_eleTrig   = 1;
+  fsf_phoTrig   = 1;
+  fsf_metTrig   = 1;
   fselectBits   = 0;
   fNVtx         = 0; 
   fNPU          = 0;
@@ -94,9 +104,9 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("metfilter"       ,&fMetFilters     ,"fMetFilters/I");
   fTree->Branch("triggerBits"     ,&fITrigger       ,"fITrigger/i");
   fTree->Branch("selectBits"      ,&fselectBits     ,"fselectBits/i");
-  fTree->Branch("triggerEff"      ,&fEffTrigger     ,"fEffTrigger/D");
-  fTree->Branch("triggerEffE"     ,&fEffTriggerE    ,"fEffTriggerE/D");
-  fTree->Branch("triggerEffP"     ,&fEffTriggerP    ,"fEffTriggerP/D");
+  fTree->Branch("sf_eleTrig"      ,&fsf_eleTrig     ,"fsf_eleTrig/D");
+  fTree->Branch("sf_metTrig"      ,&fsf_metTrig     ,"fsf_metTrig/D");
+  fTree->Branch("sf_phoTrig"      ,&fsf_phoTrig     ,"fsf_phoTrig/D");
 
   fTree->Branch("npu"             ,&fNPU            ,"fNPU/i");
   fTree->Branch("npv"             ,&fNVtx           ,"fNVtx/i");
@@ -121,6 +131,7 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("puppetphi"       ,&fPuppEtPhi      ,"fPuppEtPhi/F");
   fTree->Branch("calomet"         ,&fCaloMet        ,"fCaloMet/F");
   fTree->Branch("calometphi"      ,&fCaloMetPhi     ,"fCaloMetPhi/F");
+  fTree->Branch("metnomu"         ,&fMetNoMu        ,"fMetNoMu/F");
 
   fTree->Branch("fakepfmet"       ,&fFMet           ,"fFMet/F");
   fTree->Branch("fakepfmetphi"    ,&fFMetPhi        ,"fFMetPhi/F");
@@ -138,7 +149,6 @@ void EvtLoader::load(int iEvent) {
   fLumi  = fEvt->lumiSec;
 }
 bool EvtLoader::passTrigger(std::string iTrigger) {
-  //std::cout << fEvt->triggerBits << std::endl;
   return fTrigger->pass(iTrigger,fEvt->triggerBits);
 }
 bool EvtLoader::passSkim() { 
@@ -146,7 +156,7 @@ bool EvtLoader::passSkim() {
   bool lFilter = fMetFilters % 2 == 0; 
   return (lMet && lFilter); 
 }
-void EvtLoader::fillEvent(unsigned int trigBit,float lWeight) { 
+void EvtLoader::fillEvent(unsigned int trigBit,float lWeight, int is80) { 
   reset();
   fRun          = fEvt->runNum;
   fLumi         = fEvt->lumiSec;
@@ -163,8 +173,10 @@ void EvtLoader::fillEvent(unsigned int trigBit,float lWeight) {
   fkfactor      = 1;
   fMet          = fEvt->pfMETC;
   fMetPhi       = fEvt->pfMETCphi;
-  //fCaloMet      = fEvt->caloMET;
-  //fCaloMetPhi   = fEvt->caloMETphi;
+  if(is80==1){
+    fCaloMet    = fEvt->caloMET;
+    fCaloMetPhi = fEvt->caloMETphi;
+  }
   fPuppEt       = fEvt->puppETC;
   fPuppEtPhi    = fEvt->puppETCphi;
   return;
@@ -197,21 +209,13 @@ void  EvtLoader::correctMet(float &iMet,float &iMetPhi,TLorentzVector &iCorr) {
   iMet    = lVec.Pt();
   iMetPhi = lVec.Phi();
 }
-float EvtLoader::metSig(float iMet,float iMetPhi,float iCov00,float iCov01,float iCov10,float iCov11) { 
-  TMatrixD lInv(2,2);
-  TLorentzVector lUVec; lUVec.SetPtEtaPhiM(iMet,0,iMetPhi,0);
-  lInv(0,0) = iCov00; lInv(1,1) = iCov11; lInv(1,0) = iCov10; lInv(0,1) = iCov01;
-  if(lInv.Determinant() != 0) lInv.Invert();
-  double lSignificance = TMath::Sqrt(lUVec.Px()*lUVec.Px()*(lInv)(0,0) + 2.*lUVec.Px()*lUVec.Py()*(lInv)(1,0) + lUVec.Py()*lUVec.Py()*(lInv)(1,1));
-  return lSignificance;
-}
 // Met Filter
 bool EvtLoader::passFilter() { 
   return (fEvt->metFilterFailBits == 0);
 }
 // Vtx
-unsigned int EvtLoader::nVtx() { 
-  unsigned int lNVertex = 0; 
+int EvtLoader::nVtx() { 
+  int lNVertex = 0; 
   for(int i0 = 0; i0 < fVertices->GetEntries(); i0++) { 
     TVertex *pVertex = (TVertex*) ((*fVertices)[i0]);
     if(fabs(pVertex->z) > 24) continue;
@@ -229,30 +233,33 @@ bool EvtLoader::PV(){
 }
 // Trigger Efficiency
 void EvtLoader::triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<TLorentzVector> iPhotons) {
-  fEffTrigger = ((0.975+(fEvt->pfMETC-200)*0.025*0.025)*(fEvt->pfMETC<240)+1*(fEvt->pfMETC>=240));
+  fsf_metTrig = getVal(hMetTrig,fMetNoMu);
   if(iElectrons.size() > 0){
-    //if(fITrigger & 4)                                            fEffTrigger = getEle27TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
-    //if(!(fITrigger & 4) && (fITrigger & 8))                      fEffTrigger = getEle23TriggerSF(iElectrons[0].Pt(),iElectrons[0].Eta());
-    //if ((fITrigger & 4)){
     float eff1=0, eff2=0;
-    if (TMath::Abs(iElectrons[0].Eta())<1.4442)        eff1 = getVal(hEleTrigB,iElectrons[0].Pt());
-    if (1.5660<TMath::Abs(iElectrons[0].Eta()) && TMath::Abs(iElectrons[0].Eta())<2.5)        eff1 = getVal(hEleTrigE,iElectrons[0].Pt());
+    if (iElectrons[0].Pt()<100)                   
+      eff1 = getVal2D(hEleTrigLow,iElectrons[0].Eta(),iElectrons[0].Pt());
+    if (TMath::Abs(iElectrons[0].Eta())<1.4442)
+      eff1 = getVal(hEleTrigB,iElectrons[0].Pt());
+    if (1.5660<TMath::Abs(iElectrons[0].Eta()) && TMath::Abs(iElectrons[0].Eta())<2.5)   
+      eff1 = getVal(hEleTrigE,iElectrons[0].Pt());
     if (iElectrons.size()>1) {
+      if (iElectrons[1].Pt()<100)
+	eff2 = getVal2D(hEleTrigLow,iElectrons[1].Eta(),iElectrons[1].Pt());
       if (TMath::Abs(iElectrons[1].Eta())<1.4442)
 	eff2 = getVal(hEleTrigB,iElectrons[1].Pt());
       if (1.5660<TMath::Abs(iElectrons[1].Eta()) && TMath::Abs(iElectrons[1].Eta())<2.5)
 	eff2 = getVal(hEleTrigE,iElectrons[1].Pt());
     }
-    fEffTriggerE = 1 - (1-eff1)*(1-eff2);
+    fsf_eleTrig = 1 - (1-eff1)*(1-eff2);
   }
   if(iPhotons.size()   > 0){
-    fEffTriggerP = getVal(hPhoTrig,iPhotons[0].Pt());
+    fsf_phoTrig = getVal(hPhoTrig,iPhotons[0].Pt());
   }
 }
 // puWeight
 float EvtLoader::puWeight(float iNPU) { 
   float lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(iNPU)));
-  if(iNPU > 30) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(30)));
+  //if(iNPU > 30) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(30)));
   if(iNPU <  1) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(0)));
   return lNPVW;
 }

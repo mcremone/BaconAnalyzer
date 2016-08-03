@@ -13,7 +13,7 @@ using namespace baconhep;
 
 class ElectronLoader { 
 public:
-  ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scalefactors_ele_80x_UCSD.root");
+  ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_vetoid_12p9.root",std::string ieleScaleFactorTightFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_tightid_12p9.root",std::string ieleScaleFactorTrackFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_track.root");
   ~ElectronLoader();
   void reset();
   void setupTree(TTree *iTree);
@@ -23,11 +23,14 @@ public:
   void fillDiElectron(double iRho,std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes, int & isDiele);
   std::vector<TElectron*> fSelElectrons;
   std::vector<double>     feleSFVars;
-  TH2D         *fhEleVeto;
+  TH2D         *fhEleLoose;
   TH2D         *fhEleTight;
-  int           fNElectrons;
+  TH2D         *fhEleTrack;
+  int           fNElectronsLoose;
   int           fNElectronsTight;
   int           fisDiele;
+  int           fisele0Tight;
+  double        feleSFTrack;
 
 protected: 
   TClonesArray *fElectrons;
@@ -35,7 +38,6 @@ protected:
   TTree        *fTree;
   std::vector<double>     fVars;
   int           fN;
-  double        fIso1;
-  double        fIso2;
+
 };
 #endif

@@ -84,19 +84,20 @@ public:
 
   bool passSelection(string preselection, string selection, string subsample, string combo, float &btagw, TString syst, bool isSignal, bool isBacon = true);
   int nfjets(string selection);
-  float fjet_mass(string selection);
-  float fjet_pt(string selection);
+  float fjet_mass(string selection, bool isBacon);
+  float fjet_pt(string selection, bool isBacon);
   float transverse_mass(string selection);
   float tau21(string selection);
-  float tau32(string selection);
+  float tau32(string selection,bool isBacon);
   float rho(string selection);
   float minsubcsv(string selection);
-  float maxsubcsv(string selection);
+  float maxsubcsv(string selection,bool isBacon);
   float doublecsv(string selection);
   float chf(string selection);
   float nhf(string selection);
   float nemf(string selection);
   float getDoublebWeight(TString syst, bool isSignal, string doublecsv, int NminBjets, float bstpt);
+  float getPhotonPurity();
   double getWgt(bool isData, TString algo, double LUMI, float btagw);
   double tau32DDT(string selection);
   double tau21DDT(string selection);
@@ -104,7 +105,6 @@ public:
   double getdRsj0dR(string selection);
   double getdRsj0dRpt(string selection);
   double getdPsj0dP(string selection);
-  float getPhotonPurity();
 
   //
   // variables to read in bacon bits
@@ -127,6 +127,7 @@ public:
   int nLoosePhoton, nTightPhoton;
   int nLooseMuon, nTightMuon;
   int nLooseElectron, nTightElectron;
+  double vpho0_pt;
 
   int looseLep1IsTight, looseLep1PdgId;
   float looseLep1Pt, looseLep1Eta, looseLep1Phi;
@@ -134,8 +135,6 @@ public:
   float looseLep2Pt, looseLep2Eta, looseLep2Phi;
   int loosePho1IsTight;
   float loosePho1Pt, loosePho1Eta, loosePho1Phi;
-
-  double vpho0_pt;
 
   int njets, njetsdR2, njetsdR15, nfjets15, nfjets8, nfjets15T, nfjets8T;            // jet multiplicity 
   int nbtags, nisobtags;

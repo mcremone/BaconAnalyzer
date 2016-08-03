@@ -47,7 +47,7 @@ double getVal                 (TH1D*h,double val);
 double getVal2D               (TH2D*h,double val1, double val2);
 bool   passVeto               (double iEta,double iPhi,double idR,std::vector<TLorentzVector> &iVetoes);
 void   addSF                  (std::string iHeader,TTree *iTree,std::vector<double> &iVals, int iN);
-void   fillLepSF              (int iId, int nLep,std::vector<TLorentzVector> iLeptons,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals);
+void fillLepSF(int iId,int nLep,int npv,std::vector<TLorentzVector> iLeptons,TH1D *trackHist1,TH2D *trackHist2,TH2D *tightHist,TH2D *looseHist,float isMatched,std::vector<double> &iVals, double &fTrack);
 void   fillPhoSF              (int iId, int nPho,std::vector<TLorentzVector> iPhotons,float isMatched,std::vector<double> &iVals);
 double getLepEventReweight    (int Nminlep,int Nlep,std::vector<TLorentzVector> &vleptons,float isMatched,std::vector <double> lepSFtight,std::vector <double> lepSFloose, 
 			       std::vector <double> lepEfftight, std::vector <double> lepEffloose);

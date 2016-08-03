@@ -41,7 +41,6 @@ void TauLoader::selectTaus(std::vector<TLorentzVector> &iVetoes) {
     if(pTau->pt        <=  18)           continue;
     if(fabs(pTau->eta) >=  2.3)          continue;
     if(!passTauSel(pTau))                continue;
-    //addVTau(pTau,iVetoes,pTau->m);                          // ask Matteo if we should include or not - seems like no
     addTau(pTau,fSelTaus);
     lCount++;
   }

@@ -18,7 +18,8 @@ using namespace baconhep;
 
 class BTagWeightLoader { 
 public:
-  BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/include/CSVv2.csv");
+  BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/include/CSVv2_ichep.csv");
+  //BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/include/CSVv2.csv");
   ~BTagWeightLoader();
   void reset();
   void setupTree(TTree *iTree, std::string iJetLabel);
@@ -31,7 +32,7 @@ public:
   
 protected:
   std::vector<std::string> fLabels = {"CENT", "MISTAGUP","MISTAGDO","BTAGUP","BTAGDO"};   // nominal, mistagup, mistagdown, btagup and btagdown
-  std::vector<std::string> measurementTypes = {"mujets", "incl"};                         // measurements type
+  std::vector<std::string> measurementTypes = {"comb", "incl"};                           // measurements type
   std::vector<std::string> variationTypes = {"central", "up", "down"};                    // systematics type
   std::vector<std::string> flavorTypes = {"Ms", "Bs"};                                    // nominal, mistag and btag
   std::vector<std::string> wpTypes = {"L","M","T"};                                       // working points                           

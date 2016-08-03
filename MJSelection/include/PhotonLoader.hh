@@ -21,18 +21,19 @@ public:
 
   std::vector<TPhoton*> fSelPhotons, fSelPhotonsMVA;
   std::vector<double>   fphoSFVars;
-  int           fNPhotons;
-  int           fNPhotonsMedium;
+  int           fNPhotonsLoose;
+  int           fNPhotonsTight;
   int           fNPhotonsMVA;
+  int           fispho0Tight;
 
 protected: 
   TClonesArray *fPhotons;
   TBranch      *fPhotonBr;
   TTree        *fTree;
   
-  std::vector<double> fVars;// fVarsMVA;
+  std::vector<double> fVars;
   int           fN;
   double        fIso;
-  double fphoMVA_pt, fphoMVA_eta, fphoMVA_phi;
+  double        fphoMVA_pt, fphoMVA_eta, fphoMVA_phi;
 };
 #endif

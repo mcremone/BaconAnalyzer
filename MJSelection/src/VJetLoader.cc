@@ -35,16 +35,12 @@ double clean(double x, double def=-1) {
 
 VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN, std::string subjetbtagScaleFactorFilename) { 
   fVJets         = new TClonesArray("baconhep::TJet");
-  // fFatJets       = new TClonesArray("baconhep::TJet");
   fVAddJets      = new TClonesArray("baconhep::TAddJet");
 
   iTree->SetBranchAddress(iJet.c_str(),       &fVJets);
   iTree->SetBranchAddress(iAddJet.c_str(),    &fVAddJets);
   fVJetBr        = iTree->GetBranch(iJet.c_str());
   fVAddJetBr     = iTree->GetBranch(iAddJet.c_str());
-
-  // iTree->SetBranchAddress(iJet.c_str(),      &fFatJets);
-  // fFatJetBr      = iTree->GetBranch(iJet.c_str());
 
   fN = iN;
 
@@ -71,8 +67,6 @@ VJetLoader::~VJetLoader() {
   delete fVJetBr;
   delete fVAddJets;
   delete fVAddJetBr;
-  // delete fFatJets;
-  // delete fFatJetBr;
 }
 double VJetLoader::correction(TJet &iJet,double iRho) {
   TLorentzVector lVec; lVec.SetPtEtaPhiM(iJet.ptRaw,iJet.eta,iJet.phi,iJet.mass);
@@ -97,6 +91,7 @@ void VJetLoader::reset() {
   ftopSize            = 999;
   ftopMatching        = 999;
   fisHadronicTop      = 0;
+  fisTightVJet        = 0;
   fvSize              = 999;
   fvMatching          = 999;
   fisHadronicV        = 0;
@@ -135,6 +130,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   std::stringstream pSiT;   pSiT << iJetLabel << "0_isHadronicTop";
   std::stringstream pSTM;   pSTM << iJetLabel << "0_topMatching";
   std::stringstream pSTS;   pSTS << iJetLabel << "0_topSize";
+  std::stringstream pSTJ;   pSTJ << iJetLabel << "0_isTightVJet";
   std::stringstream pSiV;   pSiV << iJetLabel << "0_isHadronicV";
   std::stringstream pSVM;   pSVM << iJetLabel << "0_vMatching";
   std::stringstream pSVS;   pSVS << iJetLabel << "0_vSize";
@@ -153,6 +149,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch(pSiT.str().c_str() ,&fisHadronicTop       ,(pSiT.str()+"/I").c_str());
   fTree->Branch(pSTM.str().c_str() ,&ftopMatching         ,(pSTM.str()+"/D").c_str());
   fTree->Branch(pSTS.str().c_str() ,&ftopSize             ,(pSTS.str()+"/D").c_str());
+  fTree->Branch(pSTJ.str().c_str() ,&fisTightVJet         ,(pSTJ.str()+"/I").c_str());
   fTree->Branch(pSiV.str().c_str() ,&fisHadronicV         ,(pSiV.str()+"/I").c_str());
   fTree->Branch(pSVM.str().c_str() ,&fvMatching           ,(pSVM.str()+"/D").c_str());
   fTree->Branch(pSVS.str().c_str() ,&fvSize               ,(pSVS.str()+"/D").c_str());
@@ -174,8 +171,6 @@ void VJetLoader::load(int iEvent) {
   fVJetBr      ->GetEntry(iEvent);
   fVAddJets    ->Clear();
   fVAddJetBr   ->GetEntry(iEvent);
-  // fFatJets     ->Clear();
-  // fFatJetBr    ->GetEntry(iEvent);
 }
 void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho, std::vector<TLorentzVector> &iPhotons, std::vector<TLorentzVector> &iPhotonsMVA, std::string iJetID){
   reset(); 
@@ -193,6 +188,7 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
     lCount++;
   }
   if(iJets.size() > 0){
+    if(passJetTightLepVetoSel(fSelVJets[0])) fisTightVJet = 1;
     if(passVeto(fSelVJets[0]->eta,fSelVJets[0]->phi,dR,iPhotons))                lvetoPhoton = 1;
     if(passVeto(fSelVJets[0]->eta,fSelVJets[0]->phi,dR,iPhotonsMVA))             lvetoPhoton = 2;
     TLorentzVector ivJ; ivJ.SetPtEtaPhiM(fSelVJets[0]->pt,fSelVJets[0]->eta,fSelVJets[0]->phi,fSelVJets[0]->mass);
@@ -228,9 +224,6 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
     TJet *pLargeJet = getLargeJet(iObjects[i0]); 
     if(pLargeJet != 0) iVals[lBase+i0*lNLabel+14] = pLargeJet->csv;
     iVals[lBase+i0*lNLabel+15]  = correction(*(iObjects[i0]),iRho);
-
-    // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+14] = pLargeJet->pt - iObjects[i0]->pt;
-    // if(pLargeJet != 0) iVals[lBase+i0*lNLabel+15] = pullDot(pLargeJet->pullY,iObjects[i0]->pullY,pLargeJet->pullPhi,iObjects[i0]->pullPhi);
   
     // SubJets
     int lNSubJets(0);

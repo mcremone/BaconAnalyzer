@@ -27,7 +27,7 @@ using namespace baconhep;
 
 class VJetLoader { 
 public:
-  VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN=1, std::string subjetbtagScaleFactorFilename ="/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/include/CSVv2_subjets.csv");
+  VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN=1, std::string subjetbtagScaleFactorFilename ="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/include/subjet_CSVv2_ichep.csv");
   ~VJetLoader();
   double correction(TJet &iJet,double iRho);
   void reset();
@@ -51,6 +51,7 @@ public:
 
   double ftopSize, ftopMatching, fvSize, fvMatching;
   int fisHadronicTop, fisHadronicV;
+  int fisTightVJet;
   int fvetoPhoton;
   float fVMT,fdR_sj0dR,fdPhi_sj0dPhi, fdPhiJRF_sj0dPhiJRF;
 
