@@ -85,17 +85,17 @@ int main( int argc, char **argv ) {
   //fJetPuppi  = new JetLoader     (lTree,"AK4Puppi"); 
   //fBTagCHS   = new BTagWeightLoader(lTree);
 //  fBTagPuppi = new BTagWeightLoader(lTree);
-  if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
+  if (lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
   TFile *lFile = new TFile("Output.root","RECREATE");
   TTree *lOut  = new TTree("Events","Events");
 
   // Setup Tree
   fEvt       ->setupTree      (lOut); 
-  fMuon      ->setupTree      (lOut);
-  fElectron  ->setupTree      (lOut);
-  fTau       ->setupTree      (lOut);
-  fPhoton    ->setupTree      (lOut);
+//  fMuon      ->setupTree      (lOut);
+//  fElectron  ->setupTree      (lOut);
+//  fTau       ->setupTree      (lOut);
+//  fPhoton    ->setupTree      (lOut);
   fJetCHS    ->setupTree      (lOut,"res_CHSjet");
  // fJetCHS    ->setupTreeDiJet (lOut,"res_CHSjet");
   fJetCHS    ->setupTreeRazor (lOut,"res_CHSjet"); 
@@ -114,6 +114,8 @@ int main( int argc, char **argv ) {
   //for(int i0 = 0; i0 < int(100000); i0++){ // for testing
     if(i0 % 100000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
+
+
     // Check JSON and GenInfo
     fEvt->load(i0);
     float lWeight = 1;
@@ -191,7 +193,7 @@ int main( int argc, char **argv ) {
 
     // Muons
     fMuon     ->load(i0);
-    fMuon     ->selectMuons(lMuons);
+    fMuon     ->selectMuons(lMuons,fEvt->fMet,fEvt->fMetPhi);
     
     // Electrons
     fElectron ->load(i0);
@@ -219,6 +221,7 @@ int main( int argc, char **argv ) {
     // Photons
     fPhoton  ->load(i0);
     fPhoton  ->selectPhotons(fEvt->fRho,lElectrons,lPhotons);
+//    fPhoton->selectPhotonsMVA(fEvt->fRho,lElectrons,lPhotonsMVA);
     
     // MET selection
     fEvt->fillModifiedMet(lVetoes,lPhotons);
@@ -268,11 +271,16 @@ int main( int argc, char **argv ) {
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
     }
     
+    //For now only select event with 0 lepton -- for Razor
+    if (fMuon->fNMuonsLoose>0 || fElectron->fNElectronsLoose>0 || fPhoton->fNPhotonsLoose>0 || fTau->fNTaus>0 ) continue;    
+    if (fJetCHS->fMR < 200. || fJetCHS->fRsq < 0.25) continue; 
+
+    
     lOut->Fill();
     neventstest++;
   }
-  std::cout << neventstest << std::endl;
-  std::cout << lTree->GetEntriesFast() << std::endl;
+  std::cout << "neventtest = " << neventstest << std::endl;
+  std::cout << "lTree->GetEntriesFast(): " << lTree->GetEntriesFast() << std::endl;
   lFile->cd();
   lOut->Write();
   lFile->Close();

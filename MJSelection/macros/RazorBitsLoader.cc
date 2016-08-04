@@ -135,12 +135,12 @@ bool RazorBitsLoader::passRazorPreselection(bool isData){
        if (isData &&
           (triggerBits & kRazor) && 
           MR > 200. && 
-          Rsq > 0.5 && 
+          Rsq > 0.35 && 
           nJetsAbove80GeV > 1 && 
           deltaPhi < 2.5) lPass = true;
        else if  (!isData &&
           MR > 200. && 
-          Rsq > 0.5 && 
+          Rsq > 0.35 && 
           nJetsAbove80GeV > 1 && 
           deltaPhi < 2.5) lPass = true;
   return lPass;

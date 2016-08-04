@@ -16,6 +16,7 @@
 #include <iostream>                   // standard I/O
 #include <iomanip>                    // functions to format standard I/O
 #include <fstream>                    // functions for file I/O
+#include <sstream>
 #include <string>                     // C++ string class
 #include <cmath>                      // C++ math library
 #include <cassert>
@@ -126,9 +127,10 @@ void plotRazor(const string preselection, const string subsample, const string c
   vector<double> neventsv;
   const Int_t NBINS = 5;
   Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
-  for(unsigned int isam=0; isam<samplev.size(); isam++) {
+  for(unsigned int isam=0; isam<samplev.size(); isam++) 
+  {
     sprintf(hname,"hPolyMrRsq_%i",isam);      hPolyMrRsqv.push_back(new TH2Poly(hname,"",170,1250,0.3,1.25));
-            hPolyMrRsqv[isam]->Sumw2();
+  //          hPolyMrRsqv[isam]->Sumw2();
             hPolyMrRsqv[isam]->AddBin(200,0.35,300,0.42);
             hPolyMrRsqv[isam]->AddBin(300,0.35,400,0.42);
             hPolyMrRsqv[isam]->AddBin(400,0.35,600,0.42);
@@ -343,7 +345,12 @@ void plotRazor(const string preselection, const string subsample, const string c
    //--------------------------------------------------------------------------------------------------------------
   // Make plots
   //==============================================================================================================
-
+  
+  // Save all into a ROOT file
+  char outf[200];
+  sprintf(outf,"%s/Output.root",outputDir.c_str());
+  TFile outputFile(outf,"recreate");
+  
   TCanvas *c = MakeCanvas("c","c",800,800);
   c->Divide(1,2,0,0);
   c->cd(1)->SetPad(0,0.3,1.0,1.0);
@@ -411,7 +418,22 @@ void plotRazor(const string preselection, const string subsample, const string c
   makePlot(c, "deltaphi", "#Delta#phi*", ylabel, hdeltaPhiv, samplev, hdeltaPhiMC, hdeltaPhiPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hdeltaPhiMC->GetBinContent(hdeltaPhiMC->GetMaximumBin()))/(hdeltaPhiMC->GetBinWidth(hdeltaPhiMC->GetMaximumBin())), subsample);
   
-  makePlotPoly(c, "PolyMrRsq", "M_{R}", "R^{2}", hPolyMrRsqMC, LUMI);
+  TCanvas *c2 = MakeCanvas("c2","c2",800,800);
+  c2->cd()->SetPad(0,0.3,1.0,1.0);
+  c2->cd()->SetTopMargin(0.1);
+  c2->cd()->SetBottomMargin(0.17);
+  c2->cd()->SetLeftMargin(0.15);
+  c2->cd()->SetRightMargin(0.17);
+  c2->cd()->SetTickx(1);
+  c2->cd()->SetTicky(1);
+  makePlotPoly(c2, "PolyMrRsqMC", "M_{R}", "R^{2}", hPolyMrRsqMC, LUMI);
+  
+  for (unsigned int isam=0; isam<samplev.size(); isam++) 
+  {
+      std::stringstream ss;
+      ss << "PolyMrRsq_" << samplev[isam]->label;
+      makePlotPoly(c2, ss.str().c_str(), "M_{R}", "R^{2}", hPolyMrRsqv[isam], LUMI);  
+  }
 
   cout << endl;
   cout << " <> Output saved in " << outputDir << endl;
@@ -501,9 +523,11 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   plotPull.AddLine(xmin,1,xmax,1,kBlack,3);
 
   plot.Draw(c,false,"png",1);
-  plot.Draw(c,false,"pdf",1);
+  //.plot.Draw(c,false,"pdf",1);
   plotPull.Draw(c,true,"png",2);
-  plotPull.Draw(c,true,"pdf",2);
+  //plotPull.Draw(c,true,"pdf",2);
+  c->SetName(outname.c_str());
+  c->Write();
 }
 
 void makePlotPoly(TCanvas *c, const string outname, const string xlabel, const string ylabel,
@@ -519,11 +543,11 @@ void makePlotPoly(TCanvas *c, const string outname, const string xlabel, const s
   plot.AddTextBox("CMS",0.18,0.88,0.30,0.82,0,kBlack,62);
   plot.AddTextBox("Preliminary",0.18,0.82,0.37,0.77,0,kBlack,52);
   //plot.AddTextBox("Work In Progress",0.18,0.82,0.37,0.77,0,kBlack,52);  
-  plot.AddHist2Poly(hExp,"COLZ",kBlack,kBlack); 
+  plot.AddHist2Poly(hExp,"COLZ TEXT",kBlack,kBlack); 
 
-  plot.Draw(c,true,"C",1);
   plot.Draw(c,true,"png",1);
-  plot.Draw(c,true,"pdf",1);
+  hExp->SetName(outname.c_str());
+  hExp->Write();
 }
 
 //--------------------------------------------------------------------------------------------------
