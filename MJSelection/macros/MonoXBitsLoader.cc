@@ -7,6 +7,9 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString algo,TString syst, string
       TString vmet = "puppet"; if (algo!="PUPPI") vmet = "pfmet";
       if(preselection.compare("Had")==0){
 	iTree->SetBranchAddress("res_"+algo+"jetmindPhi",                       &min_dphijetsmet);
+	if(isData){
+	  iTree->SetBranchAddress("calomet",                                    &calomet);
+	}
       }
       else{
 	iTree->SetBranchAddress("res_"+algo+"jetmindFPhi",                      &min_dphijetsmet);
@@ -17,7 +20,9 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString algo,TString syst, string
       iTree->SetBranchAddress("metfilter",                                      &metfilter);
       iTree->SetBranchAddress("triggerBits",                                    &triggerBits);
       iTree->SetBranchAddress("selectBits",                                     &selectBits);
-      iTree->SetBranchAddress("triggerEff",                                     &triggerEff);
+      iTree->SetBranchAddress("sf_eleTrig",                                     &sf_eletrig);
+      iTree->SetBranchAddress("sf_phoTrig",                                     &sf_photrig);
+      iTree->SetBranchAddress("sf_metTrig",                                     &sf_mettrig);
       iTree->SetBranchAddress("npu",                                            &npu);
       iTree->SetBranchAddress("npv",                                            &npv);
       iTree->SetBranchAddress("puWeight",                                       &puWeight);
@@ -78,36 +83,41 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString algo,TString syst, string
       iTree->SetBranchAddress("res_"+algo+"jetbst15btagwLminus1_MISTAGUP",      &resbst15_btagwLminus1MISTAGUP);
       iTree->SetBranchAddress("res_"+algo+"jetbst15btagwLminus1_MISTAGDO",      &resbst15_btagwLminus1MISTAGDO);
 
-      iTree->SetBranchAddress("nmu",                                            &nmu);
-      iTree->SetBranchAddress("nele",                                           &nele);
+      iTree->SetBranchAddress("nmuLoose",                                       &nLooseMuon);
+      iTree->SetBranchAddress("nmuTight",                                       &nTightMuon);
+      iTree->SetBranchAddress("neleLoose",                                      &nLooseElectron);
+      iTree->SetBranchAddress("neleTight",                                      &nTightElectron);
+      iTree->SetBranchAddress("nphoLoose",                                      &nLoosePhoton);
+      iTree->SetBranchAddress("nphoTight",                                      &nTightPhoton);
+      iTree->SetBranchAddress("ispho0Tight",                                    &loosePho1IsTight);
       iTree->SetBranchAddress("ntau",                                           &nTau);
-      iTree->SetBranchAddress("npho",                                           &npho);
       iTree->SetBranchAddress("vpho0_pt",                                       &vpho0_pt);
 
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_isHadronicTop",       &isHadronicTop15);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_topSize",             &topSize15);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_topMatching",         &topMatching15);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_isHadronicV",         &isHadronicV15);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_vSize",               &vSize15);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_vMatching",           &vMatching15);
-      iTree->SetBranchAddress("bst15_"+algo+"jets",                     &nfjets15);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_mT",                  &bst15_jet0_mT);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_dR_sj0dR",            &bst15_jet0_dRsj0dR);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_dPhiJRF_sj0dPhiJRF",  &bst15_jet0_dPhiJRFsj0dPhiJRF);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_pt",                  &bst15_jet0_pt);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_eta",                 &bst15_jet0_eta);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_phi",                 &bst15_jet0_phi);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_mass",                &bst15_jet0_mass);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_msd",                 &bst15_jet0_msd);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_rho",                 &bst15_jet0_rho);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_tau32",               &bst15_jet0_tau32);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_tau21",               &bst15_jet0_tau21);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_CHF",                 &bst15_jet0_CHF);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_NHF",                 &bst15_jet0_NHF);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_NEMF",                &bst15_jet0_NEMF);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_minsubcsv",           &bst15_jet0_minsubcsv);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_maxsubcsv",           &bst15_jet0_maxsubcsv);
-      iTree->SetBranchAddress("bst15_"+algo+"jet0_doublecsv",           &bst15_jet0_doublecsv);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_isHadronicTop",               &isHadronicTop15);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_topSize",                     &topSize15);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_topMatching",                 &topMatching15);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_isHadronicV",                 &isHadronicV15);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_isTightVJet",                 &bst15_jet1_isTight); 
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_vSize",                       &vSize15);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_vMatching",                   &vMatching15);
+      iTree->SetBranchAddress("bst15_"+algo+"jets",                             &nfjets15);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_mT",                          &bst15_jet0_mT);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_dR_sj0dR",                    &bst15_jet0_dRsj0dR);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_dPhiJRF_sj0dPhiJRF",          &bst15_jet0_dPhiJRFsj0dPhiJRF);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_pt",                          &bst15_jet0_pt);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_eta",                         &bst15_jet0_eta);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_phi",                         &bst15_jet0_phi);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_mass",                        &bst15_jet0_mass);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_msd",                         &bst15_jet0_msd);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_rho",                         &bst15_jet0_rho);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_tau32",                       &bst15_jet0_tau32);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_tau21",                       &bst15_jet0_tau21);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_CHF",                         &bst15_jet0_CHF);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_NHF",                         &bst15_jet0_NHF);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_NEMF",                        &bst15_jet0_NEMF);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_minsubcsv",                   &bst15_jet0_minsubcsv);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_maxsubcsv",                   &bst15_jet0_maxsubcsv);
+      iTree->SetBranchAddress("bst15_"+algo+"jet0_doublecsv",                   &bst15_jet0_doublecsv);
 
       iTree->SetBranchAddress("eleSF0",                                         &eleSF0);
       iTree->SetBranchAddress("eleSF1",                                         &eleSF1);
@@ -116,6 +126,8 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString algo,TString syst, string
       iTree->SetBranchAddress("muoSF1",                                         &muoSF1);
       iTree->SetBranchAddress("muoSF2",                                         &muoSF2);
       iTree->SetBranchAddress("phoSF0",                                         &phoSF0);
+      iTree->SetBranchAddress("eleSFTrack",                                     &eleSFTrack);
+      iTree->SetBranchAddress("muoSFTrack",                                     &muoSFTrack);
       if(!isData) {
 	iTree->SetBranchAddress("genVPt",                                       &genVpt);
 	iTree->SetBranchAddress("genVPhi",                                      &genVphi);
@@ -248,9 +260,9 @@ bool MonoXBitsLoader::selectJetAlgoAndSize(string selection, TString algo){
 bool MonoXBitsLoader::isHad(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if(nmu==0 && nele==0 && npho==0 && nTau==0 && met>175){
+    if(nLooseMuon==0 && nLooseElectron==0 && nLoosePhoton==0 && nTau==0 && met>175 && bst15_jet1_isTight==1){
       if(isData){
-        if((triggerBits & kMET)!=0) lPass = true;
+        if(fabs(met-calomet)/vmetpt<0.5 && (triggerBits & kMET)!=0) lPass = true;
       }
       else{
 	lPass = true;
@@ -272,7 +284,7 @@ bool MonoXBitsLoader::isHad(bool isData, bool isBacon){
 bool MonoXBitsLoader::isMuo(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if(nmu==1 && nele==0 && npho==0 && nTau==0 && (vfakemetpt!=0)){
+    if(nLooseMuon==1 && nLooseElectron==0 && nLoosePhoton==0 && nTau==0 && (vfakemetpt!=0)){
       if(isData){
 	lPass = true;  
         //if((triggerBits & 2)!=0) lPass = true;
@@ -297,7 +309,7 @@ bool MonoXBitsLoader::isMuo(bool isData, bool isBacon){
 bool MonoXBitsLoader::isZmm(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if(nmu==2 && nele==0 && npho==0 && nTau==0 && (vfakemetpt!=0)){
+    if(nLooseMuon==2 && nLooseElectron==0 && nLoosePhoton==0 && nTau==0 && (vfakemetpt!=0)){
       if(isData){
 	lPass = true;  
         //if((triggerBits & 2)!=0) lPass = true;
@@ -322,7 +334,7 @@ bool MonoXBitsLoader::isZmm(bool isData, bool isBacon){
 bool MonoXBitsLoader::isEle(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if(nmu==0 && nele==1 && npho==0 && nTau==0 && vmetpt>40 && (vfakemetpt!=0)){    
+    if(nLooseMuon==0 && nLooseElectron==1 && nLoosePhoton==0 && nTau==0 && vmetpt>40 && (vfakemetpt!=0)){    
       if(isData){
 	if((triggerBits & 4)) lPass = true;
       }
@@ -346,7 +358,7 @@ bool MonoXBitsLoader::isEle(bool isData, bool isBacon){
 bool MonoXBitsLoader::isZee(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if(nmu==0 && nele==2 && npho==0 && nTau==0 && (vfakemetpt!=0)){
+    if(nLooseMuon==0 && nLooseElectron==2 && nLoosePhoton==0 && nTau==0 && (vfakemetpt!=0)){
       if(isData){
         if((triggerBits & 4) || (triggerBits & 8)) lPass = true;
       } 
@@ -370,7 +382,7 @@ bool MonoXBitsLoader::isZee(bool isData, bool isBacon){
 bool MonoXBitsLoader::isPho(bool isData, bool isBacon){
   bool lPass = false;
   if(isBacon){
-    if(nmu==0 && nele==0 && npho==1 && nTau==0 && (vfakemetpt!=0)){
+    if(nLooseMuon==0 && nLooseElectron==0 && nLoosePhoton==1 && loosePho1IsTight==1 && nTau==0 && (vfakemetpt!=0)){
       if(isData){
         if(triggerBits & 8) lPass = true;
       }
@@ -461,6 +473,16 @@ bool MonoXBitsLoader::passSemiResolvedMonoTopPreselection(string preselection){
      && nfjets15==1
      && bst15_jet0_pt>110
      ) lPass=true;
+  return lPass;
+}
+bool MonoXBitsLoader::passSemiResolvedMonoTopBambuPreselection(string preselection){
+  bool lPass = false;
+  int lMET = 0;
+  if(preselection.compare("Had")==0 && vmetpt>170 && bst15_jet1_isTight==1) lMET = 1;
+  if((preselection.compare("Ele")==0 || preselection.compare("Muo")==0) && UWmag>170) lMET = 1;
+  if((preselection.compare("Zee")==0 || preselection.compare("Zmm")==0) && UZmag>170) lMET = 1;
+  if(preselection.compare("Pho")==0 && UAmag>170) lMET = 1;
+  if(lMET==1 && nfjets15==1 && bst15_jet1_pt>110 && TMath::Abs(bst15_jet1_eta)<2.4 && (bst15_jet1_msd>110)) lPass= true;
   return lPass;
 }
 bool MonoXBitsLoader::passBoostedMonoTopBambuPreselection(string preselection){

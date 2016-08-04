@@ -18,7 +18,7 @@ public:
   void reset();
   void setupTree(TTree *iTree);
   void load(int iEvent);
-  void selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes);
+  void selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes, int &nLepLoose, int &islep0Tight, int &islep1Tight, int &lep0PdgId, int &lep1PdgId);
   void addDiElectron(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase);
   void fillDiElectron(double iRho,std::vector<TElectron*> lVeto, std::vector<TLorentzVector> &iVetoes, int & isDiele);
   std::vector<TElectron*> fSelElectrons;

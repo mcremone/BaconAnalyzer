@@ -59,7 +59,7 @@ void MuonLoader::load(int iEvent) {
   fMuons  ->Clear();
   fMuonBr ->GetEntry(iEvent);
 }
-void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes, float met, float metPhi) {
+void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes, int &nLepLoose, int &islep0Tight, int &islep1Tight, int &lep0PdgId, int &lep1PdgId, float met, float metPhi) {
   reset(); 
   // Muon multiplicity
   std::vector<TMuon*> lVeto;
@@ -73,15 +73,23 @@ void MuonLoader::selectMuons(std::vector<TLorentzVector> &iVetoes, float met, fl
     if(fabs(pMuon->eta) >=  2.4)                     continue;
     if(!passMuonLooseSel(pMuon))                     continue;
     lCount++;
+    nLepLoose++;
 
     TVector2 vMu; vMu.SetMagPhi(pMuon->pt, pMuon->phi);
     fvMetNoMu = fvMetNoMu + vMu;
+
+    if (nLepLoose==1) lep0PdgId=11;
+    else if (nLepLoose==2) lep1PdgId=11;
 
     lVeto.push_back(pMuon);
     addMuon(pMuon,fSelMuons);
 
     if(pMuon->pt>20 && fabs(pMuon->eta)< 2.4 && passMuonTightSel(pMuon)){
       if(lCount==1) fismu0Tight = 1;
+      if(nLepLoose==1)
+        islep0Tight = 1;
+      else if (nLepLoose==2)
+        islep1Tight=1;
       lTCount++;
     }
   }

@@ -50,8 +50,8 @@ void plotMonoX(const string preselection, const string selection, const string s
   //==============================================================================================================
 
   const bool doBlind = false;
-  bool isBacon = false;
-  //bool isBacon = true;
+  //bool isBacon = false;
+  bool isBacon = true;
 
   // Create output directory 
   const string outputDir("monoxplots/"+preselection+"_"+selection+"_"+subsample+"_"+combo+"_"+algo);
@@ -91,67 +91,67 @@ void plotMonoX(const string preselection, const string selection, const string s
     }
     if (subsample.compare("SR")==0 && (selection.compare("Bst15MonoTop")==0  || selection.compare("Bst15SemMonoTop")==0)){   
       samplev.push_back(new CSample("M_{med}=300 (FCNC)", kBlue, kBlue));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_fcnc_mMed300.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_fcnc_mMed300.root");
       samplev.push_back(new CSample("M_{med}=700 (FCNC)", kGreen, kGreen));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_fcnc_mMed700.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_fcnc_mMed700.root");
       samplev.push_back(new CSample("M_{med}=1100 (FCNC)", kTeal-1, kTeal-1));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_fcnc_mMed1100.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_fcnc_mMed1100.root");
       samplev.push_back(new CSample("M_{med}=1300 (FCNC)", kOrange+8, kOrange+8));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_fcnc_mMed1300.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_fcnc_mMed1300.root");
       samplev.push_back(new CSample("M_{med}=900 (res)", kViolet, kViolet));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_res_mMed900.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_res_mMed900.root");
       samplev.push_back(new CSample("M_{med}=1100 (res)", kGray, kGray));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_res_mMed1100.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_res_mMed1100.root");
       samplev.push_back(new CSample("M_{med}=1300 (res)", kRed-9, kRed-9));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_res_mMed1300.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_res_mMed1300.root");
       samplev.push_back(new CSample("M_{med}=1900 (res) ", kRed, kRed));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_res_mMed1900.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_res_mMed1900.root");
     }
   }
   else{
     samplev.push_back(new CSample("data",0,0));
-    if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/MET.root");
-    if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/SingleElectron.root");
-    if (preselection.compare("Pho")==0) samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/SinglePhoton.root");
+    if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/MET.root");
+    if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectron.root");
+    if (preselection.compare("Pho")==0) samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
     if (preselection.compare("Pho")!=0) {
       samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/QCD.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/QCD.root");
       samplev.push_back(new CSample("SingleTop",kRed - 9,kRed - 9));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/SingleTop.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/SingleTop.root");
       samplev.push_back(new CSample("ttbar",kOrange - 4,kOrange - 4));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/TTbar_Powheg.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/TTbar_Powheg.root");
       samplev.push_back(new CSample("Diboson",kYellow - 9,kYellow - 9));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/Diboson.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/Diboson.root");
       samplev.push_back(new CSample("Wjets",kGreen - 10,kGreen - 10));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/WJets.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/WJets.root");
       samplev.push_back(new CSample("ZnunuLO", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/ZtoNuNu.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZtoNuNu.root");
       samplev.push_back(new CSample("ZllLO", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/ZJets.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/ZJets.root");
     }
     if (preselection.compare("Pho")==0){
       samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/SinglePhoton.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
       samplev.push_back(new CSample("Photon", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/GJets.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/GJets.root");
     }
     if (subsample.compare("SR")==0 && (selection.compare("Bst15MonoTop")==0  || selection.compare("Bst15SemMonoTop")==0)){
       samplev.push_back(new CSample("M_{med}=300 (FCNC)", kBlue, kBlue));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_fcnc_mMed300.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_fcnc_mMed300.root");
       samplev.push_back(new CSample("M_{med}=700 (FCNC)", kGreen, kGreen));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_fcnc_mMed700.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_fcnc_mMed700.root");
       samplev.push_back(new CSample("M_{med}=1100 (FCNC)", kTeal-1, kTeal-1));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_fcnc_mMed1100.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_fcnc_mMed1100.root");
       samplev.push_back(new CSample("M_{med}=1300 (FCNC)", kOrange+8, kOrange+8));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_fcnc_mMed1300.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_fcnc_mMed1300.root");
       samplev.push_back(new CSample("M_{med}=900 (res)", kViolet, kViolet));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_res_mMed900.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_res_mMed900.root");
       samplev.push_back(new CSample("M_{med}=1100 (res)", kGray, kGray));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_res_mMed1100.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_res_mMed1100.root");
       samplev.push_back(new CSample("M_{med}=1300 (res)", kRed-9, kRed-9));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_res_mMed1300.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_res_mMed1300.root");
       samplev.push_back(new CSample("M_{med}=1900 (res) ", kRed, kRed));
-      samplev.back()->fnamev.push_back("/afs/cern.ch/user/s/snarayan/work/skims/monotop_80_v9/monotop_res_mMed1900.root");
+      samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_res_mMed1900.root");
     }
   }
   
@@ -307,9 +307,10 @@ void plotMonoX(const string preselection, const string selection, const string s
       for(unsigned int ientry=0; ientry<intree->GetEntries(); ientry++) {
         intree->GetEntry(ientry);
         if(isBacon){
-          if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
-          if(isData && ((fBits->metfilter & 1) || (fBits->metfilter & 2) || (fBits->metfilter & 8) || (fBits->metfilter & 32) ||
-                        (fBits->metfilter & 1024) || (fBits->metfilter & 2048) || (fBits->metfilter & 32768))) continue;
+          //if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
+          if(//isData &&
+	     ((fBits->metfilter & 1) || (fBits->metfilter & 1024) || (fBits->metfilter & 2048) || (fBits->metfilter & 32) ||
+                        (fBits->metfilter & 8) || (fBits->metfilter & 32768) || (fBits->metfilter & 8192))) continue;
         }
         else{
           if(isData && (fBits->metfilter==0 || fBits->newmetfilter==0))                   continue;
@@ -322,14 +323,17 @@ void plotMonoX(const string preselection, const string selection, const string s
         double wgt = 1;
 	if(!isData) {
           if(isBacon){
-            if(preselection.compare("Pho")==0 && sample->label.compare("QCD")==0) wgt *=fBits->getPhotonPurity();
+            if(preselection.compare("Pho")==0 && sample->label.compare("QCD")==0){
+              if((fBits->metfilter & 1) || (fBits->metfilter & 2) || (fBits->metfilter & 8) || (fBits->metfilter & 32) ||
+		 (fBits->metfilter & 1024) || (fBits->metfilter & 2048) || (fBits->metfilter & 32768)) continue;
+              wgt *=fBits->getPhotonPurity();
+            }
 	    else{
 	      wgt *= LUMI*fBits->evtWeight*fBits->puWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2*fBits->eleSFTrack*fBits->muoSFTrack;
-	      if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->sf_metTrig;
-              if(subsample.compare("TopCR")==0 || subsample.compare("WCR")==0 || subsample.compare("ZCR")==0) wgt *= fBits->sf_lepTrack;
-              if(preselection.compare("Pho")==0) wgt *= fBits->sf_phoTrig*0.93;
-              if(preselection.compare("Ele")==0) wgt *= fBits->sf_eleTrig;
-              if(preselection.compare("Zee")==0) wgt *= fBits->sf_eleTrig*fBits->sf_phoTrig;
+	      if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->sf_mettrig;
+              if(preselection.compare("Pho")==0) wgt *= fBits->sf_photrig*0.93;
+              if(preselection.compare("Ele")==0) wgt *= fBits->sf_eletrig;
+              if(preselection.compare("Zee")==0) wgt *= fBits->sf_eletrig*fBits->sf_photrig;
 
 	      if(selection.compare("Bst15MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0){
 		if(sample->label=="ttbar" && fBits->topSize15<0.8 && fBits->isHadronicTop15==1 &&fBits->topMatching15 <1.4 && fBits->topMatching15 > 0 && fBits->topSize15 > 0){

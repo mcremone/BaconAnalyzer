@@ -193,14 +193,15 @@ int main( int argc, char **argv ) {
 
     // Muons
     fMuon     ->load(i0);
-    fMuon     ->selectMuons(lMuons,fEvt->fMet,fEvt->fMetPhi);
+    fMuon     ->selectMuons(lMuons,fEvt->fNLepLoose,fEvt->fislep0Tight,fEvt->fislep1Tight,fEvt->flep0PdgId,fEvt->flep1PdgId,fEvt->fMet,fEvt->fMetPhi);
     
     // Electrons
     fElectron ->load(i0);
-    fElectron ->selectElectrons(fEvt->fRho,lElectrons);
+    fElectron ->selectElectrons(fEvt->fRho,lElectrons,fEvt->fNLepLoose,fEvt->fislep0Tight,fEvt->fislep1Tight,fEvt->flep0PdgId,fEvt->flep1PdgId);
     
     // Lepton SF
     if(lOption.find("data")==std::string::npos){
+      fEvt->fillLepSF(lElectrons,lMuons);
       fillLepSF(13,fEvt->fNVtx,fMuon->fNMuonsLoose,lMuons,
 		fMuon->fhMuTrack,fElectron->fhEleTrack,fMuon->fhMuTight,fMuon->fhMuLoose,
 		fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars,fMuon->fmuoSFTrack);

@@ -99,16 +99,16 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then
     ./sub.sh data $eos METRun2016D_PromptReco_v2_trig                                                                    1  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "GHF") ]]; then 
-    ./sub.sh mcgplushf $eos GJets_HT_100To200_13TeV_trig                                                              9235  $dir $exec $option1 $option2
-    ./sub.sh mcgplushf $eos GJets_HT_200To400_13TeV_trig                                                              2298  $dir $exec $option1 $option2
-    ./sub.sh mcgplushf $eos GJets_HT_400To600_13TeV_trig                                                             277.6  $dir $exec $option1 $option2
-    ./sub.sh mcgplushf $eos GJets_HT_600ToInf_13TeV_trig                                                             93.47  $dir $exec $option1 $option2
+    ./sub.sh mcgplushf $eos GJets_HT_100To200_13TeV                                                              9235  $dir $exec $option1 $option2
+    ./sub.sh mcgplushf $eos GJets_HT_200To400_13TeV                                                              2298  $dir $exec $option1 $option2
+    ./sub.sh mcgplushf $eos GJets_HT_400To600_13TeV                                                             277.6  $dir $exec $option1 $option2
+    ./sub.sh mcgplushf $eos GJets_HT_600ToInf_13TeV                                                             93.47  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then
-    ./sub.sh mcgpluslf $eos GJets_HT_100To200_13TeV_trig                                                              9235  $dir $exec $option1 $option2
-    ./sub.sh mcgpluslf $eos GJets_HT_200To400_13TeV_trig                                                              2298  $dir $exec $option1 $option2
-    ./sub.sh mcgpluslf $eos GJets_HT_400To600_13TeV_trig                                                             277.6  $dir $exec $option1 $option2
-    ./sub.sh mcgpluslf $eos GJets_HT_600ToInf_13TeV_trig                                                             93.47  $dir $exec $option1 $option2
+    ./sub.sh mcgpluslf $eos GJets_HT_100To200_13TeV                                                              9235  $dir $exec $option1 $option2
+    ./sub.sh mcgpluslf $eos GJets_HT_200To400_13TeV                                                              2298  $dir $exec $option1 $option2
+    ./sub.sh mcgpluslf $eos GJets_HT_400To600_13TeV                                                             277.6  $dir $exec $option1 $option2
+    ./sub.sh mcgpluslf $eos GJets_HT_600ToInf_13TeV                                                             93.47  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then
    ./sub.sh data $eos SinglePhotonRun2016B_PromptReco_v1_trig                                                            1  $dir $exec $option1 $option2

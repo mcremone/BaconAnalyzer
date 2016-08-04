@@ -40,6 +40,7 @@ public:
   bool passBoostedMonoTopPreselection(string preselection);
   bool passBoostedMonoTopBambuPreselection(string preselection);
   bool passSemiResolvedMonoTopPreselection(string preselection);
+  bool passSemiResolvedMonoTopBambuPreselection(string preselection);
   bool passBoosted15MonoHbbPreselection(string preselection);
   bool passResolvedMonoHbbPreselection(string preselection);
 
@@ -103,8 +104,8 @@ public:
   float evtNumber;
   unsigned int runNum, lumiSec, evtNum;                                              
   unsigned int triggerBits, selectBits;                                              // trigger and jet type bits
+  double sf_photrig, sf_mettrig, sf_eletrig;
   int trigger;
-  double triggerEff;                                                                 // trigger efficiency
   float evtWeight, puWeight;                                                         // pu and evt weight
   double eleSF0, eleSF1, eleSF2, muoSF0, muoSF1, muoSF2, phoSF0;                     // lepton and photon SFs
 
@@ -175,12 +176,12 @@ public:
   float UWmag, UWphi, UZmag, UZphi, UAmag, UAphi;
   float dPhiPuppiMET, dPhiUW, dPhiUZ, dPhiUA;
 
-  double           res_jet0_pt, res_jet0_eta, res_jet0_phi, res_jet0_mass, res_jet0_csv; // 4 leading resolved jets
-  double           res_jet1_pt, res_jet1_eta, res_jet1_phi, res_jet1_mass, res_jet1_csv;
-  double           res_jet2_pt, res_jet2_eta, res_jet2_phi, res_jet2_mass, res_jet2_csv;
-  double           res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet3_mass, res_jet3_csv;
-  double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF;                            // res jet variables
-  float           res_jet0_mT;                                                         // res jet mT
+  double res_jet0_pt, res_jet0_eta, res_jet0_phi, res_jet0_mass, res_jet0_csv; // 4 leading resolved jets
+  double res_jet1_pt, res_jet1_eta, res_jet1_phi, res_jet1_mass, res_jet1_csv;
+  double res_jet2_pt, res_jet2_eta, res_jet2_phi, res_jet2_mass, res_jet2_csv;
+  double res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet3_mass, res_jet3_csv;
+  double res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF;                            // res jet variables
+  float res_jet0_mT;                                                         // res jet mT
 
   double          bst15_jet0_pt, bst15_jet0_eta,bst15_jet0_phi,bst15_jet0_mass;       // leading boosted jet
   double          bst15_jet0_msd, bst15_jet0_tau32, bst15_jet0_tau21;                // boosted tagger variables                                                                                    
@@ -189,16 +190,16 @@ public:
   float           bst15_jet1_msd, bst15_jet1_maxsubcsv, bst15_jet1_minsubcsv;
   float           bst15_jet1_tau2, bst15_jet1_tau3;
 
-  float muoSFTrack, eleSFTrack;
+  double muoSFTrack, eleSFTrack;
 
-  double           bst15_jet0_maxsubcsv, bst15_jet0_minsubcsv;                        // subjet btag
-  double           bst15_jet0_doublecsv;                                               // double btag                            
-  double           bst15_jet0_rho, bst15_jet0_phil;                                   // msd and pt dependent variables
-  double           bst15_jet0_CHF, bst15_jet0_NHF, bst15_jet0_NEMF;                   // boosted jet variables
-  float           bst15_jet0_mT;                                                    // bst jet mT
-  float           bst15_jet0_dRsj0dR, bst15_jet0_dPhiJRFsj0dPhiJRF;                 // dRs and dPhis
-  int             bst15_jet1_isMatched, bst15_jet1_isHF, bst15_jet1_isTight;
-  float           bst15_jet1_rawPt;
+  double bst15_jet0_maxsubcsv, bst15_jet0_minsubcsv;                        // subjet btag
+  double bst15_jet0_doublecsv;                                               // double btag                            
+  double bst15_jet0_rho, bst15_jet0_phil;                                   // msd and pt dependent variables
+  double bst15_jet0_CHF, bst15_jet0_NHF, bst15_jet0_NEMF;                   // boosted jet variables
+  float bst15_jet0_mT;                                                    // bst jet mT
+  float bst15_jet0_dRsj0dR, bst15_jet0_dPhiJRFsj0dPhiJRF;                 // dRs and dPhis
+  int bst15_jet1_isMatched, bst15_jet1_isHF, bst15_jet1_isTight;
+  float bst15_jet1_rawPt;
 
   const float CSVL = 0.460;                                                          // CSVL - WPs for 76x
   const float CSVM = 0.800;                                                          // CSVM

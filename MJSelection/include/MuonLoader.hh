@@ -21,7 +21,7 @@ public:
   void reset();
   void setupTree(TTree *iTree);
   void load(int iEvent);
-  void selectMuons(std::vector<TLorentzVector> &iVetoes, float met, float metPhi);
+  void selectMuons(std::vector<TLorentzVector> &iVetoes, int &nLepLoose, int &islep0Tight, int &islep1Tight, int &lep0PdgId, int &lep1PdgId, float met, float metPhi);
   void fillDiMuon(std::vector<TMuon*> lVeto, std::vector<TLorentzVector> &iVetoes, int &isDimuon);
   void addDiMuon(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals,int iBase);
   std::vector<TMuon*> fSelMuons;

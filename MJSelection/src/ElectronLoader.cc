@@ -59,7 +59,7 @@ void ElectronLoader::load(int iEvent) {
   fElectrons  ->Clear();
   fElectronBr ->GetEntry(iEvent);
 }
-void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes) {
+void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iVetoes, int &nLepLoose, int &islep0Tight, int &islep1Tight, int &lep0PdgId, int &lep1PdgId) {
   reset();
   std::vector<TElectron*> lVeto;
 
@@ -75,12 +75,20 @@ void ElectronLoader::selectElectrons(double iRho,std::vector<TLorentzVector> &iV
     if(fabs(pElectron->eta) > 1.4442 && fabs(pElectron->eta) < 1.566)          continue;
     if(!passEleSel(pElectron, iRho))                                           continue;
     lCount++;
+    nLepLoose++;
 
     lVeto.push_back(pElectron);
     addElectron(pElectron,fSelElectrons);
 
+    if (nLepLoose==1) lep0PdgId=11;   
+    else if (nLepLoose==2) lep1PdgId=11;
+
     if(passEleTightSel(pElectron,iRho) && pElectron->pt>40 && fabs(pElectron->eta)<2.5){
       if(lCount==1) fisele0Tight = 1;
+      if(nLepLoose==1) 
+	islep0Tight = 1;
+      else if (nLepLoose==2)
+	islep1Tight=1;
       lTCount++;
     }
   }

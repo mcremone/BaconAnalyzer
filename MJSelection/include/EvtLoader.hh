@@ -19,7 +19,7 @@ class EvtLoader {
 public:
   EvtLoader(TTree *iTree,std::string iName,
 	    std::string iHLTFile="/afs/cern.ch/user/c/cmantill/work/public/Bacon/BaconProduction/CMSSW_8_0_10/src/BaconAna/DataFormats/data/HLTFile_25ns",
-	    std::string iPUWeight="/afs/cern.ch/user/c/cmantill/work/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/puWeight_7invfb.root");
+	    std::string iPUWeight="/afs/cern.ch/user/c/cmantill/work/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/puWeight_13invfb.root");
   ~EvtLoader(); 
   void reset();
   void setupTree  (TTree *iTree);
@@ -28,6 +28,8 @@ public:
   void fillEvent(unsigned int trigBit, float lWeight, int is80=0);
   bool passSkim();
   TLorentzVector Met(int iOption);
+  //SFs
+  void fillLepSF(std::vector<TLorentzVector> iElectrons, std::vector<TLorentzVector> iMuons);
   //Trigger
   bool passFilter();
   bool passTrigger(std::string iTrigger);
@@ -69,6 +71,10 @@ public:
   unsigned int fLumi;
   TEventInfo   *fEvt;
 
+  int fNLepLoose, fNLepTight;
+  int fislep0Tight, fislep1Tight;
+  int flep0PdgId, flep1PdgId;
+
   float fevtWeight;
   float fScale;
 
@@ -77,6 +83,8 @@ public:
   float fkfactor;
   float fPDF, fPDF_UP, fPDF_DO;
   float fRenScale_UP, fRenScale_DO, fFacScale_UP, fFacScale_DO;
+
+  double fsf_lep, fsf_lepTrack;
 
   double fsf_eleTrig;
   double fsf_metTrig;
@@ -103,6 +111,13 @@ protected:
   TH1F         *fHistRDO;
   TH1F         *fHistFUP;
   TH1F         *fHistFDO;
+
+  TH2D         *fhMuLoose;
+  TH2D         *fhMuTight;
+  TH1D         *fhMuTrack;
+  TH2D         *fhEleVeto;
+  TH2D         *fhEleTight;
+  TH2D         *fhEleTrack;
   
   TH1D         *hEleTrigB;
   TH1D         *hEleTrigE;

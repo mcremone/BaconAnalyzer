@@ -163,12 +163,12 @@ int main( int argc, char **argv ) {
 
     // Muons
     fMuon->load(i0);
-    fMuon->selectMuons(lMuons,fEvt->fMet,fEvt->fMetPhi);
+    fMuon->selectMuons(lMuons,fEvt->fNLepLoose,fEvt->fislep0Tight,fEvt->fislep1Tight,fEvt->flep0PdgId,fEvt->flep1PdgId,fEvt->fMet,fEvt->fMetPhi);
     fEvt->fMetNoMu = fMuon->fvMetNoMu.Mod();
     
     // Electrons
     fElectron->load(i0);
-    fElectron->selectElectrons(fEvt->fRho,lElectrons);
+    fElectron->selectElectrons(fEvt->fRho,lElectrons,fEvt->fNLepLoose,fEvt->fislep0Tight,fEvt->fislep1Tight,fEvt->flep0PdgId,fEvt->flep1PdgId);
     
     // Fill Vetoes
     fEvt->fillVetoes(lElectrons,lVetoes);
@@ -185,6 +185,7 @@ int main( int argc, char **argv ) {
     
     // Lepton and Photon SF
     if(lOption.find("data")==std::string::npos){
+      fEvt->fillLepSF(lElectrons,lMuons);
       fillLepSF(13,fEvt->fNVtx,fMuon->fNMuonsLoose,lMuons,
 		fMuon->fhMuTrack,fElectron->fhEleTrack,fMuon->fhMuTight,fMuon->fhMuLoose,
 		fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars,fMuon->fmuoSFTrack);
@@ -193,7 +194,7 @@ int main( int argc, char **argv ) {
 		fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars,fElectron->feleSFTrack);
       fillPhoSF(22,fPhoton->fNPhotonsTight,lPhotons,fGen->lepmatched(22,lPhotons,0.3),fPhoton->fphoSFVars);
     }
-    
+
     // MET selection
     fEvt->fillModifiedMet(lVetoes,lPhotons);
     if(fEvt->fMet < 170. && fEvt->fPuppEt < 170. && fEvt->fFPuppEt < 170. && fEvt->fFMet < 170.) continue;

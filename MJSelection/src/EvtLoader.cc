@@ -26,6 +26,33 @@ EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::st
   lFile->Close();
   fSample = (char*) (iName.c_str());
 
+  // Lepton SFs
+  TFile *fMuSF = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_muon_looseid_12p9.root");
+  fhMuLoose =  (TH2D*) fMuSF->Get("scaleFactor_muon_looseid_RooCMSShape");
+  fhMuLoose->SetDirectory(0);
+  fMuSF->Close();
+  TFile *fMuSFTight = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_muon_tightid_12p9.root");
+  fhMuTight =  (TH2D*) fMuSFTight->Get("scaleFactor_muon_tightid_RooCMSShape");
+  fhMuTight->SetDirectory(0);
+  fMuSFTight->Close();
+  TFile *fMuSFTrack = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_muon_track.root");
+  fhMuTrack = (TH1D*) fMuSFTrack->Get("htrack2");
+  fhMuTrack->SetDirectory(0);
+  fMuSFTrack->Close();
+  TFile *fEleSF = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_vetoid_12p9.root");
+  fhEleVeto =  (TH2D*) fEleSF->Get("scaleFactor_electron_vetoid_RooCMSShape");
+  fhEleVeto->SetDirectory(0);
+  fEleSF->Close();
+  TFile *fEleSFTight = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_tightid_12p9.root");
+  fhEleTight =  (TH2D*) fEleSFTight->Get("scaleFactor_electron_tightid_RooCMSShape");
+  fhEleTight->SetDirectory(0);
+  fEleSFTight->Close();
+  TFile *fEleSFTrack = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_track.root");
+  fhEleTrack = (TH2D*) fEleSFTrack->Get("EGamma_SF2D");
+  fhEleTrack->SetDirectory(0);
+  fEleSFTrack->Close();
+
+  // Trigger Eff
   TFile *fEleTrigB = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_lowpt_rebinned.root");
   hEleTrigB = (TH1D*) fEleTrigB->Get("h_num");
   hEleTrigB->SetDirectory(0);
@@ -71,9 +98,12 @@ void EvtLoader::reset() {
   fPUWeight     = 0; 
   fScale        = 1;
   fevtWeight    = 0;
-  fkfactor      = 0;
-  fkFactor_CENT = 0;
+  fkfactor      = 1;
+  fkFactor_CENT = 1;
   fEwkCorr_CENT = 0;
+
+  fsf_lep       = 1;
+  fsf_lepTrack  = 1;
 
   fPDF          = 0;
   fPDF_UP       = 0;
@@ -108,6 +138,8 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("sf_metTrig"      ,&fsf_metTrig     ,"fsf_metTrig/D");
   fTree->Branch("sf_phoTrig"      ,&fsf_phoTrig     ,"fsf_phoTrig/D");
 
+  fTree->Branch("islep0Tight"     ,&fislep0Tight    ,"fislep0Tight/I");
+
   fTree->Branch("npu"             ,&fNPU            ,"fNPU/i");
   fTree->Branch("npv"             ,&fNVtx           ,"fNVtx/i");
   fTree->Branch("puWeight"        ,&fPUWeight       ,"fPUWeight/F");
@@ -115,8 +147,9 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("evtWeight"       ,&fevtWeight      ,"fevtWeight/F");
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
   fTree->Branch("kfactor"         ,&fkfactor        ,"fkfactor/F");
-  fTree->Branch("kfactorNLO"      ,&fkFactor_CENT   ,"fkFactor_CENT/F");
 
+  /*
+  fTree->Branch("kfactorNLO"      ,&fkFactor_CENT   ,"fkFactor_CENT/F");
   fTree->Branch("PDF"             ,&fPDF            ,"fPDF/F");
   fTree->Branch("PDF_UP"          ,&fPDF_UP         ,"fPDF_UP/F");
   fTree->Branch("PDF_DO"          ,&fPDF_DO         ,"fPDF_DO/F");
@@ -124,6 +157,7 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("RenScale_DO"     ,&fRenScale_DO    ,"fRenScale_DO/F");
   fTree->Branch("FacScale_UP"     ,&fFacScale_UP    ,"fFacScale_UP/F");
   fTree->Branch("FacScale_DO"     ,&fFacScale_DO    ,"fFacScale_DO/F");
+  */
 
   fTree->Branch("pfmet"           ,&fMet            ,"fMet/F");
   fTree->Branch("pfmetphi"        ,&fMetPhi         ,"fMetPhi/F");
@@ -131,7 +165,7 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("puppetphi"       ,&fPuppEtPhi      ,"fPuppEtPhi/F");
   fTree->Branch("calomet"         ,&fCaloMet        ,"fCaloMet/F");
   fTree->Branch("calometphi"      ,&fCaloMetPhi     ,"fCaloMetPhi/F");
-  fTree->Branch("metnomu"         ,&fMetNoMu        ,"fMetNoMu/F");
+  //fTree->Branch("metnomu"         ,&fMetNoMu        ,"fMetNoMu/F");
 
   fTree->Branch("fakepfmet"       ,&fFMet           ,"fFMet/F");
   fTree->Branch("fakepfmetphi"    ,&fFMetPhi        ,"fFMetPhi/F");
@@ -171,6 +205,8 @@ void EvtLoader::fillEvent(unsigned int trigBit,float lWeight, int is80) {
   fEvtV         = fEvt->evtNum;
   fRho          = fEvt->rhoIso;
   fkfactor      = 1;
+  fsf_lep       = 1;
+  fsf_lepTrack  = 1;
   fMet          = fEvt->pfMETC;
   fMetPhi       = fEvt->pfMETCphi;
   if(is80==1){
@@ -214,7 +250,9 @@ bool EvtLoader::passFilter() {
   return (fEvt->metFilterFailBits == 0);
 }
 // Vtx
-int EvtLoader::nVtx() { 
+int EvtLoader::nVtx() {
+  return fVertices->GetEntries();
+  /*
   int lNVertex = 0; 
   for(int i0 = 0; i0 < fVertices->GetEntries(); i0++) { 
     TVertex *pVertex = (TVertex*) ((*fVertices)[i0]);
@@ -227,6 +265,7 @@ int EvtLoader::nVtx() {
     lNVertex++;
   }
   return lNVertex;
+  */
 }
 bool EvtLoader::PV(){
   return fEvt->hasGoodPV;
@@ -280,6 +319,34 @@ void  EvtLoader::fillmT(float iMet, float iMetPhi,float iFMet, float iFMetPhi, s
 }
 void EvtLoader::fillVetoes(std::vector<TLorentzVector> iVetoes,std::vector<TLorentzVector> &lVetoes){
   for(unsigned int i0 = 0; i0 < iVetoes.size(); i0++)   lVetoes.push_back(iVetoes[i0]);
+}
+// Lepton SFs / Alternative calculation
+void EvtLoader::fillLepSF(std::vector<TLorentzVector> iElectrons, std::vector<TLorentzVector> iMuons){
+  double lsf_lep =1, lTrack =1;
+  if (fNLepLoose>0) {
+    if (fabs(flep0PdgId)==11) {
+      if (fislep0Tight==1) lsf_lep = getVal2D(fhEleTight,fabs(iElectrons[0].Eta()),iElectrons[0].Pt());
+      else                lsf_lep = getVal2D(fhEleVeto,fabs(iElectrons[0].Eta()),iElectrons[0].Pt());
+      lTrack = getVal2D(fhEleTrack,fabs(iElectrons[0].Eta()),fNVtx);
+    } else if (fabs(flep0PdgId)==13) {
+      if (fislep0Tight==1) lsf_lep = getVal2D(fhMuTight,fabs(iMuons[0].Eta()),iMuons[0].Pt());
+      else                lsf_lep = getVal2D(fhMuLoose,fabs(iMuons[0].Eta()),iMuons[0].Pt());
+      lTrack = getVal(fhMuTrack,fNVtx);
+    }
+  }
+  if (fNLepLoose>1) {
+    if (fabs(flep1PdgId)==11) {
+      if (fislep1Tight==1) lsf_lep *= getVal2D(fhEleTight,fabs(iElectrons[1].Eta()),iElectrons[1].Pt());
+      else                lsf_lep *= getVal2D(fhEleVeto,fabs(iElectrons[1].Eta()),iElectrons[1].Pt());
+      lTrack *= getVal2D(fhEleTrack,fabs(iElectrons[0].Eta()),fNVtx);
+    } else if (fabs(flep1PdgId)==13) {
+      if (fislep1Tight==1) lsf_lep *= getVal2D(fhMuTight,fabs(iMuons[1].Eta()),iMuons[1].Pt());
+      else                lsf_lep *= getVal2D(fhMuLoose,fabs(iMuons[1].Eta()),iMuons[1].Pt());
+      lTrack *= getVal(fhMuTrack,fNVtx);
+    }
+  }
+  fsf_lep = lsf_lep;
+  fsf_lepTrack = lTrack;
 }
 // kFactor and EWK
 void EvtLoader::computeCorr(float iPt,std::string iHist0,std::string iHist1,std::string iHist2,std::string iNLO,std::string ikfactor){

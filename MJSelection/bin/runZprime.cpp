@@ -144,9 +144,9 @@ int main( int argc, char **argv ) {
     // Objects
     std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lPhotonsMVA, lJets, lVJets, lVJet, lVJets15, lVJet15, lVetoes;
     fMuon     ->load(i0);
-    fMuon     ->selectMuons(lMuons);
+    fMuon     ->selectMuons(lMuons,fEvt->fNLepLoose,fEvt->fislep0Tight,fEvt->fislep1Tight,fEvt->flep0PdgId,fEvt->flep1PdgId,fEvt->fMet,fEvt->fMetPhi);
     fElectron ->load(i0);
-    fElectron ->selectElectrons(fEvt->fRho,lElectrons);
+    fElectron->selectElectrons(fEvt->fRho,lElectrons,fEvt->fNLepLoose,fEvt->fislep0Tight,fEvt->fislep1Tight,fEvt->flep0PdgId,fEvt->flep1PdgId);
     fEvt      ->fillVetoes(lElectrons,lVetoes);
     fEvt      ->fillVetoes(lMuons,lVetoes);
     fTau      ->load(i0);
@@ -157,9 +157,14 @@ int main( int argc, char **argv ) {
         
     //Lepton and Photon SF    
     if(lOption.find("data")==std::string::npos){
-      fillLepSF(13,fMuon->fNMuons,lMuons,fMuon->fhMuTight,fMuon->fhMuLoose,fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars);
-      fillLepSF(11,fElectron->fNElectrons,lElectrons,fElectron->fhEleTight,fElectron->fhEleVeto,fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars);
-      fillPhoSF(22,fPhoton->fNPhotonsMedium,lPhotons,fGen->lepmatched(22,lPhotons,0.3),fPhoton->fphoSFVars);
+      fEvt->fillLepSF(lElectrons,lMuons);
+      fillLepSF(13,fEvt->fNVtx,fMuon->fNMuonsLoose,lMuons,
+		fMuon->fhMuTrack,fElectron->fhEleTrack,fMuon->fhMuTight,fMuon->fhMuLoose,
+		fGen->lepmatched(13,lMuons,0.3),fMuon->fmuoSFVars,fMuon->fmuoSFTrack);
+      fillLepSF(11,fEvt->fNVtx,fElectron->fNElectronsLoose,lElectrons,
+		fMuon->fhMuTrack,fElectron->fhEleTrack,fElectron->fhEleTight,fElectron->fhEleLoose,
+		fGen->lepmatched(11,lElectrons,0.3),fElectron->feleSFVars,fElectron->feleSFTrack);
+      fillPhoSF(22,fPhoton->fNPhotonsTight,lPhotons,fGen->lepmatched(22,lPhotons,0.3),fPhoton->fphoSFVars);
     }
 
 
