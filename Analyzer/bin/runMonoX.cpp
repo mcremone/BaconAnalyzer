@@ -23,7 +23,7 @@
 #include "../include/PhotonLoader.hh"
 #include "../include/TauLoader.hh"
 #include "../include/JetLoader.hh"
-#include "../include/VJetLoader.hh"
+#include "../include/FatJetLoader.hh"
 #include "../include/BTagWeightLoader.hh"
 #include "../include/RunLumiRangeMap.h"
 
@@ -43,7 +43,7 @@ PhotonLoader     *fPhoton   = 0;
 JetLoader        *fJet      = 0; 
 JetLoader        *fJetCHS   = 0;
 BTagWeightLoader *fBTag15   = 0;
-VJetLoader       *fVJet15   = 0;
+FatJetLoader       *fVJet15   = 0;
 RunLumiRangeMap  *fRangeMap = 0; 
 
 TH1F *fHist                 = 0; 
@@ -83,7 +83,7 @@ int main( int argc, char **argv ) {
   fPhoton   = new PhotonLoader    (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader       (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fBTag15   = new BTagWeightLoader(lTree);                                                 // fBTag with dR=1.5
-  fVJet15   = new VJetLoader      (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
+  fVJet15   = new FatJetLoader      (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
 
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);       // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 

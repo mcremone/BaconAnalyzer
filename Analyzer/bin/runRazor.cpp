@@ -23,7 +23,7 @@
 #include "../include/PhotonLoader.hh"
 #include "../include/TauLoader.hh"
 #include "../include/JetLoader.hh"
-#include "../include/VJetLoader.hh"
+#include "../include/FatJetLoader.hh"
 #include "../include/BTagWeightLoader.hh"
 #include "../include/RunLumiRangeMap.h"
 

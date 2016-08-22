@@ -1,4 +1,4 @@
-#include "../include/VJetLoader.hh"
+#include "../include/FatJetLoader.hh"
 #include <cmath>
 #include <iostream> 
 
@@ -33,7 +33,7 @@ double clean(double x, double def=-1) {
   else return x;
 }
 
-VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN, std::string subjetbtagScaleFactorFilename) { 
+FatJetLoader::FatJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN, std::string subjetbtagScaleFactorFilename) { 
   fVJets         = new TClonesArray("baconhep::TJet");
   fVAddJets      = new TClonesArray("baconhep::TAddJet");
 
@@ -62,13 +62,13 @@ VJetLoader::VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN,
   corrParams.push_back(JetCorrectorParameters("/afs/cern.ch/work/p/pharris/public/bacon/prod/CMSSW_7_4_14/src/BaconProd/Utils/data/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"));
   fJetCorr = new FactorizedJetCorrector(corrParams);
 }
-VJetLoader::~VJetLoader() { 
+FatJetLoader::~FatJetLoader() { 
   delete fVJets;
   delete fVJetBr;
   delete fVAddJets;
   delete fVAddJetBr;
 }
-double VJetLoader::correction(TJet &iJet,double iRho) {
+double FatJetLoader::correction(TJet &iJet,double iRho) {
   TLorentzVector lVec; lVec.SetPtEtaPhiM(iJet.ptRaw,iJet.eta,iJet.phi,iJet.mass);
   fJetCorr->setJetEta(iJet.eta);
   fJetCorr->setJetPt (iJet.ptRaw);
@@ -79,10 +79,10 @@ double VJetLoader::correction(TJet &iJet,double iRho) {
   fJetCorr->setJetEMF(-99.0);
   return ((fJetCorr->getCorrection())*iJet.ptRaw);
 }
-void VJetLoader::resetSubJetBTag() {
+void FatJetLoader::resetSubJetBTag() {
   for(unsigned int i0 = 0; i0 < fSubJetBTagVars.size(); i0++) fSubJetBTagVars[i0] = 1;
 }
-void VJetLoader::reset() { 
+void FatJetLoader::reset() { 
   fNVJets             = 0; 
   fVMT                = 0;
   fdR_sj0dR           = 999;
@@ -102,7 +102,7 @@ void VJetLoader::reset() {
   for(unsigned int i0 = 0; i0 < fVars.size(); i0++) fVars[i0] = 0;
   resetSubJetBTag();
 }
-void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
+void FatJetLoader::setupTree(TTree *iTree, std::string iJetLabel) { 
   reset();
   fLabels.clear();
   fLabels.push_back("mass");
@@ -156,7 +156,7 @@ void VJetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch(pSvP.str().c_str() ,&fvetoPhoton          ,(pSvP.str()+"/I").c_str());
 
 }
-void VJetLoader::setupTreeSubJetBTag(TTree *iTree, std::string iJetLabel) {
+void FatJetLoader::setupTreeSubJetBTag(TTree *iTree, std::string iJetLabel) {
   resetSubJetBTag();
   fTree = iTree;
   for(int i0 = 0; i0 < 40; i0++) {float pBTagVar = 1; fSubJetBTagVars.push_back(pBTagVar);} // declare array of 40 vars ( L0,L1,Lminus1,L2, M0,M1,Mminus1,M2) for (CENT,MISTAGUP,MISTAGDO,BTAGUP,BTAGDO)
@@ -166,13 +166,13 @@ void VJetLoader::setupTreeSubJetBTag(TTree *iTree, std::string iJetLabel) {
     i1 += 20;
   }
 }
-void VJetLoader::load(int iEvent) { 
+void FatJetLoader::load(int iEvent) { 
   fVJets       ->Clear();
   fVJetBr      ->GetEntry(iEvent);
   fVAddJets    ->Clear();
   fVAddJetBr   ->GetEntry(iEvent);
 }
-void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho, std::vector<TLorentzVector> &iPhotons, std::vector<TLorentzVector> &iPhotonsMVA, std::string iJetID){
+void FatJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TLorentzVector> &iJets,std::vector<TLorentzVector> &iVJet, double dR, double iRho, std::vector<TLorentzVector> &iPhotons, std::vector<TLorentzVector> &iPhotonsMVA, std::string iJetID){
   reset(); 
   iJets.clear(); iVJet.clear();
   int lCount(0), lvetoPhoton(0);
@@ -199,7 +199,7 @@ void VJetLoader::selectVJets(std::vector<TLorentzVector> &iVetoes,std::vector<TL
   fillJet( fN,fSelVJets,fVars);
   fillVJet(fN,fSelVJets,fVars,iRho); 
 }
-void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals, double iRho){ 
+void FatJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals, double iRho){ 
   int lBase = 3.*fN;
   int lMin = iObjects.size();
   int lNLabel = int(fLabels.size());
@@ -271,7 +271,7 @@ void VJetLoader::fillVJet(int iN,std::vector<TJet*> &iObjects,std::vector<double
     fdPhiJRF_sj0dPhiJRF = ldPhiJRF_sj0dPhiJRF;
   }
 }
-void VJetLoader::addBoson(TGenParticle *iBoson) { 
+void FatJetLoader::addBoson(TGenParticle *iBoson) { 
   int lBase = 3.*fN;
   int lMin = int(fSelVJets.size());
   int lNLabel = int(fLabels.size());
@@ -283,7 +283,7 @@ void VJetLoader::addBoson(TGenParticle *iBoson) {
     fVars[lBase+i0*lNLabel+lNLabel-1] = sqrt(pDEta*pDEta+pDPhi*pDPhi);
   }
 }
-void VJetLoader::addSubJetBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> &iLabels,int iN,std::vector<float> &iVals) {
+void FatJetLoader::addSubJetBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> &iLabels,int iN,std::vector<float> &iVals) {
   int iBase=iN;
   for(int i0 = 0; i0 < int(iLabels.size()); i0++) {
     std::stringstream pVal0,pVal1,pValminus1,pVal2;
@@ -298,7 +298,7 @@ void VJetLoader::addSubJetBTag(std::string iHeader,TTree *iTree,std::string iLab
     iBase+=4;
   }
 }
-void VJetLoader::fillSubJetBTag(const TClonesArray* iGens, std::vector<TLorentzVector> iObjects) {
+void FatJetLoader::fillSubJetBTag(const TClonesArray* iGens, std::vector<TLorentzVector> iObjects) {
   // vSFL should contain CENT (), MISTAG(Ms), BTAG(Bs)  - 5 - CENT(vSFL.at(0)),MsUP(vSFL.at(1)),MsDO(vSFL.at(2)),BsUP(vSFL.at(3)),BsDO(vSFL.at(4))
   int iN = 0;
   for(unsigned int j0=0; j0<2; j0++){  // L, M
@@ -333,7 +333,7 @@ void VJetLoader::fillSubJetBTag(const TClonesArray* iGens, std::vector<TLorentzV
   }
 
 }
-TAddJet *VJetLoader::getAddJet(TJet *iJet) { 
+TAddJet *FatJetLoader::getAddJet(TJet *iJet) { 
   int lIndex = -1;
   TAddJet *lJet = 0; 
   for(int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) { 
@@ -346,20 +346,20 @@ TAddJet *VJetLoader::getAddJet(TJet *iJet) {
   }
   return lJet;
 }
-double VJetLoader::ddt(double iT1,double iT2,double iM,double iPt) {
+double FatJetLoader::ddt(double iT1,double iT2,double iM,double iPt) {
   double lRho = log(iM*iM/iPt)*0.63;
   double lDDT = iT1/iT2 + lRho;
   return lDDT;
 }
-int  VJetLoader::trigger(TJet *iJet) { 
+int  FatJetLoader::trigger(TJet *iJet) { 
   int pId = 0; 
   for(int i0 = 0; i0 < int(fTrigString.size()); i0++) if(fTrigger->passObj(fTrigString[i0],1,iJet->hltMatchBits))  pId += TMath::Power(2.,i0);
   return pId;
 }
-float VJetLoader::pullDot(float iY1,float iY2,float iPhi1,float iPhi2) { 
+float FatJetLoader::pullDot(float iY1,float iY2,float iPhi1,float iPhi2) { 
   return (iY1*iY1 + iPhi1*iPhi2);
 }
-TJet* VJetLoader::getLargeJet(TJet *iMatch) { 
+TJet* FatJetLoader::getLargeJet(TJet *iMatch) { 
   TJet *lFatJet = 0;
   for  (int i0 = 0; i0 < fVJets->GetEntriesFast(); i0++) {
     TJet *pFatJet = (TJet*)((*fVJets)[i0]);
@@ -372,7 +372,7 @@ TJet* VJetLoader::getLargeJet(TJet *iMatch) {
   }
   return lFatJet;
 }
-double VJetLoader::dPhi(TLorentzVector v1, TLorentzVector v2, TLorentzVector v3){
+double FatJetLoader::dPhi(TLorentzVector v1, TLorentzVector v2, TLorentzVector v3){
   TVector3 hVelocity = v3.BoostVector();
   TLorentzRotation Boost(hVelocity);
   TLorentzRotation tosubjetRest = Boost.Inverse();
