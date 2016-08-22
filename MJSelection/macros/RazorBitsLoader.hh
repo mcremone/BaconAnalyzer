@@ -73,13 +73,14 @@ public:
   double           res_jet2_pt, res_jet2_eta, res_jet2_phi, res_jet2_mass; 
   double           res_jet3_pt, res_jet3_eta, res_jet3_phi, res_jet3_mass;
   double           res_jet0_CHF, res_jet0_NHF, res_jet0_NEMF;                      // jet variables
+  double           res_jet0_HadFlavor, res_jet1_HadFlavor, res_jet2_HadFlavor, res_jet3_HadFlavor;
   float            res_mt;                                                         // mT
   float            MR, Rsq, deltaPhi;                                           // razor variables
   int              nJetsAbove80GeV;
   float            HT, MHT;                                                        // HT and MHT
 
 protected:
-
+  const std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/include/CSVv2_ichep.csv";
   const unsigned int kRESOLVEDPUPPI = 2;
   const unsigned int kRESOLVEDCHS = 4;
   const unsigned int kMET  = 2;

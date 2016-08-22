@@ -92,10 +92,12 @@ int main( int argc, char **argv ) {
 
   // Setup Tree
   fEvt       ->setupTree      (lOut); 
-//  fMuon      ->setupTree      (lOut);
-//  fElectron  ->setupTree      (lOut);
-//  fTau       ->setupTree      (lOut);
-//  fPhoton    ->setupTree      (lOut);
+/*  
+  fMuon      ->setupTree      (lOut);
+  fElectron  ->setupTree      (lOut);
+  fTau       ->setupTree      (lOut);
+  fPhoton    ->setupTree      (lOut);
+  */
   fJetCHS    ->setupTree      (lOut,"res_CHSjet");
  // fJetCHS    ->setupTreeDiJet (lOut,"res_CHSjet");
   fJetCHS    ->setupTreeRazor (lOut,"res_CHSjet"); 
@@ -182,7 +184,7 @@ int main( int argc, char **argv ) {
 	   fEvt ->passTrigger("HLT_Rsq0p36_v*") || 
 	   fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_BTagCSV_p063_p20_Mbb60_200_v*") ||
 	   fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 32;
-        if(trigbits==1) continue;
+      //  if(trigbits==1) continue;
       }
 
     // Event info
@@ -272,10 +274,11 @@ int main( int argc, char **argv ) {
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
     }
     
-    //For now only select event with 0 lepton -- for Razor
     if (fMuon->fNMuonsLoose>0 || fElectron->fNElectronsLoose>0 || fPhoton->fNPhotonsLoose>0 || fTau->fNTaus>0 ) continue;    
+    //For now only select event with 0 lepton -- for Razor
+    /*
     if (fJetCHS->fMR < 200. || fJetCHS->fRsq < 0.25) continue; 
-
+    */
     
     lOut->Fill();
     neventstest++;

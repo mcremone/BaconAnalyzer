@@ -111,11 +111,11 @@ void JetLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   fTree->Branch(pSbLdR08.str().c_str()      ,&fNBTagsLdR08     ,(pSbLdR08.str()+"/I").c_str());
   fTree->Branch(pSbMdR08.str().c_str()      ,&fNBTagsMdR08     ,(pSbMdR08.str()+"/I").c_str());
   fTree->Branch(pSbTdR08.str().c_str()      ,&fNBTagsTdR08     ,(pSbTdR08.str()+"/I").c_str());
-  */
   fTree->Branch(pSNdR15.str().c_str()       ,&fNJetsdR15       ,(pSNdR15.str()+"/I").c_str());
   fTree->Branch(pSbLdR15.str().c_str()      ,&fNBTagsLdR15     ,(pSbLdR15.str()+"/I").c_str());
   fTree->Branch(pSbMdR15.str().c_str()      ,&fNBTagsMdR15     ,(pSbMdR15.str()+"/I").c_str());
   fTree->Branch(pSbTdR15.str().c_str()      ,&fNBTagsTdR15     ,(pSbTdR15.str()+"/I").c_str());
+  */
   
   for(int i0 = 0; i0 < fN*(10)+3; i0++) {double pVar = 0; fVars.push_back(pVar);}           // declare array of 43 vars
   setupNtuple(iJetLabel.c_str(),iTree,fN,fVars);                                            // from MonoXUtils.cc => fN =4 j*_pt,j*_eta,j*_phi for j1,j2,j3,j4 (3*4=12)
@@ -241,20 +241,22 @@ void JetLoader::fillGoodJets(std::vector<TLorentzVector> iVJets,double dR, std::
 }
 void JetLoader::addOthers(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 
   for(int i0 = 0; i0 < iN; i0++) { 
-    int lBase = iN*3.+i0*6.;
-    std::stringstream pSMass,pSCSV,pSQGID,pSCHF,pSNHF,pSEMF;//,pSDPhi,pSPtT;  
+    int lBase = iN*3.+i0*7.;
+    std::stringstream pSMass,pSCSV,pSQGID,pSCHF,pSNHF,pSEMF,pSHadF;//,pSDPhi,pSPtT;  
     pSMass  << iHeader << i0 << "_mass";
     pSCSV   << iHeader << i0 << "_csv";
     pSQGID  << iHeader << i0 << "_qgid";
     pSCHF   << iHeader << i0 << "_CHF";
     pSNHF   << iHeader << i0 << "_NHF";
     pSEMF   << iHeader << i0 << "_NEMF";
+    pSHadF   << iHeader << i0 << "_HadFlavor";
     iTree->Branch(pSMass .str().c_str(),&iVals[lBase+0],(pSMass .str()+"/D").c_str());
     iTree->Branch(pSCSV .str().c_str() ,&iVals[lBase+1],(pSCSV  .str()+"/D").c_str());
     iTree->Branch(pSQGID.str().c_str() ,&iVals[lBase+2],(pSQGID .str()+"/D").c_str());
     iTree->Branch(pSCHF .str().c_str() ,&iVals[lBase+3],(pSCHF  .str()+"/D").c_str());
     iTree->Branch(pSNHF .str().c_str() ,&iVals[lBase+4],(pSNHF  .str()+"/D").c_str());
     iTree->Branch(pSEMF .str().c_str() ,&iVals[lBase+5],(pSEMF  .str()+"/D").c_str());
+    iTree->Branch(pSHadF .str().c_str() ,&iVals[lBase+6],(pSHadF  .str()+"/D").c_str());
   }
 }
 void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<double> &iVals){ 
@@ -262,12 +264,13 @@ void JetLoader::fillOthers(int iN,std::vector<TJet*> &iObjects,std::vector<doubl
   int lMin = iObjects.size();
   if(iN < lMin) lMin = iN;
   for(int i0 = 0; i0 < lMin; i0++) { 
-    iVals[lBase+i0*6+0] = iObjects[i0]->mass;
-    iVals[lBase+i0*6+1] = iObjects[i0]->csv;
-    iVals[lBase+i0*6+2] = iObjects[i0]->qgid;
-    iVals[lBase+i0*6+3] = iObjects[i0]->chHadFrac;
-    iVals[lBase+i0*6+4] = iObjects[i0]->neuHadFrac;
-    iVals[lBase+i0*6+5] = iObjects[i0]->neuEmFrac;
+    iVals[lBase+i0*7+0] = iObjects[i0]->mass;
+    iVals[lBase+i0*7+1] = iObjects[i0]->csv;
+    iVals[lBase+i0*7+2] = iObjects[i0]->qgid;
+    iVals[lBase+i0*7+3] = iObjects[i0]->chHadFrac;
+    iVals[lBase+i0*7+4] = iObjects[i0]->neuHadFrac;
+    iVals[lBase+i0*7+5] = iObjects[i0]->neuEmFrac;
+    iVals[lBase+i0*7+6] = (double) iObjects[i0]->hadronFlavor;
   }
 }
 void JetLoader::addDijet(std::string iHeader,TTree *iTree,int iN,std::vector<double> &iVals) { 

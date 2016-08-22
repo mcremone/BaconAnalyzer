@@ -1,7 +1,9 @@
 #include "RazorBitsLoader.hh"  
+#include "SFCalculation.hh"
 using namespace std;
 
 RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string preselection) {
+    // syst = central up down
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0 || preselection.compare("MET")==0){
@@ -16,7 +18,7 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("metfilter",                         &metfilter);
     iTree->SetBranchAddress("triggerBits",                       &triggerBits);
     iTree->SetBranchAddress("selectBits",                        &selectBits);
-    iTree->SetBranchAddress("triggerEff",                        &triggerEff);
+//    iTree->SetBranchAddress("triggerEff",                        &triggerEff);
     iTree->SetBranchAddress("npu",                               &npu);
     iTree->SetBranchAddress("npv",                               &npv);
     iTree->SetBranchAddress("puWeight",                          &puWeight);
@@ -44,6 +46,7 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("res_"+algo+"jet3_pt",               &res_jet3_pt);
     iTree->SetBranchAddress("res_"+algo+"jet3_eta",              &res_jet3_eta);
     iTree->SetBranchAddress("res_"+algo+"jet3_phi",              &res_jet3_phi);
+    /*
     iTree->SetBranchAddress("res_"+algo+"jet0_mass",             &res_jet0_mass);
     iTree->SetBranchAddress("res_"+algo+"jet1_mass",             &res_jet1_mass);
     iTree->SetBranchAddress("res_"+algo+"jet2_mass",             &res_jet2_mass);
@@ -51,12 +54,16 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("res_"+algo+"jet0_CHF",              &res_jet0_CHF);
     iTree->SetBranchAddress("res_"+algo+"jet0_NHF",              &res_jet0_NHF);
     iTree->SetBranchAddress("res_"+algo+"jet0_NEMF",             &res_jet0_NEMF);
+    */
+    iTree->SetBranchAddress("res_"+algo+"jet0_HadFlavor",             &res_jet0_HadFlavor);
+    iTree->SetBranchAddress("res_"+algo+"jet1_HadFlavor",             &res_jet1_HadFlavor);
+    iTree->SetBranchAddress("res_"+algo+"jet2_HadFlavor",             &res_jet2_HadFlavor);
+    iTree->SetBranchAddress("res_"+algo+"jet3_HadFlavor",             &res_jet3_HadFlavor);
     /*
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL0_"+syst,      &res_btagwL0);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL1_"+syst,      &res_btagwL1);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwLminus1_"+syst, &res_btagwLminus1);
     iTree->SetBranchAddress("res_"+algo+"jetbtagwL2_"+syst,      &res_btagwL2);
-    */
     iTree->SetBranchAddress("nmu",                               &nmu);
     iTree->SetBranchAddress("nele",                              &nele);
     iTree->SetBranchAddress("ntau",                              &ntau);
@@ -67,6 +74,7 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("muoSF0",                            &muoSF0);
     iTree->SetBranchAddress("muoSF1",                            &muoSF1);
     iTree->SetBranchAddress("muoSF2",                            &muoSF2);
+    */
     iTree->SetBranchAddress("res_"+algo+"jetsAbove80GeV",                            &nJetsAbove80GeV);
     iTree->SetBranchAddress("res_"+algo+"jetMR",                                &MR);
     iTree->SetBranchAddress("res_"+algo+"jetRsq",                               &Rsq);
@@ -85,7 +93,8 @@ bool RazorBitsLoader::selectJetAlgoAndSize(TString algo){
 bool RazorBitsLoader::isHad(){
   bool lPass = false;
   //  if((triggerBits & kHad) && nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true;
-    if (nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true; 
+   // if (nmu==0 && nele==0 && npho==0 && ntau==0) 
+   lPass = true; 
   return lPass;
 }
 bool RazorBitsLoader::isMET(){
@@ -139,10 +148,11 @@ bool RazorBitsLoader::passRazorPreselection(bool isData){
           nJetsAbove80GeV > 1 && 
           deltaPhi < 2.5) lPass = true;
        else if  (!isData &&
-          MR > 200. && 
-          Rsq > 0.35 && 
+  //        MR > 200. && 
+    //      Rsq > 0.35 && 
           nJetsAbove80GeV > 1 && 
-          deltaPhi < 2.5) lPass = true;
+          deltaPhi < 2.5) 
+          lPass = true;
   return lPass;
 }
 bool RazorBitsLoader::passRazorCR(string preselection, bool isData){ 
@@ -159,11 +169,31 @@ bool RazorBitsLoader::passSelection(string preselection, string subsample, strin
       && (combo=="ONLY" || (combo=="COMBO" && !passRazorCR(preselection, isData)))) lPass = true;
   return lPass;
 }
+
+
 double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){
   float wgt = 1;
-  if(!isData) {     
+  if(!isData) {
+    std::vector<double> jetPt, jetEta, jetFlavor;
+    jetPt.push_back(res_jet0_pt);
+    jetEta.push_back(res_jet0_eta);
+    jetFlavor.push_back(res_jet0_HadFlavor);
+    jetPt.push_back(res_jet1_pt);
+    jetEta.push_back(res_jet1_eta);
+    jetFlavor.push_back(res_jet1_HadFlavor);
+    jetPt.push_back(res_jet2_pt);
+    jetEta.push_back(res_jet2_eta);
+    jetFlavor.push_back(res_jet2_HadFlavor);
+    jetPt.push_back(res_jet3_pt);
+    jetEta.push_back(res_jet3_eta);
+    jetFlavor.push_back(res_jet3_HadFlavor);
     //wgt *= LUMI*scale1fb*kfactor*res_btagwL0*triggerEff*evtWeight;
-    wgt *= LUMI*scale1fb*kfactor*triggerEff*evtWeight;
+    std::string wp = "L"; 
+    std::vector<double> SFv = SFCalculation(btagScaleFactorFilename, syst, wp, jetPt, jetEta, jetFlavor);    
+    
+    double btagW = getBTagEventReweight(NminBjets, jetPt, jetEta, jetFlavor, SFv);
+
+    wgt *= LUMI*scale1fb*kfactor*btagW*evtWeight;
     if (algo == "CHS") wgt *= puWeight;
   }
   return wgt;
