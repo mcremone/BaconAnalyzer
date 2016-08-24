@@ -10,15 +10,17 @@ BTagWeightLoader::BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilen
   fJetCalib = new BTagCalibration("csvv2",btagScaleFactorFilename);
   freadersL.clear(); freadersM.clear(); freadersT.clear();
   freaders.clear();
-  for(auto imtype : measurementTypes) { // freadersL 6 , freadersM 6, freadersT 6
-    for(auto ivtype : variationTypes) {
-      freadersL.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_LOOSE,  imtype, ivtype)); // first mujets(HF) then incl(LF) and first central(0,3) then up(1,4) and then down(2,5)
+  for(auto imtype : measurementTypes) { // freadersL 6 , freadersM 6, freadersT 6 // measurementTypes = comb / incl
+    for(auto ivtype : variationTypes) { // central up down
+      freadersL.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_LOOSE,  imtype, ivtype)); // first mujets(HF) then incl(LF) and first central(0,3) then up(1,4) and then down(2,5) // Huh? :)
       freadersM.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_MEDIUM, imtype, ivtype));
       freadersT.push_back(new BTagCalibrationReader(fJetCalib, BTagEntry::OP_TIGHT,  imtype, ivtype));
     }
   }
-  freaders.push_back(freadersL); freaders.push_back(freadersM); freaders.push_back(freadersT);
+  freaders.push_back(freadersL); freaders.push_back(freadersM); freaders.push_back(freadersT); // Add freadersL,M,T to freaders vector of vectors of BTagCalibrationReader (what is this format like?) Matteo says it return the SFs, more specific?
+  // fraders[0] = freadersL, [1] = freadersM, [2] = freadersT
 }
+
 BTagWeightLoader::~BTagWeightLoader() {
   delete fJetCalib;
 }
@@ -29,16 +31,17 @@ void BTagWeightLoader::setupTree(TTree *iTree, std::string iJetLabel) {
   reset();
   for(int i0 = 0; i0 < 60; i0++) {float pVar = 1; fVars.push_back(pVar);} 
   int i1 = 0;
-  for(auto iwptype : wpTypes) {
-    addBTag(iJetLabel.c_str(),iTree,iwptype,fLabels,i1,fVars);
+  for(auto iwptype : wpTypes) { // L M T (working points)
+    addBTag(iJetLabel.c_str(),iTree,iwptype,fLabels,i1,fVars); // Basically just set up the tree 
     i1 += 20;
   }
 }
 void BTagWeightLoader::addBTag(std::string iHeader,TTree *iTree,std::string iLabel,std::vector<std::string> iLabels,int iN,std::vector<float> &iVals) {
   int iBase=iN;
-  for(int i0 = 0; i0 < int(iLabels.size()); i0++) {
+  for(int i0 = 0; i0 < int(iLabels.size()); i0++) { // Labels = "CENT" "MISTAGUP" "MISTAGDO" "BTAGUP" "BTAGDO" 
     std::stringstream pVal0,pVal1,pValminus1,pVal2;
-    pVal0       << iHeader << "btagw" << iLabel << "0"      << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwL0_CENT -- where iLabel(L,M o T) and iLabels(CENT,MISTAGUP,MISTAGD0,BTAGUP,BTAGD0)
+    // -1: exactly 1 btag. 0 = no btag. 1, 2: at least 1 or 2 btags.
+    pVal0       << iHeader << "btagw" << iLabel << "0"      << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwL0_CENT -- where iLabel(L,M o T) and iLabels(CENT,MISTAGUP,MISTAGD0,BTAGUP,BTAGD0) // Just making name for pVal
     pVal1       << iHeader << "btagw" << iLabel << "1"      << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwL1_CENT
     pValminus1  << iHeader << "btagw" << iLabel << "minus1" << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwLminus1_CENT
     pVal2       << iHeader << "btagw" << iLabel << "2"      << "_" << iLabels[i0 % iLabels.size()]; //res_PUPPIbtagwL2_CENT
@@ -53,22 +56,22 @@ void BTagWeightLoader::fillBTag(std::vector<const TJet*> iObjects) {
   // vSFL should contain CENT (), MISTAG(Ms), BTAG(Bs)  - 5 - CENT(vSFL.at(0)),MsUP(vSFL.at(1)),MsDO(vSFL.at(2)),BsUP(vSFL.at(3)),BsDO(vSFL.at(4))
   int iN = 0;
   for(unsigned int j0=0; j0<3; j0++){  // L, M, T
-    std::vector<std::vector<float>> vSFL,vSFL_nominal;
+    std::vector<std::vector<float>> vSFL,vSFL_nominal; //Why need to separate vSFL and vSFL_nominal?
     vSFL.clear(); vSFL_nominal.clear();
-    vSFL_nominal.push_back(getJetSFs("nominal",iObjects, freaders[j0].at(0), freaders[j0].at(3)));
-    for(auto iftype :flavorTypes) {    
+    vSFL_nominal.push_back(getJetSFs("nominal",iObjects, freaders[j0].at(0), freaders[j0].at(3))); //where is this function getJetSFs defined. getJetSFs returns a vector of floats.
+    for(auto iftype :flavorTypes) { //Ms Bs 
       vSFL_nominal.push_back(getJetSFs(iftype,iObjects, freaders[j0].at(0), freaders[j0].at(3))); // 0 and 3 HF and LF respectively - flavor types: Ms,Bs
     }
-    vSFL.push_back(vSFL_nominal.at(0));
+    vSFL.push_back(vSFL_nominal.at(0)); // What is this first element of vSF_nominal? Loose -- (A vector of floats)
 
-    for(auto iftype :flavorTypes) {
-      for(unsigned int i0=1; i0<3; i0++){
+    for(auto iftype :flavorTypes) { // Ms, Bs
+      for(unsigned int i0=1; i0<3; i0++){ // L M T
 	std::vector<float> vSF0;  vSF0.clear();
-	for(unsigned int i1=0; i1<(vSFL.at(0)).size(); i1++) {
-	  if(iftype.compare("Ms")==0) vSF0.push_back( (getJetSFs(iftype,iObjects, freaders[j0].at(i0), freaders[j0].at(i0+3))).at(i1) * (vSFL_nominal.at(2).at(i1)));
+	for(unsigned int i1=0; i1<(vSFL.at(0)).size(); i1++) { // are we looping through the loose vector?
+	  if(iftype.compare("Ms")==0) vSF0.push_back( (getJetSFs(iftype,iObjects, freaders[j0].at(i0), freaders[j0].at(i0+3))).at(i1) * (vSFL_nominal.at(2).at(i1))); // ???
 	  if(iftype.compare("Bs")==0) vSF0.push_back( (getJetSFs(iftype,iObjects, freaders[j0].at(i0), freaders[j0].at(i0+3))).at(i1) * (vSFL_nominal.at(1).at(i1)));
 	}
-	vSFL.push_back(vSF0);
+	vSFL.push_back(vSF0); // ok I'm lost here.
       }
     }
     

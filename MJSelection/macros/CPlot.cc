@@ -493,8 +493,10 @@ void CPlot::Draw(TCanvas *c, bool doSave, TString format, Int_t subpad)
   //
   c->cd(subpad)->SetLogy(0);
   c->cd(subpad)->SetLogx(0);
+  c->cd(subpad)->SetLogz(0);
   c->cd(subpad)->SetLogx(fLogx);
   c->cd(subpad)->SetLogy(fLogy);
+  c->cd(subpad)->SetLogz(fLogz);
 
   if(!fFcns.size() && !fLines.size() && !fBoxes.size() && !fTextBoxes.size() && !fItems.size() && !fRooPlot)
     return;
