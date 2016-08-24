@@ -3,7 +3,7 @@
 using namespace std;
 
 RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string preselection) {
-    // syst = central up down
+    // syst = CENT BTAGDO BTAGUP MISTAGDO MISTAGUP 
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0 || preselection.compare("MET")==0){
@@ -204,7 +204,11 @@ double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){
     jetFlavor.push_back(res_jet3_HadFlavor);
     //wgt *= LUMI*scale1fb*kfactor*res_btagwL0*triggerEff*evtWeight;
     std::string wp = "L"; 
-    std::vector<double> SFv = SFCalculation(btagScaleFactorFilename, syst, wp, jetPt, jetEta, jetFlavor);    
+    std::string variationType;
+    if (syst.compare("CENT")==0)  variationType = "central"; 
+    else if (syst.compare("BTAGUP")==0 || syst.compare("MISTAGUP")==0) variationType = "up"; 
+    else if (syst.compare("BTAGDO")==0 || syst.compare("MISTAGDO")==0) variationType = "down"; 
+    std::vector<double> SFv = SFCalculation(btagScaleFactorFilename, variationType, wp, jetPt, jetEta, jetFlavor);    
     
     double btagW = getBTagEventReweight(NminBjets, jetPt, jetEta, jetFlavor, SFv);
 
