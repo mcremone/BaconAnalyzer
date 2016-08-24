@@ -3,7 +3,6 @@
 using namespace std;
 
 RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string preselection) {
-    // syst = CENT BTAGDO BTAGUP MISTAGDO MISTAGUP 
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0 || preselection.compare("MET")==0){
@@ -204,11 +203,16 @@ double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){
     jetFlavor.push_back(res_jet3_HadFlavor);
     //wgt *= LUMI*scale1fb*kfactor*res_btagwL0*triggerEff*evtWeight;
     std::string wp = "L"; 
-    std::string variationType;
+    std::string variationType, flavor;
     if (syst.compare("CENT")==0)  variationType = "central"; 
-    else if (syst.compare("BTAGUP")==0 || syst.compare("MISTAGUP")==0) variationType = "up"; 
-    else if (syst.compare("BTAGDO")==0 || syst.compare("MISTAGDO")==0) variationType = "down"; 
-    std::vector<double> SFv = SFCalculation(btagScaleFactorFilename, variationType, wp, jetPt, jetEta, jetFlavor);    
+    else {
+            if (syst.find("UP")!=std::string::npos) variationType = "up";
+            if (syst.find("DO")!=std::string::npos) variationType = "down";
+            if (syst.find("BTAG")!=std::string::npos) flavor = "Bs";
+            if (syst.find("MISTAG")!=std::string::npos) flavor = "Ms";
+         }
+
+    std::vector<double> SFv = SFCalculation(flavor, btagScaleFactorFilename, variationType, wp, jetPt, jetEta, jetFlavor);    
     
     double btagW = getBTagEventReweight(NminBjets, jetPt, jetEta, jetFlavor, SFv);
 

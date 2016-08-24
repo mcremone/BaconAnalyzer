@@ -5,11 +5,10 @@
 
 #include "BTagWeightCalculation.hh"
 
-std::vector<double> SFCalculation(std::string btagScaleFactorFilename, std::string variationType, std::string wp, std::vector<double>i& jetPt, std::vector<double>& jetEta, std::vector<double>& jetFlavor) // measurementType = comb, incl. variationType = central, up, down. wp = L,M,T.  
-// Input: jetPt/Eta/Flavor.     
+std::vector<double> SFCalculation(std::string flavor, std::string btagScaleFactorFilename, std::string variationType, std::string wp, std::vector<double>i& jetPt, std::vector<double>& jetEta, std::vector<double>& jetFlavor) // measurementType = comb, incl. variationType = central, up, down. wp = L,M,T.  
 // Output: A SF for a specific central/up/down value at a specific working point for a specific jet.
 {
-std::vector<double> SFv;
+std::vector<double> vSF, vSFb, vSFlf;
 for (int v = 0; v < jetPt.size(); v++)
   {
   bool isB = false;
@@ -33,28 +32,68 @@ for (int v = 0; v < jetPt.size(); v++)
     if (wp.compare("T")==0) BTagCalibrationReader *fReader = new BTagCalibrationReader(fJetCalib, BTagEntry::OP_TIGHT, "incl", variationType); 
   }
 
-  float SF = 1.;
+  float SF = 1., SFb=1., SFlf=1.;
   if (isB) 
   {
-      if (jetPt.at(v) < 670 && fabs(jetEta.at(v)) < 2.4) SF = fReader->eval(BTagEntry::FLAV_B, jetEta.at(v), jetPt.at(v), 0.);
-      if (fabs(jetEta.at(v)) > 2.4) SF = fReader->eval(BTagEntry::FLAV_B, 2.399, jetPt.at(v), 0.); // eta out of bounds safety
-      if (jetPt.at(v) > 670) SF = fReader->eval(BTagEntry::FLAV_B, jetEta.at(v), 669., 0.); // pt out of bounds safety
+      if (jetPt.at(v) < 670 && fabs(jetEta.at(v)) < 2.4) 
+      {
+          SF = fReader->eval(BTagEntry::FLAV_B, jetEta.at(v), jetPt.at(v), 0.);
+          SFb = fReader->eval(BTagEntry::FLAV_B, jetEta.at(v), jetPt.at(v), 0.);
+      }
+      if (fabs(jetEta.at(v)) > 2.4) 
+      {
+          SF = fReader->eval(BTagEntry::FLAV_B, 2.399, jetPt.at(v), 0.); // eta out of bounds safety
+          SFb = fReader->eval(BTagEntry::FLAV_B, 2.399, jetPt.at(v), 0.); // eta out of bounds safety
+      }
+      if (jetPt.at(v) > 670) 
+      {
+          SF = fReader->eval(BTagEntry::FLAV_B, jetEta.at(v), 669., 0.); // pt out of bounds safety
+          SFb = fReader->eval(BTagEntry::FLAV_B, jetEta.at(v), 669., 0.); // pt out of bounds safety
+      }
   }
   else if (isC)
   {
-      if (jetPt.at(v) < 670 && fabs(jetEta.at(v)) < 2.4) SF = fReader->eval(BTagEntry::FLAV_C, jetEta.at(v), jetPt.at(v), 0.);
-      if (fabs(jetEta.at(v)) > 2.4) SF = fReader->eval(BTagEntry::FLAV_C, 2.399, jetPt.at(v), 0.); // eta out of bounds safety
-      if (jetPt.at(v) > 670) SF = fReader->eval(BTagEntry::FLAV_C, jetEta.at(v), 669., 0.); // pt out of bounds safety
+      if (jetPt.at(v) < 670 && fabs(jetEta.at(v)) < 2.4) 
+      {
+          SF = fReader->eval(BTagEntry::FLAV_C, jetEta.at(v), jetPt.at(v), 0.);
+          SFb = fReader->eval(BTagEntry::FLAV_C, jetEta.at(v), jetPt.at(v), 0.);
+      }
+      if (fabs(jetEta.at(v)) > 2.4) 
+      {
+          SF = fReader->eval(BTagEntry::FLAV_C, 2.399, jetPt.at(v), 0.); // eta out of bounds safety
+          SFb = fReader->eval(BTagEntry::FLAV_C, 2.399, jetPt.at(v), 0.); // eta out of bounds safety
+      }
+      if (jetPt.at(v) > 670) 
+      {
+          SF = fReader->eval(BTagEntry::FLAV_C, jetEta.at(v), 669., 0.); // pt out of bounds safety
+          SFb = fReader->eval(BTagEntry::FLAV_C, jetEta.at(v), 669., 0.); // pt out of bounds safety
+      }
   }
   else if (isLF) // mistag
   {
-      if (jetPt.at(v) < 1000 && fabs(jetEta.at(v)) < 2.4) SF = fReader->eval(BTagEntry::FLAV_UDSG, jetEta.at(v), jetPt.at(v), 0.);
-      if (fabs(jetEta.at(v)) > 2.4) SF = fReader->eval(BTagEntry::FLAV_UDSG, 2.399, jetPt.at(v), 0.); // eta out of bounds safety
-      if (jetPt.at(v) > 1000) SF = fReader->eval(BTagEntry::FLAV_UDSG, jetEta.at(v), 999.., 0.); // pt out of bounds safety
+      if (jetPt.at(v) < 1000 && fabs(jetEta.at(v)) < 2.4) 
+      {
+          SF = fReader->eval(BTagEntry::FLAV_UDSG, jetEta.at(v), jetPt.at(v), 0.);
+          SFlf = fReader->eval(BTagEntry::FLAV_UDSG, jetEta.at(v), jetPt.at(v), 0.);
+      }
+      if (fabs(jetEta.at(v)) > 2.4) 
+      {
+          SF = fReader->eval(BTagEntry::FLAV_UDSG, 2.399, jetPt.at(v), 0.); // eta out of bounds safety
+          SFlf = fReader->eval(BTagEntry::FLAV_UDSG, 2.399, jetPt.at(v), 0.); // eta out of bounds safety
+      }
+      if (jetPt.at(v) > 1000) 
+      {
+          SF = fReader->eval(BTagEntry::FLAV_UDSG, jetEta.at(v), 999.., 0.); // pt out of bounds safety
+          SFlf = fReader->eval(BTagEntry::FLAV_UDSG, jetEta.at(v), 999.., 0.); // pt out of bounds safety
+      }
   }
-    SFv.push_back(SF);
+    vSF.push_back(SF);
+    vSFlf.push_back(SFlf);
+    vSFb.push_back(SFb);
   }
-  return SFv;
+  if(flavor.compare("Bs")==0) return vSFb;  
+  if(flavor.compare("Ms")==0) return vSFlf;
+  return vSF;
 }
 
 double getBTagEventReweight(int NminBjets, std::vector<double> vJetPt, std::vector<double> vJetEta, std::vector<int> vJetFlavor, std::vector<double> vSF)
