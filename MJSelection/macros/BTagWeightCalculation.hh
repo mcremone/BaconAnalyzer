@@ -1,10 +1,10 @@
-#ifndef SFCALCULATION_HH
-#define SFCALCULATION_HH
+#ifndef BTAGWEIGHTCALCULATION_HH
+#define BTAGWEIGHTCALCULATION_HH
 
 #include "CondFormats/BTauObjects/interface/BTagEntry.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibration.h"
 #include "CondFormats/BTauObjects/interface/BTagCalibrationReader.h"
-#include "BTagCalibrationStandalone.h"
+#include "../include/BTagCalibrationStandalone.h"
 
 // ROOT headers
 #include <TLorentzVector.h>

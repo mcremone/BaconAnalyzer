@@ -1,5 +1,5 @@
 #include "RazorBitsLoader.hh"  
-#include "SFCalculation.hh"
+#include "BTagWeightCalculation.hh"
 using namespace std;
 
 RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string preselection) {

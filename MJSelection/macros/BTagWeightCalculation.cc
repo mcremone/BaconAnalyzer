@@ -3,7 +3,7 @@
 #include <sstring>
 #include <sstream>
 
-#include "SFCalculation.hh"
+#include "BTagWeightCalculation.hh"
 
 std::vector<double> SFCalculation(std::string btagScaleFactorFilename, std::string variationType, std::string wp, std::vector<double>i& jetPt, std::vector<double>& jetEta, std::vector<double>& jetFlavor) // measurementType = comb, incl. variationType = central, up, down. wp = L,M,T.  
 // Input: jetPt/Eta/Flavor.     
