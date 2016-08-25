@@ -53,7 +53,7 @@ void plotRazor(const string preselection, const string subsample, const string c
   // Settings
   //==============================================================================================================
 
-  const bool doBlind = true;
+  const bool doBlind = false;
 
   // Create output directory 
   const string outputDir("razorplots/"+preselection+"_"+subsample+"_"+combo+"_"+algo);
@@ -129,32 +129,57 @@ void plotRazor(const string preselection, const string subsample, const string c
   Double_t edges[NBINS + 1] = {250,300,350,400,500,1000};
   for(unsigned int isam=0; isam<samplev.size(); isam++) 
   {
-    sprintf(hname,"hPolyMrRsq_%i",isam);      hPolyMrRsqv.push_back(new TH2Poly(hname,"",170,1250,0.3,1.25));
+    sprintf(hname,"hPolyMrRsq_%i",isam);      hPolyMrRsqv.push_back(new TH2Poly(hname,"",60,5050,-0.05,1.75));
   //          hPolyMrRsqv[isam]->Sumw2();
+
+            hPolyMrRsqv[isam]->AddBin(100,0.,200,0.15);
+            hPolyMrRsqv[isam]->AddBin(200,0.,300,0.15);
+            hPolyMrRsqv[isam]->AddBin(300,0.,400,0.15);
+            hPolyMrRsqv[isam]->AddBin(400,0.,600,0.15);
+            hPolyMrRsqv[isam]->AddBin(600,0.,1200,0.15);
+            hPolyMrRsqv[isam]->AddBin(1200,0.,5000,0.15);
+            hPolyMrRsqv[isam]->AddBin(100,0.15,200,0.35);
+            hPolyMrRsqv[isam]->AddBin(200,0.15,300,0.35);
+            hPolyMrRsqv[isam]->AddBin(300,0.15,400,0.35);
+            hPolyMrRsqv[isam]->AddBin(400,0.15,600,0.35);
+            hPolyMrRsqv[isam]->AddBin(600,0.15,1200,0.35);
+            hPolyMrRsqv[isam]->AddBin(1200,0.15,5000,0.35);
+            hPolyMrRsqv[isam]->AddBin(100,0.35,200,0.42);
             hPolyMrRsqv[isam]->AddBin(200,0.35,300,0.42);
             hPolyMrRsqv[isam]->AddBin(300,0.35,400,0.42);
             hPolyMrRsqv[isam]->AddBin(400,0.35,600,0.42);
             hPolyMrRsqv[isam]->AddBin(600,0.35,1200,0.42);
+            hPolyMrRsqv[isam]->AddBin(1200,0.35,5000,0.42);
+            hPolyMrRsqv[isam]->AddBin(100,0.42,200,0.5);
             hPolyMrRsqv[isam]->AddBin(200,0.42,300,0.5);
             hPolyMrRsqv[isam]->AddBin(300,0.42,400,0.5);
             hPolyMrRsqv[isam]->AddBin(400,0.42,600,0.5);
             hPolyMrRsqv[isam]->AddBin(600,0.42,1200,0.5);
+            hPolyMrRsqv[isam]->AddBin(1200,0.42,5000,0.5);
+            hPolyMrRsqv[isam]->AddBin(100,0.5,200,0.6);
             hPolyMrRsqv[isam]->AddBin(200,0.5,300,0.6);
             hPolyMrRsqv[isam]->AddBin(300,0.5,400,0.6);
             hPolyMrRsqv[isam]->AddBin(400,0.5,600,0.6);
             hPolyMrRsqv[isam]->AddBin(600,0.5,1200,0.6);
+            hPolyMrRsqv[isam]->AddBin(1200,0.5,5000,0.6);
+            hPolyMrRsqv[isam]->AddBin(100,0.6,200,0.75);
             hPolyMrRsqv[isam]->AddBin(200,0.6,300,0.75);
             hPolyMrRsqv[isam]->AddBin(300,0.6,400,0.75);
             hPolyMrRsqv[isam]->AddBin(400,0.6,600,0.75);
             hPolyMrRsqv[isam]->AddBin(600,0.6,1200,0.75);
+            hPolyMrRsqv[isam]->AddBin(1200,0.6,5000,0.75);
+            hPolyMrRsqv[isam]->AddBin(100,0.75,200,0.9);
             hPolyMrRsqv[isam]->AddBin(200,0.75,300,0.9);
             hPolyMrRsqv[isam]->AddBin(300,0.75,400,0.9);
             hPolyMrRsqv[isam]->AddBin(400,0.75,600,0.9);
             hPolyMrRsqv[isam]->AddBin(600,0.75,1200,0.9);
-            hPolyMrRsqv[isam]->AddBin(200,0.9,300,1.2);
-            hPolyMrRsqv[isam]->AddBin(300,0.9,400,1.2);
-            hPolyMrRsqv[isam]->AddBin(400,0.9,600,1.2);
-            hPolyMrRsqv[isam]->AddBin(600,0.9,1200,1.2);
+            hPolyMrRsqv[isam]->AddBin(1200,0.75,5000,0.9);
+            hPolyMrRsqv[isam]->AddBin(100,0.9,200,1.7);
+            hPolyMrRsqv[isam]->AddBin(200,0.9,300,1.7);
+            hPolyMrRsqv[isam]->AddBin(300,0.9,400,1.7);
+            hPolyMrRsqv[isam]->AddBin(400,0.9,600,1.7);
+            hPolyMrRsqv[isam]->AddBin(600,0.9,1200,1.7);
+            hPolyMrRsqv[isam]->AddBin(1200,0.9,5000,1.7);
  
     sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",NBINS,edges));            hMETv[isam]->Sumw2();
     sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",NBINS,edges));         hMETLogv[isam]->Sumw2();
@@ -405,7 +430,7 @@ void plotRazor(const string preselection, const string subsample, const string c
 //  sprintf(ylabel,"Events / %.1f ",hmindFPhiv[0]->GetBinWidth(1));
 //  makePlot(c, "mindfphi", "#Delta#phi*_{min}", ylabel, hmindFPhiv, samplev, hmindFPhiMC, hmindFPhiPull, doBlind, LUMI, false, -0.4, -0.15,
 //           0.1, 2.1*(hmindFPhiMC->GetBinContent(hmindFPhiMC->GetMaximumBin()))/(hmindFPhiMC->GetBinWidth(hmindFPhiMC->GetMaximumBin())), subsample);
-
+  gStyle->SetPaintTextFormat("3.2e");
   sprintf(ylabel,"Events / %.1f ",hMRv[0]->GetBinWidth(1));
   makePlot(c, "mr", "M_{R} [GeV]", ylabel, hMRv, samplev, hMRMC, hMRPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hMRMC->GetBinContent(hMRMC->GetMaximumBin()))/(hMRMC->GetBinWidth(hMRMC->GetMaximumBin())), subsample);
@@ -418,7 +443,7 @@ void plotRazor(const string preselection, const string subsample, const string c
   makePlot(c, "deltaphi", "#Delta#phi*", ylabel, hdeltaPhiv, samplev, hdeltaPhiMC, hdeltaPhiPull, doBlind, LUMI, false, -0.4, -0.15,
            0.1, 2.1*(hdeltaPhiMC->GetBinContent(hdeltaPhiMC->GetMaximumBin()))/(hdeltaPhiMC->GetBinWidth(hdeltaPhiMC->GetMaximumBin())), subsample);
   
-  TCanvas *c2 = MakeCanvas("c2","c2",800,800);
+  TCanvas *c2 = MakeCanvas("c2","c2",900,800);
   c2->cd()->SetPad(0,0.3,1.0,1.0);
   c2->cd()->SetTopMargin(0.1);
   c2->cd()->SetBottomMargin(0.17);
@@ -544,7 +569,8 @@ void makePlotPoly(TCanvas *c, const string outname, const string xlabel, const s
   plot.AddTextBox("Preliminary",0.18,0.82,0.37,0.77,0,kBlack,52);
   //plot.AddTextBox("Work In Progress",0.18,0.82,0.37,0.77,0,kBlack,52);  
   plot.AddHist2Poly(hExp,"COLZ TEXT",kBlack,kBlack); 
-
+  plot.SetLogx();
+  plot.SetLogz();
   plot.Draw(c,true,"png",1);
   hExp->SetName(outname.c_str());
   hExp->Write();

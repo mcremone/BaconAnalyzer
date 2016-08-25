@@ -1,16 +1,15 @@
 #include "RazorBitsLoader.hh"  
-#include "SFCalculation.hh"
+#include "BTagWeightCalculation.hh"
 using namespace std;
 
 RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string preselection) {
-    // syst = central up down
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0 || preselection.compare("MET")==0){
-   //   iTree->SetBranchAddress("mindPhi",                             &min_dphijetsmet);
+      iTree->SetBranchAddress("mindPhi",                             &min_dphijetsmet);
     }
     else{
-   //   iTree->SetBranchAddress("mindPhi",                            &min_dphijetsmet);
+      iTree->SetBranchAddress("mindPhi",                            &min_dphijetsmet);
     }
     iTree->SetBranchAddress("runNum",                            &runNum);
     iTree->SetBranchAddress("lumiSec",                           &lumiSec);
@@ -51,10 +50,10 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("res_"+algo+"jet1_mass",             &res_jet1_mass);
     iTree->SetBranchAddress("res_"+algo+"jet2_mass",             &res_jet2_mass);
     iTree->SetBranchAddress("res_"+algo+"jet3_mass",             &res_jet3_mass);
+    */
     iTree->SetBranchAddress("res_"+algo+"jet0_CHF",              &res_jet0_CHF);
     iTree->SetBranchAddress("res_"+algo+"jet0_NHF",              &res_jet0_NHF);
     iTree->SetBranchAddress("res_"+algo+"jet0_NEMF",             &res_jet0_NEMF);
-    */
     iTree->SetBranchAddress("res_"+algo+"jet0_HadFlavor",             &res_jet0_HadFlavor);
     iTree->SetBranchAddress("res_"+algo+"jet1_HadFlavor",             &res_jet1_HadFlavor);
     iTree->SetBranchAddress("res_"+algo+"jet2_HadFlavor",             &res_jet2_HadFlavor);
@@ -139,6 +138,21 @@ bool RazorBitsLoader::passPreSelection(string preselection){
   return lPass;
 }
 
+bool RazorBitsLoader::passMonojetSelection()
+{
+    //(met > 200)*(j0_pt > 100)*(nbtags == 0)*(j0_chf > 0.1 && j0_nhf < 0.8)*(trigger > 0)*(mindphi > 0.5)*(metFiltersWord ==0)
+    bool lPass = false;
+    if (vmetpt > 200 && 
+            res_jet0_pt > 100 && 
+            nbjetsL == 0 && 
+            res_jet0_CHF > 0.1 && 
+            res_jet0_NHF < 0.8  &&
+            min_dphijetsmet > 0.5 &&
+            metfilter == 0)
+    lPass = true;
+    return lPass;
+    // TODO: need to understand what trigger Phil use that > 0.
+}
 bool RazorBitsLoader::passRazorPreselection(bool isData){
   bool lPass = false;
        if (isData &&
@@ -189,7 +203,16 @@ double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){
     jetFlavor.push_back(res_jet3_HadFlavor);
     //wgt *= LUMI*scale1fb*kfactor*res_btagwL0*triggerEff*evtWeight;
     std::string wp = "L"; 
-    std::vector<double> SFv = SFCalculation(btagScaleFactorFilename, syst, wp, jetPt, jetEta, jetFlavor);    
+    std::string variationType, flavor;
+    if (syst.compare("CENT")==0)  variationType = "central"; 
+    else {
+            if (syst.find("UP")!=std::string::npos) variationType = "up";
+            if (syst.find("DO")!=std::string::npos) variationType = "down";
+            if (syst.find("BTAG")!=std::string::npos) flavor = "Bs";
+            if (syst.find("MISTAG")!=std::string::npos) flavor = "Ms";
+         }
+
+    std::vector<double> SFv = SFCalculation(flavor, btagScaleFactorFilename, variationType, wp, jetPt, jetEta, jetFlavor);    
     
     double btagW = getBTagEventReweight(NminBjets, jetPt, jetEta, jetFlavor, SFv);
 
