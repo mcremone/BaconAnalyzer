@@ -33,9 +33,9 @@ MuonLoader      *fMuon       = 0;
 ElectronLoader  *fElectron   = 0; 
 TauLoader       *fTau        = 0; 
 PhotonLoader    *fPhoton     = 0; 
-JetLoader       *fJet        = 0; 
+//JetLoader       *fJet        = 0; 
 VJetLoader      *fVJetPuppi15= 0;
-//VJetLoader      *fVJetPuppi  = 0;
+VJetLoader      *fVJetPuppi  = 0;
 VJetLoader      *fVJetCHS    = 0;
 RunLumiRangeMap *fRangeMap   = 0; 
 
@@ -75,9 +75,9 @@ int main( int argc, char **argv ) {
   fElectron = new ElectronLoader(lTree);                                                 // fElectrons and fElectronBr, fN = 2
   fTau      = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
-  fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
+ // fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fVJetPuppi15= new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr => CA8PUPPI
- // fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi",2);
+  fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi");
   //fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
   if(lOption.compare("data")!=0) fGen      = new GenLoader     (lTree);                  // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
@@ -86,9 +86,9 @@ int main( int argc, char **argv ) {
 
   // Setup Tree
   fEvt      ->setupTree      (lOut); 
-  fJet      ->setupTree      (lOut,"res_PUPPIjet");
+  //fJet      ->setupTree      (lOut,"res_PUPPIjet");
   fVJetPuppi15   ->setupTree      (lOut,"bst15_PUPPIjet"); 
-  //fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
+  fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
   // fVJetCHS  ->setupTree      (lOut,"bst8_CHSjet"); 
   fMuon     ->setupTree      (lOut); 
   fElectron ->setupTree      (lOut); 
@@ -169,13 +169,13 @@ int main( int argc, char **argv ) {
 
 
     fEvt->fillModifiedMet(lVetoes,lPhotons);
-    if(fEvt->fMet < 170. && fEvt->fPuppEt < 170. && fEvt->fFPuppEt < 170. && fEvt->fFMet < 170.) continue;
+//    if(fEvt->fMet < 170. && fEvt->fPuppEt < 170. && fEvt->fFPuppEt < 170. && fEvt->fFMet < 170.) continue;
     fEvt->triggerEff(lElectrons, lPhotons);
 
-/*    // AK8Puppi Jets
+    // AK8Puppi Jets
     fVJetPuppi->load(i0);
     fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,0.8,fEvt->fRho,lPhotons,lPhotonsMVA);
-    if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 2;}*/
+    if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 2;}
     
     // AK8CHS Jets
     // fVJetCHS  ->load(i0); 
@@ -187,13 +187,13 @@ int main( int argc, char **argv ) {
     fVJetPuppi15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,fEvt->fRho,lPhotons,lPhotonsMVA);
     if(lVJets15.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
-    // AK4Puppi Jets
+ /*   // AK4Puppi Jets
     fJet      ->load(i0);
     fJet      ->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
-    // if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
+    // if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}*/
 
     // Select Jets                                       
-    //if(!((fEvt->fselectBits & 2) || (fEvt->fselectBits & 4))) continue;
+    if(!((fEvt->fselectBits & 2) || (fEvt->fselectBits & 4))) continue;
 
     // ttbar, EWK and kFactor correction
 
@@ -204,7 +204,7 @@ int main( int argc, char **argv ) {
                                                                                                                                                                              if(lName.find("ZJets")!=std::string::npos || lName.find("DYJets")!=std::string::npos){
       fGen->findBoson(23,0);
       if(fGen->fBosonPt>0)      fEvt->computeCorr(fGen->fBosonPt,"ZJets_012j_NLO/nominal","ZJets_LO/inv_pt","EWKcorr/Z","ZJets_012j_NLO");
-      //if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,23);
+      if(lVJets.size()>0)       fVJetPuppi->fisHadronicV = fGen->ismatchedJet(lVJet[0],0.8,fVJetPuppi->fvMatching,fVJetPuppi->fvSize,23);
       if(lVJets15.size()>0)     fVJetPuppi15->fisHadronicV = fGen->ismatchedJet(lVJet15[0],1.5,fVJetPuppi15->fvMatching,fVJetPuppi15->fvSize,23);
     }
     if(lName.find("WJets")!=std::string::npos){

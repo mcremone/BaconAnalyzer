@@ -10,19 +10,23 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet,TString
     iTree->SetBranchAddress("metfilter",                         &metfilter);
     iTree->SetBranchAddress("triggerBits",                       &triggerBits);
     iTree->SetBranchAddress("selectBits",                        &selectBits);
-    iTree->SetBranchAddress("triggerEff",                        &triggerEff);
+    iTree->SetBranchAddress("sf_phoTrig",                        &sf_phoTrig);
     iTree->SetBranchAddress("npu",                               &npu);
     iTree->SetBranchAddress("npv",                               &npv);
-    iTree->SetBranchAddress("nmu",                               &nmu);
-    iTree->SetBranchAddress("nele",                              &nele);
-    iTree->SetBranchAddress("ntau",                              &ntau);
-    iTree->SetBranchAddress("npho",                              &npho);
+    iTree->SetBranchAddress("kfactor",                               &kfactor);
+    iTree->SetBranchAddress("nmuLoose",                          &nmuLoose);
+    iTree->SetBranchAddress("neleLoose",                         &neleLoose);
+    iTree->SetBranchAddress("ntau",                         &ntau);
+    iTree->SetBranchAddress("nphoTight",                         &nphoTight);
     iTree->SetBranchAddress("puWeight",                          &puWeight);
     iTree->SetBranchAddress("scale1fb",                          &scale1fb);
     iTree->SetBranchAddress("evtWeight",                         &evtWeight);
     iTree->SetBranchAddress(met,                                 &vmetpt);
     iTree->SetBranchAddress(met+"phi",                           &vmetphi);
     iTree->SetBranchAddress("fake"+met,                          &vfakemetpt);
+    iTree->SetBranchAddress("vpho0_pt",                           &vpho0_pt);
+    iTree->SetBranchAddress("vpho0_eta",                          &vpho0_eta);
+    iTree->SetBranchAddress("vpho0_phi",                           &vpho0_phi);
     iTree->SetBranchAddress("fake"+met+"phi",                    &vfakemetphi);
     iTree->SetBranchAddress("bst"+number+"_"+algo+"jets",                 &njets);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_pt",              &bst_jet0_pt);
@@ -39,6 +43,7 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet,TString
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_doublecsv",       &bst_jet0_doublecsv);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_minsubcsv",       &bst_jet0_minsubcsv);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_maxsubcsv",       &bst_jet0_maxsubcsv);
+    iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_vetoPhoton",       &bst_jet0_vetoPhoton);
   }
 }
 ZprimeBitsLoader::~ZprimeBitsLoader(){}
@@ -49,7 +54,7 @@ bool ZprimeBitsLoader::selectJetAlgoAndSize(TString algo){
 }
 bool ZprimeBitsLoader::isPho(bool isData){
   bool lPass = false;
-  if (nmu==0 && nele==0 && npho==1 && ntau==0){
+  if (nmuLoose==0 && neleLoose==0 && nphoTight==1 && ntau==0 && bst_jet0_vetoPhoton==0 && vpho0_pt>250){
    if(isData){
     if(triggerBits & kSinglePhoton)  lPass = true;}
    else{
@@ -86,13 +91,14 @@ bool ZprimeBitsLoader::passPreSelection(bool isData, string preselection){
 
 bool ZprimeBitsLoader::passBoostedGammaZprimeSelection(){
   //if((bst_jet0_msd>60) && (bst_jet0_msd<100)){ 
- return njets>0 & bst_jet0_pt>175;
+ return njets>0 & bst_jet0_pt>250;
  //else {return false;}
 }
 
 bool ZprimeBitsLoader::passBoostedGammaZprimeSR(float ddtcut){
   
-  return passBoostedGammaZprimeSelection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
+  return passBoostedGammaZprimeSelection();  
+//return passBoostedGammaZprimeSelection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
 }
 
 
@@ -120,7 +126,7 @@ return lPass;
 double ZprimeBitsLoader::getWgt(bool isData, TString algo, double LUMI){
   float wgt = 1;
   if(!isData) {     
-    wgt *= LUMI*scale1fb*evtWeight;
+    wgt *= LUMI*scale1fb*evtWeight*sf_phoTrig*puWeight*kfactor;
     if (algo == "CHS") wgt *= puWeight;
   }
   return wgt;

@@ -43,4 +43,4 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "ZZ") ]]; then rm ../z
 if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then rm ../zprimebits/JetHT.root; hadd  ../zprimebits/JetHT.root  ../zprimebits/JetHT*_data/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "GHF") ]]; then rm ../zprimebits/GHF80_2.root;    hadd  ../zprimebits/GHF80_2.root     ../zprimebits/*GJets*_HT*mcgplushf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then rm ../zprimebits/GLF80_2.root;    hadd  ../zprimebits/GLF80_2.root     ../zprimebits/*GJets*_HT*mcgpluslf/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then rm ../zprimebits/SinglePhotontrig4.root; hadd  ../zprimebits/SinglePhotontrig4.root   ../zprimebits/SinglePhoton*trig_data/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then rm ../zprimebits/SinglePhotontrig4.root; hadd  ../zprimebits/SinglePhotontrig4.root   ../zprimebits/SinglePhoton*_data/*.root; fi

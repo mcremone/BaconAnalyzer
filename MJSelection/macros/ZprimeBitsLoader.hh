@@ -44,17 +44,18 @@ public:
   int metfilter;                                                                   // MET filter bits          
   unsigned int runNum, lumiSec, evtNum;                                            // event ID
   unsigned int triggerBits, selectBits;                                            // trigger and jet type bits
-  double triggerEff;                                                               // trigger efficiency
-  float evtWeight, puWeight;                                                       // pu and evt weight
+  double sf_phoTrig;                                                               // trigger efficiency
+  float evtWeight, puWeight,kfactor;                                                       // pu and evt weight
   unsigned int npu, npv;                                                           // PU, PV multiplicity
-  int nmu, nele, ntau, npho;                                                       // object multiplicity
+  int nmuLoose, neleLoose, ntau, nphoTight;                                                       // object multiplicity
   int njets;                                                                       // jet multiplicity 
   float scale1fb;                                                                  // cross section scale factor per 1/fb
   float vmetpt,vmetphi,vfakemetpt,vfakemetphi;                                     // MET and fake MET
-
+  double vpho0_pt,vpho0_eta,vpho0_phi;
   //
   // Jets with pT-ordering:
   //
+  int              bst_jet0_vetoPhoton;
   double           bst_jet0_pt,bst_jet0_eta,bst_jet0_phi,bst_jet0_mass;            // leading boosted jet
   double           bst_jet0_msd, bst_jet0_rho, bst_jet0_phil;                      // msd and msd/pt dependent variables
   double           bst_jet0_tau32, bst_jet0_tau21;                                 // boosted tagger variables                                                                                            
@@ -65,6 +66,7 @@ public:
 protected:
 
   const unsigned int kBOOSTED8PUPPI = 2;
+  const unsigned int kBOOSTED15PUPPI = 4;
   const float RHO_CUT = 0.38;
   const unsigned int kMET  = 2;
   const unsigned int kHT  = 2;
