@@ -83,7 +83,7 @@ int main( int argc, char **argv ) {
   fPhoton    = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJetCHS    = new JetLoader     (lTree,"AK4CHS");                                        // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   //fJetPuppi  = new JetLoader     (lTree,"AK4Puppi"); 
-  //fBTagCHS   = new BTagWeightLoader(lTree);
+  fBTagCHS   = new BTagWeightLoader(lTree);
 //  fBTagPuppi = new BTagWeightLoader(lTree);
   if (lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
@@ -92,17 +92,19 @@ int main( int argc, char **argv ) {
 
   // Setup Tree
   fEvt       ->setupTree      (lOut); 
-//  fMuon      ->setupTree      (lOut);
-//  fElectron  ->setupTree      (lOut);
-//  fTau       ->setupTree      (lOut);
-//  fPhoton    ->setupTree      (lOut);
+/*  
+  fMuon      ->setupTree      (lOut);
+  fElectron  ->setupTree      (lOut);
+  fTau       ->setupTree      (lOut);
+  fPhoton    ->setupTree      (lOut);
+  */
   fJetCHS    ->setupTree      (lOut,"res_CHSjet");
  // fJetCHS    ->setupTreeDiJet (lOut,"res_CHSjet");
   fJetCHS    ->setupTreeRazor (lOut,"res_CHSjet"); 
   //fJetPuppi  ->setupTree      (lOut,"res_PUPPIjet");
   //fJetPuppi  ->setupTreeDiJet (lOut,"res_PUPPIjet");
   //fJetPuppi  ->setupTreeRazor (lOut,"res_PUPPIjet");
-//  fBTagCHS   ->setupTree      (lOut,"res_CHSjet");
+  fBTagCHS   ->setupTree      (lOut,"res_CHSjet");
 //  fBTagPuppi ->setupTree      (lOut,"res_PUPPIjet");
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
@@ -182,7 +184,7 @@ int main( int argc, char **argv ) {
 	   fEvt ->passTrigger("HLT_Rsq0p36_v*") || 
 	   fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_BTagCSV_p063_p20_Mbb60_200_v*") ||
 	   fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 32;
-        if(trigbits==1) continue;
+      //  if(trigbits==1) continue;
       }
 
     // Event info
@@ -252,7 +254,7 @@ int main( int argc, char **argv ) {
     // ttbar, EWK and kFactor correction
 //    if(lOption.find("data")==std::string::npos){
 //      fGen->load(i0);
-//      if(lJetsCHS.size()>0)     fBTagCHS->fillBTag(fJetCHS->fGoodJets);
+      if(lJetsCHS.size()>0)     fBTagCHS->fillBTag(fJetCHS->fGoodJets);
 //      if(lJetsPuppi.size()>0)   fBTagPuppi->fillBTag(fJetPuppi->fGoodJets);
 //    }
 
@@ -272,10 +274,11 @@ int main( int argc, char **argv ) {
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
     }
     
-    //For now only select event with 0 lepton -- for Razor
     if (fMuon->fNMuonsLoose>0 || fElectron->fNElectronsLoose>0 || fPhoton->fNPhotonsLoose>0 || fTau->fNTaus>0 ) continue;    
+    //For now only select event with 0 lepton -- for Razor
+    /*
     if (fJetCHS->fMR < 200. || fJetCHS->fRsq < 0.25) continue; 
-
+    */
     
     lOut->Fill();
     neventstest++;

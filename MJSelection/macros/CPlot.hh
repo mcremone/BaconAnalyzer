@@ -141,6 +141,7 @@ public:
   void SetYRange(double ymin, double ymax) { fYmin = ymin; fYmax = ymax; } // y-axis range
   void SetLogx(int value=1) { fLogx = value; } // toggle logscale x-axis
   void SetLogy(int value=1) { fLogy = value; } // toggle logscale y-axis
+  void SetLogz(int value=1) { fLogz = value; } // toggle logscale z-axis
   void SetGridx(bool value=1) { fGridx = value; } // toggle grid lines from x-axis ticks
   void SetGridy(bool value=1) { fGridy = value; } // toggle grid lines from y-axis ticks
   void Rebin(int ngroup) { fRebin = ngroup; } // 1D histogram re-bin
@@ -165,7 +166,7 @@ protected:
   TString fYTitle; // y-axis title
   double fXmin, fXmax; // x-axis range
   double fYmin, fYmax; // y-axis range
-  int fLogx, fLogy; // logscale axes
+  int fLogx, fLogy, fLogz; // logscale axes
   int fGridx, fGridy; // grid lines
   int fRebin; // grouping for histogram re-bin
   TLegend *fLeg; // legend object
