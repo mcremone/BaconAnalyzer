@@ -14,9 +14,9 @@ using namespace baconhep;
 class MuonLoader { 
 public:
   MuonLoader(TTree *iTree,
-	     std::string imuScaleFactorFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_muon_looseid_12p9.root",
-             std::string imuScaleFactorTightFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_muon_tightid_12p9.root",
-	     std::string imuScaleFactorTrackFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_muon_track.root");
+	     std::string imuScaleFactorFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_muon_looseid_12p9.root",
+             std::string imuScaleFactorTightFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_muon_tightid_12p9.root",
+	     std::string imuScaleFactorTrackFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_muon_track.root");
   ~MuonLoader();
   void reset();
   void setupTree(TTree *iTree);
