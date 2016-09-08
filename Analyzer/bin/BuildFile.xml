@@ -1,0 +1,8 @@
+<use name="BaconAna/DataFormats"/>
+<use name="BaconAnalyzer/Analyzer"/>
+<use name="root"/>
+<flags CXXFLAGS="-g -Wall"/>
+<bin file="runZprime.cpp" name="runZprime"> </bin>
+<bin file="runZprime15.cpp" name="runZprime15"> </bin>
+<bin file="runZprime8.cpp" name="runZprime8"> </bin>
+<bin file="runTop.cpp" name="runTop"> </bin>

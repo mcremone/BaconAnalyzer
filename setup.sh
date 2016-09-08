@@ -13,7 +13,7 @@ if test -z $CMSSW_VERSION; then
 fi
 
 CURRDIR=$PWD
-PATCHDIR=/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src
+PATCHDIR=/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src
 cd $CMSSW_BASE/src
 
 cp -r ${PATCHDIR}/CommonTools ./
