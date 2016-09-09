@@ -8,8 +8,8 @@ dir="razorbits"
 eos="/store/cmst3/group/monojet/production/10/"
 exec="runRazor"
 
-#if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then 
-if [[ ($sample != "All" && $sample = "QCD") ]]; then 
+if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then 
+#if [[ ($sample != "All" && $sample = "QCD") ]]; then 
     ./sub.sh mc $eos QCD_HT100to200_13TeV                   27500000  $dir $exec $option1 $option2
     ./sub.sh mc $eos QCD_HT200to300_13TeV                   1735000  $dir $exec $option1 $option2
 #    ./sub.sh mc $eos QCD_HT200to300_13TeV_ext                   1735000  $dir $exec $option1 $option2
