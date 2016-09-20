@@ -6,9 +6,15 @@ algo=$3
 reg="ZCR"
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
-	./skimMonoX.sh Zmm BstMonoTop ${reg} ${combo} ${algo} CENT jet
-	./skimMonoX.sh Zee BstMonoTop ${reg} ${combo} ${algo} CENT jet
-	./skimMonoX.sh Pho BstMonoTop ${reg} ${combo} ${algo} CENT jet
+	./skimMonoX.sh Zmm Bst15MonoTop ${reg} ${combo} ${algo} CENT jet jetT
+	./skimMonoX.sh Zee Bst15MonoTop ${reg} ${combo} ${algo} CENT jet jetT
+	./skimMonoX.sh Pho Bst15MonoTop ${reg} ${combo} ${algo} CENT jet jetT
+fi
+
+if [[ ($sample = "All") || ($sample != "All" && $sample = "SemMonoTop") ]]; then
+        ./skimMonoX.sh Zmm Bst15SemMonoTop ${reg} ${combo} ${algo} CENT jet jetT
+        ./skimMonoX.sh Zee Bst15SemMonoTop ${reg} ${combo} ${algo} CENT jet jetT
+        ./skimMonoX.sh Pho Bst15SemMonoTop ${reg} ${combo} ${algo} CENT jet jetT
 fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "Bst15MonoHbb") ]]; then

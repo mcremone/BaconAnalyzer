@@ -19,14 +19,14 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop15") ]]; then
 fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "Bst15MonoTop") ]]; then
-    ./plotMonoX.sh Had Bst15MonoTop SR ${combo} ${algo} CENT jet jetT
-    ./plotMonoX.sh Ele Bst15MonoTop TopCR ${combo} ${algo} CENT jet jetT
-    ./plotMonoX.sh Ele Bst15MonoTop WCR ${combo} ${algo} CENT jet jetT
-    ./plotMonoX.sh Zmm Bst15MonoTop ZCR ${combo} ${algo} CENT jet jetT
-    ./plotMonoX.sh Zee Bst15MonoTop ZCR ${combo} ${algo} CENT jet jetT
-    ./plotMonoX.sh Pho Bst15MonoTop ZCR ${combo} ${algo} CENT jet jetT
-    ./plotMonoX.sh Muo Bst15MonoTop TopCR ${combo} ${algo} CENT jet jetT
-    ./plotMonoX.sh Muo Bst15MonoTop WCR ${combo} ${algo} CENT jet jetT
+    ./plotMonoX.sh Had Bst15SemMonoTop SR ${combo} ${algo} CENT jet jetT
+    ./plotMonoX.sh Ele Bst15SemMonoTop TopCR ${combo} ${algo} CENT jet jetT
+    ./plotMonoX.sh Ele Bst15SemMonoTop WCR ${combo} ${algo} CENT jet jetT
+    ./plotMonoX.sh Zmm Bst15SemMonoTop ZCR ${combo} ${algo} CENT jet jetT
+    ./plotMonoX.sh Zee Bst15SemMonoTop ZCR ${combo} ${algo} CENT jet jetT
+    ./plotMonoX.sh Pho Bst15SemMonoTop ZCR ${combo} ${algo} CENT jet jetT
+    ./plotMonoX.sh Muo Bst15SemMonoTop TopCR ${combo} ${algo} CENT jet jetT
+    ./plotMonoX.sh Muo Bst15SemMonoTop WCR ${combo} ${algo} CENT jet jetT
 fi
 
 if [[ ($sample = "All") || ($sample = "MonoHbb15") ]]; then

@@ -92,18 +92,22 @@ void CPlot::AddHist1D(TH1D *h, TString label, TString drawopt, int color, int li
     return;
 
   if(!fLeg)
-    fLeg = new TLegend(0.73,0.92,0.93,0.93);
+    fLeg = new TLegend(0.55,0.925,0.93,0.96);
   else
-    fLeg->SetY1(fLeg->GetY1()-0.06);
+    fLeg->SetY1(fLeg->GetY1()-0.02);
  
+  fLeg->SetNColumns(2);
+  fLeg->SetTextSize(0.04);
+
   if(drawopt.CompareTo("E",TString::kIgnoreCase)==0) {
     //fLeg->AddEntry(h,label,"P");
     fLeg->AddEntry(h,label,"PL");
-    h->SetMarkerSize(0.9);
+    h->SetMarkerSize(0.1);
   } else if(drawopt.CompareTo("E2",TString::kIgnoreCase)==0) {
     fLeg->AddEntry(h,label,"L");
     h->SetMarkerSize(0);
   } else {
+    h->SetMarkerSize(0.1);
     if(fillsty>0) fLeg->AddEntry(h,label,"F");
     else fLeg->AddEntry(h,label,"L");
   }
@@ -157,18 +161,24 @@ void CPlot::AddToStack(TH1D *h, TString label, int color, int linecol)
   if(!fLeg)
     fLeg = new TLegend(0.73,0.92,0.93,0.93);
   else
-    fLeg->SetY1(fLeg->GetY1()-0.06);
+    fLeg->SetY1(fLeg->GetY1()-0.02);
     
+  //fLeg->SetNColumns(2);
+  fLeg->SetEntrySeparation(0.1);
+
   // make legend entries appear in reverse of the order the histograms are added
+  h->SetMarkerSize(0.2);
   fStackEntries.push_back(fLeg->AddEntry(h,label,"F"));
   for(Int_t ientry=(fStackEntries.size()-2); ientry>=0; ientry--) {
     TObject* hh = fStackEntries[ientry]->GetObject();
     TString ll = fStackEntries[ientry]->GetLabel();
     fStackEntries[ientry+1]->SetObject(hh);
     fStackEntries[ientry+1]->SetLabel(ll);
+    fStackEntries[ientry+1]->SetMarkerSize(0.1);
   }
   fStackEntries[0]->SetObject(h);
   fStackEntries[0]->SetLabel(label);
+  fStackEntries[0]->SetMarkerSize(0.5);
      
   fStack->Add(h);
   AddHist1D(h,"",color,1,1001);

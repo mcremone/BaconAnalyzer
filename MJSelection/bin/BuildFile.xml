@@ -3,6 +3,4 @@
 <use name="root"/>
 <flags CXXFLAGS="-g -Wall"/>
 <bin   file="runMonoX.cpp" name="runMonoX"> </bin>
-<bin   file="runSingleb.cpp" name="runSingleb"> </bin>
-<bin   file="runZprime.cpp" name="runZprime"> </bin>
-<bin   file="runRazor.cpp" name="runRazor"> </bin>
+

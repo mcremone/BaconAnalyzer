@@ -5,25 +5,43 @@ combo=$2
 algo=$3
 reg="TopCR"
 
-if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
-	./skimMonoX.sh Muo BstMonoTop ${reg} ${combo} ${algo} CENT jet
-	./skimMonoX.sh Muo BstMonoTop ${reg} ${combo} ${algo} BTAGUP jet
-	./skimMonoX.sh Muo BstMonoTop ${reg} ${combo} ${algo} BTAGDO jet
-	./skimMonoX.sh Muo BstMonoTop ${reg} ${combo} ${algo} MISTAGUP jet
-	./skimMonoX.sh Muo BstMonoTop ${reg} ${combo} ${algo} MISTAGDO jet
-        ./skimMonoX.sh Muo BstMonoTop ${reg} ${combo} ${algo} SJBTAGUP jet
-        ./skimMonoX.sh Muo BstMonoTop ${reg} ${combo} ${algo} SJBTAGDO jet
-        ./skimMonoX.sh Muo BstMonoTop ${reg} ${combo} ${algo} SJMISTAGUP jet
-        ./skimMonoX.sh Muo BstMonoTop ${reg} ${combo} ${algo} SJMISTAGDO jet
-	./skimMonoX.sh Ele BstMonoTop ${reg} ${combo} ${algo} CENT jet
-	./skimMonoX.sh Ele BstMonoTop ${reg} ${combo} ${algo} BTAGUP jet
-	./skimMonoX.sh Ele BstMonoTop ${reg} ${combo} ${algo} BTAGDO jet
-	./skimMonoX.sh Ele BstMonoTop ${reg} ${combo} ${algo} MISTAGUP jet
-	./skimMonoX.sh Ele BstMonoTop ${reg} ${combo} ${algo} MISTAGDO jet
-        ./skimMonoX.sh Ele BstMonoTop ${reg} ${combo} ${algo} SJBTAGUP jet
-        ./skimMonoX.sh Ele BstMonoTop ${reg} ${combo} ${algo} SJBTAGDO jet
-        ./skimMonoX.sh Ele BstMonoTop ${reg} ${combo} ${algo} SJMISTAGUP jet
-        ./skimMonoX.sh Ele BstMonoTop ${reg} ${combo} ${algo} SJMISTAGDO jet
+if [[ ($sample = "All") || ($sample != "All" && $sample = "MuoMonoTop") ]]; then
+	./skimMonoX.sh Muo Bst15MonoTop ${reg} ${combo} ${algo} CENT jet jetT
+	./skimMonoX.sh Muo Bst15MonoTop ${reg} ${combo} ${algo} BTAGUP jet jetT
+	./skimMonoX.sh Muo Bst15MonoTop ${reg} ${combo} ${algo} BTAGDO jet jetT
+	./skimMonoX.sh Muo Bst15MonoTop ${reg} ${combo} ${algo} MISTAGUP jet jetT
+	./skimMonoX.sh Muo Bst15MonoTop ${reg} ${combo} ${algo} MISTAGDO jet jetT
+        ./skimMonoX.sh Muo Bst15MonoTop ${reg} ${combo} ${algo} SJBTAGUP jet jetT
+        ./skimMonoX.sh Muo Bst15MonoTop ${reg} ${combo} ${algo} SJBTAGDO jet jetT
+        ./skimMonoX.sh Muo Bst15MonoTop ${reg} ${combo} ${algo} SJMISTAGUP jet jetT
+        ./skimMonoX.sh Muo Bst15MonoTop ${reg} ${combo} ${algo} SJMISTAGDO jet jetT
+fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "EleMonoTop") ]]; then
+	./skimMonoX.sh Ele Bst15MonoTop ${reg} ${combo} ${algo} CENT jet jetT
+	./skimMonoX.sh Ele Bst15MonoTop ${reg} ${combo} ${algo} BTAGUP jet jetT
+	./skimMonoX.sh Ele Bst15MonoTop ${reg} ${combo} ${algo} BTAGDO jet jetT
+	./skimMonoX.sh Ele Bst15MonoTop ${reg} ${combo} ${algo} MISTAGUP jet jetT
+	./skimMonoX.sh Ele Bst15MonoTop ${reg} ${combo} ${algo} MISTAGDO jet jetT
+        ./skimMonoX.sh Ele Bst15MonoTop ${reg} ${combo} ${algo} SJBTAGUP jet jetT
+        ./skimMonoX.sh Ele Bst15MonoTop ${reg} ${combo} ${algo} SJBTAGDO jet jetT
+        ./skimMonoX.sh Ele Bst15MonoTop ${reg} ${combo} ${algo} SJMISTAGUP jet jetT
+        ./skimMonoX.sh Ele Bst15MonoTop ${reg} ${combo} ${algo} SJMISTAGDO jet jetT
+fi
+
+if [[ ($sample = "All") || ($sample != "All" && $sample = "MuoSemMonoTop") ]]; then
+        ./skimMonoX.sh Muo Bst15SemMonoTop ${reg} ${combo} ${algo} CENT jet jetT
+        ./skimMonoX.sh Muo Bst15SemMonoTop ${reg} ${combo} ${algo} BTAGUP jet jetT
+        ./skimMonoX.sh Muo Bst15SemMonoTop ${reg} ${combo} ${algo} BTAGDO jet jetT
+        ./skimMonoX.sh Muo Bst15SemMonoTop ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        ./skimMonoX.sh Muo Bst15SemMonoTop ${reg} ${combo} ${algo} MISTAGDO jet jetT
+fi
+
+if [[ ($sample = "All") || ($sample != "All" && $sample = "EleSemMonoTop") ]]; then
+        ./skimMonoX.sh Ele Bst15SemMonoTop ${reg} ${combo} ${algo} CENT jet jetT
+        ./skimMonoX.sh Ele Bst15SemMonoTop ${reg} ${combo} ${algo} BTAGUP jet jetT
+        ./skimMonoX.sh Ele Bst15SemMonoTop ${reg} ${combo} ${algo} BTAGDO jet jetT
+        ./skimMonoX.sh Ele Bst15SemMonoTop ${reg} ${combo} ${algo} MISTAGUP jet jetT
+        ./skimMonoX.sh Ele Bst15SemMonoTop ${reg} ${combo} ${algo} MISTAGDO jet jetT
 fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MuoBst15MonoHbb") ]]; then

@@ -71,14 +71,14 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then
     ./sub.sh data $eos JetHTRun2015D_16Dec2015_v1                                                                       1  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "VectorDiJet") ]]; then
-    ./sub.sh mc $eos VectorDiJet1Jet_M10                                                                                1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos VectorDiJet1Jet_M100                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos VectorDiJet1Jet_M125                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos VectorDiJet1Jet_M150                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos VectorDiJet1Jet_M200                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos VectorDiJet1Jet_M25                                                                                1  $dir $exec $option1 $option2
+#    ./sub.sh mc $eos VectorDiJet1Jet_M10                                                                                1  $dir $exec $option1 $option2
+#    ./sub.sh mc $eos VectorDiJet1Jet_M100                                                                               1  $dir $exec $option1 $option2
+##    ./sub.sh mc $eos VectorDiJet1Jet_M125                                                                               1  $dir $exec $option1 $option2
+#    ./sub.sh mc $eos VectorDiJet1Jet_M150                                                                               1  $dir $exec $option1 $option2
+#    ./sub.sh mc $eos VectorDiJet1Jet_M200                                                                               1  $dir $exec $option1 $option2
+ #   ./sub.sh mc $eos VectorDiJet1Jet_M25                                                                                1  $dir $exec $option1 $option2
     ./sub.sh mc $eos VectorDiJet1Jet_M250                                                                               1  $dir $exec $option1 $option2
     ./sub.sh mc $eos VectorDiJet1Jet_M300                                                                               1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos VectorDiJet1Jet_M50                                                                                1  $dir $exec $option1 $option2
-    ./sub.sh mc $eos VectorDiJet1Jet_M75                                                                                1  $dir $exec $option1 $option2
+  #  ./sub.sh mc $eos VectorDiJet1Jet_M50                                                                                1  $dir $exec $option1 $option2
+  #  ./sub.sh mc $eos VectorDiJet1Jet_M75                                                                                1  $dir $exec $option1 $option2
 fi

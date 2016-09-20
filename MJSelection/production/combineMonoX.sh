@@ -9,18 +9,18 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
 	hadd /tmp/cmantill/$x.root ../monoxbits/$x/*.root
    done
 fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoHbb") ]]; then
-    for x in `ls ../monoxbits | grep ZprimeToA0hToA0chichihbb_2HDM_MZp_ | grep -v .root`; do
-        rm /tmp/cmantill/$x.root
-        hadd /tmp/cmantill/$x.root ../monoxbits/$x/*.root
-    done
-fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "TTDM") ]]; then
-    for x in `ls ../monoxbits | grep TTbarDMJets_pseudoscalar_Mchi_ | grep -v .root`; do
-	rm /tmp/cmantill/$x.root
-        hadd /tmp/cmantill/$x.root ../monoxbits/$x/*.root
-    done
-fi
+#if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoHbb") ]]; then
+#    for x in `ls ../monoxbits | grep ZprimeToA0hToA0chichihbb_2HDM_MZp_ | grep -v .root`; do
+#        rm /tmp/cmantill/$x.root
+#        hadd /tmp/cmantill/$x.root ../monoxbits/$x/*.root
+#    done
+#fi
+#if [[ ($sample = "All") || ($sample != "All" && $sample = "TTDM") ]]; then
+#    for x in `ls ../monoxbits | grep TTbarDMJets_pseudoscalar_Mchi_ | grep -v .root`; do
+#	rm /tmp/cmantill/$x.root
+#        hadd /tmp/cmantill/$x.root ../monoxbits/$x/*.root
+#    done
+#fi
 
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYHF") ]]; then rm /tmp/cmantill/DYHF.root;    hadd  /tmp/cmantill/DYHF.root     ../monoxbits/*DYJets*_HT*mcdyplushf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "DYLF") ]]; then rm /tmp/cmantill/DYLF.root;    hadd  /tmp/cmantill/DYLF.root     ../monoxbits/*DYJets*_HT*mcdypluslf/*.root; fi
@@ -43,4 +43,4 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "MET") ]]; then rm /tm
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then rm /tmp/cmantill/SingleElectron.root; hadd  /tmp/cmantill/SingleElectron.root   ../monoxbits/SingleElectron*_data/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then rm /tmp/cmantill/SinglePhoton.root; hadd  /tmp/cmantill/SinglePhoton.root   ../monoxbits/SinglePhoton*_data/*.root; fi
 # if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then rm /tmp/cmantill/SingleMuon.root; hadd  /tmp/cmantill/SingleMuon.root   ../monoxbits/SingleMuon*_data/*.root; fi
-if [[ ($sample = "All") || ($sample != "All" && $sample = "ZH") ]]; then rm /tmp/cmantill/ZH_amcatnlo.root; hadd  /tmp/cmantill/ZH_amcatnlo.root   ../monoxbits/ZH_HToBB_ZToNuNu_M125_13TeV_amcatnloFXFX_madspin_pythia8_mc/*.root; fi
+#if [[ ($sample = "All") || ($sample != "All" && $sample = "ZH") ]]; then rm /tmp/cmantill/ZH_amcatnlo.root; hadd  /tmp/cmantill/ZH_amcatnlo.root   ../monoxbits/ZH_HToBB_ZToNuNu_M125_13TeV_amcatnloFXFX_madspin_pythia8_mc/*.root; fi

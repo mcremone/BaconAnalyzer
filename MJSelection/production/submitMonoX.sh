@@ -60,7 +60,6 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "T") ]]; then
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TZ") ]]; then
     ./sub.sh mc $eos tZq_ll_4f_13TeV_amcatnlo_pythia8_TuneCUETP8M1                                             0.0758  $dir $exec $option1 $option2;
-#     ./sub.sh mc $eos Spring15_a25ns_tZq_nunu_4f_MINIAOD                                                        0.1379  $dir $exec $option1 $option2;
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTZ") ]]; then
     ./sub.sh mc $eos TTZToLLNuNu_M_10_13TeV_amcatnlo_pythia8                                                   0.2529  $dir $exec $option1 $option2;
@@ -68,9 +67,6 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TTG") ]]; then
     ./sub.sh mc $eos TTGJets_13TeV_amcatnloFXFX_madspin_pythia8                                                 3.697  $dir $exec $option1 $option2;
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "THQ") ]]; then
-#     ./sub.sh mc $eos /THQ_Hincl_13TeV_madgraph_pythia8_TuneCUETP8M1                                          0.070940  $dir $exec $option1 $option2;
-# fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "TT") ]]; then
    ./sub.sh mctt $eos TTJets_13TeV_amcatnloFXFX_pythia8_2                                                      831.76  $dir $exec $option1 $option2;
 fi
@@ -120,9 +116,6 @@ fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
     ./sub.sh data $eos SingleElectronRun2015D_16Dec2015_v1                                                          1  $dir $exec $option1 $option2
 fi
-# if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleMuon") ]]; then
-#     ./sub.sh data $eos SingleMuonRun2015D_16Dec2015_v1                                                              1  $dir $exec $option1 $option2
-# fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoHbb") ]]; then
     ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_300_13TeV_madgraph                             0.0234  $dir $exec $option1 $option2   
     # ./sub.sh mc $eos ZprimeToA0hToA0chichihbb_2HDM_MZp_1000_MA0_400_13TeV_madgraph                                  1  $dir $exec $option1 $option2
