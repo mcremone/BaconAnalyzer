@@ -13,7 +13,7 @@ using namespace baconhep;
 
 class ElectronLoader { 
 public:
-  ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_vetoid_12p9.root",std::string ieleScaleFactorTightFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_tightid_12p9.root",std::string ieleScaleFactorTrackFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_track.root");
+  ElectronLoader(TTree *iTree,std::string ieleScaleFactorFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_electron_vetoid_12p9.root",std::string ieleScaleFactorTightFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_electron_tightid_12p9.root",std::string ieleScaleFactorTrackFilename="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_electron_track.root");
   ~ElectronLoader();
   void reset();
   void setupTree(TTree *iTree);
