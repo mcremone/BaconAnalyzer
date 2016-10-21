@@ -37,7 +37,8 @@ public:
   bool passBoostedZprimeBTag(float csvcut);
   double getWgt(bool isData, TString algo, double LUMI);
   double tau21DDT();
-  
+  bool passBoostedMonoTopPreselection();
+  TLorentzVector getMET();  
   //
   // variables to read in bacon bits
   //
@@ -70,7 +71,7 @@ protected:
   const float RHO_CUT = 0.38;
   const unsigned int kMET  = 2;
   const unsigned int kHT  = 2;
-  const unsigned int kSinglePhoton  = 4;
+  const unsigned int kSinglePhoton  = 8;
 
 };
 #endif

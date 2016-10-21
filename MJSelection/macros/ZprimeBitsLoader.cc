@@ -44,19 +44,21 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet,TString
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_minsubcsv",       &bst_jet0_minsubcsv);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_maxsubcsv",       &bst_jet0_maxsubcsv);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_vetoPhoton",       &bst_jet0_vetoPhoton);
+    iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_tau32",         &bst_jet0_tau32);
   }
 }
 ZprimeBitsLoader::~ZprimeBitsLoader(){}
 bool ZprimeBitsLoader::selectJetAlgoAndSize(TString algo){
   bool lPass = false;
-  if((selectBits & kBOOSTED8PUPPI) && algo=="PUPPI") lPass = true;
+  if((selectBits & kBOOSTED15PUPPI) && algo=="PUPPI") lPass = true;
   return lPass;
 }
 bool ZprimeBitsLoader::isPho(bool isData){
   bool lPass = false;
-  if (nmuLoose==0 && neleLoose==0 && nphoTight==1 && ntau==0 && bst_jet0_vetoPhoton==0 && vpho0_pt>250){
+  if (nmuLoose==0 && neleLoose==0 && nphoTight==1 && ntau==0  && vpho0_pt>200){
    if(isData){
     if(triggerBits & kSinglePhoton)  lPass = true;}
+ //   lPass = true;}
    else{
     lPass = true;}
  }
@@ -76,6 +78,27 @@ bool ZprimeBitsLoader::isPho(bool isData){
    return lPass;
 }*/
 
+TLorentzVector ZprimeBitsLoader::getMET(){
+   TLorentzVector v;
+   v.SetPtEtaPhiM(vfakemetpt,0,vfakemetphi,0);
+   return v;
+}
+
+bool ZprimeBitsLoader::passBoostedMonoTopPreselection(){
+   TLorentzVector vMET = getMET();
+   bool lPass = false;
+   if(vMET.Pt()>200
+   && njets>=1
+     && bst_jet0_pt>200
+   //  && bst_jet0_msd>110
+   //  && bst_jet0_msd<210
+   //  && bst_jet0_tau32<0.61
+     ) lPass=true;
+  return lPass;
+}
+
+
+
 bool ZprimeBitsLoader::passBoostedZprimePreSelection(){
   //if((bst_jet0_msd>60) && (bst_jet0_msd<100)){ 
    return njets>0 & bst_jet0_pt>500;
@@ -91,14 +114,14 @@ bool ZprimeBitsLoader::passPreSelection(bool isData, string preselection){
 
 bool ZprimeBitsLoader::passBoostedGammaZprimeSelection(){
   //if((bst_jet0_msd>60) && (bst_jet0_msd<100)){ 
- return njets>0 & bst_jet0_pt>250;
+ return njets>0 & bst_jet0_pt>200;
  //else {return false;}
 }
 
 bool ZprimeBitsLoader::passBoostedGammaZprimeSR(float ddtcut){
   
-  return passBoostedGammaZprimeSelection();  
-//return passBoostedGammaZprimeSelection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
+//  return passBoostedGammaZprimeSelection();  
+return passBoostedGammaZprimeSelection() & (bst_jet0_tau21 < (-0.063*bst_jet0_rho + ddtcut));
 }
 
 
@@ -126,7 +149,7 @@ return lPass;
 double ZprimeBitsLoader::getWgt(bool isData, TString algo, double LUMI){
   float wgt = 1;
   if(!isData) {     
-    wgt *= LUMI*scale1fb*evtWeight*sf_phoTrig*puWeight*kfactor;
+    wgt *= LUMI*scale1fb*sf_phoTrig*puWeight;
     if (algo == "CHS") wgt *= puWeight;
   }
   return wgt;

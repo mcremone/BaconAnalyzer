@@ -27,53 +27,53 @@ EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::st
   fSample = (char*) (iName.c_str());
 
   // Lepton SFs
-  TFile *fMuSF = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_muon_looseid_12p9.root");
+  TFile *fMuSF = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_muon_looseid_12p9.root");
   fhMuLoose =  (TH2D*) fMuSF->Get("scaleFactor_muon_looseid_RooCMSShape");
   fhMuLoose->SetDirectory(0);
   fMuSF->Close();
-  TFile *fMuSFTight = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_muon_tightid_12p9.root");
+  TFile *fMuSFTight = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_muon_tightid_12p9.root");
   fhMuTight =  (TH2D*) fMuSFTight->Get("scaleFactor_muon_tightid_RooCMSShape");
   fhMuTight->SetDirectory(0);
   fMuSFTight->Close();
-  TFile *fMuSFTrack = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_muon_track.root");
+  TFile *fMuSFTrack = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_muon_track.root");
   fhMuTrack = (TH1D*) fMuSFTrack->Get("htrack2");
   fhMuTrack->SetDirectory(0);
   fMuSFTrack->Close();
-  TFile *fEleSF = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_vetoid_12p9.root");
+  TFile *fEleSF = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_electron_vetoid_12p9.root");
   fhEleVeto =  (TH2D*) fEleSF->Get("scaleFactor_electron_vetoid_RooCMSShape");
   fhEleVeto->SetDirectory(0);
   fEleSF->Close();
-  TFile *fEleSFTight = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_tightid_12p9.root");
+  TFile *fEleSFTight = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_electron_tightid_12p9.root");
   fhEleTight =  (TH2D*) fEleSFTight->Get("scaleFactor_electron_tightid_RooCMSShape");
   fhEleTight->SetDirectory(0);
   fEleSFTight->Close();
-  TFile *fEleSFTrack = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/scaleFactor_electron_track.root");
+  TFile *fEleSFTrack = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/scaleFactor_electron_track.root");
   fhEleTrack = (TH2D*) fEleSFTrack->Get("EGamma_SF2D");
   fhEleTrack->SetDirectory(0);
   fEleSFTrack->Close();
 
   // Trigger Eff
-  TFile *fEleTrigB = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_lowpt_rebinned.root");
+  TFile *fEleTrigB = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/ele_trig_lowpt_rebinned.root");
   hEleTrigB = (TH1D*) fEleTrigB->Get("h_num");
   hEleTrigB->SetDirectory(0);
   fEleTrigB->Close();
 
-  TFile *fEleTrigE = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_lowpt_rebinned.root");
+  TFile *fEleTrigE = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/ele_trig_lowpt_rebinned.root");
   hEleTrigE = (TH1D*) fEleTrigE->Get("h_num");
   hEleTrigE->SetDirectory(0);
   fEleTrigE->Close();
 
-  TFile *fEleTrigLow  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/ele_trig_lowpt.root");
+  TFile *fEleTrigLow  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/ele_trig_lowpt.root");
   hEleTrigLow = (TH2D*) fEleTrigLow->Get("hEffEtaPt");
   hEleTrigLow->SetDirectory(0);
   fEleTrigLow->Close();
 
-  TFile *fMetTrig  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/met_trig.root");
+  TFile *fMetTrig  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/met_trig.root");
   hMetTrig = (TH1D*) fMetTrig->Get("numer");
   hMetTrig->SetDirectory(0);
   fMetTrig->Close();
 
-  TFile *fPhoTrig  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/Json/pho_trig.root");
+  TFile *fPhoTrig  = new TFile("/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/pho_trig.root");
   hPhoTrig = (TH1D*) fPhoTrig->Get("h_num");
   hPhoTrig->SetDirectory(0);
   fPhoTrig->Close();
@@ -251,8 +251,8 @@ bool EvtLoader::passFilter() {
 }
 // Vtx
 int EvtLoader::nVtx() {
-  return fVertices->GetEntries();
-  /*
+  //return fVertices->GetEntries();
+  
   int lNVertex = 0; 
   for(int i0 = 0; i0 < fVertices->GetEntries(); i0++) { 
     TVertex *pVertex = (TVertex*) ((*fVertices)[i0]);
@@ -265,7 +265,7 @@ int EvtLoader::nVtx() {
     lNVertex++;
   }
   return lNVertex;
-  */
+  
 }
 bool EvtLoader::PV(){
   return fEvt->hasGoodPV;
@@ -298,7 +298,7 @@ void EvtLoader::triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<T
 // puWeight
 float EvtLoader::puWeight(float iNPU) { 
   float lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(iNPU)));
-  //if(iNPU > 30) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(30)));
+  if(iNPU > 30) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(30)));
   if(iNPU <  1) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(0)));
   return lNPVW;
 }
