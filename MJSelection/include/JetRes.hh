@@ -18,7 +18,7 @@ public:
       etaMax = iEtaMax;
     }
   };
-  JetRes(std::string iFile="/afs/cern.ch/user/p/pharris/pharris/public/bacon/prod/CMSSW_7_4_7/src/BaconAnalyzer/MJSelection/Json/fitgraph_v4.root",bool iData=true);
+  JetRes(std::string iFile="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/fitgraph_v4.root",bool iData=true);
   ~JetRes() {}
   double* getId(std::string iName);
   double res(double iCSV,double iPt,double iEta,double iSig=0.);

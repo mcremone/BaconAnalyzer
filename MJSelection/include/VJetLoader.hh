@@ -27,8 +27,9 @@ using namespace baconhep;
 
 class VJetLoader { 
 public:
+
   VJetLoader(TTree *iTree,std::string iJet,std::string iAddJet,int iN=1, std::string subjetbtagScaleFactorFilename ="/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/data/subjet_CSVv2_ichep.csv");
-  ~VJetLoader();
+   ~VJetLoader();
   double correction(TJet &iJet,double iRho);
   void reset();
   void resetSubJetBTag();

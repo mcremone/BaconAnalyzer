@@ -18,8 +18,8 @@ using namespace baconhep;
 
 class BTagWeightLoader { 
 public:
-  BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/include/CSVv2_ichep.csv");
-  //BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/MJSelection/include/CSVv2.csv");
+  BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/Analyzer/include/CSVv2_ichep.csv");
+  //BTagWeightLoader(TTree *iTree,std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/BaconProduction/CMSSW_7_6_2/src/BaconAnalyzer/Analyzer/include/CSVv2.csv");
   ~BTagWeightLoader();
   void reset();
   void setupTree(TTree *iTree, std::string iJetLabel);
