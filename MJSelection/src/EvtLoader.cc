@@ -251,8 +251,8 @@ bool EvtLoader::passFilter() {
 }
 // Vtx
 int EvtLoader::nVtx() {
-  return fVertices->GetEntries();
-  /*
+  //return fVertices->GetEntries();
+  
   int lNVertex = 0; 
   for(int i0 = 0; i0 < fVertices->GetEntries(); i0++) { 
     TVertex *pVertex = (TVertex*) ((*fVertices)[i0]);
@@ -265,7 +265,7 @@ int EvtLoader::nVtx() {
     lNVertex++;
   }
   return lNVertex;
-  */
+  
 }
 bool EvtLoader::PV(){
   return fEvt->hasGoodPV;
@@ -298,7 +298,7 @@ void EvtLoader::triggerEff(std::vector<TLorentzVector> iElectrons, std::vector<T
 // puWeight
 float EvtLoader::puWeight(float iNPU) { 
   float lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(iNPU)));
-  //if(iNPU > 30) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(30)));
+  if(iNPU > 30) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(30)));
   if(iNPU <  1) lNPVW = Float_t(fPUWeightHist->GetBinContent(fPUWeightHist->FindBin(0)));
   return lNPVW;
 }

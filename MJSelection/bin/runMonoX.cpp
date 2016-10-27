@@ -41,8 +41,9 @@ ElectronLoader   *fElectron = 0;
 TauLoader        *fTau      = 0; 
 PhotonLoader     *fPhoton   = 0; 
 JetLoader        *fJet      = 0; 
-JetLoader        *fJetCHS   = 0;
-BTagWeightLoader *fBTag15   = 0;
+//JetLoader        *fJetCHS   = 0;
+VJetLoader      *fVJetPuppi  = 0;
+//BTagWeightLoader *fBTag15   = 0;
 VJetLoader       *fVJet15   = 0;
 RunLumiRangeMap  *fRangeMap = 0; 
 
@@ -82,8 +83,9 @@ int main( int argc, char **argv ) {
   fTau      = new TauLoader       (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader    (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
   fJet      = new JetLoader       (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
-  fBTag15   = new BTagWeightLoader(lTree);                                                 // fBTag with dR=1.5
+ // fBTag15   = new BTagWeightLoader(lTree);                                                 // fBTag with dR=1.5
   fVJet15   = new VJetLoader      (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr =>CA8PUPPI, CA15PUPPI, AK8CHS, CA15CHS fN =1
+  fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi");
 
   if(lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);       // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
@@ -97,9 +99,10 @@ int main( int argc, char **argv ) {
   fTau      ->setupTree           (lOut);
   fPhoton   ->setupTree           (lOut);
   fJet      ->setupTree           (lOut,"res_PUPPIjet"); 
-  fBTag15   ->setupTree           (lOut,"res_PUPPIjetbst15");
+ // fBTag15   ->setupTree           (lOut,"res_PUPPIjetbst15");
   fVJet15   ->setupTree           (lOut,"bst15_PUPPIjet"); 
   fVJet15   ->setupTreeSubJetBTag (lOut,"bst15_PUPPIjet");
+  fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
 
   if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
 
@@ -150,7 +153,7 @@ int main( int argc, char **argv ) {
     if(!fEvt->PV()) continue;
 
     // Objects
-    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lPhotonsMVA, lJets, lVJet15, lVJets15, lVetoes;
+    std::vector<TLorentzVector> lMuons, lElectrons, lPhotons, lPhotonsMVA, lJets, lVJet15, lVJets15, lVetoes,lVJet,lVJets;
     std::vector<const TJet*> lGoodJets15;
 
     // EvtInfo
@@ -197,7 +200,7 @@ int main( int argc, char **argv ) {
 
     // MET selection
     fEvt->fillModifiedMet(lVetoes,lPhotons);
-    if(fEvt->fMet < 170. && fEvt->fPuppEt < 170. && fEvt->fFPuppEt < 170. && fEvt->fFMet < 170.) continue;
+    if(fEvt->fFPuppEt < 170. && fEvt->fFMet < 170.) continue;
     
     // Trigger Efficiencies
     fEvt->triggerEff(lElectrons, lPhotons);
@@ -216,19 +219,24 @@ int main( int argc, char **argv ) {
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lVJet15,fVJet15->fVMT);
     }
 
+    // AK8Puppi Jets
+    fVJetPuppi->load(i0);
+    fVJetPuppi->selectVJets(lVetoes,lVJets,lVJet,0.8,fEvt->fRho,lPhotons,lPhotonsMVA);
+    if(lVJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
+
     // AK4Puppi Jets
     fJet->load(i0); 
     fJet->selectJets(lVetoes,lVJets15,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
     if(lJets.size()>0){
       fJet->fillGoodJets(lVJets15,1.5,lGoodJets15);
-      if(lOption.find("data")==std::string::npos)
-        fBTag15->fillBTag(lGoodJets15);
+      //if(lOption.find("data")==std::string::npos)
+       // fBTag15->fillBTag(lGoodJets15);
       fEvt->fselectBits =  fEvt->fselectBits | 4;
       fEvt->fillmT(fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi,lJets,fJet->fMT);
     }
 
     // Select at least one Jet
-    if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4)) continue;
+   // if(!(fEvt->fselectBits & 2) && !(fEvt->fselectBits & 4)) continue;
     
     // ttbar, EWK and kFactor correction
     if(lOption.find("mcg")!=std::string::npos){
