@@ -5,22 +5,23 @@ import os,sys
 import ROOT
 import glob
 import argparse
+from subprocess import call, check_output
 
-def submitJobs(analyzer = '', dataset_type = 'mc', channel = '', events_per_job = 50000, outputDir = ''):
+def submitJobs(analyzer = '', dataset_type = 'mc', channel = '', events_per_job = 50000, outputDir = '',submit=False):
     queue = '8nm'
     basedir = os.environ['CMSSW_BASE']+'/src/BaconAnalyzer/MJSelection/'
     outdir = basedir+'/submission/'+outputDir
     if not os.path.exists(outdir): os.makedirs(outdir)
-    outdir = outdir+'/'+channel
+    outdir = outdir+'/'+channel+'_'+dataset_type
     if not os.path.exists(outdir): os.makedirs(outdir)
     if not os.path.exists(outdir+'/log'): os.makedirs(outdir+'/log')
     if not os.path.exists(outdir+'/ntuples'): os.makedirs(outdir+'/ntuples')
     if not os.path.exists(outdir+'/src'): os.makedirs(outdir+'/src')
     file_list = basedir+"lists/production11/"+channel+".txt"
     script = basedir+"submission/run.sh"
-    logfile = outdir+"/log/"+channel
-    outname = outdir+"/ntuples/"+channel
-    srcname = outdir+"/src/"+channel
+    logfile = outdir+"/log/"+channel+"_"+dataset_type
+    outname = outdir+"/ntuples/"+channel+"_"+dataset_type
+    srcname = outdir+"/src/"+channel+"_"+dataset_type
     index = 0
     with open(file_list) as flist:
         for f in flist:
@@ -35,6 +36,7 @@ def submitJobs(analyzer = '', dataset_type = 'mc', channel = '', events_per_job 
                 print ' '.join(cmd)
                 with open(srcname+'_'+str(index)+'.sh','w') as src_file:
                     src_file.write(' '.join(cmd))
+                if submit: call(cmd)
             else:
                 filein = ROOT.TFile.Open(fin,"read")
                 nevents = int(filein.Get("Events").GetEntries())
@@ -51,6 +53,7 @@ def submitJobs(analyzer = '', dataset_type = 'mc', channel = '', events_per_job 
                     with open(srcname+'_'+str(index)+'.sh','w') as src_file:
                         src_file.write(' '.join(cmd))
                     begin = end_evt + 1
+                    if submit: call(cmd)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -59,14 +62,16 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--directory', help = 'Output directory\'s name', required = True)
     parser.add_argument('-c', '--channel', help = 'Input channel', required = True)
     parser.add_argument('-n', '--nevents', default = 50000, help = 'Number of events per job (used for big ntuples)', type = int)
-    
+    parser.add_argument('--dryRun', action='store_true', help = 'No submit') 
     args = parser.parse_args()
     print "Analyzer: ", args.analyzer
     print "Input channel: ", args.channel
-   
+
+    submit=True
+    submit=(not args.dryRun)
 
     # Check if EOS is mounted
     if not os.path.isdir('eos/cms/store'):
         sys.exit("Please mount EOS under ./eos before using this tool.")
     
-    submitJobs(args.analyzer, args.datatype, args.channel, args.nevents, args.directory)
+    submitJobs(args.analyzer, args.datatype, args.channel, args.nevents, args.directory, submit)
