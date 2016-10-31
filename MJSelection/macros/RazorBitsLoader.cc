@@ -3,6 +3,7 @@
 using namespace std;
 
 RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string preselection) {
+  syst="CENT";
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0 || preselection.compare("MET")==0){

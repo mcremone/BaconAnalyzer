@@ -39,7 +39,7 @@ public:
   bool passRazorCR(string preselection, bool isData);
   bool passRazorWCR(string preselection, bool isData);
   bool passRazorZCR(string preselection, bool isData);
-  bool passMonojetSelection()
+  bool passMonojetSelection();
   
   bool passSelection(string preselection, string subsample, string combo, bool isData);
 
