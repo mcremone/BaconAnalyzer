@@ -16,7 +16,7 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet,TString
     iTree->SetBranchAddress("kfactor",                               &kfactor);
     iTree->SetBranchAddress("nmuLoose",                          &nmuLoose);
     iTree->SetBranchAddress("neleLoose",                         &neleLoose);
-    iTree->SetBranchAddress("ntau",                         &ntau);
+   // iTree->SetBranchAddress("ntau",                         &ntau);
     iTree->SetBranchAddress("nphoTight",                         &nphoTight);
     iTree->SetBranchAddress("puWeight",                          &puWeight);
     iTree->SetBranchAddress("scale1fb",                          &scale1fb);
@@ -35,14 +35,14 @@ ZprimeBitsLoader::ZprimeBitsLoader(TTree *iTree,TString algo,TString jet,TString
     //iTree->SetBranchAddress("bst8_"+algo+jet+"_mass",           &bst_jet0_mass);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_msd",             &bst_jet0_msd);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_rho",             &bst_jet0_rho);
-    iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_phil",            &bst_jet0_phil);
+   // iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_phil",            &bst_jet0_phil);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_tau21",           &bst_jet0_tau21);
-    iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_CHF",             &bst_jet0_CHF);
-    iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_NHF",             &bst_jet0_NHF);
-    iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_NEMF",            &bst_jet0_NEMF);
-    iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_doublecsv",       &bst_jet0_doublecsv);
-    iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_minsubcsv",       &bst_jet0_minsubcsv);
-    iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_maxsubcsv",       &bst_jet0_maxsubcsv);
+   // iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_CHF",             &bst_jet0_CHF);
+   // iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_NHF",             &bst_jet0_NHF);
+   // iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_NEMF",            &bst_jet0_NEMF);
+   // iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_doublecsv",       &bst_jet0_doublecsv);
+   // iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_minsubcsv",       &bst_jet0_minsubcsv);
+   // iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_maxsubcsv",       &bst_jet0_maxsubcsv);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_vetoPhoton",       &bst_jet0_vetoPhoton);
     iTree->SetBranchAddress("bst"+number+"_"+algo+jet+"_tau32",         &bst_jet0_tau32);
   }
@@ -55,7 +55,7 @@ bool ZprimeBitsLoader::selectJetAlgoAndSize(TString algo){
 }
 bool ZprimeBitsLoader::isPho(bool isData){
   bool lPass = false;
-  if (nmuLoose==0 && neleLoose==0 && nphoTight==1 && ntau==0  && vpho0_pt>200){
+  if (nmuLoose==0 && neleLoose==0 && nphoTight==1   && vpho0_pt>200){
    if(isData){
     if(triggerBits & kSinglePhoton)  lPass = true;}
  //   lPass = true;}
@@ -90,6 +90,7 @@ bool ZprimeBitsLoader::passBoostedMonoTopPreselection(){
    if(vMET.Pt()>200
    && njets>=1
      && bst_jet0_pt>200
+     && bst_jet0_tau21 < 0.38 - 0.063*log((bst_jet0_msd)*(bst_jet0_msd)/bst_jet0_pt)
    //  && bst_jet0_msd>110
    //  && bst_jet0_msd<210
    //  && bst_jet0_tau32<0.61
