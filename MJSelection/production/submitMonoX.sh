@@ -4,17 +4,17 @@ sample=$1
 option1=$2
 option2=$3
 dir="monoxbits"
-eos="/store/cmst3/group/monojet/production/10/"
+eos="/store/cmst3/group/monojet/production/11/"
 exec="runMonoX"
 if [[ ($sample = "All") || ($sample != "All" && $sample = "QCD") ]]; then 
-   ./sub.sh mc /store/cmst3/group/monojet/production/09/ QCD_HT100to200_13TeV                                                                    27500000  $dir $exec $option1 $option2
-   ./sub.sh mc /store/cmst3/group/monojet/production/09/ QCD_HT200to300_13TeV                                                                     1735000  $dir $exec $option1 $option2
-   ./sub.sh mc /store/cmst3/group/monojet/production/09/ QCD_HT300to500_13TeV                                                                      367000  $dir $exec $option1 $option2
-   ./sub.sh mc /store/cmst3/group/monojet/production/09/ QCD_HT500to700_13TeV                                                                       29370  $dir $exec $option1 $option2
-   ./sub.sh mc /store/cmst3/group/monojet/production/09/ QCD_HT700to1000_13TeV                                                                       6524  $dir $exec $option1 $option2
-   ./sub.sh mc /store/cmst3/group/monojet/production/09/ QCD_HT1000to1500_13TeV                                                                      1064  $dir $exec $option1 $option2
-   ./sub.sh mc /store/cmst3/group/monojet/production/09/ QCD_HT1500to2000_13TeV                                                                     121.5  $dir $exec $option1 $option2
-   ./sub.sh mc /store/cmst3/group/monojet/production/09/ QCD_HT2000toInf_13TeV                                                                      25.42  $dir $exec $option1 $option2
+   ./sub.sh mc $eos QCD_HT100to200_13TeV                                                                    27500000  $dir $exec $option1 $option2
+   ./sub.sh mc $eos QCD_HT200to300_13TeV                                                                     1735000  $dir $exec $option1 $option2
+   ./sub.sh mc $eos QCD_HT300to500_13TeV                                                                      367000  $dir $exec $option1 $option2
+   ./sub.sh mc $eos QCD_HT500to700_13TeV                                                                       29370  $dir $exec $option1 $option2
+   ./sub.sh mc $eos QCD_HT700to1000_13TeV                                                                       6524  $dir $exec $option1 $option2
+   ./sub.sh mc $eos QCD_HT1000to1500_13TeV                                                                      1064  $dir $exec $option1 $option2
+   ./sub.sh mc $eos QCD_HT1500to2000_13TeV                                                                     121.5  $dir $exec $option1 $option2
+   ./sub.sh mc $eos QCD_HT2000toInf_13TeV                                                                      25.42  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "WHF") ]]; then
    ./sub.sh mcwplushf $eos WJetsToLNu_HT_100To200_13TeV_ext                                                      1343  $dir $exec $option1 $option2
@@ -110,17 +110,29 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then
     ./sub.sh mcgpluslf $eos GJets_HT_400To600_13TeV                                                             277.6  $dir $exec $option1 $option2
     ./sub.sh mcgpluslf $eos GJets_HT_600ToInf_13TeV                                                             93.47  $dir $exec $option1 $option2
 fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "VectorDiJetGamma") ]]; then
+    ./sub.sh mc $eos VectorDiJet1Gamma_100_1_800_v2                                                                    1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos VectorDiJet1Gamma_125_1_800_v2                                                                    1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos VectorDiJet1Gamma_150_1_800_v2                                                                     1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos VectorDiJet1Gamma_200_1_800_v2                                                                    1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos VectorDiJet1Gamma_20_1_800_v2                                                                    1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos VectorDiJet1Gamma_300_1_800_v2                                                                     1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos VectorDiJet1Gamma_400_1_800_v2                                                                    1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos VectorDiJet1Gamma_50_1_800_v2                                                                    1  $dir $exec $option1 $option2
+    ./sub.sh mc $eos VectorDiJet1Gamma_75_1_800_v2                                                                     1  $dir $exec $option1 $option2
+fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then
-   ./sub.sh data $eos SinglePhotonRun2016B_PromptReco_v1_trig                                                            1  $dir $exec $option1 $option2
-   ./sub.sh data $eos SinglePhotonRun2016B_PromptReco_v2_trig_July9                                                            1  $dir $exec $option1 $option2
-   ./sub.sh data $eos SinglePhotonRun2016C_PromptReco_v2_trig                                                            1  $dir $exec $option1 $option2
-   ./sub.sh data $eos SinglePhotonRun2016D_PromptReco_v2_trig                                                            1  $dir $exec $option1 $option2
+   ./sub.sh data $eos SinglePhotonRun2016B_PromptReco_v2                                                           1  $dir $exec $option1 $option2
+   ./sub.sh data $eos SinglePhotonRun2016C_PromptReco_v2                                                            1  $dir $exec $option1 $option2
+   ./sub.sh data $eos SinglePhotonRun2016D_PromptReco_v2                                                            1  $dir $exec $option1 $option2
+   ./sub.sh data $eos SinglePhotonRun2016E_PromptReco_v2                                                         1  $dir $exec $option1 $option2
+#   ./sub.sh data $eos SinglePhotonRun2016F_PromptReco_v1                                                         1  $dir $exec $option1 $option2
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SingleElectron") ]]; then
-    ./sub.sh data $eos SingleElectronRun2016B_PromptReco_v1_trig                                                         1  $dir $exec $option1 $option2
-    ./sub.sh data $eos SingleElectronRun2016B_PromptReco_v2_trig_July9                                                   1  $dir $exec $option1 $option2
-    ./sub.sh data $eos SingleElectronRun2016C_PromptReco_v2_trig                                                         1  $dir $exec $option1 $option2
-    ./sub.sh data $eos SingleElectronRun2016D_PromptReco_v2_trig                                                         1  $dir $exec $option1 $option2
+    ./sub.sh data $eos SingleElectronRun2016B_PromptReco_v2                                                         1  $dir $exec $option1 $option2
+    ./sub.sh data $eos SingleElectronRun2016C_PromptReco_v2                                                         1  $dir $exec $option1 $option2
+    ./sub.sh data $eos SingleElectronRun2016D_PromptReco_v2                                                         1  $dir $exec $option1 $option2
+    
 fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "MonoTop") ]]; then
     ./sub.sh mc /store/cmst3/group/monojet/production/08/ Monotop_S1_Mres_1100_Mchi_100_13TeV_madgraph_pythia8                                           1  $dir $exec $option1 $option2

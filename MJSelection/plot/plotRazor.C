@@ -53,10 +53,10 @@ void plotRazor(const string preselection, const string subsample, const string c
   // Settings
   //==============================================================================================================
 
-  const bool doBlind = false;
+  const bool doBlind = true;
 
   // Create output directory 
-  const string outputDir("razorplots/"+preselection+"_"+subsample+"_"+combo+"_"+algo);
+  const string outputDir("smallrazorplots/"+preselection+"_"+subsample+"_"+combo+"_"+algo);
   gSystem->mkdir(outputDir.c_str(), true);
   CPlot::sOutDir = outputDir;
 
@@ -67,42 +67,55 @@ void plotRazor(const string preselection, const string subsample, const string c
   vector<CSample*> samplev;
   //cout <<"preselection = " <<  preselection.c_str() << endl;
   samplev.push_back(new CSample("data",0,0));
-  if (preselection.compare("Had")==0) samplev.back()->fnamev.push_back("../razorbits/JetHT.root");
-  if (preselection.compare("MET")==0) samplev.back()->fnamev.push_back("../razorbits/MET.root"); 
-  if (preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("../razorbits/SingleMuon.root");
-  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("../razorbits/SingleElectron.root");
-  if (preselection.compare("Pho")==0) { samplev.back()->fnamev.push_back("../razorbits/SinglePhoton.root");
+  if (preselection.compare("Had")==0) samplev.back()->fnamev.push_back("../razorbits/dummy.root");
+ // if (preselection.compare("Had")==0) samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/HTMHT.root");
+  if (preselection.compare("MET")==0) samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/MET.root"); 
+  if (preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/SingleMuon.root");
+  if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/SingleElectron.root");
+  if (preselection.compare("Pho")==0) { samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/SinglePhoton.root");
   samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-  samplev.back()->fnamev.push_back("../razorbits/QCD.root");
+  samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/QCD.root");
   }
   if (preselection.compare("Pho")!=0) {
     samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
     samplev.back()->fnamev.push_back("../razorbits/QCD.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/QCD.root");
     samplev.push_back(new CSample("Single Top",kBlue - 2,kBlue - 2));
     samplev.back()->fnamev.push_back("../razorbits/T.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/T.root");
     samplev.push_back(new CSample("t#bar{t}",kPink - 2,kPink - 2));
     samplev.back()->fnamev.push_back("../razorbits/TT.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/TT.root");
     samplev.push_back(new CSample("Diboson",kRed - 2,kRed - 2));
     samplev.back()->fnamev.push_back("../razorbits/WW.root");
     samplev.back()->fnamev.push_back("../razorbits/WZ.root");
     samplev.back()->fnamev.push_back("../razorbits/ZZ.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/WW.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/WZ.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/ZZ.root");
     samplev.push_back(new CSample("W+jets",kGreen - 2,kGreen - 2));
     samplev.back()->fnamev.push_back("../razorbits/WHF.root");
     samplev.back()->fnamev.push_back("../razorbits/WLF.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/WHF.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/WLF.root");
     samplev.push_back(new CSample("Z+jets", kAzure - 2, kAzure - 2));
-    samplev.back()->fnamev.push_back("../razorbits/ZHF.root");   
+    samplev.back()->fnamev.push_back("../razorbits/ZHF.root");
     samplev.back()->fnamev.push_back("../razorbits/ZLF.root");
     samplev.back()->fnamev.push_back("../razorbits/DYHF.root");
     samplev.back()->fnamev.push_back("../razorbits/DYLF.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/ZHF.root");   
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/ZLF.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/DYHF.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/DYLF.root");
   }
   if (preselection.compare("Pho")==0){
     samplev.push_back(new CSample("#gamma+jets", kAzure + 7, kAzure + 7));
-    samplev.back()->fnamev.push_back("../razorbits/GHF.root");
-    samplev.back()->fnamev.push_back("../razorbits/GLF.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/GHF.root");
+//    samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/GLF.root");
   }
   // if (subsample.compare("SR")==0){   
   //   samplev.push_back(new CSample("????", kBlue, kBlue));
-  //   samplev.back()->fnamev.push_back("../razorbits/????.root");
+  //   samplev.back()->fnamev.push_back("root://eoscms.cern.ch//store/group/phys_susy/razor/thong/razorbits/????.root");
   // }
 
   // integrated luminosity to scale MC
@@ -181,6 +194,8 @@ void plotRazor(const string preselection, const string subsample, const string c
             hPolyMrRsqv[isam]->AddBin(600,0.9,1200,1.7);
             hPolyMrRsqv[isam]->AddBin(1200,0.9,5000,1.7);
  
+//    sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",100,0,3000));            hMETv[isam]->Sumw2();
+//    sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",100,0,3000));         hMETLogv[isam]->Sumw2();
     sprintf(hname,"hMET_%i",isam);            hMETv.push_back(new TH1D(hname,"",NBINS,edges));            hMETv[isam]->Sumw2();
     sprintf(hname,"hMETLog_%i",isam);         hMETLogv.push_back(new TH1D(hname,"",NBINS,edges));         hMETLogv[isam]->Sumw2();
     sprintf(hname,"hHT_%i",isam);             hHTv.push_back(new TH1D(hname,"",100,100,600));              hHTv[isam]->Sumw2();
@@ -232,7 +247,7 @@ void plotRazor(const string preselection, const string subsample, const string c
     for(unsigned int ifile=0; ifile<sample->fnamev.size(); ifile++) {
       string infilename = sample->fnamev[ifile];
       cout << " ==> Processing " << infilename << "... "; cout.flush();
-      infile = new TFile(infilename.c_str()); assert(infile);
+      infile = TFile::Open(infilename.c_str()); assert(infile);
       infile->ls();
       intree = (TTree*)infile->Get("Events"); assert(intree);
       fBits  = new RazorBitsLoader(intree,algo,syst,preselection);
@@ -251,6 +266,7 @@ void plotRazor(const string preselection, const string subsample, const string c
 	//selection
 	//if(!fBits->passRazorSR(preselection, isData)) continue;
 	if(!fBits->passSelection(preselection, subsample, combo, isData)) continue;
+	//if(!fBits->passMonojetSelection()) continue;
 
 	// Apply weigths                                                                                                                                                                            
         wgt = 1;
@@ -553,6 +569,8 @@ void makePlot(TCanvas *c, const string outname, const string xlabel, const strin
   //plotPull.Draw(c,true,"pdf",2);
   c->SetName(outname.c_str());
   c->Write();
+  hExp->SetName(outname.c_str());
+  hExp->Write();
 }
 
 void makePlotPoly(TCanvas *c, const string outname, const string xlabel, const string ylabel,

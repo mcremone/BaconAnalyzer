@@ -12,8 +12,9 @@
 //                            "mctt",
 //                            "data"
 //   argv[3] => lJSON = JSON file for run-lumi filtering of data, specify "none" for MC or no filtering
-//   argv[4] => lXS = cross section (pb), ignored for data 
-//   argv[5] => weight = total weight, ignored for data
+//   argv[4] => Starting entry 
+//   argv[5] => Ending entry
+//   argv[6] => Name of the output file
 //________________________________________________________________________________________________
 
 #include "../include/GenLoader.hh"
@@ -46,7 +47,7 @@ BTagWeightLoader *fBTagCHS   = 0;
 BTagWeightLoader *fBTagPuppi = 0;
 RunLumiRangeMap  *fRangeMap  = 0; 
 
-TH1F *fHist                = 0; 
+TH1F *fHist                = 0;
 
 // Load tree and return infile
 TTree* load(std::string iName) { 
@@ -67,8 +68,9 @@ int main( int argc, char **argv ) {
   const std::string lName        = argv[1];
   const std::string lOption      = argv[2];
   const std::string lJSON        = argv[3];
-  const double      lXS          = atof(argv[4]);
-  const double      weight       = atof(argv[5]);
+  const int      startEntry      = atof(argv[4]);
+  const int      endEntry        = atof(argv[5]);
+  const std::string outName      = argv[6]; 
 
   fRangeMap = new RunLumiRangeMap();
   if(lJSON.size() > 0) fRangeMap->AddJSONFile(lJSON.c_str());
@@ -87,8 +89,9 @@ int main( int argc, char **argv ) {
 //  fBTagPuppi = new BTagWeightLoader(lTree);
   if (lOption.find("data")==std::string::npos) fGen      = new GenLoader     (lTree);     // fGenInfo, fGenInfoBr => GenEvtInfo, fGens and fGenBr => GenParticle
 
-  TFile *lFile = new TFile("Output.root","RECREATE");
+  TFile *lFile = new TFile(outName.c_str(),"RECREATE");
   TTree *lOut  = new TTree("Events","Events");
+  TH1F *NEvents = new TH1F("NEvents", "NEvents", 1, 1, 2);
 
   // Setup Tree
   fEvt       ->setupTree      (lOut); 
@@ -106,15 +109,17 @@ int main( int argc, char **argv ) {
   //fJetPuppi  ->setupTreeRazor (lOut,"res_PUPPIjet");
 //  fBTagCHS   ->setupTree      (lOut,"res_CHSjet");
 //  fBTagPuppi ->setupTree      (lOut,"res_PUPPIjet");
-  if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,float(lXS));
+  if(lOption.find("data")==std::string::npos) fGen ->setupTree (lOut,1);
 
   //
   // Loop over events i0 = iEvent
   //
   int neventstest = 0;
   for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
+
+    if (i0 < startEntry || i0 > endEntry) break;
   //for(int i0 = 0; i0 < int(100000); i0++){ // for testing
-    if(i0 % 100000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
+    if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
 
 
@@ -126,7 +131,10 @@ int main( int argc, char **argv ) {
     }
     else{
       fGen->load(i0);
-      lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
+      //lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
+      lWeight = (float) fGen->fWeight;
+      NEvents->SetBinContent( 1, NEvents->GetBinContent(1) + lWeight);
+
       if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
       if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
       if(lOption.find("tt")!=std::string::npos){
@@ -235,7 +243,7 @@ int main( int argc, char **argv ) {
     // AK4CHS Jets
     fJetCHS->load(i0); 
     fJetCHS->selectJets(lVetoes,lVJets,lJetsCHS,fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi);
-    if(fJetCHS->fNJetsAbove80GeV>1)
+    if(fJetCHS->fNJetsAbove80GeV>=1)
     {
       fEvt->fselectBits = fEvt->fselectBits | 4; // Set -1-- to fSelectBits
       fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lJetsCHS,fJetCHS->fMT);
@@ -275,9 +283,10 @@ int main( int argc, char **argv ) {
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
     }
     
-    if (fMuon->fNMuonsLoose>0 || fElectron->fNElectronsLoose>0 || fPhoton->fNPhotonsLoose>0 || fTau->fNTaus>0) continue;    
-    if (fJetCHS->fMR < 200. || fJetCHS->fRsq < 0.25 || fJetCHS->fdeltaPhi > 2.5) continue; 
-    
+    if (fMuon->fNMuonsLoose>0 || fElectron->fNElectronsLoose>0 || fPhoton->fNPhotonsLoose>0 || fTau->fNTaus>0) continue;   
+
+// Monojet: MET > 200, jet0pt > 100, fabs(jet0eta) < 2.5, jet0chf>0.1, jet0nhf<0.8, jetmindPhi > 0.5 
+    if (fEvt->fMet < 200 || fJetCHS->fMinDPhi < 0.5 || fJetCHS->fJet0_pt < 100 || fabs(fJetCHS->fJet0_eta) > 2.5 || fJetCHS->fJet0_chf < 0.1 || fJetCHS->fJet0_nhf > 0.8) continue;
     lOut->Fill();
     neventstest++;
   }
@@ -285,5 +294,6 @@ int main( int argc, char **argv ) {
   std::cout << "lTree->GetEntriesFast(): " << lTree->GetEntriesFast() << std::endl;
   lFile->cd();
   lOut->Write();
+  NEvents->Write();
   lFile->Close();
 }

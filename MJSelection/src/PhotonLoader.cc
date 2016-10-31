@@ -63,10 +63,10 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
 
     if(pPhoton->pt        <= 175)                       continue;
     if(fabs(pPhoton->eta) >= 1.4442)                    continue;
-    if(!passPhoMediumSel(pPhoton, iRho))                continue;
+    if(!passPhoTightSel(pPhoton, iRho))                continue;
     lTCount++;
 
-    if(lCount ==1) fispho0Tight = 1;
+    if(lTCount ==1) fispho0Tight = 1;
     lVeto.push_back(pPhoton);
     addPhoton(pPhoton,fSelPhotons);
     if(!photon || (pPhoton->pt > photon->pt))  photon = pPhoton;
