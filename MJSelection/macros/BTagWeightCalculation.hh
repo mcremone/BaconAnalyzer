@@ -19,7 +19,7 @@
 #include <cassert>
 
 // Function Declarations
-std::vector<double> SFCalculation(std::string btagScaleFactorFilename, std::string variationType, std::string wp, std::vector<double>i& jetPt, std::vector<double>& jetEta, std::vector<double>& jetFlavor);
+std::vector<double> SFCalculation(std::string btagScaleFactorFilename, std::string variationType, std::string wp, std::vector<double>& jetPt, std::vector<double>& jetEta, std::vector<double>& jetFlavor);
 
 double getBTagEventReweight(int NminBjets, std::vector<double> vJetPt, std::vector<double> vJetEta, std::vector<int> vJetFlavor, std::vector<double> vSF);
 
