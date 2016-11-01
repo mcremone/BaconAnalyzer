@@ -115,10 +115,10 @@ int main( int argc, char **argv ) {
   // Loop over events i0 = iEvent
   //
   int neventstest = 0;
-  for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
-
-    if (i0 < startEntry || i0 > endEntry) break;
-  //for(int i0 = 0; i0 < int(100000); i0++){ // for testing
+  std::cout << "Starting Entry: " << startEntry << "          Ending Entry: " << endEntry << std::endl;
+  //for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
+  for(int i0 = startEntry; i0 <= endEntry; i0++) {
+    if (i0 > int(lTree->GetEntriesFast())) break;
     if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
 
@@ -283,9 +283,10 @@ int main( int argc, char **argv ) {
       fEvt->fevtWeight *= fGen->computeTTbarCorr();
     }
     
+    
     if (fMuon->fNMuonsLoose>0 || fElectron->fNElectronsLoose>0 || fPhoton->fNPhotonsLoose>0 || fTau->fNTaus>0) continue;   
-
 // Monojet: MET > 200, jet0pt > 100, fabs(jet0eta) < 2.5, jet0chf>0.1, jet0nhf<0.8, jetmindPhi > 0.5 
+   
     if (fEvt->fMet < 200 || fJetCHS->fMinDPhi < 0.5 || fJetCHS->fJet0_pt < 100 || fabs(fJetCHS->fJet0_eta) > 2.5 || fJetCHS->fJet0_chf < 0.1 || fJetCHS->fJet0_nhf > 0.8) continue;
     lOut->Fill();
     neventstest++;
