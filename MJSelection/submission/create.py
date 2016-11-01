@@ -46,14 +46,12 @@ def haddFinal(channel = '', outputDir = ''):
         fname = finalDir+'/'+channel+'.root'
         query = outdir+'/'+sample+'*'+mc[channel]+'*_1pb_weighted.root'
         jobfiles += glob.glob(query)
-        #print jobfiles
+    jobfiles = list(set(jobfiles)) #remove overlap
     if os.path.isfile( fname ):
         call(['rm',fname])
         call(['hadd','-k',fname]+jobfiles)
-        print 'Source files: ', jobfiles,'\n'
     else:
         call(['hadd','-k',fname]+jobfiles)
-        print 'Source files: ', jobfiles,'\n'
 
 def submitJobs(analyzer = '', channel = '', events_per_job = 50000, outputDir = '',submit=False, queue = '8nm'):
     basedir = os.environ['CMSSW_BASE']+'/src/BaconAnalyzer/MJSelection/'
