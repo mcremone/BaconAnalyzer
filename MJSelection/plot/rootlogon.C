@@ -24,5 +24,5 @@
   gROOT->Macro("../macros/KStyle.cc+");
   gROOT->Macro("../macros/ZprimeBitsLoader.cc+");
   gROOT->Macro("../macros/MonoXBitsLoader.cc+");
-  gROOT->Macro("../macros/RazorBitsLoader.cc+");
+  
 }

@@ -67,10 +67,10 @@ void plotMonoX(const string preselection, const string selection, const string s
     samplev.push_back(new CSample("data",0,0));
     if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/MET.root");
     if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectron.root");
-    if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
+    if (preselection.compare("Pho")==0)  samplev.back()->fnamev.push_back("../monoxbits/SinglePhoton.root");
     if (preselection.compare("Pho")!=0) {
       samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/QCD.root");
+      samplev.back()->fnamev.push_back("../monoxbits/QCD.root");
       samplev.push_back(new CSample("Single Top",kRed - 9,kRed - 9));
       samplev.back()->fnamev.push_back("/tmp/cmantill/SingleTop.root");
       samplev.push_back(new CSample("t#bar{t}",kOrange - 4,kOrange - 4));
@@ -85,9 +85,11 @@ void plotMonoX(const string preselection, const string selection, const string s
     }
     if (preselection.compare("Pho")==0){
       samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
-      samplev.push_back(new CSample("#gamma+jets", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/GJets.root");
+      samplev.back()->fnamev.push_back("../monoxbits/QCD.root");
+      samplev.push_back(new CSample("GHF", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("../monoxbits/GHF.root");
+      samplev.push_back(new CSample("GLF", kCyan - 6, kCyan - 6));
+      samplev.back()->fnamev.push_back("../monoxbits/GLF.root");
     }
     if (subsample.compare("SR")==0 && (selection.compare("Bst15MonoTop")==0  || selection.compare("Bst15SemMonoTop")==0)){   
       samplev.push_back(new CSample("M_{med}=300 (FCNC)", kBlue, kBlue));
@@ -112,7 +114,7 @@ void plotMonoX(const string preselection, const string selection, const string s
     samplev.push_back(new CSample("data",0,0));
     if (preselection.compare("Had")==0 || preselection.compare("Muo")==0 || preselection.compare("Zmm")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/MET.root");
     if (preselection.compare("Ele")==0 || preselection.compare("Zee")==0)  samplev.back()->fnamev.push_back("/tmp/cmantill/SingleElectron.root");
-    if (preselection.compare("Pho")==0) samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
+    if (preselection.compare("Pho")==0) samplev.back()->fnamev.push_back("../monoxbits/SinglePhoton.root");
     if (preselection.compare("Pho")!=0) {
       samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
       samplev.back()->fnamev.push_back("/tmp/cmantill/QCD.root");
@@ -131,10 +133,13 @@ void plotMonoX(const string preselection, const string selection, const string s
     }
     if (preselection.compare("Pho")==0){
       samplev.push_back(new CSample("QCD", kMagenta - 10, kMagenta - 10));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/SinglePhoton.root");
-      samplev.push_back(new CSample("Photon", kCyan - 9, kCyan - 9));
-      samplev.back()->fnamev.push_back("/tmp/cmantill/GJets.root");
-    }
+      samplev.back()->fnamev.push_back("../monoxbits/QCD.root");
+      samplev.push_back(new CSample("GHF", kCyan - 9, kCyan - 9));
+      samplev.back()->fnamev.push_back("../monoxbits/GHF.root");
+      samplev.push_back(new CSample("GLF", kCyan - 6, kCyan - 6));
+      samplev.back()->fnamev.push_back("../monoxbits/GJets.root");
+ 
+   }
     if (subsample.compare("SR")==0 && (selection.compare("Bst15MonoTop")==0  || selection.compare("Bst15SemMonoTop")==0)){
       samplev.push_back(new CSample("M_{med}=300 (FCNC)", kBlue, kBlue));
       samplev.back()->fnamev.push_back("/tmp/cmantill/monotop_fcnc_mMed300.root");
@@ -269,7 +274,7 @@ void plotMonoX(const string preselection, const string selection, const string s
     bool isData = false;
     if(sample->label.compare("data")==0) isData=true;
     bool isSignal = false;
-    if((selection.compare("Bst15MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0) && subsample.compare("SR")==0){
+   /* if((selection.compare("Bst15MonoTop")==0 || selection.compare("Bst15SemMonoTop")==0) && subsample.compare("SR")==0){
       if (isam==samplev.size()-1 ||
           isam==samplev.size()-2 ||
           isam==samplev.size()-3 ||
@@ -281,7 +286,7 @@ void plotMonoX(const string preselection, const string selection, const string s
         isSignal = true;
         isBacon = false;
       }
-    }
+    }*/
     if(subsample.find("SR")!=std::string::npos && (isam==samplev.size()-1 || isam==samplev.size()-2 || isam==samplev.size()-3 || isam==samplev.size()-4 || isam==samplev.size()-5 || isam==samplev.size()-6 || isam==samplev.size()-7 || isam==samplev.size()-8)) isSignal = true;
     bool isSignal1 = (isam==samplev.size()-1);
     bool isSignal2 = (isam==samplev.size()-2);
@@ -308,7 +313,7 @@ void plotMonoX(const string preselection, const string selection, const string s
         intree->GetEntry(ientry);
         if(isBacon){
           //if(!fBits->selectJetAlgoAndSize(selection,algo)) continue;
-          if(//isData &&
+          if(isData &&
 	     ((fBits->metfilter & 1) || (fBits->metfilter & 1024) || (fBits->metfilter & 2048) || (fBits->metfilter & 32) ||
                         (fBits->metfilter & 8) || (fBits->metfilter & 32768) || (fBits->metfilter & 8192))) continue;
         }
@@ -329,7 +334,7 @@ void plotMonoX(const string preselection, const string selection, const string s
               wgt *=fBits->getPhotonPurity();
             }
 	    else{
-	      wgt *= LUMI*fBits->evtWeight*fBits->puWeight*fBits->kfactor*btagw*fBits->eleSF1*fBits->eleSF2*fBits->muoSF1*fBits->muoSF2*fBits->eleSFTrack*fBits->muoSFTrack;
+	      wgt *= LUMI*fBits->evtWeight*fBits->puWeight*fBits->kfactor;
 	      if(preselection.compare("Had")!=0 && preselection.compare("Muo")!=0 && preselection.compare("Zmm")!=0) wgt *= fBits->sf_mettrig;
               if(preselection.compare("Pho")==0) wgt *= fBits->sf_photrig*0.93;
               if(preselection.compare("Ele")==0) wgt *= fBits->sf_eletrig;

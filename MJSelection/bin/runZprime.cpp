@@ -33,7 +33,7 @@ MuonLoader      *fMuon       = 0;
 ElectronLoader  *fElectron   = 0; 
 TauLoader       *fTau        = 0; 
 PhotonLoader    *fPhoton     = 0; 
-//JetLoader       *fJet        = 0; 
+JetLoader       *fJet        = 0; 
 VJetLoader      *fVJetPuppi15= 0;
 VJetLoader      *fVJetPuppi  = 0;
 VJetLoader      *fVJetCHS    = 0;
@@ -75,7 +75,7 @@ int main( int argc, char **argv ) {
   fElectron = new ElectronLoader(lTree);                                                 // fElectrons and fElectronBr, fN = 2
   fTau      = new TauLoader     (lTree);                                                 // fTaus and fTaurBr, fN = 1
   fPhoton   = new PhotonLoader  (lTree);                                                 // fPhotons and fPhotonBr, fN = 1
- // fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
+  fJet      = new JetLoader     (lTree);                                                 // fJets and fJetBr => AK4PUPPI, fN = 4 - includes jet corrections (corrParams), fN = 4
   fVJetPuppi15= new VJetLoader    (lTree,"CA15Puppi","AddCA15Puppi");                      // fVJets, fVJetBr => CA8PUPPI
   fVJetPuppi= new VJetLoader    (lTree,"AK8Puppi","AddAK8Puppi");
   //fVJetCHS  = new VJetLoader    (lTree,"AK8CHS","AddAK8CHS");                            // fVJets, fVJetBr => AK8CHS
@@ -86,7 +86,7 @@ int main( int argc, char **argv ) {
 
   // Setup Tree
   fEvt      ->setupTree      (lOut); 
-  //fJet      ->setupTree      (lOut,"res_PUPPIjet");
+  fJet      ->setupTree      (lOut,"res_PUPPIjet");
   fVJetPuppi15   ->setupTree      (lOut,"bst15_PUPPIjet"); 
   fVJetPuppi->setupTree      (lOut,"bst8_PUPPIjet");
   // fVJetCHS  ->setupTree      (lOut,"bst8_CHSjet"); 
@@ -187,13 +187,13 @@ int main( int argc, char **argv ) {
     fVJetPuppi15->selectVJets(lVetoes,lVJets15,lVJet15,1.5,fEvt->fRho,lPhotons,lPhotonsMVA);
     if(lVJets15.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
- /*   // AK4Puppi Jets
+    // AK4Puppi Jets
     fJet      ->load(i0);
     fJet      ->selectJets(lVetoes,lVJets,lJets,fEvt->fPuppEt,fEvt->fPuppEtPhi,fEvt->fFPuppEt,fEvt->fFPuppEtPhi);
-    // if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}*/
+    // if(lJets.size()>0){ fEvt->fselectBits =  fEvt->fselectBits | 4;}
 
     // Select Jets                                       
-    if(!((fEvt->fselectBits & 2) || (fEvt->fselectBits & 4))) continue;
+   // if(!((fEvt->fselectBits & 2) || (fEvt->fselectBits & 4))) continue;
 
     // ttbar, EWK and kFactor correction
 

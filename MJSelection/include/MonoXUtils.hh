@@ -41,6 +41,7 @@ bool   passTauSel             (const baconhep::TTau *tau);
 bool   passPhoSel             (const baconhep::TPhoton *photon, const double rho);
 bool   passPhoLooseSel        (const baconhep::TPhoton *photon, const double rho);
 bool   passPhoMediumSel       (const baconhep::TPhoton *photon, const double rho);
+bool   passPhoTightSel        (const baconhep::TPhoton *photon, const double rho);
 double eleIso                 (const baconhep::TElectron *electron, const double rho);
 double phoEffAreaHighPt       (const double eta, const int type);
 double getVal                 (TH1D*h,double val);

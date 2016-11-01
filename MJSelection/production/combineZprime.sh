@@ -44,3 +44,5 @@ if [[ ($sample = "All") || ($sample != "All" && $sample = "JetHT") ]]; then rm .
 if [[ ($sample = "All") || ($sample != "All" && $sample = "GHF") ]]; then rm ../zprimebits/GHF80_2.root;    hadd  ../zprimebits/GHF80_2.root     ../zprimebits/*GJets*_HT*mcgplushf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "GLF") ]]; then rm ../zprimebits/GLF80_2.root;    hadd  ../zprimebits/GLF80_2.root     ../zprimebits/*GJets*_HT*mcgpluslf/*.root; fi
 if [[ ($sample = "All") || ($sample != "All" && $sample = "SinglePhoton") ]]; then rm ../zprimebits/SinglePhotontrig4.root; hadd  ../zprimebits/SinglePhotontrig4.root   ../zprimebits/SinglePhoton*_data/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "VDJG100") ]]; then rm ../zprimebits/VectorDiJetGamma100.root; hadd  ../zprimebits/VectorDiJetGamma100.root   ../zprimebits/VectorDiJet1Gamma_100_1_800_v2_mc/*.root; fi
+if [[ ($sample = "All") || ($sample != "All" && $sample = "VDJG200") ]]; then rm ../zprimebits/VectorDiJetGamma200.root; hadd  ../zprimebits/VectorDiJetGamma200.root   ../zprimebits/VectorDiJet1Gamma_200_1_800_v2_mc/*.root; fi

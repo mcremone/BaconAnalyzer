@@ -305,6 +305,29 @@ bool passPhoMediumSel(const baconhep::TPhoton *photon, const double rho)
 
   return true;
 }
+
+bool passPhoTightSel(const baconhep::TPhoton *photon, const double rho)
+{
+
+  double chHadIso  = TMath::Max(photon->chHadIso  - rho*phoEffArea(photon->scEta, 0), (double)0.);
+  double neuHadIso = TMath::Max(photon->neuHadIso - rho*phoEffArea(photon->scEta, 1), (double)0.);
+  double phoIso    = TMath::Max(photon->gammaIso  - rho*phoEffArea(photon->scEta, 2), (double)0.);
+
+  if(fabs(photon->scEta) <= 1.479) {
+    if(photon->sthovere > 0.05)                                        return false;
+    if(photon->sieie    > 0.0100)                                      return false;
+    if(chHadIso         > 0.76)                                        return false;
+    if(neuHadIso        > 0.97 + 0.014*photon->pt+0.000019*(photon->pt)*(photon->pt)) return false;
+    if(phoIso           > 0.08 + 0.0053*photon->pt)                    return false;
+  } else {
+    if(photon->sthovere > 0.05)                                        return false;
+    if(photon->sieie    > 0.0268)                                      return false;
+    if(chHadIso         > 0.56)                                        return false;
+    if(neuHadIso        > 2.09 + 0.0139*photon->pt+0.000025*(photon->pt)*(photon->pt)) return false;
+    if(phoIso           > 0.16 + 0.0034*photon->pt)                    return false;
+  }
+  return true;
+}
 ///tools
 //--------------------------------------------------------------------------------------------------
 bool passVeto(double iEta,double iPhi,double idR, std::vector<TLorentzVector> &iVetoes) { 

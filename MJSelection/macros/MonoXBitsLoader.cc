@@ -6,13 +6,13 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString algo,TString syst, string
     if(isBacon){
       TString vmet = "puppet"; if (algo!="PUPPI") vmet = "pfmet";
       if(preselection.compare("Had")==0){
-	iTree->SetBranchAddress("res_"+algo+"jetmindPhi",                       &min_dphijetsmet);
+	//iTree->SetBranchAddress("res_"+algo+"jetmindPhi",                       &min_dphijetsmet);
 	if(isData){
 	  iTree->SetBranchAddress("calomet",                                    &calomet);
 	}
       }
       else{
-	iTree->SetBranchAddress("res_"+algo+"jetmindFPhi",                      &min_dphijetsmet);
+	//iTree->SetBranchAddress("res_"+algo+"jetmindFPhi",                      &min_dphijetsmet);
       }
       iTree->SetBranchAddress("runNum",                                         &runNum);
       iTree->SetBranchAddress("lumiSec",                                        &lumiSec);
@@ -34,13 +34,13 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString algo,TString syst, string
       iTree->SetBranchAddress(vmet+"phi",                                       &vmetphi);
       iTree->SetBranchAddress("fake"+vmet,                                      &vfakemetpt);
       iTree->SetBranchAddress("fake"+vmet+"phi",                                &vfakemetphi);
-      iTree->SetBranchAddress("res_"+algo+"jets",                               &njets);
-      iTree->SetBranchAddress("res_"+algo+"jetsdR2",                            &njetsdR2);
-      iTree->SetBranchAddress("res_"+algo+"jetsdR15",                           &njetsdR15);
-      iTree->SetBranchAddress("res_"+algo+"jetsL",                              &nbjetsL);
-      iTree->SetBranchAddress("res_"+algo+"jetsM",                              &nbjetsM);
-      iTree->SetBranchAddress("res_"+algo+"jetsLdR2",                           &nbjetsLdR2);
-      iTree->SetBranchAddress("res_"+algo+"jetsLdR15",                          &nbjetsLdR15);
+      //iTree->SetBranchAddress("res_"+algo+"jets",                               &njets);
+      //iTree->SetBranchAddress("res_"+algo+"jetsdR2",                            &njetsdR2);
+      //iTree->SetBranchAddress("res_"+algo+"jetsdR15",                           &njetsdR15);
+      //iTree->SetBranchAddress("res_"+algo+"jetsL",                              &nbjetsL);
+      //iTree->SetBranchAddress("res_"+algo+"jetsM",                              &nbjetsM);
+      //iTree->SetBranchAddress("res_"+algo+"jetsLdR2",                           &nbjetsLdR2);
+      /*iTree->SetBranchAddress("res_"+algo+"jetsLdR15",                          &nbjetsLdR15);
       iTree->SetBranchAddress("res_"+algo+"jetsT",                              &nbjetsT);
       iTree->SetBranchAddress("res_"+algo+"jetmT",                              &res_jet0_mT);
       iTree->SetBranchAddress("res_"+algo+"jet0_pt",                            &res_jet0_pt);
@@ -82,7 +82,7 @@ MonoXBitsLoader::MonoXBitsLoader(TTree *iTree, TString algo,TString syst, string
       iTree->SetBranchAddress("res_"+algo+"jetbst15btagwLminus1_BTAGDO",        &resbst15_btagwLminus1BTAGDO);
       iTree->SetBranchAddress("res_"+algo+"jetbst15btagwLminus1_MISTAGUP",      &resbst15_btagwLminus1MISTAGUP);
       iTree->SetBranchAddress("res_"+algo+"jetbst15btagwLminus1_MISTAGDO",      &resbst15_btagwLminus1MISTAGDO);
-
+*/
       iTree->SetBranchAddress("nmuLoose",                                       &nLooseMuon);
       iTree->SetBranchAddress("nmuTight",                                       &nTightMuon);
       iTree->SetBranchAddress("neleLoose",                                      &nLooseElectron);
