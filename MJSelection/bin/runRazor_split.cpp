@@ -243,7 +243,7 @@ int main( int argc, char **argv ) {
     // AK4CHS Jets
     fJetCHS->load(i0); 
     fJetCHS->selectJets(lVetoes,lVJets,lJetsCHS,fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi);
-    if(fJetCHS->fNJetsAbove80GeV>=1)
+    if(fJetCHS->fNJetsAbove80GeV>=2)
     {
       fEvt->fselectBits = fEvt->fselectBits | 4; // Set -1-- to fSelectBits
       fEvt->fillmT(fEvt->fMet,fEvt->fMetPhi,fEvt->fFMet,fEvt->fFMetPhi,lJetsCHS,fJetCHS->fMT);
