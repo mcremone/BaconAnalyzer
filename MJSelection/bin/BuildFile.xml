@@ -3,6 +3,7 @@
 <use name="root"/>
 <flags CXXFLAGS="-g -Wall"/>
 <bin file="runMonojet.cpp" name="runMonojet"> </bin>
+<bin file="runRazor_split.cpp" name="runRazor_split"> </bin>
 <bin file="runMonojet_split.cpp" name="runMonojet_split"> </bin>
 <bin file="runMonoX.cpp" name="runMonoX"> </bin>
 <bin file="runRazor.cpp" name="runRazor"> </bin>
