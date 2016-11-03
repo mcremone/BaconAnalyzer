@@ -39,7 +39,6 @@ SAMPLES = {
         "TT":[
             'TT_13TeV_powheg_ext3',
             'TT_13TeV_powheg_ext4',
-            'TT_13TeV_powheg_pythia8_ext',
             ],
         "Diboson":[
             'WWTo1L1Nu2Q_13TeV_amcatnlo',
