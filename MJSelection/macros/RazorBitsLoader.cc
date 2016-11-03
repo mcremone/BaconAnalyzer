@@ -3,7 +3,7 @@
 using namespace std;
 
 RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string preselection) {
-  syst="CENT";
+  cout << "At least works" << endl;
   if(iTree){
     TString met = "puppet"; if (algo!="PUPPI") met = "pfmet";
     if(preselection.compare("Had")==0 || preselection.compare("MET")==0){
@@ -22,8 +22,8 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
 //    iTree->SetBranchAddress("npu",                               &npu);
 //    iTree->SetBranchAddress("npv",                               &npv);
     iTree->SetBranchAddress("puWeight",                          &puWeight);
-    iTree->SetBranchAddress("scale1fb",                          &scale1fb);
-    iTree->SetBranchAddress("evtWeight",                         &evtWeight);
+    iTree->SetBranchAddress("weight",                          &weight);
+//    iTree->SetBranchAddress("evtWeight",                         &evtWeight);
     iTree->SetBranchAddress("kfactor",                           &kfactor);
     iTree->SetBranchAddress(met,                                 &vmetpt);
     iTree->SetBranchAddress(met+"phi",                           &vmetphi);
@@ -35,7 +35,7 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
 //    iTree->SetBranchAddress("res_"+algo+"jetsbtagT",                   &nbjetsT);
 //    iTree->SetBranchAddress("res_"+algo+"jetmT",                 &res_mt);
     iTree->SetBranchAddress("res_"+algo+"jet0_pt",               &res_jet0_pt);
-//    iTree->SetBranchAddress("res_"+algo+"jet0_eta",              &res_jet0_eta);
+    iTree->SetBranchAddress("res_"+algo+"jet0_eta",              &res_jet0_eta);
 //    iTree->SetBranchAddress("res_"+algo+"jet0_phi",              &res_jet0_phi);
 //    iTree->SetBranchAddress("res_"+algo+"jet1_pt",               &res_jet1_pt);
 //    iTree->SetBranchAddress("res_"+algo+"jet1_eta",              &res_jet1_eta);
@@ -83,6 +83,7 @@ RazorBitsLoader::RazorBitsLoader(TTree *iTree,TString algo,TString syst, string 
     iTree->SetBranchAddress("res_"+algo+"jetMHT",                               &MHT);
   }
 }
+
 RazorBitsLoader::~RazorBitsLoader(){}
 bool RazorBitsLoader::selectJetAlgoAndSize(TString algo){
   bool lPass = false;
@@ -90,6 +91,7 @@ bool RazorBitsLoader::selectJetAlgoAndSize(TString algo){
     if((selectBits & kRESOLVEDCHS) && algo=="CHS") lPass = true;
   return lPass;
 }
+
 bool RazorBitsLoader::isHad(){
   bool lPass = false;
   //  if((triggerBits & kHad) && nmu==0 && nele==0 && npho==0 && ntau==0) lPass = true;
@@ -127,6 +129,7 @@ bool RazorBitsLoader::isPho(){
   if((triggerBits & kSinglePhoton) && nmu==0 && nele==0 && npho==1 && ntau==0) lPass = true;
   return lPass;
 }
+/*
 bool RazorBitsLoader::passPreSelection(string preselection){
   bool lPass = false;
   if(preselection.compare("Had")==0 && isHad()) lPass = true;
@@ -186,7 +189,7 @@ bool RazorBitsLoader::passSelection(string preselection, string subsample, strin
       && (combo=="ONLY" || (combo=="COMB" && !passMonojetSelection()))) lPass = true;
   return lPass;
 }
-
+*/
 
 double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){
   float wgt = 1.;
@@ -204,28 +207,26 @@ double RazorBitsLoader::getWgt(bool isData, TString algo, double LUMI){
 //    jetPt.push_back(res_jet3_pt);
 //    jetEta.push_back(res_jet3_eta);
 //    jetFlavor.push_back(res_jet3_HadFlavor);
-    //wgt *= LUMI*scale1fb*kfactor*res_btagwL0*triggerEff*evtWeight;
-    std::string wp = "L"; 
-    std::string variationType, flavor;
-    /*
-    if (syst.compare("CENT")==0)  variationType = "central"; 
-    else {
-            if (syst.find("UP")!=std::string::npos) variationType = "up";
-            if (syst.find("DO")!=std::string::npos) variationType = "down";
-            if (syst.find("BTAG")!=std::string::npos) flavor = "Bs";
-            if (syst.find("MISTAG")!=std::string::npos) flavor = "Ms";
-         }
-
-    std::vector<double> SFv = SFCalculation(flavor, btagScaleFactorFilename, variationType, wp, jetPt, jetEta, jetFlavor);    
+    //wgt *= LUMI*weight*kfactor*res_btagwL0*triggerEff*evtWeight;
+//    std::string wp = "L"; 
+//    std::string variationType, flavor;
+//    if (syst.compare("CENT")==0)  variationType = "central"; 
+//    else {
+//            if (syst.find("UP")!=std::string::npos) variationType = "up";
+//            if (syst.find("DO")!=std::string::npos) variationType = "down";
+//            if (syst.find("BTAG")!=std::string::npos) flavor = "Bs";
+//            if (syst.find("MISTAG")!=std::string::npos) flavor = "Ms";
+//         }
+//
+//    std::vector<double> SFv = SFCalculation(flavor, btagScaleFactorFilename, variationType, wp, jetPt, jetEta, jetFlavor);    
+//    
+//    double btagW = getBTagEventReweight(NminBjets, jetPt, jetEta, jetFlavor, SFv);
     
-    double btagW = getBTagEventReweight(NminBjets, jetPt, jetEta, jetFlavor, SFv);
-*/
     double btagW = 1.;
-//    if (kfactor == 0) kfactor = 1.;
-//    if (puWeight == 0) puWeight = 1.;
-    wgt *= LUMI*scale1fb*kfactor*btagW*evtWeight;
+    wgt *= LUMI*weight*kfactor*btagW;
     if (algo == "CHS") wgt *= puWeight;
-//    if (wgt == 0) cout << "LUMI = " << LUMI << " " << "scale1fb = " << scale1fb << " kfactor = " << kfactor << " evtWeight = " << evtWeight << " btagW = " << btagW << " puWeight = " <<  puWeight << endl;
+//    if (wgt == 0) cout << "LUMI = " << LUMI << " " << "weight = " << weight << " kfactor = " << kfactor << " evtWeight = " << evtWeight << " btagW = " << btagW << " puWeight = " <<  puWeight << endl;
   }
   return wgt;
 }
+

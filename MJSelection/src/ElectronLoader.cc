@@ -46,14 +46,14 @@ void ElectronLoader::reset() {
 void ElectronLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("neleLoose"   ,&fNElectronsLoose ,"fNElectronsLoose/I");
-  fTree->Branch("neleTight"   ,&fNElectronsTight ,"fNElectronsTight/I");
-  fTree->Branch("isele0Tight" ,&fisele0Tight     ,"fisele0Tight/I");
-  fTree->Branch("isDiele  "   ,&fisDiele         ,"fisDiele/I");
-  fTree->Branch("eleSFTrack"  ,&feleSFTrack      ,"feleSFTrack/D");
-  setupNtuple  ("veleLoose"   ,iTree,fN,fVars);        // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
-  addDiElectron("vdiele"      ,iTree,1,fVars,fN*3);    // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
-  addSF        ("eleSF"       ,iTree,feleSFVars,3);    // eleSF0,eleSF1,eleSF2
+//  fTree->Branch("neleLoose"   ,&fNElectronsLoose ,"fNElectronsLoose/I");
+//  fTree->Branch("neleTight"   ,&fNElectronsTight ,"fNElectronsTight/I");
+//  fTree->Branch("isele0Tight" ,&fisele0Tight     ,"fisele0Tight/I");
+//  fTree->Branch("isDiele  "   ,&fisDiele         ,"fisDiele/I");
+//  fTree->Branch("eleSFTrack"  ,&feleSFTrack      ,"feleSFTrack/D");
+//  setupNtuple  ("veleLoose"   ,iTree,fN,fVars);        // 2 electrons ele*_pt,ele*_eta,ele*_phi (2*4=8)
+//  addDiElectron("vdiele"      ,iTree,1,fVars,fN*3);    // dielectron diele0_pt, _mass, _phi, _y (1*4 =4)
+//  addSF        ("eleSF"       ,iTree,feleSFVars,3);    // eleSF0,eleSF1,eleSF2
 }
 void ElectronLoader::load(int iEvent) { 
   fElectrons  ->Clear();

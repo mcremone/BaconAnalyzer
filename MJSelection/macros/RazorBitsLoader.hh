@@ -33,15 +33,15 @@ public:
   bool isEle();
   bool isZee();
   bool isPho();
-  bool passPreSelection(string preselection);
-  bool passRazorPreselection(bool isData);
-  bool passRazorSR(string preselection, bool isData);
-  bool passRazorCR(string preselection, bool isData);
-  bool passRazorWCR(string preselection, bool isData);
-  bool passRazorZCR(string preselection, bool isData);
-  bool passMonojetSelection();
+  bool passPreSelection(string preselection) ;
+  bool passRazorPreselection(bool isData) ;
+  bool passRazorSR(string preselection, bool isData) ;
+  bool passRazorCR(string preselection, bool isData) ;
+  bool passRazorWCR(string preselection, bool isData) ;
+  bool passRazorZCR(string preselection, bool isData) ;
+  bool passMonojetSelection()  ;
   
-  bool passSelection(string preselection, string subsample, string combo, bool isData);
+  bool passSelection(string preselection, string subsample, string combo, bool isData) ;
 
   double getWgt(bool isData, TString algo, double LUMI);
   
@@ -58,7 +58,7 @@ public:
   int njets;                                                                       // jet multiplicity 
   int nbjetsL, nbjetsM, nbjetsT, nbjetsMdR2, nbjetsLdR2;                   // b-jet multiplicity
   int nmu, nele, ntau, npho;                                                       // object multiplicity
-  float scale1fb;                                                                  // cross section scale factor per 1/fb
+  float weight;                                                                  // cross section scale factor per 1/fb
   float kfactor;                                                                   // kFactor and EWK correction
   float res_btagwL0, res_btagwL1, res_btagwLminus1, res_btagwL2;                   // btag SF
   float res_btagwM0, res_btagwM1, res_btagwMminus1, res_btagwM2;
@@ -81,7 +81,7 @@ public:
   float            HT, MHT;                                                        // HT and MHT
 
 protected:
-  const std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/include/CSVv2_ichep.csv";
+//  const std::string btagScaleFactorFilename = "/afs/cern.ch/work/c/cmantill/public/Bacon/CMSSW_8_0_10/src/BaconAnalyzer/MJSelection/include/CSVv2_ichep.csv";
   const unsigned int kRESOLVEDPUPPI = 2;
   const unsigned int kRESOLVEDCHS = 4;
   const unsigned int kMET  = 2;

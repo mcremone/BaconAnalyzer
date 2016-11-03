@@ -86,8 +86,8 @@ void GenLoader::setupTree(TTree *iTree,float iXSIn) {
   // iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F"); fWeight = fGenInfo->weight;
   // iTree->Branch("xsin"       ,&fXSIn      ,"fXSIn/F");   fXSIn = iXSIn;
   
-  fTree->Branch("genVPt"     ,&fBosonPt   ,"fBosonPt/F");
-  fTree->Branch("genVPhi"    ,&fBosonPhi  ,"fBosonPhi/F");
+  //fTree->Branch("genVPt"     ,&fBosonPt   ,"fBosonPt/F");
+  //fTree->Branch("genVPhi"    ,&fBosonPhi  ,"fBosonPhi/F");
 
   /*
   iTree->Branch("mcweight"   ,&fWeight    ,"fWeight/F");

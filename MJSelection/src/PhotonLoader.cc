@@ -33,15 +33,15 @@ void PhotonLoader::reset() {
 void PhotonLoader::setupTree(TTree *iTree) { 
   reset();
   fTree = iTree;
-  fTree->Branch("nphoLoose",   &fNPhotonsLoose, "fNPhotonsLoose/I");  // loose photon multiplicity 
-  fTree->Branch("nphoTight",   &fNPhotonsTight, "fNPhotonsTight/I");  // medium(tight) photon multiplicity
-  fTree->Branch("nphoMVA",     &fNPhotonsMVA,   "fNPhotonsMVA/I");    // MVA-based selection
-  fTree->Branch("ispho0Tight", &fispho0Tight,   "fispho0Tight/I"); 
-  fTree->Branch("vphoMVA_pt",  &fphoMVA_pt,     "fphoMVA_pt/D"); 
-  fTree->Branch("vphoMVA_eta", &fphoMVA_eta,    "fphoMVA_eta/D");
-  fTree->Branch("vphoMVA_phi", &fphoMVA_phi,    "fphoMVA_phi/D");
-  setupNtuple("vpho",iTree,fN,fVars);                                 // pho0_pt,_eta,_phi (1*3=3)
-  addSF      ("phoSF",iTree,fphoSFVars,1);                            // phoSF0
+//  fTree->Branch("nphoLoose",   &fNPhotonsLoose, "fNPhotonsLoose/I");  // loose photon multiplicity 
+//  fTree->Branch("nphoTight",   &fNPhotonsTight, "fNPhotonsTight/I");  // medium(tight) photon multiplicity
+//  fTree->Branch("nphoMVA",     &fNPhotonsMVA,   "fNPhotonsMVA/I");    // MVA-based selection
+//  fTree->Branch("ispho0Tight", &fispho0Tight,   "fispho0Tight/I"); 
+//  fTree->Branch("vphoMVA_pt",  &fphoMVA_pt,     "fphoMVA_pt/D"); 
+//  fTree->Branch("vphoMVA_eta", &fphoMVA_eta,    "fphoMVA_eta/D");
+//  fTree->Branch("vphoMVA_phi", &fphoMVA_phi,    "fphoMVA_phi/D");
+//  setupNtuple("vpho",iTree,fN,fVars);                                 // pho0_pt,_eta,_phi (1*3=3)
+//  addSF      ("phoSF",iTree,fphoSFVars,1);                            // phoSF0
 }
 void PhotonLoader::load(int iEvent) { 
   fPhotons  ->Clear();
@@ -63,10 +63,10 @@ void PhotonLoader::selectPhotons(double iRho,std::vector<TLorentzVector> &iVetoe
 
     if(pPhoton->pt        <= 175)                       continue;
     if(fabs(pPhoton->eta) >= 1.4442)                    continue;
-    if(!passPhoTightSel(pPhoton, iRho))                continue;
+    if(!passPhoMediumSel(pPhoton, iRho))                continue;
     lTCount++;
 
-    if(lTCount ==1) fispho0Tight = 1;
+    if(lCount ==1) fispho0Tight = 1;
     lVeto.push_back(pPhoton);
     addPhoton(pPhoton,fSelPhotons);
     if(!photon || (pPhoton->pt > photon->pt))  photon = pPhoton;

@@ -118,18 +118,24 @@ int main( int argc, char **argv ) {
   std::cout << "Starting Entry: " << startEntry << "          Ending Entry: " << endEntry << std::endl;
   //for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
   for(int i0 = startEntry; i0 <= endEntry; i0++) {
-    if (i0 > int(lTree->GetEntriesFast())) break;
+    if (i0 > lTree->GetEntriesFast()) 
+    {
+        std::cout << "i0 " << i0 << " exceeds " << lTree->GetEntriesFast() << std::endl;
+        break;
+    }
     if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
     
 
-
     // Check JSON and GenInfo
     fEvt->load(i0);
+    
     float lWeight = 1;
-    if(lOption.find("data")!=std::string::npos){
+    if(lOption.find("data")!=std::string::npos)
+    {
       if(!passEvent(fEvt->fRun,fEvt->fLumi))                                                              continue;
     }
-    else{
+    else
+    {
       fGen->load(i0);
       //lWeight = (float(lXS)*1000.*fGen->fWeight)/weight;
       lWeight = (float) fGen->fWeight;
@@ -137,13 +143,14 @@ int main( int argc, char **argv ) {
 
       if(lOption.find("hf")!=std::string::npos && !(fGen->isGenParticle(4)) && !(fGen->isGenParticle(5))) continue;
       if(lOption.find("lf")!=std::string::npos && ((fGen->isGenParticle(4)) || (fGen->isGenParticle(5)))) continue;
-      if(lOption.find("tt")!=std::string::npos){
-	int nlep = fGen->isttbarType();
-	if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
-	if(lOption.find("tt1l")!=std::string::npos && nlep!=1)                                            continue;
-	if(lOption.find("tthad")!=std::string::npos && nlep!=0)                                           continue;
-	if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
-	if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
+      if(lOption.find("tt")!=std::string::npos)
+      {
+          int nlep = fGen->isttbarType();
+          if(lOption.find("tt2l")!=std::string::npos && nlep!=2)                                            continue;
+          if(lOption.find("tt1l")!=std::string::npos && nlep!=1)                                            continue;
+          if(lOption.find("tthad")!=std::string::npos && nlep!=0)                                           continue;
+          if(lOption.find("ttbst")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
+          if(lOption.find("ttcom")!=std::string::npos && nlep!=2 && nlep!=1 && nlep!=0)                     continue;
       }
     }
 
@@ -154,45 +161,45 @@ int main( int argc, char **argv ) {
     unsigned int trigbits=1;   
     if(lOption.find("data")!=std::string::npos) 
       {
-	if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
-	   fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
-	   fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
-	   fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
-	   fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
-	   fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2; 
+        if(fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v*") ||
+           fEvt ->passTrigger("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*") ||
+           fEvt ->passTrigger("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_NoID_v*") ||
+           fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v*") ||
+           fEvt ->passTrigger("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*") ||
+           fEvt ->passTrigger("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_NoID_v*")) trigbits = trigbits | 2; 
 
-	if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
-	   fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*") || 
-	   fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
-	   fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits = trigbits | 4;
-    
-	if(fEvt ->passTrigger("HLT_IsoMu20_v*") ||
-	   fEvt ->passTrigger("HLT_IsoMu27_v*") ||
-	   fEvt ->passTrigger("HLT_IsoTkMu20_v*")) trigbits= trigbits | 8;
-      
-	if(fEvt ->passTrigger("HLT_ECALHT800_v*") ||
-	   fEvt ->passTrigger("HLT_Photon175_v*") ||
-	   fEvt ->passTrigger("HLT_Photon165_HE10_v*") ||
-	   fEvt ->passTrigger("HLT_Photon300_NoHE_v*") ||
-	   fEvt ->passTrigger("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*") ||
-	   fEvt ->passTrigger("HLT_Photon135_PFMET100_v*")) trigbits = trigbits | 16;
-    
-       
-	// Triggerbits for MR and Rsq
-	if(fEvt ->passTrigger("HLT_RsqMR240_Rsq0p09_MR200_v*") ||
-	   fEvt ->passTrigger("HLT_RsqMR240_Rsq0p09_MR200_4jet_v*") ||
-	   fEvt ->passTrigger("HLT_RsqMR270_Rsq0p09_MR200_v*") ||
-	   fEvt ->passTrigger("HLT_RsqMR270_Rsq0p09_MR200_4jet_v*") ||
-	   fEvt ->passTrigger("HLT_RsqMR260_Rsq0p09_MR200_v*") ||
-	   fEvt ->passTrigger("HLT_RsqMR260_Rsq0p09_MR200_4jet_v*") ||
-	   fEvt ->passTrigger("HLT_RsqMR300_Rsq0p09_MR200_v*") ||
-	   fEvt ->passTrigger("HLT_RsqMR300_Rsq0p09_MR200_4jet_v*") || 
-	   fEvt ->passTrigger("HLT_Rsq0p25_v*") ||
-	   fEvt ->passTrigger("HLT_Rsq0p30_v*") ||
-	   fEvt ->passTrigger("HLT_Rsq0p36_v*") || 
-	   fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_BTagCSV_p063_p20_Mbb60_200_v*") ||
-	   fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 32;
-      //  if(trigbits==1) continue;
+        if(fEvt ->passTrigger("HLT_Ele27_WP85_Gsf_v*") ||
+           fEvt ->passTrigger("HLT_Ele27_WPLoose_Gsf_v*") || 
+           fEvt ->passTrigger("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*") || 
+           fEvt ->passTrigger("HLT_Ele23_WPLoose_Gsf_v*")) trigbits = trigbits | 4;
+        
+        if(fEvt ->passTrigger("HLT_IsoMu20_v*") ||
+           fEvt ->passTrigger("HLT_IsoMu27_v*") ||
+           fEvt ->passTrigger("HLT_IsoTkMu20_v*")) trigbits= trigbits | 8;
+          
+        if(fEvt ->passTrigger("HLT_ECALHT800_v*") ||
+           fEvt ->passTrigger("HLT_Photon175_v*") ||
+           fEvt ->passTrigger("HLT_Photon165_HE10_v*") ||
+           fEvt ->passTrigger("HLT_Photon300_NoHE_v*") ||
+           fEvt ->passTrigger("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*") ||
+           fEvt ->passTrigger("HLT_Photon135_PFMET100_v*")) trigbits = trigbits | 16;
+        
+           
+        // Triggerbits for MR and Rsq
+        if(fEvt ->passTrigger("HLT_RsqMR240_Rsq0p09_MR200_v*") ||
+           fEvt ->passTrigger("HLT_RsqMR240_Rsq0p09_MR200_4jet_v*") ||
+           fEvt ->passTrigger("HLT_RsqMR270_Rsq0p09_MR200_v*") ||
+           fEvt ->passTrigger("HLT_RsqMR270_Rsq0p09_MR200_4jet_v*") ||
+           fEvt ->passTrigger("HLT_RsqMR260_Rsq0p09_MR200_v*") ||
+           fEvt ->passTrigger("HLT_RsqMR260_Rsq0p09_MR200_4jet_v*") ||
+           fEvt ->passTrigger("HLT_RsqMR300_Rsq0p09_MR200_v*") ||
+           fEvt ->passTrigger("HLT_RsqMR300_Rsq0p09_MR200_4jet_v*") || 
+           fEvt ->passTrigger("HLT_Rsq0p25_v*") ||
+           fEvt ->passTrigger("HLT_Rsq0p30_v*") ||
+           fEvt ->passTrigger("HLT_Rsq0p36_v*") || 
+           fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_BTagCSV_p063_p20_Mbb60_200_v*") ||
+           fEvt ->passTrigger("HLT_Rsq0p02_MR300_TriPFJet80_60_40_DoubleBTagCSV_p063_Mbb60_200_v*")) trigbits = trigbits | 32;
+          //  if(trigbits==1) continue;
       }
 
     // Event info
@@ -210,7 +217,8 @@ int main( int argc, char **argv ) {
     fElectron ->selectElectrons(fEvt->fRho,lElectrons,fEvt->fNLepLoose,fEvt->fislep0Tight,fEvt->fislep1Tight,fEvt->flep0PdgId,fEvt->flep1PdgId);
     
     // Lepton SF
-    if(lOption.find("data")==std::string::npos){
+    if(lOption.find("data")==std::string::npos)
+    {
       fEvt->fillLepSF(lElectrons,lMuons);
       fillLepSF(13,fEvt->fNVtx,fMuon->fNMuonsLoose,lMuons,
 		fMuon->fhMuTrack,fElectron->fhEleTrack,fMuon->fhMuTight,fMuon->fhMuLoose,

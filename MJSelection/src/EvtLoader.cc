@@ -137,14 +137,14 @@ void EvtLoader::setupTree(TTree *iTree) {
   fTree->Branch("sf_eleTrig"      ,&fsf_eleTrig     ,"fsf_eleTrig/D");
   fTree->Branch("sf_metTrig"      ,&fsf_metTrig     ,"fsf_metTrig/D");
   fTree->Branch("sf_phoTrig"      ,&fsf_phoTrig     ,"fsf_phoTrig/D");
+//
+//  fTree->Branch("islep0Tight"     ,&fislep0Tight    ,"fislep0Tight/I");
 
-  fTree->Branch("islep0Tight"     ,&fislep0Tight    ,"fislep0Tight/I");
-
-  fTree->Branch("npu"             ,&fNPU            ,"fNPU/i");
-  fTree->Branch("npv"             ,&fNVtx           ,"fNVtx/i");
+//  fTree->Branch("npu"             ,&fNPU            ,"fNPU/i");
+//  fTree->Branch("npv"             ,&fNVtx           ,"fNVtx/i");
   fTree->Branch("puWeight"        ,&fPUWeight       ,"fPUWeight/F");
-  fTree->Branch("scale1fb"        ,&fScale          ,"fScale/F");  
-  fTree->Branch("evtWeight"       ,&fevtWeight      ,"fevtWeight/F");
+  fTree->Branch("weight"        ,&fScale          ,"fScale/F");  
+//  fTree->Branch("evtWeight"       ,&fevtWeight      ,"fevtWeight/F");
   fTree->Branch("rho"             ,&fRho            ,"fRho/F");
   fTree->Branch("kfactor"         ,&fkfactor        ,"fkfactor/F");
 
@@ -161,16 +161,16 @@ void EvtLoader::setupTree(TTree *iTree) {
 
   fTree->Branch("pfmet"           ,&fMet            ,"fMet/F");
   fTree->Branch("pfmetphi"        ,&fMetPhi         ,"fMetPhi/F");
-  fTree->Branch("puppet"          ,&fPuppEt         ,"fPuppEt/F");
-  fTree->Branch("puppetphi"       ,&fPuppEtPhi      ,"fPuppEtPhi/F");
+//  fTree->Branch("puppet"          ,&fPuppEt         ,"fPuppEt/F");
+//  fTree->Branch("puppetphi"       ,&fPuppEtPhi      ,"fPuppEtPhi/F");
   fTree->Branch("calomet"         ,&fCaloMet        ,"fCaloMet/F");
   fTree->Branch("calometphi"      ,&fCaloMetPhi     ,"fCaloMetPhi/F");
   //fTree->Branch("metnomu"         ,&fMetNoMu        ,"fMetNoMu/F");
 
-  fTree->Branch("fakepfmet"       ,&fFMet           ,"fFMet/F");
-  fTree->Branch("fakepfmetphi"    ,&fFMetPhi        ,"fFMetPhi/F");
-  fTree->Branch("fakepuppet"      ,&fFPuppEt        ,"fFPuppEt/F");
-  fTree->Branch("fakepuppetphi"   ,&fFPuppEtPhi     ,"fFPuppEtPhi/F");
+//  fTree->Branch("fakepfmet"       ,&fFMet           ,"fFMet/F");
+//  fTree->Branch("fakepfmetphi"    ,&fFMetPhi        ,"fFMetPhi/F");
+//  fTree->Branch("fakepuppet"      ,&fFPuppEt        ,"fFPuppEt/F");
+//  fTree->Branch("fakepuppetphi"   ,&fFPuppEtPhi     ,"fFPuppEtPhi/F");
 
   fRun   = 0;
   fLumi  = 0;

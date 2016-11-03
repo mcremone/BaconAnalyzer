@@ -101,6 +101,14 @@ SAMPLES = {
             'ZJetsToNuNu_HT_600To800_13TeV_madgraph',
             'ZJetsToNuNu_HT_800To1200_13TeV_madgraph',
             ],
+        "VectorDM":[
+            'Vector_Mphi_1250_Mchi_150_gSM_0p25_gDM_1p0_v2_13TeV_powheg',
+            'Vector_Mphi_1250_Mchi_250_gSM_0p25_gDM_1p0_v2_13TeV_powheg',
+            'Vector_Mphi_1500_Mchi_200_gSM_0p25_gDM_1p0_v2_13TeV_powheg',
+            'Vector_Mphi_1250_Mchi_1_gSM_0p25_gDM_1p0_v2_13TeV_powheg',
+            'Vector_Mphi_1500_Mchi_1_gSM_0p25_gDM_1p0_v2_13TeV_powheg',
+            'Vector_Mphi_500_Mchi_1_gSM_0p25_gDM_1p0_v2_13TeV_powheg',
+            ],
         }
 
 MC_TYPES = { 'DYLF': 'mcdypluslf',
@@ -113,5 +121,6 @@ MC_TYPES = { 'DYLF': 'mcdypluslf',
              'WLF': 'mcwpluslf',
              'ZHF': 'mczplushf',
              'ZLF': 'mczpluslf',
+             'VectorDM': 'mc'
         }
 

@@ -118,13 +118,17 @@ int main( int argc, char **argv ) {
   std::cout << "Starting Entry: " << startEntry << "          Ending Entry: " << endEntry << std::endl;
   //for(int i0 = 0; i0 < int(lTree->GetEntriesFast()); i0++) {
   for(int i0 = startEntry; i0 <= endEntry; i0++) {
-    if (i0 > int(lTree->GetEntriesFast())) break;
+    if (i0 > int(lTree->GetEntriesFast())) 
+    {
+        std::cout << "i0 " << i0 << " exceeds " << lTree->GetEntriesFast() << std::endl;
+        break;
+    }
+    std::cout << "i0 " << i0 << std::endl;
     if(i0 % 1000 == 0) std::cout << "===> Processed " << i0 << " - Done : " << (float(i0)/float(lTree->GetEntriesFast())*100) << " -- " << lOption << std::endl;
-    
-
-
+     
     // Check JSON and GenInfo
     fEvt->load(i0);
+    std::cout << "fEvt->load(" << i0 << ")\n";
     float lWeight = 1;
     if(lOption.find("data")!=std::string::npos){
       if(!passEvent(fEvt->fRun,fEvt->fLumi))                                                              continue;
@@ -291,7 +295,7 @@ int main( int argc, char **argv ) {
     lOut->Fill();
     neventstest++;
   }
-  std::cout << "neventtest = " << neventstest << std::endl;
+  std::cout << "NEvents Filled = " << neventstest << std::endl;
   std::cout << "lTree->GetEntriesFast(): " << lTree->GetEntriesFast() << std::endl;
   lFile->cd();
   lOut->Write();

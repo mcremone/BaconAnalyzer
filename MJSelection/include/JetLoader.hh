@@ -47,7 +47,8 @@ public:
   float         fMR, fdeltaPhi;
   float         fHT, fMHT, fMT2;
   float         falphaT, fdPhiMin;
-  float         fRsq; 
+  float         fRsq;
+  float         fJet0_pt, fJet0_eta, fJet0_chf, fJet0_nhf; 
 
   enum RazorBox { //boxes for razor inclusive analysis
     MuEle = 0,  
