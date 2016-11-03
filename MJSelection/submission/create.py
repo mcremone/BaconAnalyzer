@@ -53,7 +53,7 @@ def haddFinal(channel = '', outputDir = ''):
     else:
         call(['hadd','-k',fname]+jobfiles)
 
-def submitJobs(analyzer = '', channel = '', events_per_job = 50000, outputDir = '',submit=False, queue = '8nm'):
+def submitJobs(analyzer = '', channel = '', events_per_job = 50000, outputDir = '',submit=False, queue = '1nh'):
     basedir = os.environ['CMSSW_BASE']+'/src/BaconAnalyzer/MJSelection/'
     _outdir = basedir+'/submission/'+outputDir
     samples = SAMPLES
