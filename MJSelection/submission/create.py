@@ -53,6 +53,32 @@ def haddFinal(channel = '', outputDir = ''):
     else:
         call(['hadd','-k',fname]+jobfiles)
 
+def resubJobs(analyzer = '', channel = '', events_per_job = 50000, outputDir = '', submit=False, queue = '1nh'):
+    basedir = os.environ['CMSSW_BASE']+'/src/BaconAnalyzer/MJSelection/'
+    _outdir = basedir+'/submission/'+outputDir
+    samples = SAMPLES
+    for sample in samples[channel]:
+        outdir = _outdir+'/'+sample+'_'+mc[channel]
+        logdir = outdir+"/log/*.log"
+        joblogs = glob.glob(logdir)
+        for job in joblogs:
+            with open(job) as f:
+                for line in f:
+                    if "exit code" in line:
+                        # Now want to resub with 1nh queue instead of 8nm queue (if it's used)
+                        srcfile = re.sub('/log/','/src/',job)
+                        srcfile = re.sub('.log','.sh',srcfile)
+                        f = open(srcfile,'r')
+                        oldfile = f.read()
+                        f.close()
+                        newfile = oldfile.replace("8nm","1nh")
+                        f = open(srcfile,'w')
+                        f.write(newfile)
+                        f.close()
+                        print "Resubmit ",srcfile
+                        call(['bash',srcfile])
+                        break
+
 def submitJobs(analyzer = '', channel = '', events_per_job = 50000, outputDir = '',submit=False, queue = '1nh'):
     basedir = os.environ['CMSSW_BASE']+'/src/BaconAnalyzer/MJSelection/'
     _outdir = basedir+'/submission/'+outputDir
@@ -79,7 +105,7 @@ def submitJobs(analyzer = '', channel = '', events_per_job = 50000, outputDir = 
                     index += 1
                     begin_evt = 0
                     end_evt = 50000
-                    cmd = ['bsub','-q',queue,'-o',logfile+'_'+str(index)+'.log','-J',sample+'_'+str(index),script,analyzer,fin,mc[channel],'none',str(begin_evt),str(end_evt),outname+'_'+str(index)+'.root']
+                    cmd = ['bsub','-q',queue,'-oo',logfile+'_'+str(index)+'.log','-J',sample+'_'+str(index),script,analyzer,fin,mc[channel],'none',str(begin_evt),str(end_evt),outname+'_'+str(index)+'.root']
                     os.environ['LSB_JOB_REPORT_MAIL'] = 'N'
                     #print ' '.join(cmd)
                     with open(srcname+'_'+str(index)+'.sh','w') as src_file:
@@ -95,7 +121,7 @@ def submitJobs(analyzer = '', channel = '', events_per_job = 50000, outputDir = 
                         index += 1
                         begin_evt = begin
                         end_evt = nevents/njobs * i
-                        cmd = ['bsub','-q',queue,'-o',logfile+'_'+str(index)+'.log','-J',sample+'_'+str(index),script,analyzer,fin,mc[channel],'none',str(begin_evt),str(end_evt),outname+'_'+str(index)+'.root']
+                        cmd = ['bsub','-q',queue,'-oo',logfile+'_'+str(index)+'.log','-J',sample+'_'+str(index),script,analyzer,fin,mc[channel],'none',str(begin_evt),str(end_evt),outname+'_'+str(index)+'.root']
                         os.environ['LSB_JOB_REPORT_MAIL'] = 'N'
                         #print ' '.join(cmd)
                         with open(srcname+'_'+str(index)+'.sh','w') as src_file:
@@ -112,9 +138,10 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--nevents', default = 50000, help = 'Number of events per job (used for big ntuples)', type = int)
     parser.add_argument('--dryRun', action='store_true', help = 'No submit') 
     parser.add_argument('--submit', action='store_true', help = 'Run submission jobs')
+    parser.add_argument('--resub', action='store_true', help = 'Resub failed jobs')
     parser.add_argument('--hadd', action='store_true', help = 'Hadd files')
     parser.add_argument('--haddFinal', action='store_true', help = 'Hadd files')
-    parser.add_argument('-q','--queue', default = '8nm', help = 'Queue to submit')
+    parser.add_argument('-q','--queue', default = '1nh', help = 'Queue to submit')
     args = parser.parse_args()
 
     wetRun=True
@@ -124,11 +151,11 @@ if __name__ == '__main__':
     if not os.path.isdir('eos/cms/store'):
         sys.exit("Please mount EOS under ./eos before using this tool.")
 
-    if not args.hadd and not args.submit and not args.haddFinal:
+    if not args.hadd and not args.submit and not args.haddFinal and not args.resub:
         sys.exit("What on the earth do you want?")
-    if args.submit and not args.analyzer:
+    if (args.submit or not args.resub) and not args.analyzer:
         sys.exit("-a ANALYZER required (runMonojet_split, ...)")
-    if args.submit or args.hadd or args.haddFinal:
+    if args.submit or args.hadd or args.haddFinal or args.resub:
         if not args.everything:
             if not args.channel:
                 sys.exit("-c CHANNEL required (QCD, DYHF, DYLF, ST, ...)")
@@ -140,6 +167,8 @@ if __name__ == '__main__':
                     haddFiles(args.channel, args.directory)
                 elif args.haddFinal:
                     haddFinal(args.channel, args.directory)
+                elif args.resub:
+                    resubJobs(args.analyzer, args.channel, args.nevents, args.directory, wetRun, args.queue)
         elif args.everything: 
             for channel in samples:
                 if args.submit:
@@ -148,4 +177,6 @@ if __name__ == '__main__':
                     haddFiles(channel, args.directory)
                 elif args.haddFinal:
                     haddFinal(channel, args.directory)
+                elif args.resub:
+                    resubJobs(args.analyzer, channel, args.nevents, args.directory, wetRun, args.queue)
 
