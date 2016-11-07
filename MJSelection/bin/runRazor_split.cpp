@@ -76,7 +76,11 @@ int main( int argc, char **argv ) {
   if(lJSON.size() > 0) fRangeMap->AddJSONFile(lJSON.c_str());
 
   TTree *lTree = load(lName); 
-  
+  if (lTree == 0)
+  {
+      cout << "No tree found\n";
+      return 0;
+  }  
   // Declare Readers 
   fEvt       = new EvtLoader     (lTree,lName);                                           // fEvt, fEvtBr, fVertices, fVertexBr
   fMuon      = new MuonLoader    (lTree);                                                 // fMuon and fMuonBr, fN = 2 - muonArr and muonBr
@@ -301,4 +305,5 @@ int main( int argc, char **argv ) {
   lOut->Write();
   NEvents->Write();
   lFile->Close();
+  return 0;
 }
