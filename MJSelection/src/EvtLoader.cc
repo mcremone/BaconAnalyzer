@@ -8,7 +8,7 @@
 
 using namespace baconhep;
 
-EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::string iPUWeight) { 
+EvtLoader::EvtLoader(TTree *iTree,std::string iName,std::string iHLTFile,std::string iPUWeight) {
   const std::string cmssw_base = getenv("CMSSW_BASE");
 
   fEvt      = new TEventInfo();

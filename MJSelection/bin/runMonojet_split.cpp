@@ -74,8 +74,13 @@ int main( int argc, char **argv ) {
 
   fRangeMap = new RunLumiRangeMap();
   if(lJSON.size() > 0) fRangeMap->AddJSONFile(lJSON.c_str());
+  TTree *lTree = load(lName);
 
-  TTree *lTree = load(lName); 
+  if (lTree == 0) 
+  {
+      cout << "Tree not found.\n";
+      return 0;
+  }
   
   // Declare Readers 
   fEvt       = new EvtLoader     (lTree,lName);                                           // fEvt, fEvtBr, fVertices, fVertexBr
@@ -299,10 +304,11 @@ int main( int argc, char **argv ) {
     lOut->Fill();
     neventstest++;
   }
-  std::cout << "neventtest = " << neventstest << std::endl;
+  std::cout << "Events Filled: " << neventstest << std::endl;
   std::cout << "lTree->GetEntriesFast(): " << lTree->GetEntriesFast() << std::endl;
   lFile->cd();
   lOut->Write();
   NEvents->Write();
   lFile->Close();
+  return 0;
 }
