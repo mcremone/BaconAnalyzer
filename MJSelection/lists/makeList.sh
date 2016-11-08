@@ -67,3 +67,5 @@ do
         sed -i 's/\.\.\/eos\/cms/root:\/\/eoscms.cern.ch/g' production${version}/${line}.txt 
     fi
 done < $1
+
+eosumount ../eos
